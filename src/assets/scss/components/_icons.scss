@@ -1,0 +1,23 @@
+.bi {
+    width: 1rem;
+    height: 1rem;
+}
+.stats-icon {
+    width: 3rem;
+    height:3rem;
+    border-radius: .5rem;
+    background-color: black;
+    float: right;
+    &.purple {
+        background-color: #9694ff;
+    }
+    &.blue {
+        background-color: #57caeb;
+    }
+    &.red {
+        background-color: #ff7976;
+    }
+    &.green {
+        background-color: #5ddab4;
+    }
+}

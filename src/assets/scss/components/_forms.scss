@@ -1,0 +1,145 @@
+.form-group {
+    margin-bottom: .7rem;
+    label {
+        font-size: .755rem;
+        text-transform: uppercase;
+        color: rgb(35, 28, 99, .7);
+        font-weight: 500;
+    }
+    small {
+        font-size: .7rem;
+    }
+
+    &.with-title {
+        position: relative;
+        label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 5px;
+            font-size: .6rem;
+            background-color: $gray-200;
+            width: 100%;
+            transition: $input-transition;
+        }
+        .form-control, dataTable-input {
+            padding-top: 2rem;
+            &:focus ~ label {
+                border-left: 1px solid map-get($theme-colors, 'primary');
+                border-top: 1px solid map-get($theme-colors, 'primary');
+                border-right: 1px solid map-get($theme-colors, 'primary');
+            }
+        }
+    }
+
+    &[class*="has-icon-"] {
+        &.has-icon-left {
+            .form-control {
+                padding-left: 2.5rem;
+            }
+            .form-control-icon {
+                left: 0;
+            }
+        }
+        &.has-icon-right {
+            .form-control {
+                padding-right: 2.5rem;
+            }
+            .form-control-icon {
+                right: 0;
+            }
+        }
+        .form-control {            
+            &:focus ~ .form-control-icon {
+                i, svg {
+                    color: #5A8DEE
+                }
+            }
+        }
+        .form-control-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 0 .6rem;
+            i, svg {
+                width: 1.2rem
+            }
+        }
+
+    }
+}
+
+.form-check {
+    .form-check-input {
+        &[class*="bg-"] {
+            border: 0;
+        }
+        &:focus {
+            box-shadow: none;
+        }
+        @each $key, $value in $theme-colors {
+            &.form-check-#{$key} {
+                background-color: $value;
+                border-color: $value;
+
+                &:not(:checked) {
+                    background-color: transparent;
+                    border: 1px solid $gray-400;
+                }
+
+                &.form-check-glow {
+                    box-shadow: 0 0 5px lighten($value,10%);
+                    &:not(:checked) {
+                        box-shadow: none;
+                    }
+                }
+            }
+        }
+    }
+
+    &.form-check-sm {
+        .form-check-input {
+            width: .9rem;
+            height: .9rem;
+            margin-top: .3em;
+        }
+        label {
+            font-size: .7rem;
+            
+        }
+    }
+
+    @each $key, $value in $theme-colors {
+        &.form-check-#{$key} {
+            .form-check-input {
+                background-color: $value;
+                border-color: $value
+            }
+        }
+    }
+}
+
+.dataTable-input {
+    min-height: calc(1.5em + 0.934rem + 2px);
+    padding: 0.467rem 0.6rem;
+    font-size: 0.9025rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #555252;
+    background-color: white;
+    background-clip: padding-box;
+    border: 1px solid #DFE3E7;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+    &:focus {
+        color: #555252;
+        background-color: white;
+        border-color: #5A8DEE;
+        outline: 0;
+        box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.1);
+    }
+}

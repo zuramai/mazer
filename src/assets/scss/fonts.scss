@@ -1,0 +1,20 @@
+@font-face {
+    font-family: 'Inter';
+    font-weight: bold;
+    src: url('./../fonts/Inter-Bold-slnt=0.ttf');
+}
+@font-face {
+    font-family: 'Poppins';
+    font-weight: bold;
+    src: url('./../fonts/Poppins-Bold.ttf');
+}
+@font-face {
+    font-family: 'Poppins';
+    font-weight: normal;
+    src: url('./../fonts/Poppins-Regular.ttf');
+}
+
+body {
+    font-family: 'Poppins';
+    font-weight: 400;
+}

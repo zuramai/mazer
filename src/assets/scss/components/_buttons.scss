@@ -1,0 +1,67 @@
+
+.btn {
+    // &[class*="btn-"]:not([class*="btn-outline-"]) {
+    //     color: $btn-color;
+    // }
+    i,svg {
+        width: 16px;
+        height: 16px;
+    } 
+    &.icon {
+        padding: .4rem .6rem;
+        svg {
+            width: 16px;
+            height: 16px;
+        }
+        &.icon-left {
+            svg {
+                margin-right: 3px;
+            }
+        }
+        &.icon-right {
+            svg {
+                margin-left: 3px;
+            }
+        }
+    }
+    &.btn-outline-white {
+        color: #fff;
+        border-color: #fff;
+        &:hover {
+            color: #333;
+            background-color: #fff;
+        }
+    }
+    
+    @each $key, $value in $theme-colors-light {
+        &.btn-light-#{$key} {
+            background-color: $value;
+            color: darken($value,80%)
+        }
+    }
+    
+    @each $key, $value in $theme-colors {
+        &.btn-#{$key} {
+            color: #fff;
+        }
+    }
+}
+.btn-block {
+    width: 100%;
+}
+.btn-group {
+    &:not(.dropdown) .btn:not([class*="btn-"]) {
+        border: 1px solid #DFE3E7;
+    }
+    & > .btn {
+        border-radius: .267rem;
+    }
+    & > .btn:not(:first-child) {
+
+    }
+}
+.buttons {
+    .btn {
+        margin: 0 10px 10px 0;
+    }
+}

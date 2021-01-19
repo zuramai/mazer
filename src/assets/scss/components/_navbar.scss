@@ -1,0 +1,38 @@
+.navbar {
+    height:70px;
+    padding: 1.5rem;
+    
+    .nav-link-user img {
+        width: 30px;
+    }
+
+    &.navbar-header {
+        li {
+            display: flex;
+            align-items: center;
+            &.nav-icon {
+                margin-right: .4rem;
+                .nav-link {
+                    display:block;
+                    padding: .4rem;
+                    border-radius: 50%;
+                    &:hover {
+                        background-color: $gray-200;
+                    }
+                }
+            }
+        }
+        .dropdown > a {
+            color: $gray-600;
+            font-weight: 600;
+            
+            svg {
+                height: 24px;
+                width: 24px;
+            }
+            &:after {
+                display:none;
+            }
+        }
+    }
+}

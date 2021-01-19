@@ -1,0 +1,33 @@
+.progress {
+    @each $key, $value in $theme-colors {
+        &.progress-#{$key} {
+            overflow: visible;
+            .progress-bar {
+                background-color: $value;
+                border-radius: $progress-border-radius;
+                box-shadow: 0px 2px 3px rgba($value,.8);
+            }
+        }
+    }
+    &.progress-sm {
+        height: .4rem;
+    }
+    &.progress-lg {
+        height: .8rem;
+    }
+
+    .progress-bar {
+        position: relative;
+        overflow: visible;
+
+        &.progress-label:before {
+            content: attr(aria-valuenow) '%';
+            position: absolute;
+            right: 0;
+            top: -1.3rem;
+            color: $gray-700;
+            font-size: .8rem;
+            
+        }
+    }
+}

@@ -1,0 +1,39 @@
+.pagination {
+    @each $key, $value in $theme-colors {
+        &.pagination-#{$key} {
+            .page-item.active {
+                .page-link {
+                    background-color: $value;
+                    border-color: $value;
+                    box-shadow: 0 2px 5px rgba($value,.3);
+                }
+            }
+        }
+    }
+}
+.page-item {
+    &:not(.active) {
+        .page-link {
+            &:hover {
+                color: $black
+            }
+        }
+    }
+    i, svg {
+        font-size: 13px;
+        width: 13px;
+        height: 13px;
+    }
+    .page-link {
+        font-size: .875rem;
+        &:focus {
+            box-shadow: none;
+        }
+    }
+    &:first-child {
+        margin-right: .4rem;
+    }
+    &:last-child {
+        margin-left: .4rem;
+    }
+}

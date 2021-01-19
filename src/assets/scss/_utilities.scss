@@ -1,0 +1,35 @@
+
+// Margin
+.mt-10 { margin-top: 3rem; }
+.mb-10 { margin-bottom: 3rem; }
+.my-10 { margin-top: 3rem; margin-bottom: 3rem; }
+.mb-24 { margin-bottom: 6rem; }
+.my-24 { margin-bottom: 6rem; margin-top: 6rem; }
+
+// Opacity 
+.opacity-50 { opacity: 50%; }
+
+// Padding
+.py-4-5 { padding-top: 2rem !important; padding-bottom: 2rem !important }
+
+
+// Font size
+.text-xl { font-size: 1.25rem; }
+.text-4xl { font-size: 2.25rem; }
+.text-6xl { font-size: 4rem; }
+.text-black { color: #000 }
+
+// Background
+.bg-gradient-ltr {
+    background: linear-gradient(to right, #095CDE, #53C3F3);
+}
+
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: bold; }
+.font-extrabold { font-weight: 800; }
+
+// Text Width
+.text-width-md { max-width: 450px }
+
+// Button
+.btn-xl { padding: 1rem 2rem; }

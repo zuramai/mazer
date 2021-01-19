@@ -1,0 +1,35 @@
+
+.alert {
+    border:none;
+    .alert-heading {
+    }
+    p {
+        margin-bottom: 0;
+    }
+    button.close {
+        padding: .75rem;
+        line-height: .75;
+    }
+    .alert-heading {
+        margin-left: .4rem;
+        & + p {
+            margin-left: .4rem;
+        }
+    }
+}
+@each $key, $value in $alert-colors {
+    .alert-#{$key} {
+        background-color: map-get($value, 'background-color');
+        color: map-get($value, 'text-color');
+        box-shadow: 1px 2px 9px rgba(map-get($value, 'background-color'), .3);
+        a {
+            color: #fff;
+        }
+    }
+}
+@each $key, $value in $theme-colors-light {
+    .alert-light-#{$key} {
+        background-color: $value;
+        // color: darken(map-get(map-get($alert-colors, $key), 'text-color'), .5)
+    }
+}
