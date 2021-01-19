@@ -43,11 +43,11 @@ git clone https://github.com/zuramai/mazer
   - [ ] Auth Forgot Password
   
  ## Contributing
- I accept any contribution even it's only small improvement. See contributing guide for more information.
+ I accept any contribution even it's only small improvement. See [contributing guide](https://github.com/zuramai/mazer/blob/main/README.md) for more information.
  
  ## License
  This template is under MIT license. 
  
  ## Donate
- (Buy Me a Coffee)[https://buymeacoffee.com/saugi]
- (Trakteer)[https://trakteer.id/saugi]
+ - [Buy Me a Coffee](https://buymeacoffee.com/saugi)
+ - [Trakteer](https://trakteer.id/saugi)
