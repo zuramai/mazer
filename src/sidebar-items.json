@@ -38,8 +38,8 @@
           "url": "component-carousel.html"
         },
         {
-          "name": "Dropdowns",
-          "url": "component-dropdowns.html"
+          "name": "Dropdown",
+          "url": "component-dropdown.html"
         },
         {
           "name": "List Group",
@@ -62,12 +62,12 @@
           "url": "component-progress.html"
         },
         {
-          "name": "Spinners",
-          "url": "component-spinners.html"
+          "name": "Spinner",
+          "url": "component-spinner.html"
         },
         {
-          "name": "Tooltips",
-          "url": "component-tooltips.html"
+          "name": "Tooltip",
+          "url": "component-tooltip.html"
         }
       ]
     },
