@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> - Voler Admin Dashboard</title>
+    <title> - Mazer Admin Dashboard</title>
     
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet"> 
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
 </head>
@@ -18,7 +19,14 @@
         <div id="sidebar" class='active'>
             <div class="sidebar-wrapper active">
     <div class="sidebar-header">
-        <img src="assets/images/logo/logo.png" alt="" srcset="">
+        <div class="d-flex justify-content-between">
+            <div class="logo">
+                <a href="index.html"><img src="assets/images/logo/logo.png" alt="Logo" srcset=""></a>
+            </div>
+            <div class="toggler">
+                <a href="#" class='sidebar-hide d-xl-none d-block'><i class='bi bi-x bi-middle'></i></a>
+            </div>
+        </div>
     </div>
     <div class="sidebar-menu">
         <ul class="menu">
@@ -30,9 +38,10 @@
             
                 <li class="sidebar-item  ">
                     <a href="index.html" class='sidebar-link'>
-                        <svg class="bi" width="32" height="32" fill="currentColor">
+                        <i class="bi bi-grid-fill"></i>
+                        <!-- <svg class="bi" width="32" height="32" fill="currentColor">
                             <use xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#grid-fill"/>
-                        </svg>
+                        </svg> -->
                         <span>Dashboard</span>
                     </a>
                     
@@ -43,9 +52,10 @@
             
                 <li class="sidebar-item active has-sub">
                     <a href="#" class='sidebar-link'>
-                        <svg class="bi" width="32" height="32" fill="currentColor">
+                        <i class="bi bi-stack"></i>
+                        <!-- <svg class="bi" width="32" height="32" fill="currentColor">
                             <use xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#stack"/>
-                        </svg>
+                        </svg> -->
                         <span>Components</span>
                     </a>
                     
@@ -116,9 +126,10 @@
             
                 <li class="sidebar-item active has-sub">
                     <a href="#" class='sidebar-link'>
-                        <svg class="bi" width="32" height="32" fill="currentColor">
+                        <i class="bi bi-collection-fill"></i>
+                        <!-- <svg class="bi" width="32" height="32" fill="currentColor">
                             <use xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#collection-fill"/>
-                        </svg>
+                        </svg> -->
                         <span>Extra Components</span>
                     </a>
                     
@@ -145,9 +156,10 @@
             
                 <li class="sidebar-item active has-sub">
                     <a href="#" class='sidebar-link'>
-                        <svg class="bi" width="32" height="32" fill="currentColor">
+                        <i class="bi bi-hexagon-fill"></i>
+                        <!-- <svg class="bi" width="32" height="32" fill="currentColor">
                             <use xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#hexagon-fill"/>
-                        </svg>
+                        </svg> -->
                         <span>Form Elements</span>
                     </a>
                     
@@ -186,9 +198,10 @@
             
                 <li class="sidebar-item  ">
                     <a href="form-layout.html" class='sidebar-link'>
-                        <svg class="bi" width="32" height="32" fill="currentColor">
+                        <i class="bi bi-file-earmark-medical-fill"></i>
+                        <!-- <svg class="bi" width="32" height="32" fill="currentColor">
                             <use xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#file-earmark-medical-fill"/>
-                        </svg>
+                        </svg> -->
                         <span>Form Layout</span>
                     </a>
                     
@@ -199,9 +212,10 @@
             
                 <li class="sidebar-item  ">
                     <a href="form-editor.html" class='sidebar-link'>
-                        <svg class="bi" width="32" height="32" fill="currentColor">
+                        <i class="bi bi-pen-fill"></i>
+                        <!-- <svg class="bi" width="32" height="32" fill="currentColor">
                             <use xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#pen-fill"/>
-                        </svg>
+                        </svg> -->
                         <span>Form Editor</span>
                     </a>
                     
@@ -212,9 +226,10 @@
             
                 <li class="sidebar-item  ">
                     <a href="table.html" class='sidebar-link'>
-                        <svg class="bi" width="32" height="32" fill="currentColor">
+                        <i class="bi bi-grid-1x2-fill"></i>
+                        <!-- <svg class="bi" width="32" height="32" fill="currentColor">
                             <use xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#grid-1x2-fill"/>
-                        </svg>
+                        </svg> -->
                         <span>Table</span>
                     </a>
                     
@@ -225,9 +240,10 @@
             
                 <li class="sidebar-item  ">
                     <a href="table-datatable.html" class='sidebar-link'>
-                        <svg class="bi" width="32" height="32" fill="currentColor">
+                        <i class="bi bi-file-earmark-spreadsheet-fill"></i>
+                        <!-- <svg class="bi" width="32" height="32" fill="currentColor">
                             <use xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#file-earmark-spreadsheet-fill"/>
-                        </svg>
+                        </svg> -->
                         <span>Datatable</span>
                     </a>
                     
@@ -242,9 +258,10 @@
             
                 <li class="sidebar-item active has-sub">
                     <a href="#" class='sidebar-link'>
-                        <svg class="bi" width="32" height="32" fill="currentColor">
+                        <i class="bi bi-pentagon-fill"></i>
+                        <!-- <svg class="bi" width="32" height="32" fill="currentColor">
                             <use xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#pentagon-fill"/>
-                        </svg>
+                        </svg> -->
                         <span>Widgets</span>
                     </a>
                     
@@ -271,9 +288,10 @@
             
                 <li class="sidebar-item active has-sub">
                     <a href="#" class='sidebar-link'>
-                        <svg class="bi" width="32" height="32" fill="currentColor">
+                        <i class="bi bi-bar-chart-fill"></i>
+                        <!-- <svg class="bi" width="32" height="32" fill="currentColor">
                             <use xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#bar-chart-fill"/>
-                        </svg>
+                        </svg> -->
                         <span>Charts</span>
                     </a>
                     
@@ -300,9 +318,10 @@
             
                 <li class="sidebar-item active has-sub">
                     <a href="#" class='sidebar-link'>
-                        <svg class="bi" width="32" height="32" fill="currentColor">
+                        <i class="bi bi-person-badge-fill"></i>
+                        <!-- <svg class="bi" width="32" height="32" fill="currentColor">
                             <use xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#person-badge-fill"/>
-                        </svg>
+                        </svg> -->
                         <span>Authentication</span>
                     </a>
                     
@@ -329,9 +348,10 @@
             
                 <li class="sidebar-item active has-sub">
                     <a href="#" class='sidebar-link'>
-                        <svg class="bi" width="32" height="32" fill="currentColor">
+                        <i class="bi bi-x-octagon-fill"></i>
+                        <!-- <svg class="bi" width="32" height="32" fill="currentColor">
                             <use xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#x-octagon-fill"/>
-                        </svg>
+                        </svg> -->
                         <span>Errors</span>
                     </a>
                     
@@ -362,6 +382,11 @@
 </div>
         </div>
         <div id="main">
+            <header class='mb-3'>
+                <a href="#" class='burger-btn d-block d-xl-none'>
+                    <i class='bi bi-justify fs-3'></i>
+                </a>
+            </header>
             
             <footer>
                 <div class="footer clearfix mb-0 text-muted">

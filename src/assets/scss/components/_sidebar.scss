@@ -5,6 +5,9 @@
         }
     }
     &:not(.active) {
+        .sidebar-wrapper {
+            left: -300px;
+        }
         & ~ #main {
             margin-left: 0;
         }
@@ -16,10 +19,10 @@
     position: fixed;
     top: 0;
     z-index: 10;
+    overflow-y: auto;
     background-color: #fff;
     bottom: 0;
-    left: -260px;
-    transition: left .6s ease-out;
+    transition: left .5s ease-out;
     .sidebar-header {
         padding: 2rem 2rem 1rem;
         font-size: 2rem;
@@ -60,16 +63,14 @@
             transition: all .5s;
             text-decoration: none;
             color:#25396f;
-            svg {
+            svg,i {
                 color:#7c8db5;
             }
             span {
                 margin-left: 1rem;
             }
             &:hover {
-                span {
-                    opacity: 1;
-                }
+                background-color: rgb(240, 241, 245);
             }
         }
         .sidebar-item {
@@ -92,7 +93,7 @@
                     span {
                         color: #fff;
                     }
-                    svg {
+                    svg,i {
                         fill: white;
                         color:white;
                     }
@@ -110,13 +111,13 @@
             }
             li {
                 a {
-                    padding: .7rem 3rem;
+                    padding: .7rem 2rem;
                     display: block;
-                    color: #676767;
-                    font-size: .75rem;
-                    font-weight: 500;
+                    color: $headings-color;
+                    font-size: .85rem;
+                    font-weight: 600;
                     letter-spacing: .5px;
-                    transition: all .2s;
+                    transition: all .3s;
                     &:hover {
                         margin-left: .3rem;
                     }
@@ -125,11 +126,15 @@
         }
     }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 1199px) {
     .sidebar-wrapper {
-        left: -270px;   
+        position:absolute;
+        left: -300px;
         .sidebar-toggler.x  {
             display:block;
         }
     }
+}
+@media screen and (min-width: 1200px) {
+    
 }
