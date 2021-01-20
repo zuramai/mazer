@@ -20,8 +20,14 @@
 .text-black { color: #000 }
 
 // Background
-.bg-gradient-ltr {
-    background: linear-gradient(to right, #095CDE, #53C3F3);
+.bg-gradient-ltr { background: linear-gradient(to right, #095CDE, #53C3F3); }
+@each $key, $value in $theme-colors-light {
+    .bg-light-#{$key} {
+        background-color: $value;
+        color: darken($value,80%);
+        // color: map-get($value, 'text-color');
+       
+    }
 }
 
 .font-semibold { font-weight: 600; }
