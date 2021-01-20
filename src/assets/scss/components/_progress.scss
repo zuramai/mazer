@@ -5,7 +5,6 @@
             .progress-bar {
                 background-color: $value;
                 border-radius: $progress-border-radius;
-                box-shadow: 0px 2px 3px rgba($value,.8);
             }
         }
     }
@@ -13,7 +12,7 @@
         height: .4rem;
     }
     &.progress-lg {
-        height: .8rem;
+        height: 1.5rem;
     }
 
     .progress-bar {
