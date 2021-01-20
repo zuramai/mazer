@@ -9,17 +9,17 @@
 // Mazer Variables
 
 $theme-colors-light: (
-  'primary': #f1f7ff,
+  'primary': #ebf3ff,
   'secondary': #E6EAEE,
   'success': #D2FFE8 ,
   'danger': #FFDEDE,
-  'warning': #FFEED9,
-  'info': #CCF5F8,
+  'warning': #fffdd8,
+  'info': #e6fdff,
 );
 $alert-colors: (
     primary: (
         text-color: #fff,
-        background-color: #029eff
+        background-color: #435ebe
     ),
     secondary: (
         text-color: #383d41,
@@ -27,15 +27,15 @@ $alert-colors: (
     ),
     success: (
         text-color: #fff,
-        background-color: #39DA8A   
+        background-color: #4fbe87   
     ),
     warning: (
         text-color: #fff,
-        background-color: #fdd347,
+        background-color: #eaca4a,
     ),
     danger: (
         text-color: #fff,
-        background-color: #f55260,
+        background-color: #f3616d,
     ),
     dark: (
         text-color: #fff,
@@ -43,7 +43,7 @@ $alert-colors: (
     ),
     light: (
         text-color: #818182,
-        background-color: #fefefe,
+        background-color: #f9f9f9,
     ),
     info: (
         text-color: #fff,
