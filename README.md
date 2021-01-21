@@ -8,40 +8,6 @@ git clone https://github.com/zuramai/mazer
 ```
 2. Open `mazer/dist/index.html` to see the dashboard
 
-## To-do list
-- Components
-  - [ ] Accordion
-  - [ ] Alerts
-  - [ ] Badge
-  - [ ] Breadcrumb
-  - [ ] Buttons
-  - [ ] Button Group
-  - [ ] Card
-  - [ ] Carousel
-  - [ ] Collapse
-  - [ ] Dropdowns
-  - [ ] List Group
-  - [ ] Modal
-  - [ ] Navs
-  - [ ] Navbar
-  - [ ] Poppovers
-  - [ ] Pagination
-  - [ ] Progress
-  - [ ] Scrollspy
-  - [ ] Spinners
-  - [x] Table
-  - [ ] Toasts
-  - [ ] Tooltips
-- Pages
-  - [x] Dashboard
-  - [ ] E-commerce Dashboard
-  - [ ] Charts
-  - [ ] Widgets
-  - [ ] Settings Menu
-  - [ ] Auth Login
-  - [ ] Auth Register
-  - [ ] Auth Forgot Password
-  
  ## Contributing
  I accept any contribution even it's only small improvement. See [contributing guide](https://github.com/zuramai/mazer/blob/main/README.md) for more information.
  
