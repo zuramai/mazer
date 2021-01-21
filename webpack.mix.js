@@ -4,6 +4,8 @@ require('laravel-mix-nunjucks')
 
 mix.sass('src/assets/scss/app.scss', 'assets/css')
     .sass('src/assets/scss/bootstrap.scss', 'assets/css')
+    .sass('src/assets/scss/widgets/chat.scss', 'assets/css/widgets')
+    .sass('src/assets/scss/widgets/todo.scss', 'assets/css/widgets')
     .setPublicPath('dist')
     .options({
         processCssUrls: false
