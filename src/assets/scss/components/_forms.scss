@@ -1,10 +1,8 @@
 .form-group {
     margin-bottom: .7rem;
     label {
-        font-size: .755rem;
-        text-transform: uppercase;
         color: rgb(35, 28, 99, .7);
-        font-weight: 500;
+        font-weight: 600;
     }
     small {
         font-size: .7rem;
@@ -63,8 +61,8 @@
             padding: 0 .6rem;
             i, svg {
                 width: 1.2rem;
-                color: $body-color;
-                font-size: 1.3rem;
+                color: $input-placeholder-color;
+                font-size: 1.2rem;
                 &:before {
                     vertical-align: sub;
                 }
