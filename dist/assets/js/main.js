@@ -44,3 +44,6 @@ if(typeof PerfectScrollbar == 'function') {
         wheelPropagation: false
     });
 }
+
+// Scroll into active sidebar
+document.querySelector('.sidebar-item.active').scrollIntoView(false)
