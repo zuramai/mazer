@@ -2,7 +2,7 @@
     vertical-align: middle;
 }
 
-.table thead th {
+.table:not(.table-borderless) thead th {
     border-bottom: 1px solid #dedede !important;
 }
 
