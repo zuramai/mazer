@@ -62,7 +62,12 @@
             transform: translateY(-50%);
             padding: 0 .6rem;
             i, svg {
-                width: 1.2rem
+                width: 1.2rem;
+                color: $body-color;
+                font-size: 1.3rem;
+                &:before {
+                    vertical-align: sub;
+                }
             }
         }
 
