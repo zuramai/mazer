@@ -1,5 +1,5 @@
 /*!
- * Toastify js 1.8.0
+ * Toastify js 1.9.3
  * https://github.com/apvarun/toastify-js
  * @license MIT licensed
  *
@@ -18,7 +18,7 @@
       return new Toastify.lib.init(options);
     },
     // Library version
-    version = "1.8.0";
+    version = "1.9.3";
 
   // Defining the prototype of the object
   Toastify.lib = Toastify.prototype = {
@@ -55,6 +55,8 @@
       this.options.className = options.className || ""; // additional class names for the toast
       this.options.stopOnFocus = options.stopOnFocus === undefined? true: options.stopOnFocus; // stop timeout on focus
       this.options.onClick = options.onClick; // Callback after click
+
+      this.options.offset = options.offset || { x: 0, y: 0 }; // toast offset
 
       // Returning the current object for chaining functions
       return this;
@@ -110,7 +112,7 @@
             divElement.appendChild(avatarElement);
           } else {
             // Adding close icon on the right of content
-            divElement.insertAdjacentElement("beforeend", avatarElement);
+            divElement.insertAdjacentElement("afterbegin", avatarElement);
           }
         }
       }
@@ -149,7 +151,7 @@
 
       // Clear timeout while toast is focused
       if (this.options.stopOnFocus && this.options.duration > 0) {
-        const self = this;
+        var self = this;
         // stop countdown
         divElement.addEventListener(
           "mouseover",
@@ -195,6 +197,19 @@
             this.options.onClick();            
           }.bind(this)
         );
+      }
+
+      // Adding offset
+      if(typeof this.options.offset === "object") {
+
+        var x = getAxisOffsetAValue("x", this.options);
+        var y = getAxisOffsetAValue("y", this.options);
+        
+        var xOffset = this.options.position == "left" ? x : "-" + x;
+        var yOffset = this.options.gravity == "toastify-top" ? y : "-" + y;
+
+        divElement.style.transform = "translate(" + xOffset + "," + yOffset + ")";
+
       }
 
       // Returning the generated element
@@ -278,6 +293,7 @@
 
   // Positioning the toasts on the DOM
   Toastify.reposition = function() {
+
     // Top margins with gravity
     var topLeftOffsetSize = {
       top: 15,
@@ -337,6 +353,22 @@
     // Supporting function chaining
     return this;
   };
+
+  // Helper function to get offset.
+  function getAxisOffsetAValue(axis, options) {
+
+    if(options.offset[axis]) {
+      if(isNaN(options.offset[axis])) {
+        return options.offset[axis];
+      }
+      else {
+        return options.offset[axis] + 'px';
+      }
+    }
+
+    return '0px';
+
+  }
 
   function containsClass(elem, yourClass) {
     if (!elem || typeof yourClass !== "string") {

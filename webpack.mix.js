@@ -33,5 +33,9 @@ mix.njk('src/', 'dist/', {
           if(str == undefined) return false;
           return str.indexOf(containStr) >= 0
        })
+       nunjucks.addFilter('startsWith', function(str, targetStr) {
+          if(str == undefined) return false;
+          return str.startsWith(targetStr)
+       })
     },
 })
