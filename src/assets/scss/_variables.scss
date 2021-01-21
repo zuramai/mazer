@@ -727,7 +727,7 @@ $input-height-lg:                       add($input-line-height * 1em, add($input
 $input-transition:                      border-color .15s ease-in-out, box-shadow .15s ease-in-out !default;
 
 
-$form-check-input-width:                  1em !default;
+$form-check-input-width:                  1.2em !default;
 $form-check-min-height:                   $font-size-base * $line-height-base !default;
 $form-check-padding-start:                $form-check-input-width + .5em !default;
 $form-check-margin-bottom:                .125rem !default;
@@ -778,7 +778,7 @@ $input-group-addon-padding-y:           $input-padding-y !default;
 $input-group-addon-padding-x:           $input-padding-x !default;
 $input-group-addon-font-weight:         $input-font-weight !default;
 $input-group-addon-color:               #526e8a  !default;
-$input-group-addon-bg:                  #dce7f1 !default;
+$input-group-addon-bg:                  #e6eef5 !default;
 $input-group-addon-border-color:        #dce7f1 !default;
 
 $form-select-padding-y:             $input-padding-y !default;
@@ -973,7 +973,7 @@ $dropdown-border-color:             rgba($black, .15) !default;
 $dropdown-border-radius:            $border-radius !default;
 $dropdown-border-width:             0 !default;
 $dropdown-inner-border-radius:      subtract($dropdown-border-radius, $dropdown-border-width) !default;
-$dropdown-divider-bg:               $dropdown-border-color !default;
+$dropdown-divider-bg:               rgb(189, 199, 209) !default;
 $dropdown-divider-margin-y:         $spacer / 2 !default;
 $dropdown-box-shadow:               1px 4px 15px #f4f5f9 !default;
 
