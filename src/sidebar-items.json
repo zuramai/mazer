@@ -177,7 +177,7 @@
     },
     {
       "name": "Widgets",
-      "key": "ui",
+      "key": "ui-widgets",
       "icon": "pentagon-fill",
       "submenu": [
         {
@@ -211,7 +211,7 @@
     },
     {
       "name": "File Uploader",
-      "key": "ui",
+      "key": "ui-file",
       "icon": "cloud-arrow-up-fill",
       "url": "ui-file-uploader.html"
     },
