@@ -10,7 +10,6 @@
 </p>
 
 ![Screenshot](https://raw.githubusercontent.com/zuramai/mazer/main/screenshot.png)
-<p align="center">Free Bootstrap 5 Admin Dashboard Template and Landing Page</p>
 
 ## Installation
 1. Clone this repository or download zip
@@ -21,7 +20,7 @@ git clone https://github.com/zuramai/mazer
 
 ## Demo and Documentation
 - Open the [demo page](http://zuramai.github.io/mazer/demo)
-- Open the [documentation page](http://zuramai.github.io/mazer/documentation)
+- Open the [documentation page](http://zuramai.github.io/mazer/docs)
 
  ## Contributing
 
