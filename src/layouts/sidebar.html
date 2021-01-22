@@ -10,35 +10,21 @@
         </div>
     </div>
     <div class="sidebar-menu">
-        <ul class="menu">
-            {% for sidebarItem in sidebarItems %}
-            {% if sidebarItem.isTitle %}
+        <ul class="menu">{% for sidebarItem in sidebarItems %}{% if sidebarItem.isTitle %}
             <li class='sidebar-title'>{{sidebarItem.name}}</li>
             {% else %}
-            <li
-                class="sidebar-item {{ 'active' if (sidebarItem.url == filename or filename|startsWith(sidebarItem.key)) }} {{'has-sub' if sidebarItem.submenu.length > 0 }}">
+            <li class="sidebar-item {{ 'active' if (sidebarItem.url == filename or filename|startsWith(sidebarItem.key)) }} {{'has-sub' if sidebarItem.submenu.length > 0 }}">
                 <a href="{{sidebarItem.url if sidebarItem.url!==undefined else '#'}}" class='sidebar-link'>
                     <i class="bi bi-{{ sidebarItem.icon }}"></i>
-                    <!-- <svg class="bi" width="32" height="32" fill="currentColor">
-                            <use xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#{{sidebarItem.icon}}"/>
-                        </svg> -->
                     <span>{{sidebarItem.name}}</span>
-                </a>
-                {% if sidebarItem.submenu.length > 0 %}
-                <ul
-                    class="submenu {{ 'active' if (sidebarItem.url == filename or filename|startsWith(sidebarItem.key)) }}">
-                    {% for sub in sidebarItem.submenu %}
+                </a>{% if sidebarItem.submenu.length > 0 %}
+                <ul class="submenu {{ 'active' if (sidebarItem.url == filename or filename|startsWith(sidebarItem.key)) }}">{% for sub in sidebarItem.submenu %}
                     <li>
                         <a href="{{ sub.url }}">{{ sub.name }}</a>
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
+                    </li>{% endfor %}
+                </ul>{% endif %}
             </li>
-
-            {% endif %}
-            {% endfor %}
-
+            {% endif %}{% endfor %}
         </ul>
     </div>
     <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
