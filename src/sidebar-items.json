@@ -99,6 +99,29 @@
       ]
     },
     {
+      "name": "Layouts",
+      "key": "layout",
+      "icon": "grid-1x2-fill",
+      "submenu": [
+        {
+          "name": "Vertical 1 Column",
+          "url": "layout-vertical-1-column.html"
+        },
+        {
+          "name": "Vertical with Navbar",
+          "url": "layout-vertical-navbar.html"
+        },
+        {
+          "name": "Vertical Fixed Navbar",
+          "url": "layout-vertical-fixed-navbar.html"
+        },
+        {
+          "name": "Horizontal Menu",
+          "url": "layout-horizontal.html"
+        }
+      ]
+    },
+    {
       "name": "Forms & Tables",
       "isTitle": true
     },
@@ -191,6 +214,25 @@
         {
           "name": "To-do List",
           "url": "ui-widgets-todolist.html"
+        }
+      ]
+    },
+    {
+      "name": "Icons",
+      "key": "ui-icons",
+      "icon": "egg-fill",
+      "submenu": [
+        {
+          "name": "Bootstrap Icons ",
+          "url": "ui-icons-bootstrap-icons.html"
+        },
+        {
+          "name": "Fontawesome",
+          "url": "ui-icons-fontawesome.html"
+        },
+        {
+          "name": "Dripicons",
+          "url": "ui-icons-dripicons.html"
         }
       ]
     },
