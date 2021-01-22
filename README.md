@@ -1,7 +1,5 @@
 <h1 align="center">Mazer Dashboard</h1>
-<p align="center">
-  Mazer is a Admin Dashboard Template that can help you develop faster. Made with Bootstrap 5. No jQuery dependency.
-</p>
+<p align="center">Mazer is a Admin Dashboard Template that can help you develop faster. Made with Bootstrap 5. No jQuery dependency.</p>
 <p align="center">
 
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-green.svg?style=flat-square)](#contributors-)
