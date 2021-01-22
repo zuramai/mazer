@@ -26,8 +26,6 @@
     .bg-light-#{$key} {
         background-color: $value;
         color: darken($value,80%);
-        // color: map-get($value, 'text-color');
-       
     }
 }
 
