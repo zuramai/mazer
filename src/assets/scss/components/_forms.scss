@@ -53,6 +53,15 @@
                     color: #5A8DEE
                 }
             }
+            &.form-control-xl {
+                padding-left: 3rem;
+                & ~ .form-control-icon i{
+                    font-size: 1.6rem;
+                    &:before {
+                        color: #a6a8aa
+                    }
+                }
+            }
         }
         .form-control-icon {
             position: absolute;
@@ -71,7 +80,12 @@
 
     }
 }
-
+.form-control {
+    &.form-control-xl {
+        padding: .85rem 1rem;
+        font-size: 1.2rem;
+    }
+}
 .form-check {
     .form-check-input {
         &[class*="bg-"] {
@@ -109,6 +123,16 @@
         label {
             font-size: .7rem;
             
+        }
+    }
+    &.form-check-lg {
+        .form-check-input {
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-top: .3em;
+        }
+        label {
+            font-size: 1rem;
         }
     }
 
