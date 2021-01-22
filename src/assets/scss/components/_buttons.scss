@@ -1,8 +1,5 @@
 
 .btn {
-    // &[class*="btn-"]:not([class*="btn-outline-"]) {
-    //     color: $btn-color;
-    // }
     i,svg {
         width: 16px;
         height: 16px;
@@ -55,9 +52,6 @@
     }
     & > .btn {
         border-radius: .267rem;
-    }
-    & > .btn:not(:first-child) {
-
     }
 }
 .buttons {
