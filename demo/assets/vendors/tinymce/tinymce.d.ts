@@ -78,7 +78,7 @@ interface EventDispatcherSettings {
 }
 interface EventDispatcherConstructor<T extends NativeEventMap> {
     readonly prototype: EventDispatcher<T>;
-    new (settings?: EventDispatcherSettings): EventDispatcher<T>;
+    new(settings?: EventDispatcherSettings): EventDispatcher<T>;
     isNative(name: string): boolean;
 }
 declare class EventDispatcher<T> {
@@ -159,7 +159,7 @@ declare type EventUtilsEvent<T> = T & {
 };
 interface EventUtilsConstructor {
     readonly prototype: EventUtils;
-    new (): EventUtils;
+    new(): EventUtils;
     Event: EventUtils;
 }
 declare class EventUtils {
@@ -394,7 +394,7 @@ declare type Attributes = Array<{
 };
 interface AstNodeConstructor {
     readonly prototype: AstNode;
-    new (name: string, type: number): AstNode;
+    new(name: string, type: number): AstNode;
     create(name: string, attrs?: Record<string, string>): AstNode;
 }
 declare class AstNode {
@@ -1846,7 +1846,7 @@ interface Commands {
 }
 interface EditorCommandsConstructor {
     readonly prototype: EditorCommands;
-    new (editor: Editor): EditorCommands;
+    new(editor: Editor): EditorCommands;
 }
 declare class EditorCommands {
     private readonly editor;
@@ -2090,7 +2090,7 @@ interface URISettings {
 }
 interface URIConstructor {
     readonly prototype: URI;
-    new (url: string, settings?: URISettings): URI;
+    new(url: string, settings?: URISettings): URI;
     getDocumentBaseUrl(loc: {
         protocol: string;
         host?: string;
@@ -2265,7 +2265,7 @@ interface Plugin {
 declare type PluginManager = AddOnManager<Plugin>;
 interface ShortcutsConstructor {
     readonly prototype: Shortcuts;
-    new (editor: Editor): Shortcuts;
+    new(editor: Editor): Shortcuts;
 }
 declare type CommandFunc = string | [
     string,
@@ -2304,7 +2304,7 @@ declare type Theme = {
 declare type ThemeManager = AddOnManager<Theme>;
 interface EditorConstructor {
     readonly prototype: Editor;
-    new (id: string, settings: RawEditorSettings, editorManager: EditorManager): Editor;
+    new(id: string, settings: RawEditorSettings, editorManager: EditorManager): Editor;
 }
 declare class Editor implements EditorObservable {
     documentBaseUrl: string;
@@ -2491,7 +2491,7 @@ interface ScriptLoaderSettings {
 }
 interface ScriptLoaderConstructor {
     readonly prototype: ScriptLoader;
-    new (): ScriptLoader;
+    new(): ScriptLoader;
     ScriptLoader: ScriptLoader;
 }
 declare class ScriptLoader {
@@ -2524,7 +2524,7 @@ interface TextSeeker {
 }
 interface DomTreeWalkerConstructor {
     readonly prototype: DomTreeWalker;
-    new (startNode: Node, rootNode: Node): DomTreeWalker;
+    new(startNode: Node, rootNode: Node): DomTreeWalker;
 }
 declare class DomTreeWalker {
     private readonly rootNode;
@@ -2663,7 +2663,7 @@ interface Props<A extends any[] = any[]> {
 declare type ExtendedClass<T extends Props<A>, A extends any[]> = WithSubItems<T, 'Mixins'>;
 interface ExtendedClassConstructor<T extends Props<A>, A extends any[] = any[]> extends Class {
     readonly prototype: ExtendedClass<T, A>;
-    new (...args: A): ExtendedClass<T, A>;
+    new(...args: A): ExtendedClass<T, A>;
     [key: string]: T['Statics'];
 }
 interface Class {
@@ -2735,7 +2735,7 @@ interface JSONRequestArgs extends JSONRequestSettings {
 }
 interface JSONRequestConstructor {
     readonly prototype: JSONRequest;
-    new (settings?: JSONRequestSettings): JSONRequest;
+    new(settings?: JSONRequestSettings): JSONRequest;
     sendRPC(o: JSONRequestArgs): void;
 }
 declare class JSONRequest {
@@ -2796,12 +2796,12 @@ interface XHR extends Observable<XHREventMap> {
     send(settings: XHRSettings): void;
 }
 interface DOMUtilsNamespace {
-    new (doc: Document, settings: Partial<DOMUtilsSettings>): DOMUtils;
+    new(doc: Document, settings: Partial<DOMUtilsSettings>): DOMUtils;
     DOM: DOMUtils;
     nodeIndex: (node: Node, normalized?: boolean) => number;
 }
 interface RangeUtilsNamespace {
-    new (dom: DOMUtils): RangeUtils;
+    new(dom: DOMUtils): RangeUtils;
     compareRanges: (rng1: RangeLikeObject, rng2: RangeLikeObject) => boolean;
     getCaretRangeFromPoint: (clientX: number, clientY: number, doc: Document) => Range;
     getSelectedNode: (range: Range) => Node;
@@ -2820,7 +2820,7 @@ interface BookmarkManagerNamespace {
     isBookmarkNode: (node: Node) => boolean;
 }
 interface SaxParserNamespace {
-    new (settings?: SaxParserSettings, schema?: Schema): SaxParser;
+    new(settings?: SaxParserSettings, schema?: Schema): SaxParser;
     findEndTag: (schema: Schema, html: string, startIndex: number) => number;
 }
 interface TinyMCE extends EditorManager {
