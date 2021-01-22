@@ -6,6 +6,11 @@
             vertical-align: middle;
         }
     }
+    &.bi-sub {
+        &:before {
+            vertical-align: sub;
+        }
+    }
 }
 .stats-icon {
     width: 3rem;

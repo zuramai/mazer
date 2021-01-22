@@ -42,7 +42,12 @@
     
     @each $key, $value in $theme-colors {
         &.btn-#{$key} {
-            color: #fff;
+            @if $key == "light" {
+                color: $body-color;
+            }
+            @else{
+                color: #fff;
+            }
         }
     }
 }

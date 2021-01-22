@@ -18,8 +18,8 @@
                     <i class="bi bi-{{ sidebarItem.icon }}"></i>
                     <span>{{sidebarItem.name}}</span>
                 </a>{% if sidebarItem.submenu.length > 0 %}
-                <ul class="submenu {{ 'active' if (sidebarItem.url == filename or filename|startsWith(sidebarItem.key)) }}">{% for sub in sidebarItem.submenu %}
-                    <li>
+                <ul class="submenu {{ 'active' if (sub.url == filename or filename|startsWith(sidebarItem.key)) }}">{% for sub in sidebarItem.submenu %}
+                    <li class="submenu-item {{ 'active' if sub.url == filename }}">
                         <a href="{{ sub.url }}">{{ sub.name }}</a>
                     </li>{% endfor %}
                 </ul>{% endif %}

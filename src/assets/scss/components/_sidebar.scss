@@ -114,7 +114,14 @@
                 max-height: 999px;
                 display: block;
             }
-            li {
+            .submenu-item {
+                &.active {
+                    position:relative;
+                    & > a {
+                        color: $primary;
+                        font-weight: bold;
+                    }
+                }
                 a {
                     padding: .7rem 2rem;
                     display: block;
@@ -128,6 +135,7 @@
                     }
                 }
             }
+            
         }
     }
 }
