@@ -1,0 +1,11 @@
+.hero {
+    padding: 10rem 0;
+}
+.hero img {
+    width: 100%;
+}
+@media screen and (max-width: 768px) {
+    .hero {
+        padding-top: 5rem;
+    }
+}
