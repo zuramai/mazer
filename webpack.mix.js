@@ -20,7 +20,7 @@ mix.sass('src/assets/scss/app.scss', 'assets/css')
 mix.browserSync({
     proxy: 'mazer.test',
 });
-   
+
 mix.njk('src/', 'dist/', {
     ext: '.html',
     marked: null,
@@ -35,13 +35,13 @@ mix.njk('src/', 'dist/', {
         noCache: true
     },
     manageEnv: (nunjucks) => {
-       nunjucks.addFilter('containString', function(str, containStr) {
-          if(str == undefined) return false;
-          return str.indexOf(containStr) >= 0
-       })
-       nunjucks.addFilter('startsWith', function(str, targetStr) {
-          if(str == undefined) return false;
-          return str.startsWith(targetStr)
-       })
+        nunjucks.addFilter('containString', function (str, containStr) {
+            if (str == undefined) return false;
+            return str.indexOf(containStr) >= 0
+        })
+        nunjucks.addFilter('startsWith', function (str, targetStr) {
+            if (str == undefined) return false;
+            return str.startsWith(targetStr)
+        })
     },
 })

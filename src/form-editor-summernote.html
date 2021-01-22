@@ -70,9 +70,9 @@
             words: ['apple', 'orange', 'watermelon', 'lemon'],
             match: /\b(\w{1,})$/,
             search: function (keyword, callback) {
-            callback($.grep(this.words, function (item) {
-                return item.indexOf(keyword) === 0;
-            }));
+                callback($.grep(this.words, function (item) {
+                    return item.indexOf(keyword) === 0;
+                }));
             }
         }
     });
