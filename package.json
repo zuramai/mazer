@@ -1,7 +1,7 @@
 {
-  "name": "speaksai",
+  "name": "mazer",
   "version": "1.0.0",
-  "description": "Chatbot Technology Inovations",
+  "description": "Mazer",
   "main": "index.js",
   "scripts": {
     "dev": "npm run development",
