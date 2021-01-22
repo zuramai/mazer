@@ -104,16 +104,16 @@
       "icon": "grid-1x2-fill",
       "submenu": [
         {
-          "name": "Vertical 1 Column",
+          "name": "Default Layout",
+          "url": "layout-default.html"
+        },
+        {
+          "name": "1 Column",
           "url": "layout-vertical-1-column.html"
         },
         {
           "name": "Vertical with Navbar",
           "url": "layout-vertical-navbar.html"
-        },
-        {
-          "name": "Vertical Fixed Navbar",
-          "url": "layout-vertical-fixed-navbar.html"
         },
         {
           "name": "Horizontal Menu",
@@ -346,7 +346,7 @@
       "name": "Documentation",
       "key": "error",
       "icon": "life-preserver",
-      "url": "#"
+      "url": "https://zuramai.github.io/mazer/docs"
     },
     {
       "name": "Contribute",

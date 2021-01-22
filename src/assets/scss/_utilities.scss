@@ -14,6 +14,7 @@
 
 
 // Font size
+.text-sm { font-size: .875rem; }
 .text-xl { font-size: 1.25rem; }
 .text-4xl { font-size: 2.25rem; }
 .text-6xl { font-size: 4rem; }
@@ -46,4 +47,7 @@
 
 // Button
 .btn-xl { padding: 1rem 2rem; }
+
+// Icon
+.icon-mid:before { vertical-align: middle; }
 

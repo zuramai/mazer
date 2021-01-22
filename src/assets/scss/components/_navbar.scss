@@ -1,9 +1,17 @@
+
+    .navbar-fixed {
+        position: fixed;
+        background-color: #fff;
+    }
 .navbar {
-    height:70px;
+    height:90px;
     padding: 1.5rem;
-    
-    .nav-link-user img {
-        width: 30px;
+    .navbar-brand img {
+        height: 1.5rem;
+    }
+    .user-menu img {
+        width: 39px;
+        height: 39px
     }
 
     &.navbar-header {
