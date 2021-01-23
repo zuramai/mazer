@@ -22,6 +22,11 @@ git clone https://github.com/zuramai/mazer
 - Open the [demo page](http://zuramai.github.io/mazer/demo)
 - Open the [documentation page](http://zuramai.github.io/mazer/docs)
 
+## Framework Boilerplate (Starter-kit)
+- [CodeIgniter 4](https://github.com/irsyadulibad/mazer-codeigniter?fbclid=IwAR0Wwv-5c8oicEuD7ausTJU6-awC8yhXvYFxEFD51kgRT-karOt2PeEWWCo)
+- Laravel (coming soon)
+- Did you make in another framework? [Contribute](https://github.com/zuramai/mazer/blob/main/CONTRIBUTING.md) or message me at [Twitter](https://twitter.com/amsaugi) 
+
  ## Contributing
 
 - Fork it ( https://github.com/zuramai/mazer/fork )
