@@ -108,6 +108,10 @@
         "url": "layout-default.html"
       },
       {
+        "name": "RTL Layout",
+        "url": "layout-rtl.html"
+      },
+      {
         "name": "1 Column",
         "url": "layout-vertical-1-column.html"
       },

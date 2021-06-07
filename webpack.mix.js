@@ -3,6 +3,7 @@ const sidebarItems = require('./src/sidebar-items.json');
 require('laravel-mix-nunjucks')
 
 mix.sass('src/assets/scss/app.scss', 'assets/css')
+    .sass('src/assets/scss/app-rtl.scss', 'assets/css')
     .sass('src/assets/scss/bootstrap.scss', 'assets/css')
     .sass('src/assets/scss/pages/auth.scss', 'assets/css/pages')
     .sass('src/assets/scss/pages/error.scss', 'assets/css/pages')
