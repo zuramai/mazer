@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customizing - Mazer Admin Dashboard</title>
+    <title>Installation - Mazer Admin Dashboard</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
 
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-    <link rel="stylesheet" href="assets/css/rainbow-light.css">
+    <link rel="stylesheet" href="assets/css/rainbow.css">
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
@@ -35,19 +35,19 @@
                 <div class="sidebar-menu">
                     <ul class="menu">
                         <li class='sidebar-title'>Menu</li>
-                        <li class="sidebar-item ">
+                        <li class="sidebar-item  ">
                             <a href="index.html" class='sidebar-link'>
                                 <i class="bi bi-grid-fill"></i>
                                 <span>Installation</span>
                             </a>
                         </li>
-                        <li class="sidebar-item active ">
+                        <li class="sidebar-item  ">
                             <a href="customizing.html" class='sidebar-link'>
                                 <i class="bi bi-palette-fill"></i>
                                 <span>Customizing</span>
                             </a>
                         </li>
-                        <li class="sidebar-item  ">
+                        <li class="sidebar-item active">
                             <a href="rtl.html" class='sidebar-link'>
                                 <i class="bi bi-filter-right"></i>
                                 <span>RTL</span>
@@ -79,52 +79,29 @@
             </header>
 
             <div class="page-heading">
-                <h3>Customizing</h3>
+                <h3>RTL Support</h3>
             </div>
             <div class="page-content">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class='card-title'>Using SCSS</h4>
+                        <h4 class='card-title'>RTL Steps</h4>
                     </div>
                     <div class="card-body">
-                        You can customize the template with only custom the scss file. See the file structure below
-                        <pre><code class="html">/assets
-    /scss
-        app.scss
-        bootstrap.scss
-        _utilities.scss
-        _variables.scss   <----- edit here
-                        </code></pre>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class='card-title'>Editing Components</h4>
-                    </div>
-                    <div class="card-body">
-                        Every component has it's own scss files. Go ahead to the scss file and edit.
-                        <pre><code class="html">/assets
-    /scss
-        /components
-            _alert.scss
-            _avatar.scss
-            _badge.scss
-            _breadcrumb.scss
-            _buttons.scss
-            _card.scss
-            _carousel.scss
-            _divider.scss
-            _dropdowns.scss
-            _forms.scss
-            _icons.scss
-            _modal.scss
-            _navbar.scss
-            _navs.scss
-            _pagination.scss
-            _progress.scss
-            _sidebar.scss
-            _table.scss
-                        </code></pre>
+                        <ol>
+                            <li>
+                                Add attributes to html tag like this:
+                                <pre><code data-language="html">&#x3C;html lang=&#x22;fa&#x22; dir=&#x22;rtl&#x22;&#x3E;</code></pre>
+                            </li>
+                            <li>
+                                Change the CSS permalink.
+                                <pre><code data-language="html"># FROM
+&#x3C;link rel="stylesheet" href="assets/css/app.css">
+# TO
+&#x3C;link rel="stylesheet" href="assets/css/app.rtl.css"&#x3E;</code>
+</pre>
+                            </li>
+                            <li>Done.</li>
+                        </ol>
                     </div>
                 </div>
             </div>
