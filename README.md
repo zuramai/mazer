@@ -27,7 +27,7 @@ git clone https://github.com/zuramai/mazer
 - [Laravel + Livewire](https://github.com/zuramai/laravel-mazer) by me
 - [NuxtJS](https://github.com/fauzan121002/mazer-nuxt) by [@fauzan121002](https://github.com/fauzan121002)
 - [React JS Component Library](https://github.com/fachryansyah/react-mazer-ui) by [@fachryansyah](https://github.com/fachryansyah/)
-- Did you make in another framework? [Contribute](https://github.com/zuramai/mazer/blob/main/CONTRIBUTING.md) or message me at [Twitter](https://twitter.com/amsaugi) 
+- Did you make in another framework? [Contribute](https://github.com/zuramai/mazer/blob/main/CONTRIBUTING.md) or message me at [Twitter](https://twitter.com/asawgi) 
 
  ## Contributing
 
