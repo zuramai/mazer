@@ -112,8 +112,12 @@
         "url": "layout-vertical-1-column.html"
       },
       {
-        "name": "Vertical with Navbar",
+        "name": "Vertical Navbar",
         "url": "layout-vertical-navbar.html"
+      },
+      {
+        "name": "RTL Layout",
+        "url": "layout-rtl.html"
       },
       {
         "name": "Horizontal Menu",

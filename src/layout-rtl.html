@@ -1,14 +1,15 @@
-{% set title = 'Layout Horizontal' %}
-{% set filename = 'layout-horizontal.html' %}
+{% set title = 'RTL Layout' %}
+{% set filename = 'index.html' %}
+
+{% extends 'layouts/rtl.html' %}
 
 {% block styles %}
 <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
 {% endblock %}
 
-{% extends 'layouts/horizontal.html' %}
 {% block content %}
 <div class="page-heading">
-    <h3>Horizontal Layout</h3>
+    <h3>Profile Statistics</h3>
 </div>
 <div class="page-content">
     <section class="row">
@@ -180,7 +181,7 @@
                                                     <div class="avatar avatar-md">
                                                         <img src="assets/images/faces/5.jpg">
                                                     </div>
-                                                    <p class="font-bold ms-3 mb-0">Cantik</p>
+                                                    <p class="font-bold ms-3 mb-0">Si Cantik</p>
                                                 </div>
                                             </td>
                                             <td class="col-auto">
@@ -193,7 +194,7 @@
                                                     <div class="avatar avatar-md">
                                                         <img src="assets/images/faces/2.jpg">
                                                     </div>
-                                                    <p class="font-bold ms-3 mb-0">Ganteng</p>
+                                                    <p class="font-bold ms-3 mb-0">Si Ganteng</p>
                                                 </div>
                                             </td>
                                             <td class="col-auto">

@@ -1007,6 +1007,198 @@
   display: none;
 }
 
+.layout-horizontal .header-top {
+  background-color: white;
+  padding: 1.5rem;
+}
+.layout-horizontal .header-top .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.layout-horizontal .header-top .burger-btn i {
+  height: 20px;
+  display: inline-block;
+}
+.layout-horizontal .header-top .logo img {
+  height: 20px;
+}
+.layout-horizontal .main-navbar {
+  background-color: #435ebe;
+  padding: 1rem;
+}
+.layout-horizontal .main-navbar ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 0;
+}
+.layout-horizontal .main-navbar ul .menu-link {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  padding: 0.4rem 0;
+  gap: 0.5rem;
+  align-items: center;
+}
+.layout-horizontal .main-navbar ul .menu-link span {
+  height: 20px;
+}
+.layout-horizontal .main-navbar ul > .menu-item {
+  position: relative;
+}
+.layout-horizontal .main-navbar ul > .menu-item .menu-link {
+  color: #dee2e6;
+}
+.layout-horizontal .main-navbar ul > .menu-item.has-sub .menu-link {
+  padding-right: 1.3rem;
+}
+.layout-horizontal .main-navbar ul > .menu-item.has-sub .menu-link:after {
+  content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23ccc" opacity="0.7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9" ></polyline></svg>');
+  position: absolute;
+  color: #fff;
+  right: 0;
+  top: 7px;
+  display: block;
+}
+.layout-horizontal .main-navbar ul > .menu-item:hover .menu-link {
+  color: white;
+}
+.layout-horizontal .main-navbar ul > .menu-item:hover .submenu {
+  visibility: visible;
+  opacity: 1;
+  top: 100%;
+}
+.layout-horizontal .main-navbar .submenu {
+  visibility: hidden;
+  opacity: 0;
+  top: 125%;
+  transition: all 0.3s cubic-bezier(0, 0.55, 0.45, 1);
+  position: absolute;
+  z-index: 999;
+  border-radius: 0.2rem;
+  background-color: white;
+  box-shadow: 0px 5px 20px rgba(100, 100, 100, 0.1);
+}
+.layout-horizontal .main-navbar .submenu .submenu-group-wrapper {
+  position: relative;
+}
+.layout-horizontal .main-navbar .submenu .submenu-group {
+  display: table-cell;
+  padding: 0.5rem 0.3rem 0.3rem 0.5rem;
+  flex-wrap: wrap;
+  max-height: 200px;
+  min-width: 200px;
+}
+.layout-horizontal .main-navbar .submenu .submenu-group .submenu-item {
+  position: relative;
+}
+.layout-horizontal .main-navbar .submenu .submenu-group .submenu-item.has-sub .submenu-link {
+  position: relative;
+}
+.layout-horizontal .main-navbar .submenu .submenu-group .submenu-item.has-sub .submenu-link:after {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-40%);
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23888' class='bi bi-chevron-right' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+}
+.layout-horizontal .main-navbar .submenu .submenu-group .submenu-item a {
+  padding: 0.6rem;
+  padding-right: 2rem;
+  color: #6c757d;
+  display: block;
+}
+.layout-horizontal .main-navbar .submenu .submenu-group .submenu-item a:hover {
+  color: #343a40;
+}
+.layout-horizontal .main-navbar .submenu .submenu-group .submenu-item:hover .subsubmenu {
+  visibility: visible;
+  top: 0rem;
+  opacity: 1;
+}
+.layout-horizontal .main-navbar .subsubmenu {
+  visibility: hidden;
+  opacity: 0;
+  top: 125%;
+  transition: all 0.3s cubic-bezier(0, 0.55, 0.45, 1);
+  position: absolute;
+  z-index: 999;
+  border-radius: 0.2rem;
+  background-color: white;
+  box-shadow: 0px 5px 20px rgba(100, 100, 100, 0.1);
+  gap: 0;
+  top: 1rem;
+  left: 100%;
+  display: flex;
+  padding: 0.5rem;
+  flex-direction: column;
+  border-radius: 0.3rem;
+  min-width: 200px;
+}
+@media screen and (max-width: 1199px) {
+  .layout-horizontal .main-navbar {
+    background-color: #f5f7fc;
+    overflow: hidden;
+    padding: 1rem;
+    display: none;
+  }
+  .layout-horizontal .main-navbar.active {
+    max-height: initial;
+  }
+  .layout-horizontal .main-navbar ul {
+    flex-direction: column;
+    gap: 0;
+  }
+  .layout-horizontal .main-navbar ul .menu-item.has-sub .menu-link:after {
+    content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23888" opacity="0.7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9" ></polyline></svg>') !important;
+    top: unset;
+  }
+  .layout-horizontal .main-navbar ul .menu-link {
+    color: #6c757d !important;
+    padding: 1rem 0;
+  }
+  .layout-horizontal .main-navbar .submenu {
+    visibility: visible !important;
+    opacity: 1;
+    box-shadow: none;
+    position: static;
+    padding: 1rem;
+    background-color: unset;
+    transition: all 0.2s;
+    padding-top: 0;
+    display: none;
+    padding-bottom: 0;
+  }
+  .layout-horizontal .main-navbar .submenu .submenu-group-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-height: unset;
+  }
+  .layout-horizontal .main-navbar .submenu .submenu-group {
+    max-height: unset;
+    padding: 0;
+    min-width: unset;
+    width: 100%;
+  }
+  .layout-horizontal .main-navbar .submenu.active {
+    display: block;
+  }
+  .layout-horizontal .main-navbar .subsubmenu {
+    visibility: visible !important;
+    opacity: 1;
+    box-shadow: none;
+    position: static;
+    padding: 1rem;
+    background-color: unset;
+    display: none;
+  }
+  .layout-horizontal .main-navbar .subsubmenu.active {
+    display: block;
+  }
+}
+
 .pagination.pagination-primary .page-item.active .page-link {
   background-color: #435ebe;
   border-color: #435ebe;
@@ -1225,6 +1417,10 @@
 }
 #main.layout-navbar {
   padding: 0;
+}
+#main.layout-horizontal {
+  padding: 0;
+  margin: 0;
 }
 #main #main-content {
   padding: 2rem;
