@@ -1,0 +1,20 @@
+@mixin submenu {
+    visibility: hidden;
+    opacity: 0;
+    top: 125%;
+    transition: all .3s cubic-bezier(0, 0.55, 0.45, 1);;
+    position: absolute;
+    z-index: 999;
+    border-radius: .2rem;
+    background-color: white;
+    box-shadow: 0px 5px 20px rgba(100,100,100,.1);   
+}
+
+@mixin submenu-responsive {
+    visibility: visible !important;
+    opacity: 1;
+    box-shadow: none;
+    position: static;
+    padding: 1rem;
+    background-color: unset; 
+}

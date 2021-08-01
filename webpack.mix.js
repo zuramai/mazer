@@ -1,5 +1,7 @@
 const mix = require('laravel-mix');
 const sidebarItems = require('./src/sidebar-items.json');
+const horizontalMenuItems = require('./src/horizontal-menu-items.json');
+
 require('laravel-mix-nunjucks')
 
 mix.sass('src/assets/scss/app.scss', 'assets/css')
@@ -21,13 +23,14 @@ mix.browserSync({
     proxy: 'mazer.test',
 });
 
-mix.njk('src/', 'dist/', {
+mix.njk('src/*.html', 'dist/', {
     ext: '.html',
     marked: null,
     watch: true,
     data: {
         web_title: "Mazer Admin Dashboard",
-        sidebarItems
+        sidebarItems,
+        horizontalMenuItems
     },
     block: 'content',
     envOptions: {
