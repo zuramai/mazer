@@ -58,7 +58,7 @@ const Sidebar = function (sidebarEL) {
   this.OnFirstLoad = function () {
     var w = window.innerWidth;
     if(w < 1200) {
-      document.getElementById('sidebar').classList.remove('active');
+      this.sidebarEL.classList.remove('active');
     }
   }
 
@@ -68,9 +68,9 @@ const Sidebar = function (sidebarEL) {
   this.onResize = function () {
     var w = window.innerWidth;
     if(w < 1200) {
-      document.getElementById('sidebar').classList.remove('active');
+      this.sidebarEL.classList.remove('active');
     } else {
-      document.getElementById('sidebar').classList.add('active');
+      this.sidebarEL.classList.add('active');
     }
     // reset 
     this.deleteBackdrop();
