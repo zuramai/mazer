@@ -15,37 +15,139 @@ for(var i = 0; i < sidebarItems.length; i++) {
     })
 }
 
-window.addEventListener('DOMContentLoaded', (event) => {
+/**
+ * Sidebar Wrapper
+ */
+const Sidebar = function (sidebarEL) {
+  /**
+   * Sidebar Element
+   * @param  {HTMLElement} sidebarEL
+   */
+  this.sidebarEL = sidebarEL instanceof HTMLElement ? sidebarEL : document.querySelector(sidebarEL);
+
+  /**
+   * Init Sidebar
+   */
+  this.init = function () {
+    // add event listener to sidebar
+    document.querySelector('.burger-btn').addEventListener('click', this.toggle.bind(this));
+    document.querySelector('.sidebar-hide').addEventListener('click', this.toggle.bind(this));
+    window.addEventListener('resize', this.onResize.bind(this));
+
+    // Perfect Scrollbar Init
+    if(typeof PerfectScrollbar == 'function') {
+      const container = document.querySelector(".sidebar-wrapper");
+      const ps = new PerfectScrollbar(container, {
+          wheelPropagation: false
+      });
+    }
+
+    // Scroll into active sidebar
+    setTimeout(() => document.querySelector('.sidebar-item.active').scrollIntoView(false), 100);
+
+    // check responsive
+    this.OnFirstLoad();
+
+    // 
+    return this;
+  }
+
+  /**
+   * OnFirstLoad
+   */
+  this.OnFirstLoad = function () {
     var w = window.innerWidth;
     if(w < 1200) {
-        document.getElementById('sidebar').classList.remove('active');
+      this.sidebarEL.classList.remove('active');
     }
-});
-window.addEventListener('resize', (event) => {
+  }
+
+  /**
+   * OnRezise Sidebar
+   */
+  this.onResize = function () {
     var w = window.innerWidth;
     if(w < 1200) {
-        document.getElementById('sidebar').classList.remove('active');
-    }else{
-        document.getElementById('sidebar').classList.add('active');
+      this.sidebarEL.classList.remove('active');
+    } else {
+      this.sidebarEL.classList.add('active');
     }
-});
+    // reset 
+    this.deleteBackdrop();
+    this.toggleOverflowBody(true);
+  }
 
-document.querySelector('.burger-btn').addEventListener('click', () => {
-    document.getElementById('sidebar').classList.toggle('active');
-})
-document.querySelector('.sidebar-hide').addEventListener('click', () => {
-    document.getElementById('sidebar').classList.toggle('active');
+  /**
+   * Toggle Sidebar
+   */
+  this.toggle = function () {
+    const sidebarState = this.sidebarEL.classList.contains('active');
+    if (sidebarState) {
+      this.hide();
+    } else {
+      this.show();
+    }
+  }
 
-})
+  /**
+   * Show Sidebar
+   */
+  this.show = function () {
+    this.sidebarEL.classList.add('active');
+    this.createBackdrop();
+    this.toggleOverflowBody();
+  }
+
+  /**
+   * Hide Sidebar
+   */
+  this.hide = function () {
+    this.sidebarEL.classList.remove('active');
+    this.deleteBackdrop();
+    this.toggleOverflowBody();
+  }
 
 
-// Perfect Scrollbar Init
-if(typeof PerfectScrollbar == 'function') {
-    const container = document.querySelector(".sidebar-wrapper");
-    const ps = new PerfectScrollbar(container, {
-        wheelPropagation: false
-    });
+  /**
+   * Create Sidebar Backdrop
+   */
+  this.createBackdrop = function () {
+    this.deleteBackdrop();
+    const backdrop = document.createElement('div');
+    backdrop.classList.add('sidebar-backdrop');
+    backdrop.addEventListener('click', this.hide.bind(this));
+    document.body.appendChild(backdrop);
+  }
+
+  /**
+   * Delete Sidebar Backdrop
+   */
+  this.deleteBackdrop = function () {
+    const backdrop = document.querySelector('.sidebar-backdrop');
+    if (backdrop) {
+      backdrop.remove();
+    }
+  }
+
+  /**
+   * Toggle Overflow Body
+   */
+  this.toggleOverflowBody = function (active) {
+    const sidebarState = this.sidebarEL.classList.contains('active');
+    const body = document.querySelector('body');
+    if (typeof active == 'undefined') {
+      body.style.overflowY = sidebarState ? 'hidden' : 'auto';
+    } else {
+      body.style.overflowY = active ? 'auto' : 'hidden';
+    }
+  }
 }
 
-// Scroll into active sidebar
-document.querySelector('.sidebar-item.active').scrollIntoView(false)
+
+/**
+ * Create Sidebar Wrapper
+*/
+let sidebarEl = document.getElementById('sidebar');
+if (sidebarEl) {
+  window.sidebar = new Sidebar(sidebarEl).init();
+}
