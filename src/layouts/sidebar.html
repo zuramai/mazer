@@ -13,12 +13,14 @@
         <ul class="menu">{% for sidebarItem in sidebarItems %}{% if sidebarItem.isTitle %}
             <li class="sidebar-title">{{sidebarItem.name}}</li>
             {% else %}
-            <li class="sidebar-item {{ 'active' if (sidebarItem.url == filename or filename|startsWith(sidebarItem.key)) }} {{'has-sub' if sidebarItem.submenu.length > 0 }}">
+            <li
+                class="sidebar-item {{ 'active' if (sidebarItem.url == filename or filename|startsWith(sidebarItem.key)) }} {{'has-sub' if sidebarItem.submenu.length > 0 }}">
                 <a href="{{sidebarItem.url if sidebarItem.url!==undefined else '#'}}" class='sidebar-link'>
                     <i class="bi bi-{{ sidebarItem.icon }}"></i>
                     <span>{{sidebarItem.name}}</span>
                 </a>{% if sidebarItem.submenu.length > 0 %}
-                <ul class="submenu {{ 'active' if (sub.url == filename or filename|startsWith(sidebarItem.key)) }}">{% for sub in sidebarItem.submenu %}
+                <ul class="submenu {{ 'active' if (sub.url == filename or filename|startsWith(sidebarItem.key)) }}">{%
+                    for sub in sidebarItem.submenu %}
                     <li class="submenu-item {{ 'active' if sub.url == filename }}">
                         <a href="{{ sub.url }}">{{ sub.name }}</a>
                     </li>{% endfor %}
