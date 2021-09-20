@@ -199,6 +199,11 @@
     "icon": "file-earmark-spreadsheet-fill"
   },
   {
+    "name": "Datatable Jquery",
+    "url": "table-datatable-jquery.html",
+    "icon": "file-earmark-spreadsheet-fill"
+  },
+  {
     "name": "Extra UI",
     "isTitle": true
   },
