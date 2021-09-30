@@ -18,11 +18,9 @@ mix.sass('src/assets/scss/app.scss', 'assets/css')
         processCssUrls: false
     });
 
-// mix.js('node_modules/apexcharts/dist/apexcharts.min.js', 'assets/vendors/apexcharts');
-
-// mix.browserSync({
-//     proxy: 'mazer.test',
-// });
+mix.browserSync({
+    proxy: 'mazer.test',
+});
 
 mix.njk('src/*.html', 'dist/', {
     ext: '.html',
