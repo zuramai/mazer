@@ -10,3 +10,7 @@
 .dropdown-item {
     transition: all .5s;
 }
+.dropdown-menu-end.show {
+    top: 100%;
+    right: 0;
+}
