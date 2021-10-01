@@ -12,16 +12,16 @@ mix.sass('src/assets/scss/app.scss', 'assets/css')
     .sass('src/assets/scss/pages/chat.scss', 'assets/css/pages')
     .sass('src/assets/scss/widgets/chat.scss', 'assets/css/widgets')
     .sass('src/assets/scss/widgets/todo.scss', 'assets/css/widgets')
+    .js('src/assets/js/mazer.js', 'assets/js')
+    .minify('dist/assets/js/mazer.js')
     .setPublicPath('dist')
     .options({
         processCssUrls: false
     });
 
-// mix.js('node_modules/apexcharts/dist/apexcharts.min.js', 'assets/vendors/apexcharts');
-
-mix.browserSync({
-    proxy: 'mazer.test',
-});
+// mix.browserSync({
+//     proxy: 'mazer.test',
+// });
 
 mix.njk('src/*.html', 'dist/', {
     ext: '.html',
