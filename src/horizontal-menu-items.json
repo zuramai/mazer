@@ -200,6 +200,11 @@
           "name": "Datatable",
           "url": "table-datatable.html",
           "icon": "file-earmark-spreadsheet-fill"
+        },
+        {
+          "name": "Datatable (jQuery)",
+          "url": "table-datatable-jquery.html",
+          "icon": "file-earmark-spreadsheet-fill"
         }
       ]
     },
