@@ -1,38 +1,41 @@
 function slideToggle(t,e,o){0===t.clientHeight?j(t,e,o,!0):j(t,e,o)}function slideUp(t,e,o){j(t,e,o)}function slideDown(t,e,o){j(t,e,o,!0)}function j(t,e,o,i){void 0===e&&(e=400),void 0===i&&(i=!1),t.style.overflow="hidden",i&&(t.style.display="block");var p,l=window.getComputedStyle(t),n=parseFloat(l.getPropertyValue("height")),a=parseFloat(l.getPropertyValue("padding-top")),s=parseFloat(l.getPropertyValue("padding-bottom")),r=parseFloat(l.getPropertyValue("margin-top")),d=parseFloat(l.getPropertyValue("margin-bottom")),g=n/e,y=a/e,m=s/e,u=r/e,h=d/e;window.requestAnimationFrame(function l(x){void 0===p&&(p=x);var f=x-p;i?(t.style.height=g*f+"px",t.style.paddingTop=y*f+"px",t.style.paddingBottom=m*f+"px",t.style.marginTop=u*f+"px",t.style.marginBottom=h*f+"px"):(t.style.height=n-g*f+"px",t.style.paddingTop=a-y*f+"px",t.style.paddingBottom=s-m*f+"px",t.style.marginTop=r-u*f+"px",t.style.marginBottom=d-h*f+"px"),f>=e?(t.style.height="",t.style.paddingTop="",t.style.paddingBottom="",t.style.marginTop="",t.style.marginBottom="",t.style.overflow="",i||(t.style.display="none"),"function"==typeof o&&o()):window.requestAnimationFrame(l)})}
 
-let sidebarItems = document.querySelectorAll('.sidebar-item.has-sub');
-for(var i = 0; i < sidebarItems.length; i++) {
-    let sidebarItem = sidebarItems[i];
-	sidebarItems[i].querySelector('.sidebar-link').addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        let submenu = sidebarItem.querySelector('.submenu');
-        if( submenu.classList.contains('active') ) submenu.style.display = "block"
-
-        if( submenu.style.display == "none" ) submenu.classList.add('active')
-        else submenu.classList.remove('active')
-        slideToggle(submenu, 300)
-    })
-}
-
 /**
- * Sidebar Wrapper
+ * a Sidebar component
+ * @param  {HTMLElement} el - sidebar element
+ * @param  {object} options={} - options
  */
-const Sidebar = function (sidebarEL) {
+class Sidebar {
+  constructor(el, options = {}) {
+    this.sidebarEL = el instanceof HTMLElement ? el : document.querySelector(el)
+    this.options = options
+    this.init()
+  }
+  
   /**
-   * Sidebar Element
-   * @param  {HTMLElement} sidebarEL
+   * initialize the sidebar
    */
-  this.sidebarEL = sidebarEL instanceof HTMLElement ? sidebarEL : document.querySelector(sidebarEL);
-
-  /**
-   * Init Sidebar
-   */
-  this.init = function () {
+  init() {
     // add event listener to sidebar
-    document.querySelector('.burger-btn').addEventListener('click', this.toggle.bind(this));
-    document.querySelector('.sidebar-hide').addEventListener('click', this.toggle.bind(this));
+    document.querySelectorAll('.burger-btn').forEach(el => el.addEventListener('click', this.toggle.bind(this)))
+    document.querySelectorAll('.sidebar-hide').forEach(el => el.addEventListener('click', this.toggle.bind(this)))
     window.addEventListener('resize', this.onResize.bind(this));
+
+    // 
+    let sidebarItems = document.querySelectorAll('.sidebar-item.has-sub');
+    for(var i = 0; i < sidebarItems.length; i++) {
+        let sidebarItem = sidebarItems[i];
+      sidebarItems[i].querySelector('.sidebar-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            let submenu = sidebarItem.querySelector('.submenu');
+            if( submenu.classList.contains('active') ) submenu.style.display = "block"
+
+            if( submenu.style.display == "none" ) submenu.classList.add('active')
+            else submenu.classList.remove('active')
+            slideToggle(submenu, 300)
+        })
+    }
 
     // Perfect Scrollbar Init
     if(typeof PerfectScrollbar == 'function') {
@@ -46,16 +49,13 @@ const Sidebar = function (sidebarEL) {
     setTimeout(() => document.querySelector('.sidebar-item.active').scrollIntoView(false), 100);
 
     // check responsive
-    this.OnFirstLoad();
-
-    // 
-    return this;
+    this.onFirstLoad();
   }
 
   /**
-   * OnFirstLoad
+   * On First Load
    */
-  this.OnFirstLoad = function () {
+  onFirstLoad() {
     var w = window.innerWidth;
     if(w < 1200) {
       this.sidebarEL.classList.remove('active');
@@ -63,24 +63,25 @@ const Sidebar = function (sidebarEL) {
   }
 
   /**
-   * OnRezise Sidebar
+   * On Sidebar Rezise Event
    */
-  this.onResize = function () {
-    var w = window.innerWidth;
+  onResize() {
+    var w = window.innerWidth
     if(w < 1200) {
-      this.sidebarEL.classList.remove('active');
+      this.sidebarEL.classList.remove('active')
     } else {
-      this.sidebarEL.classList.add('active');
+      this.sidebarEL.classList.add('active')
     }
+
     // reset 
-    this.deleteBackdrop();
-    this.toggleOverflowBody(true);
+    this.deleteBackdrop()
+    this.toggleOverflowBody(true)
   }
 
   /**
    * Toggle Sidebar
    */
-  this.toggle = function () {
+  toggle() {
     const sidebarState = this.sidebarEL.classList.contains('active');
     if (sidebarState) {
       this.hide();
@@ -92,7 +93,7 @@ const Sidebar = function (sidebarEL) {
   /**
    * Show Sidebar
    */
-  this.show = function () {
+  show() {
     this.sidebarEL.classList.add('active');
     this.createBackdrop();
     this.toggleOverflowBody();
@@ -101,7 +102,7 @@ const Sidebar = function (sidebarEL) {
   /**
    * Hide Sidebar
    */
-  this.hide = function () {
+  hide() {
     this.sidebarEL.classList.remove('active');
     this.deleteBackdrop();
     this.toggleOverflowBody();
@@ -111,7 +112,7 @@ const Sidebar = function (sidebarEL) {
   /**
    * Create Sidebar Backdrop
    */
-  this.createBackdrop = function () {
+  createBackdrop() {
     this.deleteBackdrop();
     const backdrop = document.createElement('div');
     backdrop.classList.add('sidebar-backdrop');
@@ -122,7 +123,7 @@ const Sidebar = function (sidebarEL) {
   /**
    * Delete Sidebar Backdrop
    */
-  this.deleteBackdrop = function () {
+  deleteBackdrop() {
     const backdrop = document.querySelector('.sidebar-backdrop');
     if (backdrop) {
       backdrop.remove();
@@ -132,7 +133,7 @@ const Sidebar = function (sidebarEL) {
   /**
    * Toggle Overflow Body
    */
-  this.toggleOverflowBody = function (active) {
+  toggleOverflowBody(active) {
     const sidebarState = this.sidebarEL.classList.contains('active');
     const body = document.querySelector('body');
     if (typeof active == 'undefined') {
@@ -143,11 +144,10 @@ const Sidebar = function (sidebarEL) {
   }
 }
 
-
 /**
  * Create Sidebar Wrapper
-*/
-let sidebarEl = document.getElementById('sidebar');
+ */
+let sidebarEl = document.getElementById("sidebar")
 if (sidebarEl) {
-  window.sidebar = new Sidebar(sidebarEl).init();
+  window.sidebar = new Sidebar(sidebarEl)
 }

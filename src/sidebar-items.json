@@ -194,9 +194,19 @@
     "icon": "grid-1x2-fill"
   },
   {
-    "name": "Datatable",
-    "url": "table-datatable.html",
-    "icon": "file-earmark-spreadsheet-fill"
+    "name": "Datatables",
+    "key": "table-datatable",
+    "icon": "file-earmark-spreadsheet-fill",
+    "submenu": [
+      {
+        "name": "Datatable",
+        "url": "table-datatable.html"
+      },
+      {
+        "name": "Datatable (jQuery)",
+        "url": "table-datatable-jquery.html"
+      }
+    ]
   },
   {
     "name": "Extra UI",
