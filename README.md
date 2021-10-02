@@ -40,6 +40,9 @@ git clone https://github.com/zuramai/mazer
 - If you want to make some changes in the CSS style. Don't edit the `.css` file, use the SCSS file instead.
 - Since we use Nunjucks, if you want to make changes to the HTML structure, make sure you change the source file (Nunjucks) located in `src`.
 
+### Another Resource
+- [React Mazer Ui](https://github.com/fachryansyah/react-mazer-ui) a wrapper Mazer for ReactJS
+
 ## License
 Mazer is under MIT License.
 
