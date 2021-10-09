@@ -7,29 +7,35 @@
 ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/badges/shields.svg)
 [![License](https://img.shields.io/github/license/zuramai/mazer.svg)](LICENSE)
 ![npm version](https://badge.fury.io/js/yarn.svg)
+
 </p>
 
 ![Screenshot](https://raw.githubusercontent.com/zuramai/mazer/main/screenshot.png)
 
 ## Installation
+
 1. Clone this repository or download zip
+
 ```bash
 git clone https://github.com/zuramai/mazer
 ```
+
 2. Open `mazer/dist/index.html` to see the dashboard
 
 ## Demo and Documentation
+
 - Open the [demo page](http://zuramai.github.io/mazer/demo)
 - Open the [documentation page](http://zuramai.github.io/mazer/docs)
 
 ## Framework Boilerplate (Starter-kit)
+
 - [CodeIgniter 4](https://github.com/irsyadulibad/mazer-codeigniter) by [@irsyadulibad](https://github.com/irsyadulibad)
 - [Laravel + Livewire](https://github.com/zuramai/laravel-mazer) by me
-- [NuxtJS](https://github.com/fauzan121002/mazer-nuxt) by [@fauzan121002](https://github.com/fauzan121002)
+- [NuxtJS](https://github.com/fauzan121002/mazer-nuxt) by [@fncolon](https://github.com/fncolon)
 - [React JS Component Library](https://github.com/fachryansyah/react-mazer-ui) by [@fachryansyah](https://github.com/fachryansyah/)
-- Did you make in another framework? [Contribute](https://github.com/zuramai/mazer/blob/main/CONTRIBUTING.md) or message me at [Twitter](https://twitter.com/asawgi) 
+- Did you make in another framework? [Contribute](https://github.com/zuramai/mazer/blob/main/CONTRIBUTING.md) or message me at [Twitter](https://twitter.com/asawgi)
 
- ## Contributing
+## Contributing
 
 - Fork it ( https://github.com/zuramai/mazer/fork )
 - Create your feature branch (`git checkout -b my-new-feature`)
@@ -38,20 +44,24 @@ git clone https://github.com/zuramai/mazer
 - Create a new Pull Request
 
 ### Note
+
 - If you want to make some changes in the CSS style. Don't edit the `.css` file, use the SCSS file instead.
 - Since we use Nunjucks, if you want to make changes to the HTML structure, make sure you change the source file (Nunjucks) located in `src`.
 
 ### Another Resource
+
 - [React Mazer Ui](https://github.com/fachryansyah/react-mazer-ui) a wrapper Mazer for ReactJS
 
 ## License
+
 Mazer is under MIT License.
 
 ## About the Author
-Mazer is created by <a href="https://ahmadsaugi.com">Saugi</a>. 
 
- ## Donate
- You can support me at [Ko-fi](https://ko-fi.com/saugi) or [Trakteer](https://trakteer.id/saugi)
- 
- <a href="https://buymeacoffee.com/saugi" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
- 
+Mazer is created by <a href="https://ahmadsaugi.com">Saugi</a>.
+
+## Donate
+
+You can support me at [Ko-fi](https://ko-fi.com/saugi) or [Trakteer](https://trakteer.id/saugi)
+
+<a href="https://buymeacoffee.com/saugi" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
