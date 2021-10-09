@@ -40,12 +40,10 @@ mix.njk("src/*.html", "dist/", {
   },
   manageEnv: (nunjucks) => {
     nunjucks.addFilter("containString", (str, containStr) => {
-      if (!str.length) return false;
-      return str.indexOf(containStr) >= 0;
+      return str.length ? str.indexOf(containStr) >= 0 : false;
     });
     nunjucks.addFilter("startsWith", (str, targetStr) => {
-      if (!str.length) return false;
-      return str.startsWith(targetStr);
+      return str.length ? str.startsWith(targetStr) : false;
     });
   },
 });
