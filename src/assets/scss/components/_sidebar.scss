@@ -88,7 +88,7 @@
                 }
             }
             &.active {
-                .sidebar-link {
+                >.sidebar-link {
                     background-color: $primary;
                     span {
                         color: #fff;
