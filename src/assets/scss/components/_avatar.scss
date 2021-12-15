@@ -51,6 +51,13 @@
             font-size: .8rem;
         }
     }
+    &.avatar-md2 {
+        .avatar-content, img {
+            width: 40px;
+            height: 40px;
+            font-size: .8rem;
+        }
+    }
     &.avatar-lg {
         .avatar-content, img {
             width: 48px;
