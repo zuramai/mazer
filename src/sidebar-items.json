@@ -14,8 +14,8 @@
     "icon": "stack",
     "submenu": [
       {
-        "name": "Alert",
-        "url": "component-alert.html"
+        "name": "Accordion",
+        "url": "component-accordion.html"
       },
       {
         "name": "Badge",
