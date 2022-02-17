@@ -30,7 +30,7 @@ git clone https://github.com/zuramai/mazer
 ## Framework Boilerplate (Starter-kit)
 
 - [CodeIgniter 4](https://github.com/irsyadulibad/mazer-codeigniter) by [@irsyadulibad](https://github.com/irsyadulibad)
-- [Laravel + Livewire](https://github.com/zuramai/laravel-mazer) by me
+- [Laravel + Livewire](https://github.com/zuramai/laravel-mazer) (unmaintained, looking for maintainer)
 - [NuxtJS](https://github.com/fauzan121002/mazer-nuxt) by [@fncolon](https://github.com/fncolon)
 - [React JS Component Library](https://github.com/fachryansyah/react-mazer-ui) by [@fachryansyah](https://github.com/fachryansyah/)
 - Did you make in another framework? [Contribute](https://github.com/zuramai/mazer/blob/main/CONTRIBUTING.md) or message me at [Twitter](https://twitter.com/asawgi)
