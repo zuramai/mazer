@@ -6,7 +6,6 @@ require("laravel-mix-nunjucks");
 const assetsPath = "src/assets/";
 mix
   .sass(`${assetsPath}scss/app.scss`, "assets/css")
-  .sass(`${assetsPath}scss/bootstrap.scss`, "assets/css")
   .sass(`${assetsPath}scss/pages/auth.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/error.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/email.scss`, "assets/css/pages")
@@ -15,10 +14,7 @@ mix
   .sass(`${assetsPath}scss/widgets/todo.scss`, "assets/css/widgets")
   .js(`${assetsPath}js/mazer.js`, "assets/js")
   .minify("dist/assets/js/mazer.js")
-  .setPublicPath("dist")
-  .options({
-    processCssUrls: false,
-  });
+  .setPublicPath("dist");
 
 // mix.browserSync({
 //     proxy: 'mazer.test',
