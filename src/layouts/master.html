@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }} - {{ web_title }}</title>
     {% block stylesfirst %}{% endblock %}
-    {% block styles %}{% endblock %}
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+    {% block styles %}{% endblock %}
 </head>
 
 <body>
