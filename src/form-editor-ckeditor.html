@@ -39,13 +39,5 @@
 </div>
 {% endblock %}
 {% block js %}
-<script src="assets/vendors/ckeditor/ckeditor.js"></script>
-
-<script>
-    ClassicEditor
-        .create(document.querySelector('#editor'))
-        .catch(error => {
-            console.error(error);
-        });
-</script>
+<script src="assets/js/extensions/ckeditor.js"></script>
 {% endblock %}

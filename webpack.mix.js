@@ -17,6 +17,7 @@ mix
   .js(`${assetsPath}js/mazer.js`, "assets/js")
   .js(`${assetsPath}js/extensions/toastify.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/sweetalert2.js`, "assets/js/extensions")
+  .js(`${assetsPath}js/extensions/ckeditor.js`, "assets/js/extensions")
   .minify("dist/assets/js/mazer.js")
   .setPublicPath("dist");
 
