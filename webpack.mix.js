@@ -18,6 +18,10 @@ mix
   .js(`${assetsPath}js/extensions/toastify.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/sweetalert2.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/ckeditor.js`, "assets/js/extensions")
+  .copy(
+    "node_modules/bootstrap-icons/bootstrap-icons.svg",
+    "dist/assets/images"
+  )
   .minify("dist/assets/js/mazer.js")
   .setPublicPath("dist");
 
