@@ -15,6 +15,7 @@ window.addEventListener('resize',(event) => {
 
 function checkWindowSize() {
     if(window.innerWidth < 1200) listener()
+    if(window.innerWidth > 1200) document.querySelector('.main-navbar').style.display = ""
 }
 
 function listener() {
