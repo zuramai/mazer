@@ -21,6 +21,7 @@ mix
   .js(`${assetsPath}js/extensions/ckeditor.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/ui-apexchart.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/ui-chartjs.js`, "assets/js/extensions")
+  .js(`${assetsPath}js/extensions/ui-todolist.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/form-element-select.js`, "assets/js/extensions")
   .copy(
     "node_modules/bootstrap-icons/bootstrap-icons.svg",
