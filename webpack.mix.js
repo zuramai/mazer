@@ -13,6 +13,7 @@ mix
   .sass(`${assetsPath}scss/pages/toastify.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/dripicons.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/sweetalert2.scss`, "assets/css/pages")
+  .sass(`${assetsPath}scss/pages/fontawesome.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/choices.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/widgets/chat.scss`, "assets/css/widgets")
   .sass(`${assetsPath}scss/widgets/todo.scss`, "assets/css/widgets")
