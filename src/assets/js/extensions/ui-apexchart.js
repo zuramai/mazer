@@ -1,3 +1,6 @@
+import ApexCharts from "apexcharts";
+var dayjs = require('dayjs')
+
 var lineOptions = {
   chart: {
     type: "line",
