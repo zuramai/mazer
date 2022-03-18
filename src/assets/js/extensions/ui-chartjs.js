@@ -1,3 +1,4 @@
+import Chart from "chart.js"
 
 var chartColors = {
     red: 'rgb(255, 99, 132)',

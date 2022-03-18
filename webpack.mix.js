@@ -11,7 +11,6 @@ mix
   .sass(`${assetsPath}scss/pages/email.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/chat.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/toastify.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/pages/apexcharts.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/sweetalert2.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/widgets/chat.scss`, "assets/css/widgets")
   .sass(`${assetsPath}scss/widgets/todo.scss`, "assets/css/widgets")
@@ -20,6 +19,7 @@ mix
   .js(`${assetsPath}js/extensions/sweetalert2.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/ckeditor.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/ui-apexchart.js`, "assets/js/extensions")
+  .js(`${assetsPath}js/extensions/ui-chartjs.js`, "assets/js/extensions")
   .copy(
     "node_modules/bootstrap-icons/bootstrap-icons.svg",
     "dist/assets/images"
