@@ -17,6 +17,7 @@ mix
   .sass(`${assetsPath}scss/pages/choices.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/widgets/chat.scss`, "assets/css/widgets")
   .sass(`${assetsPath}scss/widgets/todo.scss`, "assets/css/widgets")
+  .sass(`${assetsPath}scss/iconly.scss`, "assets/css")
   .js(`${assetsPath}js/mazer.js`, "assets/js")
   .js(`${assetsPath}js/extensions/toastify.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/sweetalert2.js`, "assets/js/extensions")
