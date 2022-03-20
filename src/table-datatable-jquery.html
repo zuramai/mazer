@@ -283,24 +283,9 @@
 </div>
 {% endblock %}
 {% block styles %}
-<!-- <link rel="stylesheet" href="assets/vendors/jquery-datatables/jquery.dataTables.min.css"> -->
-<link rel="stylesheet" href="assets/vendors/jquery-datatables/jquery.dataTables.bootstrap5.min.css">
 <link rel="stylesheet" href="assets/css/pages/fontawesome.css">
-<style>
-    table.dataTable td{
-        padding: 15px 8px;
-    }
-    .fontawesome-icons .the-icon svg {
-        font-size: 24px;
-    }
-</style>
+<link rel="stylesheet" href="assets/css/pages/datatables.css">
 {% endblock %}
 {% block js %}
-<script src="assets/vendors/jquery/jquery.min.js"></script>
-<script src="assets/vendors/jquery-datatables/jquery.dataTables.min.js"></script>
-<script src="assets/vendors/jquery-datatables/custom.jquery.dataTables.bootstrap5.min.js"></script>
-<script>
-    // Jquery Datatable
-    let jquery_datatable = $("#table1").DataTable()
-</script>
+<script src="assets/js/extensions/datatables.js"></script>
 {% endblock %}

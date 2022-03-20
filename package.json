@@ -45,6 +45,8 @@
     "bootstrap-icons": "^1.8.1",
     "browser-sync": "^2.27.3",
     "browser-sync-webpack-plugin": "^2.0.1",
+    "datatables.net-bs5": "^1.11.2",
+    "jquery": "^3.5.1",
     "laravel-mix-nunjucks": "^1.1.0",
     "laravel-mix-purgecss": "^6.0.0",
     "postcss": "^8.3.5",

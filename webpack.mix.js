@@ -15,6 +15,7 @@ mix
   .sass(`${assetsPath}scss/pages/sweetalert2.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/fontawesome.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/choices.scss`, "assets/css/pages")
+  .sass(`${assetsPath}scss/pages/datatables.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/widgets/chat.scss`, "assets/css/widgets")
   .sass(`${assetsPath}scss/widgets/todo.scss`, "assets/css/widgets")
   .sass(`${assetsPath}scss/iconly.scss`, "assets/css")
@@ -26,6 +27,7 @@ mix
   .js(`${assetsPath}js/extensions/ui-chartjs.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/ui-todolist.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/form-element-select.js`, "assets/js/extensions")
+  .js(`${assetsPath}js/extensions/datatables.js`, "assets/js/extensions")
   .copy(
     "node_modules/bootstrap-icons/bootstrap-icons.svg",
     "dist/assets/images"
