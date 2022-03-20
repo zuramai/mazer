@@ -20,6 +20,7 @@ mix
   .sass(`${assetsPath}scss/pages/rater-js.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/quill.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/summernote.scss`, "assets/css/pages")
+  .sass(`${assetsPath}scss/pages/form-element-select.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/widgets/chat.scss`, "assets/css/widgets")
   .sass(`${assetsPath}scss/widgets/todo.scss`, "assets/css/widgets")
   .sass(`${assetsPath}scss/iconly.scss`, "assets/css")
@@ -37,18 +38,20 @@ mix
   .js(`${assetsPath}js/extensions/simple-datatables.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/summernote.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/tinymce.js`, "assets/js/extensions")
+  .js(`${assetsPath}js/pages/dashboard.js`, "assets/js/pages")
+  .js(`${assetsPath}js/pages/form-editor.js`, "assets/js/pages")
+  .js(`${assetsPath}js/pages/horizontal-layout.js`, "assets/js/pages")
+  .copy(
+    "src/assets/images",
+    "dist/assets/images"
+  )
   .copy(
     "node_modules/bootstrap-icons/bootstrap-icons.svg",
     "dist/assets/images"
   )
-  .copy(
-    "src/assets/images/svg-loaders",
-    "dist/assets/images/svg-loaders"
-  )
   // TinyMCE automatically loads css and other resources from its relative path
   // so we need this hotfix to move them to the right places.
   .copy('node_modules/tinymce/skins', 'dist/assets/js/extensions/skins')
-  .minify("dist/assets/js/mazer.js")
   .setPublicPath("dist");
 
 // mix.browserSync({
