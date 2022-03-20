@@ -40,6 +40,10 @@ mix
     "node_modules/bootstrap-icons/bootstrap-icons.svg",
     "dist/assets/images"
   )
+  .copy(
+    "src/assets/images/svg-loaders",
+    "dist/assets/images/svg-loaders"
+  )
   .minify("dist/assets/js/mazer.js")
   .setPublicPath("dist");
 
