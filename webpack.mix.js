@@ -36,6 +36,7 @@ mix
   .js(`${assetsPath}js/extensions/rater-js.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/simple-datatables.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/summernote.js`, "assets/js/extensions")
+  .js(`${assetsPath}js/extensions/tinymce.js`, "assets/js/extensions")
   .copy(
     "node_modules/bootstrap-icons/bootstrap-icons.svg",
     "dist/assets/images"
@@ -44,6 +45,9 @@ mix
     "src/assets/images/svg-loaders",
     "dist/assets/images/svg-loaders"
   )
+  // TinyMCE automatically loads css and other resources from its relative path
+  // so we need this hotfix to move them to the right places.
+  .copy('node_modules/tinymce/skins', 'dist/assets/js/extensions/skins')
   .minify("dist/assets/js/mazer.js")
   .setPublicPath("dist");
 

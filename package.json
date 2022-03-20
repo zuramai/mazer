@@ -54,6 +54,8 @@
     "sass": "^1.36",
     "sass-loader": "^12.1",
     "summernote": "0.8.18",
+    "svg-loaders": "^0.2.0",
+    "tinymce": "^5.6.2",
     "vue-template-compiler": "^2.6.14"
   }
 }

@@ -51,14 +51,6 @@
 </div>
 {% endblock %}
 
-{% block styles %}
-<!-- <link rel="stylesheet" href="assets/vendors/tinymce/summernote-lite.min.css"> -->
-{% endblock %}
 {% block js %}
-<script src="assets/vendors/tinymce/tinymce.min.js"></script>
-<script src="assets/vendors/tinymce/plugins/code/plugin.min.js"></script>
-<script>
-    tinymce.init({ selector: '#default' });
-    tinymce.init({ selector: '#dark', toolbar: 'undo redo styleselect bold italic alignleft aligncenter alignright bullist numlist outdent indent code', plugins: 'code' });
-</script>
+<script src="assets/js/extensions/tinymce.js"></script>
 {% endblock %}
