@@ -1,4 +1,6 @@
-window.raterJs({
+import raterJs from "rater-js"
+
+raterJs({
     element: document.querySelector("#basic"), 
     starSize: 32,
     rateCallback:function rateCallback(rating, done) {
@@ -7,7 +9,7 @@ window.raterJs({
     }
 });
 
-window.raterJs({
+raterJs({
     element:document.querySelector("#step"),
     rateCallback:function rateCallback(rating, done) {
         this.setRating(rating); 
@@ -16,7 +18,7 @@ window.raterJs({
     starSize:32,
     step:0.5
 })
-window.raterJs({
+raterJs({
     element:document.querySelector("#unli1"),
     rateCallback:function rateCallback(rating, done) {
         this.setRating(rating); 
@@ -26,7 +28,7 @@ window.raterJs({
     max:10, 
     step:0.5
 })
-window.raterJs({
+raterJs({
     element:document.querySelector("#unli2"),
     rateCallback:function rateCallback(rating, done) {
         this.setRating(rating); 
