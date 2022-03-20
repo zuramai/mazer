@@ -30,7 +30,7 @@
     "quill": "^1.3.7",
     "rater-js": "^1.0.1",
     "rtlcss": "^3.2.1",
-    "simple-datatables": "^2.1.13",
+    "simple-datatables": "3.0.2",
     "sweetalert2": "^11.0.0",
     "toastify-js": "^1.11.0",
     "toastr": "^2.1.4",

@@ -280,13 +280,8 @@
 </div>
 {% endblock %}
 {% block styles %}
-<link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
+<link rel="stylesheet" href="assets/css/pages/simple-datatables.css">
 {% endblock %}
 {% block js %}
-<script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
-<script>
-    // Simple Datatable
-    let table1 = document.querySelector('#table1');
-    let dataTable = new simpleDatatables.DataTable(table1);
-</script>
+<script src="assets/js/extensions/simple-datatables.js"></script>
 {% endblock %}

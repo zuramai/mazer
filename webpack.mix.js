@@ -16,6 +16,7 @@ mix
   .sass(`${assetsPath}scss/pages/fontawesome.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/choices.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/datatables.scss`, "assets/css/pages")
+  .sass(`${assetsPath}scss/pages/simple-datatables.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/rater-js.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/quill.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/widgets/chat.scss`, "assets/css/widgets")
@@ -32,6 +33,7 @@ mix
   .js(`${assetsPath}js/extensions/datatables.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/quill.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/rater-js.js`, "assets/js/extensions")
+  .js(`${assetsPath}js/extensions/simple-datatables.js`, "assets/js/extensions")
   .copy(
     "node_modules/bootstrap-icons/bootstrap-icons.svg",
     "dist/assets/images"
