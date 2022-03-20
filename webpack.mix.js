@@ -14,7 +14,6 @@ mix
   .sass(`${assetsPath}scss/pages/dripicons.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/sweetalert2.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/fontawesome.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/pages/choices.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/datatables.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/simple-datatables.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/rater-js.scss`, "assets/css/pages")
