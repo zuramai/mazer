@@ -4214,7 +4214,7 @@
     "merge-stream" "^2.0.0"
     "supports-color" "^8.0.0"
 
-"jquery@^3.5.1", "jquery@>=1.12.0", "jquery@>=1.7":
+"jquery@^3.5.1", "jquery@>=1.7":
   "integrity" "sha512-XwIBPqcMn57FxfT+Go5pzySnm4KWkT1Tv7gjrpT1srtf8Weynl6R273VJ5GjkRb51IzMp5nbaPjJXMWeju2MKg=="
   "resolved" "https://registry.npmjs.org/jquery/-/jquery-3.5.1.tgz"
   "version" "3.5.1"
@@ -6619,13 +6619,6 @@
   "integrity" "sha512-N9o4RHy+IxY51C0wO50uJmXDpGHKKf6wRq2q0pfHlpMxRLKreD68L6ZR5BEETd5UCHWcwZa4sLNMV8iO5L+zqQ=="
   "resolved" "https://registry.npmjs.org/toastify-js/-/toastify-js-1.11.0.tgz"
   "version" "1.11.0"
-
-"toastr@^2.1.4":
-  "integrity" "sha1-i0O+ZPudDEFIcURvLbjoyk6V8YE="
-  "resolved" "https://registry.npmjs.org/toastr/-/toastr-2.1.4.tgz"
-  "version" "2.1.4"
-  dependencies:
-    "jquery" ">=1.12.0"
 
 "toidentifier@1.0.0":
   "integrity" "sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw=="
