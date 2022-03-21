@@ -1,4 +1,4 @@
-.dropdown-toggle:after {
+.btn:not(.btn-light):not([class^="btn-outline-"]) .dropdown-toggle:after {
     color: #fff;
 }
 .dropdown-menu-large {
