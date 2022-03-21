@@ -25,7 +25,7 @@ class Sidebar {
     let sidebarItems = document.querySelectorAll('.sidebar-item.has-sub');
     for(var i = 0; i < sidebarItems.length; i++) {
         let sidebarItem = sidebarItems[i];
-      sidebarItems[i].querySelector('.sidebar-link').addEventListener('click', function(e) {
+      sidebarItems[i].querySelector('.sidebar-link').addEventListener('click', (e) => {
             e.preventDefault();
             
             let submenu = sidebarItem.querySelector('.submenu');
@@ -33,7 +33,7 @@ class Sidebar {
 
             if( submenu.style.display == "none" ) submenu.classList.add('active')
             else submenu.classList.remove('active')
-            slideToggle(submenu, 300)
+            slideToggle(submenu, 300, () => this.forceElementVisibility(sidebarItem))
         })
     }
 
@@ -140,6 +140,24 @@ class Sidebar {
       body.style.overflowY = sidebarState ? 'hidden' : 'auto';
     } else {
       body.style.overflowY = active ? 'auto' : 'hidden';
+    }
+  }
+
+  isElementInViewport(el) {
+    var rect = el.getBoundingClientRect();
+  
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <=
+        (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+  }
+  
+  forceElementVisibility(el) {
+    if (!this.isElementInViewport(el)) {
+      el.scrollIntoView(false);
     }
   }
 }
