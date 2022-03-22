@@ -4,8 +4,14 @@ const horizontalMenuItems = require("./src/horizontal-menu-items.json");
 
 require("laravel-mix-nunjucks");
 const assetsPath = "src/assets/";
-mix
-  .sass(`${assetsPath}scss/app.scss`, "assets/css")
+
+// Mix configs
+mix.options({ 
+  fileLoaderDirs: { fonts: "assets/fonts" }, 
+  processCssUrls: false
+})
+
+mix.sass(`${assetsPath}scss/app.scss`, "assets/css")
   .sass(`${assetsPath}scss/pages/auth.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/error.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/email.scss`, "assets/css/pages")
@@ -23,7 +29,6 @@ mix
   .sass(`${assetsPath}scss/pages/form-element-select.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/widgets/chat.scss`, "assets/css/widgets")
   .sass(`${assetsPath}scss/widgets/todo.scss`, "assets/css/widgets")
-  .sass(`${assetsPath}scss/iconly.scss`, "assets/css")
   .js(`${assetsPath}js/app.js`, "assets/js")
   .js(`${assetsPath}js/extensions/toastify.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/sweetalert2.js`, "assets/js/extensions")
@@ -42,18 +47,25 @@ mix
   .js(`${assetsPath}js/pages/dashboard.js`, "assets/js/pages")
   .js(`${assetsPath}js/pages/form-editor.js`, "assets/js/pages")
   .js(`${assetsPath}js/pages/horizontal-layout.js`, "assets/js/pages")
-  .copy(
-    "src/assets/images",
-    "dist/assets/images"
-  )
-  .copy(
-    "node_modules/bootstrap-icons/bootstrap-icons.svg",
-    "dist/assets/images"
-  )
+  .copyDirectory(`node_modules/@fontsource/nunito/files/**/nunito-latin-ext-*`, "dist/assets/fonts/nunito")
+  .copy("node_modules/bootstrap-icons/bootstrap-icons.svg", "dist/assets/images")
+  .copy("src/assets/images", "dist/assets/images")
   // TinyMCE automatically loads css and other resources from its relative path
   // so we need this hotfix to move them to the right places.
   .copy('node_modules/tinymce/skins', 'dist/assets/js/extensions/skins')
-  .setPublicPath("dist");
+
+  
+// Vendors
+mix.sass(`${assetsPath}scss/iconly.scss`, "assets/vendors/iconly")
+  .copy(`${assetsPath}fonts/iconly/*`, "dist/assets/vendors/iconly")
+
+  
+
+
+mix.setPublicPath("dist");
+
+
+
 
 // mix.browserSync({
 //     proxy: 'mazer.test',
