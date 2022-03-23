@@ -5,11 +5,10 @@
 <p align="center">Mazer is an Admin Dashboard Template that can help you develop faster. Made with Bootstrap 5. No jQuery dependency.</p>
 <div align="center">
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-green.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/github/contributors/zuramai/mazer)](https://github.com/zuramai/mazer/graphs/contributors)
 ![GitHub last commit](https://img.shields.io/github/last-commit/zuramai/mazer.svg)
 ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/badges/shields.svg)
 [![License](https://img.shields.io/github/license/zuramai/mazer.svg)](LICENSE)
-![npm version](https://badge.fury.io/js/yarn.svg)
 
 </div>
 
