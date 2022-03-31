@@ -5,13 +5,18 @@ const horizontalMenuItems = require("./src/horizontal-menu-items.json");
 require("laravel-mix-nunjucks");
 const assetsPath = "src/assets/";
 
-// Mix configs
-mix.options({ 
-  fileLoaderDirs: { fonts: "assets/fonts" }, 
-  processCssUrls: false
-})
+// Files loaded from css url()s will be placed alongside our resources
+mix.options({
+  fileLoaderDirs:  {
+      fonts: 'assets/fonts',
+      images: 'assets/images'
+  }
+});
 
-mix.sass(`${assetsPath}scss/app.scss`, "assets/css")
+mix
+  // Attention: put all generated css files directly into a subfolder
+  // of assets/css. Resource loading might fail otherwise.
+  .sass(`${assetsPath}scss/app.scss`, "assets/css/main")
   .sass(`${assetsPath}scss/pages/auth.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/error.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/email.scss`, "assets/css/pages")
@@ -29,6 +34,7 @@ mix.sass(`${assetsPath}scss/app.scss`, "assets/css")
   .sass(`${assetsPath}scss/pages/form-element-select.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/widgets/chat.scss`, "assets/css/widgets")
   .sass(`${assetsPath}scss/widgets/todo.scss`, "assets/css/widgets")
+  .sass(`${assetsPath}scss/iconly.scss`, "assets/css/shared")
   .js(`${assetsPath}js/app.js`, "assets/js")
   .js(`${assetsPath}js/extensions/toastify.js`, "assets/js/extensions")
   .js(`${assetsPath}js/extensions/sweetalert2.js`, "assets/js/extensions")
@@ -47,25 +53,21 @@ mix.sass(`${assetsPath}scss/app.scss`, "assets/css")
   .js(`${assetsPath}js/pages/dashboard.js`, "assets/js/pages")
   .js(`${assetsPath}js/pages/form-editor.js`, "assets/js/pages")
   .js(`${assetsPath}js/pages/horizontal-layout.js`, "assets/js/pages")
-  .copyDirectory(`node_modules/@fontsource/nunito/files/**/nunito-latin-ext-*`, "dist/assets/fonts/nunito")
-  .copy("node_modules/bootstrap-icons/bootstrap-icons.svg", "dist/assets/images")
-  .copy("src/assets/images", "dist/assets/images")
+  .copy(
+    "src/assets/images",
+    "dist/assets/images"
+  )
+  .copy(
+    "node_modules/bootstrap-icons/bootstrap-icons.svg",
+    "dist/assets/images"
+  )
   // TinyMCE automatically loads css and other resources from its relative path
   // so we need this hotfix to move them to the right places.
   .copy('node_modules/tinymce/skins', 'dist/assets/js/extensions/skins')
-
-  
-// Vendors
-mix.sass(`${assetsPath}scss/iconly.scss`, "assets/vendors/iconly")
-  .copy(`${assetsPath}fonts/iconly/*`, "dist/assets/vendors/iconly")
-
-  
-
-
-mix.setPublicPath("dist");
-
-
-
+  // We place all generated css in /assets/css/xxx
+  // This is the relative path to the fileLoaderDirs we specified above
+  .setResourceRoot("../../../")
+  .setPublicPath("dist");
 
 // mix.browserSync({
 //     proxy: 'mazer.test',
