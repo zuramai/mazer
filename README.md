@@ -29,6 +29,7 @@ git clone https://github.com/zuramai/mazer
 
 ## Community Mazer-based open sources
 
+- [Mazer Dark Mode](https://github.com/kazemyavari/mazer-dark) by [@kazemyavari](https://github.com/kazemyavari/mazer-dark) 
 - [CodeIgniter 4](https://github.com/irsyadulibad/mazer-codeigniter) by [@irsyadulibad](https://github.com/irsyadulibad)
 - [Laravel + Livewire](https://github.com/zuramai/laravel-mazer) (unmaintained, looking for maintainer)
 - [NuxtJS](https://github.com/fauzan121002/mazer-nuxt) by [@fncolon](https://github.com/fncolon)
