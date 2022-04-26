@@ -10,7 +10,8 @@
     "hot": "mix watch --hot",
     "production": "mix --production",
     "rtl": "rtlcss -d \"dist/assets/css\" -e \".rtl.css\" && find . -type f -name '*.rtl.rtl.css' -delete",
-    "prod-rtl": "mix --production && rtl"
+    "prod-rtl": "mix --production && rtl",
+    "prodzip": "mix --production && bestzip dist.zip dist/*"
   },
   "author": "zuramai",
   "license": "MIT",
@@ -55,14 +56,24 @@
     "tinymce": "^5.6.2"
   },
   "devDependencies": {
+    "bestzip": "^2.2.1",
     "browser-sync": "^2.27.3",
     "browser-sync-webpack-plugin": "^2.0.1",
     "laravel-mix-nunjucks": "^1.1.0",
     "laravel-mix-purgecss": "^6.0.0",
     "postcss": "^8.3.5",
+    "release-it": "^14.14.2",
     "resolve-url-loader": "^3.1.4",
     "sass": "^1.36",
     "sass-loader": "^12.1",
     "vue-template-compiler": "^2.6.14"
+  },
+  "release-it": {
+    "hooks": {
+      "before:init": ["npm run prodzip"]
+    },
+    "npm": {
+      "publish": false
+    }
   }
 }
