@@ -74,6 +74,10 @@
     },
     "npm": {
       "publish": false
+    },
+    "github": {
+      "release": true,
+      "assets": ["dist.zip"]
     }
   }
 }
