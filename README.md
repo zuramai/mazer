@@ -1,68 +1,57 @@
 <h1 align="center">Mazer Dashboard</h1>
-<p align="center">Mazer is an Admin Dashboard Template that can help you develop faster. Made with Bootstrap 5. No jQuery dependency.</p>
-<p align="center">
-
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-green.svg?style=flat-square)](#contributors-)
-![GitHub last commit](https://img.shields.io/github/last-commit/zuramai/mazer.svg)
-![GitHub repo size in bytes](https://img.shields.io/github/repo-size/badges/shields.svg)
-[![License](https://img.shields.io/github/license/zuramai/mazer.svg)](LICENSE)
-![npm version](https://badge.fury.io/js/yarn.svg)
-
-</p>
 
 ![Screenshot](https://raw.githubusercontent.com/zuramai/mazer/main/screenshot.png)
 
+<p align="center">Mazer is an Admin Dashboard Template that can help you develop faster. Made with Bootstrap 5. No jQuery dependency.</p>
+<div align="center">
+
+[![All Contributors](https://img.shields.io/github/contributors/zuramai/mazer)](https://github.com/zuramai/mazer/graphs/contributors)
+![GitHub last commit](https://img.shields.io/github/last-commit/zuramai/mazer.svg)
+![GitHub repo size in bytes](https://img.shields.io/github/repo-size/badges/shields.svg)
+[![License](https://img.shields.io/github/license/zuramai/mazer.svg)](LICENSE)
+
+</div>
+
+<p align="center">
+	<a href="http://zuramai.github.io/mazer/demo">Demo Page</a>&nbsp;&nbsp;&nbsp;
+	<a href="http://zuramai.github.io/mazer/docs">Documentation Page</a>&nbsp;&nbsp;&nbsp;
+</p>
+
 ## Installation
 
-1. Clone this repository or download zip
+1. Clone this repository or download as zip.
 
-```bash
+```sh
 git clone https://github.com/zuramai/mazer
 ```
 
-2. Open `mazer/dist/index.html` to see the dashboard
+2. Open the `mazer/dist/index.html` file to see the dashboard.
 
-## Demo and Documentation
+## Community Mazer-based open sources
 
-- Open the [demo page](http://zuramai.github.io/mazer/demo)
-- Open the [documentation page](http://zuramai.github.io/mazer/docs)
-
-## Framework Boilerplate (Starter-kit)
-
+- [Mazer Dark Mode](https://github.com/kazemyavari/mazer-dark) by [@kazemyavari](https://github.com/kazemyavari/mazer-dark) 
 - [CodeIgniter 4](https://github.com/irsyadulibad/mazer-codeigniter) by [@irsyadulibad](https://github.com/irsyadulibad)
 - [Laravel + Livewire](https://github.com/zuramai/laravel-mazer) (unmaintained, looking for maintainer)
 - [NuxtJS](https://github.com/fauzan121002/mazer-nuxt) by [@fncolon](https://github.com/fncolon)
 - [React JS Component Library](https://github.com/fachryansyah/react-mazer-ui) by [@fachryansyah](https://github.com/fachryansyah/)
 - [Adonisjs 5](https://github.com/afman42/mazer-adonisjs) by [@afman42](https://github.com/afman42/)
-- Did you make in another framework? [Contribute](https://github.com/zuramai/mazer/blob/main/CONTRIBUTING.md) or message me at [Twitter](https://twitter.com/asawgi)
+- [Django](https://github.com/bimbims125/mazer-django) by [@bimbims125](https://github.com/bimbims125/)
+- Did you make in another framework or tools? Open up Pull Requests and put yours here! 😃
 
 ## Contributing
 
-- Fork it ( https://github.com/zuramai/mazer/fork )
-- Create your feature branch (`git checkout -b my-new-feature`)
-- Commit your changes (`git commit -am 'Add some feature'`)
-- Push to the branch (`git push origin my-new-feature`)
-- Create a new Pull Request
-
-### Note
-
-- If you want to make some changes in the CSS style. Don't edit the `.css` file, use the SCSS file instead.
-- Since we use Nunjucks, if you want to make changes to the HTML structure, make sure you change the source file (Nunjucks) located in `src`.
-
-### Another Resource
-
-- [React Mazer Ui](https://github.com/fachryansyah/react-mazer-ui) a wrapper Mazer for ReactJS
+Please follow [Contributing Guide](./CONTRIBUTING.md) before contribute.
 
 ## License
 
-Mazer is under MIT License.
+Mazer is under [MIT License](./LICENSE).
 
-## About the Author
+## Author
 
-Mazer is created by <a href="https://ahmadsaugi.com">Saugi</a>.
+Mazer is created by <a href="https://ahmadsaugi.com">Ahmad Saugi</a>.
 
-## Donate
+## Donation
 
-You can support me at [Ko-fi](https://ko-fi.com/saugi) or [Trakteer](https://trakteer.id/saugi)
+You can support Ahmad Saugi at [Ko-fi](https://ko-fi.com/saugi) or [Trakteer](https://trakteer.id/saugi)
 
 <a href="https://buymeacoffee.com/saugi" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>

@@ -69,13 +69,8 @@ mix
   .setResourceRoot("../../../")
   .setPublicPath("dist");
 
-// mix.browserSync({
-//     proxy: 'mazer.test',
-// });
-
 mix.njk("src/*.html", "dist/", {
   ext: ".html",
-  marked: null,
   watch: true,
   data: {
     web_title: "Mazer Admin Dashboard",

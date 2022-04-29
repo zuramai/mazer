@@ -12,4 +12,4 @@
 If you want to make some changes in the CSS style. Don't edit the `.css` file, use the SCSS file instead.
 
 ### HTML
-Since we use Nunjucks, if you want to make changes to the HTML structure, make sure you change the source file (Nunjucks) located in `src`.
+Since we use Nunjucks, if you want to make changes to the HTML structure, make sure you change the source file (Nunjucks) located in `src` then build the source file with `npm run watch`.
