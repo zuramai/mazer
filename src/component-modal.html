@@ -217,13 +217,13 @@
                             <p>You can disable the backdrop by using <code>data-bs-backdrop="false"</code></p>
                             <!-- Button trigger for Disabled Backdrop -->
                             <button type="button" class="btn btn-outline-primary block" data-bs-toggle="modal"
-                                data-bs-backdrop="false" data-bs-target="#backdrop">
+                                data-bs-target="#backdrop">
                                 Launch Modal
                             </button>
 
                             <!--Disabled Backdrop Modal -->
                             <div class="modal fade text-left" id="backdrop" tabindex="-1" role="dialog"
-                                aria-labelledby="myModalLabel4" aria-hidden="true">
+                                aria-labelledby="myModalLabel4" data-bs-backdrop="false" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">

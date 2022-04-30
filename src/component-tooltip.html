@@ -9,7 +9,7 @@
             <div class="col-12 col-md-6 order-md-1 order-last">
                 <h3>Tooltip</h3>
                 <p class="text-subtitle text-muted">The tooltip, also known as infotip or hint, is a common graphical
-                    user interface element in which.</p>
+                    user interface element which shows additional information on element hover.</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -73,9 +73,13 @@
 {% endblock %}
 {% block js %}
 <script>
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
+    // If you want to use tooltips in your project, we suggest initializing them globally
+    // instead of a "per-page" level.
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    }, false);
 </script>
 {% endblock %}

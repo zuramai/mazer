@@ -1,0 +1,20 @@
+@import "~simple-datatables/dist/style.css";
+@import "../variables";
+
+.dataTable-wrapper.no-footer .dataTable-container {
+	border-bottom: none;
+}
+
+.dataTable-selector {
+	padding: $form-select-padding-y $form-select-indicator-padding $form-select-padding-y $form-select-padding-x;
+}
+
+.dataTable-dropdown {
+	display: inline-flex;
+	align-items: center;
+}
+
+.dataTable-dropdown label {
+	white-space: nowrap;
+	margin-left: 15px;
+}

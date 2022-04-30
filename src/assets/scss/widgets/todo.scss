@@ -1,22 +1,26 @@
+@import "~dragula/dist/dragula.css";
 @import "./../variables";
 
 .widget-todo-list-wrapper {
     padding: 0;
     margin: 0;
-    .widget-todo-item {
-        padding: .8rem 2rem .8rem .8rem;
-        list-style: none;
+}
 
-        &:hover {
-            background-color: $gray-100;
-        }
-        .checkbox {
-            margin-left: 1rem;
-        }
-        i, svg {
-            font-size: 12px;
-            cursor: move;
-            height: 1rem
-        }
+// Moved outside .widget-todo-list-wrapper because dragula
+// renders a shadow element outside of the widget-todo-list-wrapper
+.widget-todo-item {
+    padding: .8rem 2rem .8rem .8rem;
+    list-style: none;
+
+    &:hover {
+        background-color: $gray-100;
+    }
+    .checkbox {
+        margin-left: 1rem;
+    }
+    i, svg {
+        font-size: 12px;
+        cursor: move;
+        height: 1rem
     }
 }

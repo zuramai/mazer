@@ -52,30 +52,8 @@
 {% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="assets/vendors/summernote/summernote-lite.min.css">
+<link rel="stylesheet" href="assets/css/pages/summernote.css">
 {% endblock %}
 {% block js %}
-<script src="assets/vendors/jquery/jquery.min.js"></script>
-<script src="assets/vendors/summernote/summernote-lite.min.js"></script>
-<script>
-    $('#summernote').summernote({
-        tabsize: 2,
-        height: 120,
-    })
-    $("#hint").summernote({
-        height: 100,
-        toolbar: false,
-        placeholder: 'type with apple, orange, watermelon and lemon',
-        hint: {
-            words: ['apple', 'orange', 'watermelon', 'lemon'],
-            match: /\b(\w{1,})$/,
-            search: function (keyword, callback) {
-                callback($.grep(this.words, function (item) {
-                    return item.indexOf(keyword) === 0;
-                }));
-            }
-        }
-    });
-
-</script>
+<script src="assets/js/extensions/summernote.js"></script>
 {% endblock %}
