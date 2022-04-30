@@ -8,8 +8,10 @@
 
 ## Note
 
-### CSS
-If you want to make some changes in the CSS style. Don't edit the `.css` file, use the SCSS file instead.
+Make sure to not commit generated files from your dist folder.
+All changes need to be made in the source files located in the `src` folder.
+- Change the `scss` files to adapt styles.
+- Change the nunjucks based `html` files or the content defining `json` files to adapt layout and content.
+- Change the `js` files to adapt the application code
 
-### HTML
-Since we use Nunjucks, if you want to make changes to the HTML structure, make sure you change the source file (Nunjucks) located in `src` then build the source file with `npm run watch`.
+Always run a build and test the results before committing.
