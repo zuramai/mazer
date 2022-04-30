@@ -6,26 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Table Datatable Jquery - Mazer Admin Dashboard</title>
     
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <link rel="stylesheet" href="assets/css/main/app.css">
+    <link rel="shortcut icon" href="assets/images/logo/favicon.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="assets/images/logo/favicon.png" type="image/png">
     
-<!-- <link rel="stylesheet" href="assets/vendors/jquery-datatables/jquery.dataTables.min.css"> -->
-<link rel="stylesheet" href="assets/vendors/jquery-datatables/jquery.dataTables.bootstrap5.min.css">
-<link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
-<style>
-    table.dataTable td{
-        padding: 15px 8px;
-    }
-    .fontawesome-icons .the-icon svg {
-        font-size: 24px;
-    }
-</style>
+<link rel="stylesheet" href="assets/css/pages/fontawesome.css">
+<link rel="stylesheet" href="assets/css/pages/datatables.css">
 
-    <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
-    <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/css/app.css">
-    <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
 </head>
 
 <body>
@@ -35,7 +22,7 @@
     <div class="sidebar-header">
         <div class="d-flex justify-content-between">
             <div class="logo">
-                <a href="index.html"><img src="assets/images/logo/logo.png" alt="Logo" srcset=""></a>
+                <a href="index.html"><img src="assets/images/logo/logo.svg" alt="Logo" srcset=""></a>
             </div>
             <div class="toggler">
                 <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
@@ -412,7 +399,7 @@
             
             <li
                 class="sidebar-item  ">
-                <a href="https://github.com/zuramai/mazer#donate" class='sidebar-link'>
+                <a href="https://github.com/zuramai/mazer#donation" class='sidebar-link'>
                     <i class="bi bi-cash"></i>
                     <span>Donate</span>
                 </a>
@@ -435,7 +422,7 @@
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
                 <h3>DataTable Jquery</h3>
-                <p class="text-subtitle text-muted">For user to check they list</p>
+                <p class="text-subtitle text-muted">Powerful interactive tables with datatables (jQuery required)</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -722,19 +709,10 @@
             </footer>
         </div>
     </div>
-    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
     
-<script src="assets/vendors/jquery/jquery.min.js"></script>
-<script src="assets/vendors/jquery-datatables/jquery.dataTables.min.js"></script>
-<script src="assets/vendors/jquery-datatables/custom.jquery.dataTables.bootstrap5.min.js"></script>
-<script src="assets/vendors/fontawesome/all.min.js"></script>
-<script>
-    // Jquery Datatable
-    let jquery_datatable = $("#table1").DataTable()
-</script>
+<script src="assets/js/extensions/datatables.js"></script>
 
-    <script src="assets/js/mazer.js"></script>
+    <script src="assets/js/app.js"></script>
 </body>
 
 </html>
