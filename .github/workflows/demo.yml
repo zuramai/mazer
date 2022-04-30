@@ -12,14 +12,12 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2.2.1
-        with:
-          version: 6.31.0
-          run_install: true
+      - uses: actions/setup-node@v3
       
       - name: Install and Build 🔧
         run: |
-          pnpm run production
+          npm install
+          npm run production
           
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4.2.5
