@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $theme-colors-light: (
   'primary': rgba($primary, .6),
   'secondary': rgba($secondary, .6),
@@ -88,18 +90,26 @@ $btn-link-color:              $link-color;
 $btn-link-hover-color:        $link-hover-color;
 $btn-link-disabled-color:     $gray-600;
 
-$input-bg:                              $white;
-$input-disabled-bg:                     $gray-200;
+$input-bg:                              #1b1b29;
+$input-btn-focus-color                  : $primary;
+$input-disabled-bg:                     #40404d;
+$input-disabled-border-color:           null !default;
 $input-placeholder-color:               $gray-500;
 $input-plaintext-color:                 $body-color;
-$input-border-color:                    #dce7f1;
+$input-color:                           $body-color;
+$input-border-color:                    #35354f;
+
+$input-focus-bg:                        $input-bg ;
+$input-focus-border-color:              #171723;
+$input-focus-color:                     $input-color;
 
 $input-group-addon-color:               #526e8a ;
-$input-group-addon-bg:                  #e6eef5;
-$input-group-addon-border-color:        #dce7f1;
+$input-group-addon-bg:                  lighten($input-bg, 5%);
+$input-group-addon-border-color:        $input-border-color;
 
 $form-check-input-bg:                     #fff;
 $form-check-input-border:                 3px solid #e1e3ea;
+$form-label-color:                      $body-color !default;
 $form-switch-color:               rgba(0, 0, 0, .25);
 $form-select-color:                 $input-color;
 $form-select-disabled-color:        $gray-600;

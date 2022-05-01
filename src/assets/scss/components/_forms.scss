@@ -1,7 +1,7 @@
 .form-group {
     margin-bottom: .7rem;
     label {
-        color: rgb(35, 28, 99, .7);
+        color: $form-label-color;
         font-weight: 600;
     }
     small {
@@ -164,8 +164,8 @@
 
     &:focus {
         color: #555252;
-        background-color: white;
-        border-color: #5A8DEE;
+        background-color: $input-focus-bg;
+        border-color: $input-focus-border-color;
         outline: 0;
         box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.1);
     }
