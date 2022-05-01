@@ -49,7 +49,7 @@ Mazer is under [MIT License](./LICENSE).
 
 ## Author
 
-Mazer is created by <a href="https://ahmadsaugi.com">Ahmad Saugi</a>.
+Mazer is created by <a href="https://saugi.me">Saugi</a>.
 
 ## Donation
 
