@@ -1,11 +1,11 @@
 $theme-colors-light: (
-  'primary': #ebf3ff,
-  'secondary': #E6EAEE,
-  'success': #D2FFE8 ,
-  'danger': #FFDEDE,
-  'warning': #fffdd8,
-  'info': #e6fdff,
-) !default;
+  'primary': rgba($primary, .6),
+  'secondary': rgba($secondary, .6),
+  'success': rgba($success, .6),
+  'danger': rgba($danger, .6),
+  'warning': rgba($warning, .6),
+  'info': rgba($info, .6),
+);
 
 $alert-colors: (
     primary: (
@@ -40,31 +40,38 @@ $alert-colors: (
         text-color: #fff,
         background-color: #56b6f7,
     ),
-) !default;
+);
+
+$sidebar-bg:                #1e1e2d;
+$sidebar-link-color:        #9899ac;
+$sidebar-link-hover-bg:         #282839;
+$sidebar-link-hover-color:      #fff;
+$sidebar-submenu-color:         $sidebar-link-color;
+$sidebar-submenu-hover-color:   $white;
 
 $card-box-shadow:                   -8px 12px 18px 0 rgba(25,42,70,.13);
 
 
 // Body
-$body-bg:                   #f2f7ff !default;
-$body-color:                #607080 !default;
+$body-bg:                   #151521;
+$body-color:                #fff;
 
-$link-color:                              $primary !default;
-$link-hover-color:                        shift-color($link-color, $link-shade-percentage) !default;
+$link-color:                              #9899ac;
+$link-hover-color:                        shift-color($link-color, $link-shade-percentage);
 
-$component-active-color:      $white !default;
-$component-active-bg:         $primary !default;
+$component-active-color:      #9899ac;
+$component-active-bg:         $primary;
 
-$headings-color:              #25396f !default;
-$text-muted:                  #7c8db5 !default;
-$mark-bg:                     #fcf8e3 !default;
+$headings-color:              #fff;
+$text-muted:                  #7c8db5;
+$mark-bg:                     #fcf8e3;
 
-$table-color:                 $body-color !default;
-$table-border-color:          #eee !default;
-$table-striped-bg:            rgba($black, $table-striped-bg-factor) !default;
-$table-active-bg:             rgba($black, $table-active-bg-factor) !default;
-$table-hover-bg:              rgba($black, $table-hover-bg-factor) !default;
-$table-group-separator-color: #dedede !default;
+$table-color:                 $body-color;
+$table-border-color:          #eee;
+$table-striped-bg:            rgba($black, $table-striped-bg-factor);
+$table-active-bg:             rgba($black, $table-active-bg-factor);
+$table-hover-bg:              rgba($black, $table-hover-bg-factor);
+$table-group-separator-color: #dedede;
 $table-variants: (
   "primary":    shift-color($primary, $table-bg-scale),
   "secondary":  shift-color($secondary, $table-bg-scale),
@@ -74,120 +81,121 @@ $table-variants: (
   "danger":     shift-color($danger, $table-bg-scale),
   "light":      $light,
   "dark":       $dark,
-) !default;
+);
 
-$btn-active-box-shadow:       inset 0 3px 5px rgba($black, .125) !default;
-$btn-link-color:              $link-color !default;
-$btn-link-hover-color:        $link-hover-color !default;
-$btn-link-disabled-color:     $gray-600 !default;
+$btn-active-box-shadow:       inset 0 3px 5px rgba($black, .125);
+$btn-link-color:              $link-color;
+$btn-link-hover-color:        $link-hover-color;
+$btn-link-disabled-color:     $gray-600;
 
-$input-bg:                              $white !default;
-$input-disabled-bg:                     $gray-200 !default;
-$input-placeholder-color:               $gray-500 !default;
-$input-plaintext-color:                 $body-color !default;
-$input-border-color:                    #dce7f1 !default;
+$input-bg:                              $white;
+$input-disabled-bg:                     $gray-200;
+$input-placeholder-color:               $gray-500;
+$input-plaintext-color:                 $body-color;
+$input-border-color:                    #dce7f1;
 
-$input-group-addon-color:               #526e8a  !default;
-$input-group-addon-bg:                  #e6eef5 !default;
-$input-group-addon-border-color:        #dce7f1 !default;
+$input-group-addon-color:               #526e8a ;
+$input-group-addon-bg:                  #e6eef5;
+$input-group-addon-border-color:        #dce7f1;
 
-$form-check-input-bg:                     #fff !default;
-$form-check-input-border:                 3px solid #e1e3ea !default;
-$form-switch-color:               rgba(0, 0, 0, .25) !default;
-$form-select-color:                 $input-color !default;
-$form-select-disabled-color:        $gray-600 !default;
-$form-select-bg:                    $input-bg !default;
-$form-select-disabled-bg:           $gray-200 !default;
-$form-range-track-bg:             $gray-300 !default;
-$form-range-thumb-disabled-bg:             $gray-500 !default;
+$form-check-input-bg:                     #fff;
+$form-check-input-border:                 3px solid #e1e3ea;
+$form-switch-color:               rgba(0, 0, 0, .25);
+$form-select-color:                 $input-color;
+$form-select-disabled-color:        $gray-600;
+$form-select-bg:                    $input-bg;
+$form-select-disabled-bg:           $gray-200;
+$form-range-track-bg:             $gray-300;
+$form-range-thumb-disabled-bg:             $gray-500;
 
-$nav-link-disabled-color:           $gray-600 !default;
-$nav-tabs-border-color:             $gray-300 !default;
-$nav-tabs-link-hover-border-color:  $gray-200 $gray-200 $nav-tabs-border-color !default;
-$nav-tabs-link-active-border-color: $gray-300 $gray-300 $nav-tabs-link-active-bg !default;
+$nav-link-disabled-color:           $gray-600;
+$nav-tabs-border-color:             $gray-300;
+$nav-tabs-link-hover-border-color:  $gray-200 $gray-200 $nav-tabs-border-color;
+$nav-tabs-link-active-border-color: $gray-300 $gray-300 $nav-tabs-link-active-bg;
 
-$dropdown-color:                    $body-color !default;
-$dropdown-bg:                       $white !default;
-$dropdown-border-color:             rgba($black, .15) !default;
-$dropdown-divider-bg:               rgb(189, 199, 209) !default;
-$dropdown-box-shadow:               1px 4px 15px #f4f5f9 !default;
-$dropdown-link-color:               $gray-900 !default;
-$dropdown-link-hover-color:         shade-color($gray-900, 10%) !default;
-$dropdown-link-hover-bg:            $gray-100 !default;
-$dropdown-link-disabled-color:      $gray-600 !default;
-$dropdown-header-color:             $gray-600 !default;
-$dropdown-dark-color:               $gray-300 !default;
-$dropdown-dark-bg:                  $gray-800 !default;
-$dropdown-dark-link-hover-color:    $white !default;
-$dropdown-dark-link-hover-bg:       rgba($white, .15) !default;
-$dropdown-dark-link-disabled-color: $gray-500 !default;
-$dropdown-dark-header-color:        $gray-500 !default;
+$dropdown-color:                    $body-color;
+$dropdown-bg:                       $white;
+$dropdown-border-color:             rgba($black, .15);
+$dropdown-divider-bg:               rgb(189, 199, 209);
+$dropdown-box-shadow:               1px 4px 15px #f4f5f9;
+$dropdown-link-color:               $gray-900;
+$dropdown-link-hover-color:         shade-color($gray-900, 10%);
+$dropdown-link-hover-bg:            $gray-100;
+$dropdown-link-disabled-color:      $gray-600;
+$dropdown-header-color:             $gray-600;
+$dropdown-dark-color:               $gray-300;
+$dropdown-dark-bg:                  $gray-800;
+$dropdown-dark-link-hover-color:    $white;
+$dropdown-dark-link-hover-bg:       rgba($white, .15);
+$dropdown-dark-link-disabled-color: $gray-500;
+$dropdown-dark-header-color:        $gray-500;
 
-$pagination-color:                  $link-color !default;
-$pagination-bg:                     $white !default;
-$pagination-border-color:           $gray-300 !default;
-$pagination-focus-bg:               $gray-200 !default;
-$pagination-hover-bg:               $gray-200 !default;
-$pagination-hover-border-color:     $gray-300 !default;
-$pagination-disabled-color:         $gray-600 !default;
-$pagination-disabled-border-color:  $gray-300 !default;
+$pagination-color:                  $link-color;
+$pagination-bg:                     $white;
+$pagination-border-color:           $gray-300;
+$pagination-focus-bg:               $gray-200;
+$pagination-hover-bg:               $gray-200;
+$pagination-hover-border-color:     $gray-300;
+$pagination-disabled-color:         $gray-600;
+$pagination-disabled-border-color:  $gray-300;
 
-$card-border-color:                 rgba($black, .125) !default;
-$card-bg:                           $white !default;
+$card-border-color:                 rgba($black, .125);
+$card-bg:                           #1e1e2d;
+$card-cap-bg:                       #1e1e2d;
 
-$accordion-color:                         $body-color !default;
-$accordion-bg:                            transparent !default;
-$accordion-border-color:                  rgba($black, .125) !default;
-$accordion-button-icon:         url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$accordion-icon-color}'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>") !default;
-$accordion-button-active-icon:  url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$accordion-icon-active-color}'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>") !default;
+$accordion-color:                         $body-color;
+$accordion-bg:                            transparent;
+$accordion-border-color:                  rgba($black, .125);
+$accordion-button-icon:         url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$accordion-icon-color}'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>");
+$accordion-button-active-icon:  url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$accordion-icon-active-color}'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>");
 
-$tooltip-bg:                        $black !default;
+$tooltip-bg:                        $black;
 
-$popover-bg:                        $white !default;
-$popover-border-color:              rgba($black, .2) !default;
+$popover-bg:                        $white;
+$popover-border-color:              rgba($black, .2);
 
-$toast-background-color:            rgba($white, .85) !default;
-$toast-border-color:                rgba(0, 0, 0, .1) !default;
-$toast-header-color:                $gray-600 !default;
-$toast-header-background-color:     rgba($white, .85) !default;
-$toast-header-border-color:         rgba(0, 0, 0, .05) !default;
+$toast-background-color:            rgba($white, .85);
+$toast-border-color:                rgba(0, 0, 0, .1);
+$toast-header-color:                $gray-600;
+$toast-header-background-color:     rgba($white, .85);
+$toast-header-border-color:         rgba(0, 0, 0, .05);
 
-$badge-color:                       $white !default;
+$badge-color:                       $white;
 
-$modal-content-bg:                  $white !default;
-$modal-content-border-color:        rgba($black, .2) !default;
+$modal-content-bg:                  $white;
+$modal-content-border-color:        rgba($black, .2);
 
-$modal-backdrop-bg:                 $black !default;
-$modal-header-border-color:         $border-color !default;
-$modal-footer-border-color:         $modal-header-border-color !default;
+$modal-backdrop-bg:                 $black;
+$modal-header-border-color:         $border-color;
+$modal-footer-border-color:         $modal-header-border-color;
 
-$progress-bar-color:                $white !default;
-$progress-bar-bg:                   $primary !default;
+$progress-bar-color:                $white;
+$progress-bar-bg:                   $primary;
 
 
-$list-group-bg:                     $white !default;
-$list-group-border-color:           rgba($black, .125) !default;
-$list-group-hover-bg:               $gray-100 !default;
-$list-group-active-bg:              $component-active-bg !default;
-$list-group-active-border-color:    $list-group-active-bg !default;
-$list-group-disabled-color:         $gray-600 !default;
-$list-group-action-color:           $gray-700 !default;
-$list-group-action-active-bg:       $gray-200 !default;
+$list-group-bg:                     $white;
+$list-group-border-color:           rgba($black, .125);
+$list-group-hover-bg:               $gray-100;
+$list-group-active-bg:              $component-active-bg;
+$list-group-active-border-color:    $list-group-active-bg;
+$list-group-disabled-color:         $gray-600;
+$list-group-action-color:           $gray-700;
+$list-group-action-active-bg:       $gray-200;
 
-$thumbnail-border-color:            $gray-300 !default;
-$figure-caption-color:              $gray-600 !default;
+$thumbnail-border-color:            $gray-300;
+$figure-caption-color:              $gray-600;
 
-$breadcrumb-divider-color:          $gray-600 !default;
-$breadcrumb-active-color:           $gray-600 !default;
+$breadcrumb-divider-color:          $gray-600;
+$breadcrumb-active-color:           $gray-600;
 
-$carousel-control-color:             $white !default;
-$carousel-indicator-active-bg:       $white !default;
-$carousel-caption-color:             $white !default;
-$carousel-dark-indicator-active-bg:  $black !default;
-$carousel-dark-caption-color:        $black !default;
+$carousel-control-color:             $white;
+$carousel-indicator-active-bg:       $white;
+$carousel-caption-color:             $white;
+$carousel-dark-indicator-active-bg:  $black;
+$carousel-dark-caption-color:        $black;
 
-$btn-close-color:                   $black !default;
-$code-color:                        $pink !default;
-$kbd-color:                         $white !default;
-$kbd-bg:                            $gray-900 !default;
-$pre-color:                         null !default;
+$btn-close-color:                   $black;
+$code-color:                        $pink;
+$kbd-color:                         $white;
+$kbd-bg:                            $gray-900;
+$pre-color:                         null;

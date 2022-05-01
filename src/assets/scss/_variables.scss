@@ -53,8 +53,7 @@ $alert-colors: (
         background-color: #56b6f7,
     ),
 ) !default;
-$card-box-shadow:                   -8px 12px 18px 0 rgba(25,42,70,.13) !default;
-$card-title-font-size:              1.2rem !default;
+
 $modal-header-font-size:            1.1rem !default;
 
 // Bootstrap Variables
@@ -69,6 +68,8 @@ $gray-700: #495057 !default;
 $gray-800: #343a40 !default;
 $gray-900: #212529 !default;
 $black:    #000 !default;
+
+
 
 // fusv-disable
 $grays: (
@@ -121,6 +122,15 @@ $warning:       $yellow !default;
 $danger:        $red !default;
 $light:         $gray-100 !default;
 $dark:          $gray-900 !default;
+
+
+$sidebar-bg: #fff;
+$sidebar-link-color: #25396f;
+$sidebar-link-hover-bg:         rgb(240, 241, 245);
+$sidebar-link-hover-color:      #25396f;
+$sidebar-submenu-color:         $sidebar-link-color;
+$sidebar-submenu-hover-color:   $primary;
+
 
 // scss-docs-start theme-colors-map
 $theme-colors: (
@@ -1081,7 +1091,8 @@ $card-cap-color:                    null !default;
 $card-height:                       null !default;
 $card-color:                        null !default;
 $card-bg:                           $white !default;
-
+$card-box-shadow:                   -8px 12px 18px 0 rgba(25,42,70,.13) !default;
+$card-title-font-size:              1.2rem !default;
 $card-img-overlay-padding:          $spacer !default;
 
 $card-group-margin:                 math.div($grid-gutter-width, 2) !default;

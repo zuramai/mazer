@@ -20,7 +20,7 @@
     top: 0;
     z-index: 10;
     overflow-y: auto;
-    background-color: #fff;
+    background-color: $sidebar-bg;
     bottom: 0;
     transition: left .5s ease-out;
     .sidebar-header {
@@ -50,7 +50,7 @@
             font-size: 1rem;
             list-style: none;
             font-weight: 600;
-            color: #25396f;
+            color:  $sidebar-link-color;
         }
         
         .sidebar-link {
@@ -62,7 +62,7 @@
             border-radius: .5rem;
             transition: all .5s;
             text-decoration: none;
-            color:#25396f;
+            color: $sidebar-link-color;
             svg,i {
                 color:#7c8db5;
             }
@@ -70,7 +70,7 @@
                 margin-left: 1rem;
             }
             &:hover {
-                background-color: rgb(240, 241, 245);
+                background-color: $sidebar-link-hover-bg;
             }
         }
         .sidebar-item {
@@ -125,13 +125,14 @@
                 a {
                     padding: .7rem 2rem;
                     display: block;
-                    color: $headings-color;
+                    color: $sidebar-submenu-color;
                     font-size: .85rem;
                     font-weight: 600;
                     letter-spacing: .5px;
                     transition: all .3s;
                     &:hover {
                         margin-left: .3rem;
+                        color: $sidebar-submenu-hover-color;
                     }
                 }
             }
