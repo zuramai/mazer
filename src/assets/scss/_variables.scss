@@ -699,6 +699,7 @@ $form-text-font-size:                   $small-font-size !default;
 $form-text-font-style:                  null !default;
 $form-text-font-weight:                 null !default;
 $form-text-color:                       $text-muted !default;
+$form-textarea-title-bg:                $gray-200 !default;
 
 $form-label-margin-bottom:              .5rem !default;
 $form-label-font-size:                  null !default;
@@ -1418,3 +1419,12 @@ $kbd-color:                         $white !default;
 $kbd-bg:                            $gray-900 !default;
 
 $pre-color:                         null !default;
+
+// External Libraries
+
+$choices-bg:            $form-select-bg;
+$choices-border-color:  $form-select-border-color;
+$choices-input-color:   $white;
+$choices-dropdown-bg:   $form-select-bg;
+$choices-dropdown-color:    $choices-input-color;
+$choices-highlight-bg:      lighten($card-bg, 5%);

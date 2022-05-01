@@ -109,14 +109,16 @@ $input-group-addon-border-color:        $input-border-color;
 
 $form-check-input-bg:                     #fff;
 $form-check-input-border:                 3px solid #e1e3ea;
-$form-label-color:                      $body-color !default;
+$form-label-color:                      $body-color;
 $form-switch-color:               rgba(0, 0, 0, .25);
 $form-select-color:                 $input-color;
-$form-select-disabled-color:        $gray-600;
+$form-select-border-color:          $input-border-color;
+$form-select-disabled-bg:           $input-disabled-bg;
 $form-select-bg:                    $input-bg;
-$form-select-disabled-bg:           $gray-200;
-$form-range-track-bg:             $gray-300;
+$form-select-disabled-bg:           $input-disabled-bg;
+$form-range-track-bg:               $gray-300;
 $form-range-thumb-disabled-bg:             $gray-500;
+$form-textarea-title-bg:             lighten($input-bg,10%);
 
 $nav-link-disabled-color:           $gray-600;
 $nav-tabs-border-color:             $gray-300;
@@ -209,3 +211,12 @@ $code-color:                        $pink;
 $kbd-color:                         $white;
 $kbd-bg:                            $gray-900;
 $pre-color:                         null;
+
+
+// External library
+$choices-bg:            $form-select-bg;
+$choices-border-color:  $form-select-border-color;
+$choices-input-color:   $white;
+$choices-dropdown-bg:   $form-select-bg;
+$choices-dropdown-color:    $choices-input-color;
+$choices-highlight-bg:      lighten($card-bg, 5%);
