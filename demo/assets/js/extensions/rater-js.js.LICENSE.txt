@@ -1,0 +1,1 @@
+/*! rater-js. [c] 2018 Fredrik Olsson. MIT License */
