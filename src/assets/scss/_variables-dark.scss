@@ -173,10 +173,10 @@ $toast-header-background-color:     rgba($white, .85);
 $toast-header-border-color:         rgba(0, 0, 0, .05);
 
 $badge-color:                       $white;
+$border-color:                      $gray-400 !default;
 
-$modal-content-bg:                  $white;
+$modal-content-bg:                  $card-bg;
 $modal-content-border-color:        rgba($black, .2);
-
 $modal-backdrop-bg:                 $black;
 $modal-header-border-color:         $border-color;
 $modal-footer-border-color:         $modal-header-border-color;
@@ -185,14 +185,17 @@ $progress-bar-color:                $white;
 $progress-bar-bg:                   $primary;
 
 
-$list-group-bg:                     $white;
+$list-group-color:                  #afb0be !default;
+$list-group-action-hover-color:     $list-group-color;
+$list-group-bg:                     #151521;
+$list-group-hover-bg:               #101113;
 $list-group-border-color:           rgba($black, .125);
-$list-group-hover-bg:               $gray-100;
-$list-group-active-bg:              $component-active-bg;
+$list-group-active-color:           $white;
+$list-group-active-bg:              #435ebe;
 $list-group-active-border-color:    $list-group-active-bg;
-$list-group-disabled-color:         $gray-600;
+$list-group-disabled-color:         $black;
 $list-group-action-color:           $gray-700;
-$list-group-action-active-bg:       $gray-200;
+$list-group-action-active-bg:       lighten($list-group-bg, 10%);
 
 $thumbnail-border-color:            $gray-300;
 $figure-caption-color:              $gray-600;
