@@ -1,5 +1,8 @@
+@import "../variables";
+@import "../variables-dark";
+
 body {
-    background-color: white;
+    background-color: $page-auth-bg;
 }
 #auth {
     height: 100vh;
@@ -7,7 +10,7 @@ body {
     
     #auth-right {
         height: 100%;
-        background:  url(../../images/bg/4853433.jpg),linear-gradient(90deg,#2d499d,#3f5491);
+        background:  url(../../images/bg/4853433.png), linear-gradient(90deg, #151521, #151521);
     }
     #auth-left {
         padding: 5rem 8rem;

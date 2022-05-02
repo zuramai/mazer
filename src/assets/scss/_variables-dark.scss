@@ -35,7 +35,7 @@ $alert-colors: (
         background-color: #454546,
     ),
     light: (
-        text-color: #818182,
+        text-color: $body-color,
         background-color: #f9f9f9,
     ),
     info: (
@@ -52,11 +52,16 @@ $sidebar-submenu-color:         $sidebar-link-color;
 $sidebar-submenu-hover-color:   $white;
 
 $card-box-shadow:                   -8px 12px 18px 0 rgba(25,42,70,.13);
-
+;
 
 // Body
 $body-bg:                   #151521;
 $body-color:                #fff;
+
+// Pages
+$page-auth-bg:   #151521;
+$page-error-bg:  $body-bg;
+
 
 $link-color:                              #9899ac;
 $link-hover-color:                        shift-color($link-color, $link-shade-percentage);
@@ -107,8 +112,8 @@ $input-group-addon-color:               #526e8a ;
 $input-group-addon-bg:                  lighten($input-bg, 5%);
 $input-group-addon-border-color:        $input-border-color;
 
-$form-check-input-bg:                     #fff;
-$form-check-input-border:                 3px solid #e1e3ea;
+$form-check-input-bg:                     #20202d;
+$form-check-input-border:                 3px solid #393b42;
 $form-label-color:                      $body-color;
 $form-switch-color:               rgba(0, 0, 0, .25);
 $form-select-color:                 $input-color;
@@ -125,14 +130,14 @@ $nav-tabs-border-color:             $gray-300;
 $nav-tabs-link-hover-border-color:  $gray-200 $gray-200 $nav-tabs-border-color;
 $nav-tabs-link-active-border-color: $gray-300 $gray-300 $nav-tabs-link-active-bg;
 
-$dropdown-color:                    $body-color;
-$dropdown-bg:                       $white;
+$dropdown-color:                    #92929F;
+$dropdown-bg:                       #161b22;
 $dropdown-border-color:             rgba($black, .15);
 $dropdown-divider-bg:               rgb(189, 199, 209);
 $dropdown-box-shadow:               1px 4px 15px #f4f5f9;
-$dropdown-link-color:               $gray-900;
-$dropdown-link-hover-color:         shade-color($gray-900, 10%);
-$dropdown-link-hover-bg:            $gray-100;
+$dropdown-link-color:               $dropdown-color;
+$dropdown-link-hover-color:         $white;
+$dropdown-link-hover-bg:            tint-color($dropdown-bg, 5%);
 $dropdown-link-disabled-color:      $gray-600;
 $dropdown-header-color:             $gray-600;
 $dropdown-dark-color:               $gray-300;

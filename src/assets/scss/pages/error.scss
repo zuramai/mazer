@@ -1,7 +1,9 @@
+@import "../variables";
+@import "../variables-dark";
+
 #error {
-    height: 100vh;
-    background-color: #ebf3ff;
-    padding-top: 5rem;
+    background-color: $page-error-bg;
+    padding: 5rem 0;
     .img-error {
         width: 63%;
         padding: 3rem 0 3rem 0;

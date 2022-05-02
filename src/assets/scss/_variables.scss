@@ -56,6 +56,8 @@ $alert-colors: (
 
 $modal-header-font-size:            1.1rem !default;
 
+
+
 // Bootstrap Variables
 $white:    #fff !default;
 $gray-100: #f8f9fa !default;
@@ -124,6 +126,8 @@ $light:         $gray-100 !default;
 $dark:          $gray-900 !default;
 
 
+// Mazer Variables
+
 $sidebar-bg: #fff;
 $sidebar-link-color: #25396f;
 $sidebar-link-hover-bg:         rgb(240, 241, 245);
@@ -131,6 +135,9 @@ $sidebar-link-hover-color:      #25396f;
 $sidebar-submenu-color:         $sidebar-link-color;
 $sidebar-submenu-hover-color:   $primary;
 
+// Pages
+$page-auth-bg:   $white;
+$page-error-bg:  #ebf3ff;
 
 // scss-docs-start theme-colors-map
 $theme-colors: (
