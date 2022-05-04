@@ -222,9 +222,16 @@ $pre-color:                         null;
 
 
 // External library
+// Choicesjs
 $choices-bg:            $form-select-bg;
 $choices-border-color:  $form-select-border-color;
 $choices-input-color:   $white;
 $choices-dropdown-bg:   $form-select-bg;
 $choices-dropdown-color:    $choices-input-color;
 $choices-highlight-bg:      lighten($card-bg, 5%);
+
+// Sweetalert
+$swal-popup-bg:                 $sidebar-bg;
+$swal-popup-color:              $white;
+$swal-confirm-button-bg:        #3699ff;
+$swal-confirm-button-bg-hover:  #187de4;

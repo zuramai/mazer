@@ -5,6 +5,7 @@
 // Bootstrap + Icons
 @import "~bootstrap/scss/bootstrap";
 @import "~bootstrap-icons/font/bootstrap-icons";
+
 // Fix icon placement
 body .bi::before, [class^=bi-]::before, [class*=" bi-"]::before {
     vertical-align: baseline;
@@ -16,4 +17,8 @@ body .bi::before, [class^=bi-]::before, [class*=" bi-"]::before {
 // Perfect Scrollbar
 @import "~perfect-scrollbar/css/perfect-scrollbar.css";
 
-@import "./mazer.scss"
+// Mazer CSS
+@import "./mazer.scss";
+
+// Additional dark-mode CSS
+@import "./mazer-dark.scss";
