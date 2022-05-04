@@ -575,3 +575,70 @@
         flex: none;
     }
 }
+
+.theme-dark {
+    .email-application .content-area-wrapper {
+        border: 1px solid #2a2f3e;
+    }
+
+    .email-application .content-area-wrapper .sidebar .email-app-sidebar {
+        border-right: 1px solid #435ebe;
+    }
+
+    .email-application .content-area-wrapper .content-right .email-app-list-wrapper .email-app-list .email-user-list {
+        overflow-y: scroll !important;
+    }
+
+    .email-application .content-area-wrapper .sidebar .email-app-sidebar .email-app-menu {
+        background-color: #1e1e2d;
+    }
+
+    .email-application .content-area-wrapper .sidebar .email-app-sidebar .email-app-menu .list-group .list-group-item {
+        color: #9899ac;
+    }
+
+    .email-application .content-area-wrapper .sidebar .email-app-sidebar .email-app-menu .list-group .list-group-item:hover {
+        color: #187de4;
+    }
+
+    .email-application .content-area-wrapper .content-right .email-app-list-wrapper .email-app-list .email-user-list .users-list-wrapper li.media {
+        background-color: #1e1e2d;
+    }
+
+    .email-application .content-area-wrapper .content-right .email-app-list-wrapper .email-app-list .email-user-list .users-list-wrapper li.mail-read {
+        background-color: #2b2b41;
+    }
+
+    .email-application .content-area-wrapper .content-right .email-app-list-wrapper .email-app-list .email-action {
+        background: #151521;
+    }
+
+    .email-application .content-area-wrapper .content-right .email-app-list-wrapper .email-app-list .email-user-list .users-list-wrapper li:not(:first-child) {
+        border-top: 1px solid #435ebe;
+    }
+
+    .email-application .content-area-wrapper .action-icon i,
+    .email-application .content-area-wrapper .content-right .email-app-list-wrapper .email-app-list .email-action .action-right i {
+        color: #435ebe;
+    }
+
+    .email-application .content-area-wrapper .action-icon,
+    .email-application .content-area-wrapper .content-right .email-app-list-wrapper .email-app-list .email-action .action-right .email-pagination-next,
+    .email-application .content-area-wrapper .content-right .email-app-list-wrapper .email-app-list .email-action .action-right .email-pagination-prev,
+    .email-application .content-area-wrapper .content-right .email-app-list-wrapper .email-app-list .email-action .action-right .email-fixed-search input {
+        border: 1px solid #373752;
+    }
+
+    .theme-dark .form-check-input {
+        background-color: #151521;
+        border: 2px solid #435ebe;
+    }
+
+    .email-application .content-body {
+        background-color: #435ebe;
+    }
+
+    .email-application .content-area-wrapper .content-right .email-app-list-wrapper .email-app-list .email-action {
+        border-bottom: 1px solid #435ebe;
+    }
+}

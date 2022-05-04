@@ -52,7 +52,6 @@ $sidebar-submenu-color:         $sidebar-link-color;
 $sidebar-submenu-hover-color:   $white;
 
 $card-box-shadow:                   -8px 12px 18px 0 rgba(25,42,70,.13);
-;
 
 // Body
 $body-bg:                   #151521;
@@ -63,7 +62,7 @@ $page-auth-bg:   #151521;
 $page-error-bg:  $body-bg;
 
 
-$link-color:                              #9899ac;
+$link-color:                              $primary;
 $link-hover-color:                        shift-color($link-color, $link-shade-percentage);
 
 $component-active-color:      #9899ac;
