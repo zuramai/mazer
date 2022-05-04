@@ -147,14 +147,21 @@ $dropdown-dark-link-hover-bg:       rgba($white, .15);
 $dropdown-dark-link-disabled-color: $gray-500;
 $dropdown-dark-header-color:        $gray-500;
 
-$pagination-color:                  $link-color;
-$pagination-bg:                     $white;
-$pagination-border-color:           $gray-300;
-$pagination-focus-bg:               $gray-200;
-$pagination-hover-bg:               $gray-200;
-$pagination-hover-border-color:     $gray-300;
+$pagination-color:                  #92929F;
+$pagination-border-color:           transparent;
+$pagination-bg:                     $body-bg;
+$pagination-border-color:           $body-bg;
+$pagination-focus-bg:               #212E48;
+$pagination-hover-color:            $white;
+$pagination-hover-bg:               tint-color($body-bg, 5%);
+$pagination-hover-border-color:     $body-bg;
+$pagination-focus-box-shadow:       none;
 $pagination-disabled-color:         $gray-600;
-$pagination-disabled-border-color:  $gray-300;
+$pagination-disabled-bg:            $black;
+$pagination-disabled-border-color:  $black;
+$pagination-active-color:           $component-active-color !default;
+$pagination-active-bg:              #3699FF !default;
+$pagination-active-border-color:    #3699FF !default;
 
 $card-border-color:                 rgba($black, .125);
 $card-bg:                           #1e1e2d;
