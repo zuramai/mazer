@@ -143,6 +143,20 @@ $page-error-bg:  #ebf3ff !default;
 $divider-bg:    #DFE3E7 !default;
 $divider-text-bg: $white !default;
 
+// Sweetalert
+$swal-popup-bg:                 $sidebar-bg;
+$swal-popup-color:              inherit;
+$swal-confirm-button-bg:        $primary;
+$swal-confirm-button-bg-hover:  #187de4;
+
+// Layout Horizontal
+$horizontal-header-bg: $white !default;
+$horizontal-navbar-bg: $primary !default;
+$horizontal-submenu-bg: $white !default;
+$horizontal-submenu-link-color: $gray-600 !default;
+$horizontal-submenu-link-hover-bg: #1b1b28 !default;
+$horizontal-submenu-link-hover-color: #187de4 !default;
+$horizontal-submenu-shadow-color: rgba(100,100,100,.1);
 
 // scss-docs-start theme-colors-map
 $theme-colors: (

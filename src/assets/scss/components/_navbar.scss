@@ -47,7 +47,7 @@
 
 .layout-horizontal {
     .header-top {
-        background-color: white;
+        background-color: $horizontal-header-bg;
         padding:1.1rem;
 
         .container {
@@ -70,7 +70,7 @@
         align-items: center;
     }
     .main-navbar  {
-        background-color: $primary;
+        background-color: $horizontal-navbar-bg;
         padding: 1rem;
         ul {
             list-style: none;
@@ -147,10 +147,10 @@
                     a {
                         padding: .6rem;
                         padding-right: 2rem;
-                        color: $gray-600;
+                        color: $horizontal-submenu-link-color;
                         display: block;
                         &:hover {
-                            color: $gray-800
+                            color: $horizontal-submenu-link-hover-color
                         }
                     }
                     &:hover {
