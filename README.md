@@ -17,15 +17,16 @@
 	<a href="http://zuramai.github.io/mazer/docs">Documentation Page</a>&nbsp;&nbsp;&nbsp;
 </p>
 
-## Installation
-
-1. Clone this repository or download as zip.
-
-```sh
-git clone https://github.com/zuramai/mazer
-```
-
-2. Open the `mazer/dist/index.html` file to see the dashboard.
+## Usage
+#### Using a ready-made built
+Download the latest release from the [releases page](https://github.com/zuramai/mazer/releases "releases page")
+Open the index HTML file and explore the source code.
+#### Building yourself
+- Clone the repository `git clone https://github.com/zuramai/mazer`
+- Install dependencies using the node package manager of your choice. For example run `npm install` 
+- Files are bundled by Laravel Mix to the dist folder.
+    - Either run `npm run hot` and open `http://localhost:8080` to see a hot-reloading copy of the generated files
+    - Or run `npm run watch`  (rebuilds on file changes) or `npm run production` and open `index.html` in from the dist folder.
 
 ## Community Mazer-based open sources
 
@@ -40,7 +41,7 @@ git clone https://github.com/zuramai/mazer
 
 ## Contributing
 
-Please follow [Contributing Guide](./CONTRIBUTING.md) before contribute.
+Please follow [Contributing Guide](./CONTRIBUTING.md) before contributing.
 
 ## License
 
@@ -48,7 +49,7 @@ Mazer is under [MIT License](./LICENSE).
 
 ## Author
 
-Mazer is created by <a href="https://ahmadsaugi.com">Ahmad Saugi</a>.
+Mazer is created by <a href="https://saugi.me">Saugi</a>.
 
 ## Donation
 
