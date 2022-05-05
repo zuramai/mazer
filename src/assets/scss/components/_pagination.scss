@@ -15,7 +15,7 @@
     &:not(.active) {
         .page-link {
             &:hover {
-                color: $black
+                color: $pagination-hover-color
             }
         }
     }

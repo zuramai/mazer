@@ -1,0 +1,256 @@
+@use 'sass:color';
+
+$theme-colors-light: (
+  'primary': rgba($primary, .6),
+  'secondary': rgba($secondary, .6),
+  'success': rgba($success, .6),
+  'danger': rgba($danger, .6),
+  'warning': rgba($warning, .6),
+  'info': rgba($info, .6),
+);
+
+$alert-colors: (
+    primary: (
+        text-color: #fff,
+        background-color: #435ebe
+    ),
+    secondary: (
+        text-color: #383d41,
+        background-color: #ebeef3
+    ),
+    success: (
+        text-color: #fff,
+        background-color: #4fbe87   
+    ),
+    warning: (
+        text-color: #fff,
+        background-color: #eaca4a,
+    ),
+    danger: (
+        text-color: #fff,
+        background-color: #f3616d,
+    ),
+    dark: (
+        text-color: #fff,
+        background-color: #454546,
+    ),
+    light: (
+        text-color: $body-color,
+        background-color: #f9f9f9,
+    ),
+    info: (
+        text-color: #fff,
+        background-color: #56b6f7,
+    ),
+);
+
+$sidebar-bg:                #1e1e2d;
+$sidebar-link-color:        #9899ac;
+$sidebar-link-hover-bg:         #282839;
+$sidebar-link-hover-color:      #fff;
+$sidebar-submenu-color:         $sidebar-link-color;
+$sidebar-submenu-hover-color:   $white;
+
+$card-box-shadow:                   -8px 12px 18px 0 rgba(25,42,70,.13);
+
+// Body
+$body-bg:                   #151521;
+$body-color:                #fff;
+
+// Pages
+$page-auth-bg:          #151521;
+$page-auth-right-bg:    linear-gradient(90deg, #151521, #151521) !default;
+$page-error-bg:         $body-bg;
+
+
+$link-color:                              $primary;
+$link-hover-color:                        shift-color($link-color, $link-shade-percentage);
+
+$component-active-color:      #9899ac;
+$component-active-bg:         $primary;
+
+$headings-color:              #fff;
+$text-muted:                  #7c8db5;
+$mark-bg:                     #fcf8e3;
+
+$table-color:                 $body-color;
+$table-border-color:          #eee;
+$table-striped-bg:            rgba($black, $table-striped-bg-factor);
+$table-active-bg:             rgba($black, $table-active-bg-factor);
+$table-hover-bg:              rgba($black, $table-hover-bg-factor);
+$table-group-separator-color: #dedede;
+$table-variants: (
+  "primary":    shift-color($primary, $table-bg-scale),
+  "secondary":  shift-color($secondary, $table-bg-scale),
+  "success":    shift-color($success, $table-bg-scale),
+  "info":       shift-color($info, $table-bg-scale),
+  "warning":    shift-color($warning, $table-bg-scale),
+  "danger":     shift-color($danger, $table-bg-scale),
+  "light":      $light,
+  "dark":       $dark,
+);
+
+$btn-active-box-shadow:       inset 0 3px 5px rgba($black, .125);
+$btn-link-color:              $link-color;
+$btn-link-hover-color:        $link-hover-color;
+$btn-link-disabled-color:     $gray-600;
+
+$divider-bg:    $gray-800;
+$divider-text-bg: $body-bg;
+
+$input-bg:                              #1b1b29;
+$input-btn-focus-color                  : $primary;
+$input-disabled-bg:                     #40404d;
+$input-disabled-border-color:           null !default;
+$input-placeholder-color:               $gray-500;
+$input-plaintext-color:                 $body-color;
+$input-color:                           $body-color;
+$input-border-color:                    #35354f;
+
+$input-focus-bg:                        $input-bg ;
+$input-focus-border-color:              #171723;
+$input-focus-color:                     $input-color;
+
+$input-group-addon-color:               #526e8a ;
+$input-group-addon-bg:                  lighten($input-bg, 5%);
+$input-group-addon-border-color:        $input-border-color;
+
+$form-check-input-bg:               #20202d;
+$form-check-input-border:           3px solid #393b42;
+$form-label-color:                  $body-color;
+$form-switch-color:                 $component-active-color;
+$form-switch-bg-image:              url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='#{$form-switch-color}'/></svg>") ;
+$form-select-color:                 $input-color;
+$form-select-border-color:          $input-border-color;
+$form-select-disabled-bg:           $input-disabled-bg;
+$form-select-bg:                    $input-bg;
+$form-select-disabled-bg:           $input-disabled-bg;
+$form-range-track-bg:               $gray-300;
+$form-range-thumb-disabled-bg:             $gray-500;
+$form-textarea-title-bg:             lighten($input-bg,10%);
+
+$nav-link-disabled-color:           $gray-600;
+$nav-tabs-border-color:             $gray-300;
+$nav-tabs-link-hover-border-color:  $gray-200 $gray-200 $nav-tabs-border-color;
+$nav-tabs-link-active-border-color: $gray-300 $gray-300 $nav-tabs-link-active-bg;
+
+$dropdown-color:                    #92929F;
+$dropdown-bg:                       #161b22;
+$dropdown-border-color:             rgba($black, .15);
+$dropdown-divider-bg:               rgb(189, 199, 209);
+$dropdown-box-shadow:               1px 4px 15px #f4f5f9;
+$dropdown-link-color:               $dropdown-color;
+$dropdown-link-hover-color:         $white;
+$dropdown-link-hover-bg:            tint-color($dropdown-bg, 5%);
+$dropdown-link-disabled-color:      $gray-600;
+$dropdown-header-color:             $gray-600;
+$dropdown-dark-color:               $gray-300;
+$dropdown-dark-bg:                  $gray-800;
+$dropdown-dark-link-hover-color:    $white;
+$dropdown-dark-link-hover-bg:       rgba($white, .15);
+$dropdown-dark-link-disabled-color: $gray-500;
+$dropdown-dark-header-color:        $gray-500;
+
+$pagination-color:                  #92929F;
+$pagination-border-color:           transparent;
+$pagination-bg:                     $body-bg;
+$pagination-border-color:           $body-bg;
+$pagination-focus-bg:               #212E48;
+$pagination-hover-color:            $white;
+$pagination-hover-bg:               tint-color($body-bg, 5%);
+$pagination-hover-border-color:     $body-bg;
+$pagination-focus-box-shadow:       none;
+$pagination-disabled-color:         $gray-600;
+$pagination-disabled-bg:            $black;
+$pagination-disabled-border-color:  $black;
+$pagination-active-color:           $component-active-color !default;
+$pagination-active-bg:              #3699FF !default;
+$pagination-active-border-color:    #3699FF !default;
+
+$card-border-color:                 rgba($black, .125);
+$card-bg:                           #1e1e2d;
+$card-cap-bg:                       #1e1e2d;
+
+$accordion-color:                         $body-color;
+$accordion-bg:                            transparent;
+$accordion-border-color:                  rgba($black, .125);
+$accordion-button-icon:         url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$accordion-icon-color}'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>");
+$accordion-button-active-icon:  url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{$accordion-icon-active-color}'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>");
+
+$tooltip-bg:                        $black;
+
+$popover-bg:                        $white;
+$popover-border-color:              rgba($black, .2);
+
+$toast-background-color:            rgba($white, .85);
+$toast-border-color:                rgba(0, 0, 0, .1);
+$toast-header-color:                $gray-600;
+$toast-header-background-color:     rgba($white, .85);
+$toast-header-border-color:         rgba(0, 0, 0, .05);
+
+$badge-color:                       $white;
+$border-color:                      $gray-400 !default;
+
+$modal-content-bg:                  $card-bg;
+$modal-content-border-color:        rgba($black, .2);
+$modal-backdrop-bg:                 $black;
+$modal-header-border-color:         $border-color;
+$modal-footer-border-color:         $modal-header-border-color;
+
+$progress-bar-color:                $white;
+$progress-bar-bg:                   $primary;
+
+
+$list-group-color:                  #afb0be !default;
+$list-group-action-hover-color:     $list-group-color;
+$list-group-bg:                     #151521;
+$list-group-hover-bg:               #101113;
+$list-group-border-color:           rgba($black, .125);
+$list-group-active-color:           $white;
+$list-group-active-bg:              #435ebe;
+$list-group-active-border-color:    $list-group-active-bg;
+$list-group-disabled-color:         $black;
+$list-group-action-color:           $gray-700;
+$list-group-action-active-bg:       lighten($list-group-bg, 10%);
+
+$thumbnail-border-color:            $gray-300;
+$figure-caption-color:              $gray-600;
+
+$breadcrumb-divider-color:          $gray-600;
+$breadcrumb-active-color:           $gray-600;
+
+$carousel-control-color:             $white;
+$carousel-indicator-active-bg:       $white;
+$carousel-caption-color:             $white;
+$carousel-dark-indicator-active-bg:  $black;
+$carousel-dark-caption-color:        $black;
+
+$btn-close-color:                   $black;
+$code-color:                        $pink;
+$kbd-color:                         $white;
+$kbd-bg:                            $gray-900;
+$pre-color:                         null;
+
+// Layout Horizontal
+$horizontal-header-bg: #171722;
+$horizontal-navbar-bg: #1a1a2d;
+$horizontal-submenu-bg: #1E1E2D;
+$horizontal-submenu-link-color: #9899ac;
+$horizontal-submenu-link-hover-bg: #1b1b28;
+$horizontal-submenu-link-hover-color: #187de4;
+$horizontal-submenu-shadow-color: rgba(27, 27, 27, 0.1);
+
+// External library
+// Choicesjs
+$choices-bg:            $form-select-bg;
+$choices-border-color:  $form-select-border-color;
+$choices-input-color:   $white;
+$choices-dropdown-bg:   $form-select-bg;
+$choices-dropdown-color:    $choices-input-color;
+$choices-highlight-bg:      lighten($card-bg, 5%);
+
+// Sweetalert
+$swal-popup-bg:                 $sidebar-bg;
+$swal-popup-color:              $white;
+$swal-confirm-button-bg:        #3699ff;
+$swal-confirm-button-bg-hover:  #187de4;

@@ -16,4 +16,5 @@ body .bi::before, [class^=bi-]::before, [class*=" bi-"]::before {
 // Perfect Scrollbar
 @import "~perfect-scrollbar/css/perfect-scrollbar.css";
 
-@import "./mazer.scss"
+// Mazer CSS
+@import "./mazer";

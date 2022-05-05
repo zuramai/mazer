@@ -1,0 +1,20 @@
+
+// Sweetalert2 Dark
+.swal2-popup, .swal2-validation-message {
+    background-color: $swal-popup-bg !important;
+    color: $swal-popup-color !important;
+}
+.swal2-title {
+    color: $swal-popup-color !important;
+}
+.swal2-styled.swal2-confirm {
+    background-color: $swal-confirm-button-bg !important;
+}
+.swal2-styled.swal2-confirm:hover {
+    background-color: $swal-confirm-button-bg-hover !important;
+}
+
+// Toggle theme
+.theme-toggle {
+    color: #9899ac;
+}

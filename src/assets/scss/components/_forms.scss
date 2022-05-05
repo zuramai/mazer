@@ -1,7 +1,7 @@
 .form-group {
     margin-bottom: .7rem;
     label {
-        color: rgb(35, 28, 99, .7);
+        color: $form-label-color;
         font-weight: 600;
     }
     small {
@@ -16,8 +16,11 @@
             left: 0;
             padding: 5px;
             font-size: .6rem;
-            background-color: $gray-200;
+            background-color: $form-textarea-title-bg;
             width: 100%;
+            border-width: 1px 1px 0 1px;
+            border-style: solid;
+            border-color: lighten($input-border-color, 5%);
             transition: $input-transition;
         }
         .form-control, dataTable-input {
@@ -146,6 +149,7 @@
     }
 }
 
+// Vendor: Datatable
 .dataTable-input {
     min-height: calc(1.5em + 0.934rem + 2px);
     padding: 0.467rem 0.6rem;
@@ -164,9 +168,25 @@
 
     &:focus {
         color: #555252;
-        background-color: white;
-        border-color: #5A8DEE;
+        background-color: $input-focus-bg;
+        border-color: $input-focus-border-color;
         outline: 0;
         box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.1);
     }
+}
+
+// Vendor: Choices
+.choices__inner {
+    background-color: $choices-bg;
+    border-color: $choices-border-color;
+}
+.choices__input {
+    background-color: $choices-bg;
+    color: $choices-input-color;
+}
+.choices__list {
+    background-color: $choices-dropdown-bg;
+}
+.choices__list--dropdown .choices__item--selectable.is-highlighted {
+    background-color: $choices-highlight-bg;
 }
