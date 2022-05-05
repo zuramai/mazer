@@ -128,16 +128,21 @@ $dark:          $gray-900 !default;
 
 // Mazer Variables
 
-$sidebar-bg: #fff;
-$sidebar-link-color: #25396f;
-$sidebar-link-hover-bg:         rgb(240, 241, 245);
-$sidebar-link-hover-color:      #25396f;
-$sidebar-submenu-color:         $sidebar-link-color;
-$sidebar-submenu-hover-color:   $primary;
+$sidebar-bg: #fff !default;
+$sidebar-link-color: #25396f !default;
+$sidebar-link-hover-bg:         rgb(240, 241, 245) !default;
+$sidebar-link-hover-color:      #25396f !default;
+$sidebar-submenu-color:         $sidebar-link-color !default;
+$sidebar-submenu-hover-color:   $primary !default;
 
 // Pages
-$page-auth-bg:   $white;
-$page-error-bg:  #ebf3ff;
+$page-auth-bg:   $white !default;
+$page-error-bg:  #ebf3ff !default;
+
+// Divider
+$divider-bg:    #DFE3E7 !default;
+$divider-text-bg: $white !default;
+
 
 // scss-docs-start theme-colors-map
 $theme-colors: (
