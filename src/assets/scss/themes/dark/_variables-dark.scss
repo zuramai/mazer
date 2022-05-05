@@ -115,10 +115,11 @@ $input-group-addon-color:               #526e8a ;
 $input-group-addon-bg:                  lighten($input-bg, 5%);
 $input-group-addon-border-color:        $input-border-color;
 
-$form-check-input-bg:                     #20202d;
-$form-check-input-border:                 3px solid #393b42;
-$form-label-color:                      $body-color;
-$form-switch-color:               rgba(0, 0, 0, .25);
+$form-check-input-bg:               #20202d;
+$form-check-input-border:           3px solid #393b42;
+$form-label-color:                  $body-color;
+$form-switch-color:                 $component-active-color;
+$form-switch-bg-image:              url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='#{$form-switch-color}'/></svg>") ;
 $form-select-color:                 $input-color;
 $form-select-border-color:          $input-border-color;
 $form-select-disabled-bg:           $input-disabled-bg;
