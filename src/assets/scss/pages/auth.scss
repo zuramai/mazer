@@ -1,5 +1,4 @@
 @import "../variables";
-@import "../variables-dark";
 
 body {
     background-color: $page-auth-bg;
@@ -10,7 +9,7 @@ body {
     
     #auth-right {
         height: 100%;
-        background:  url(../../images/bg/4853433.png), linear-gradient(90deg, #151521, #151521);
+        background:  url(../../images/bg/4853433.png), $page-auth-right-bg;
     }
     #auth-left {
         padding: 5rem 8rem;
@@ -36,5 +35,14 @@ body {
         @media screen and (max-width: 576px) {
             padding: 5rem 3rem;
         }
+    }
+}
+
+.theme-dark {
+    @import "../themes/dark/variables-dark";
+    @debug $page-auth-right-bg;
+
+    #auth-right {
+        background:  url(../../images/bg/4853433.png), $page-auth-right-bg;
     }
 }

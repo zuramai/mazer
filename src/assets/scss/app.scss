@@ -1,6 +1,5 @@
 // Import mazer Variables
 @import "./variables";
-@import "./variables-dark";
 
 // Bootstrap + Icons
 @import "~bootstrap/scss/bootstrap";
@@ -18,7 +17,4 @@ body .bi::before, [class^=bi-]::before, [class*=" bi-"]::before {
 @import "~perfect-scrollbar/css/perfect-scrollbar.css";
 
 // Mazer CSS
-@import "./mazer.scss";
-
-// Additional dark-mode CSS
-@import "./mazer-dark.scss";
+@import "./mazer";

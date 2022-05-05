@@ -137,6 +137,7 @@ $sidebar-submenu-hover-color:   $primary !default;
 
 // Pages
 $page-auth-bg:   $white !default;
+$page-auth-right-bg:   linear-gradient(90deg, #2d499d,#3f5491) !default;
 $page-error-bg:  #ebf3ff !default;
 
 // Divider
@@ -306,6 +307,7 @@ $enable-transitions:          true !default;
 $enable-reduced-motion:       true !default;
 $enable-smooth-scroll:        true !default;
 $enable-grid-classes:         true !default;
+$enable-cssgrid:              false !default;
 $enable-button-pointers:      true !default;
 $enable-rfs:                  true !default;
 $enable-validation-icons:     true !default;
@@ -360,6 +362,38 @@ $body-bg:                   #f2f7ff !default;
 $body-color:                #607080 !default;
 $body-text-align:           null !default;
 
+// Utilities maps
+//
+// Extends the default `$theme-colors` maps to help create our utilities.
+
+// Come v6, we'll de-dupe these variables. Until then, for backward compatibility, we keep them to reassign.
+// scss-docs-start utilities-colors
+$utilities-colors: $theme-colors-rgb !default;
+// scss-docs-end utilities-colors
+
+// scss-docs-start utilities-text-colors
+$utilities-text: map-merge(
+  $utilities-colors,
+  (
+    "black": to-rgb($black),
+    "white": to-rgb($white),
+    "body": to-rgb($body-color)
+  )
+) !default;
+$utilities-text-colors: map-loop($utilities-text, rgba-css-var, "$key", "text") !default;
+// scss-docs-end utilities-text-colors
+
+// scss-docs-start utilities-bg-colors
+$utilities-bg: map-merge(
+  $utilities-colors,
+  (
+    "black": to-rgb($black),
+    "white": to-rgb($white),
+    "body": to-rgb($body-bg)
+  )
+) !default;
+$utilities-bg-colors: map-loop($utilities-bg, rgba-css-var, "$key", "bg") !default;
+// scss-docs-end utilities-bg-colors
 
 // Links
 //
@@ -469,6 +503,7 @@ $caret-spacing:               $caret-width * .85 !default;
 $transition-base:             all .2s ease-in-out !default;
 $transition-fade:             opacity .15s linear !default;
 $transition-collapse:         height .35s ease !default;
+$transition-collapse-width:   width .35s ease !default;
 
 // stylelint-disable function-disallowed-list
 // scss-docs-start aspect-ratios
@@ -782,6 +817,7 @@ $input-height-lg:                       add($input-line-height * 1em, add($input
 
 $input-transition:                      border-color .15s ease-in-out, box-shadow .15s ease-in-out !default;
 
+$form-color-width:                      3rem !default;
 
 $form-check-input-width:                  1.2em !default;
 $form-check-min-height:                   $font-size-base * $line-height-base !default;
@@ -872,10 +908,13 @@ $form-select-focus-box-shadow:    0 0 0 $form-select-focus-width $input-btn-focu
 $form-select-padding-y-sm:        $input-padding-y-sm !default;
 $form-select-padding-x-sm:        $input-padding-x-sm !default;
 $form-select-font-size-sm:        $input-font-size-sm !default;
+$form-select-border-radius-sm:    $input-border-radius-sm !default;
 
 $form-select-padding-y-lg:        $input-padding-y-lg !default;
 $form-select-padding-x-lg:        $input-padding-x-lg !default;
 $form-select-font-size-lg:        $input-font-size-lg !default;
+$form-select-border-radius-lg:    $input-border-radius-lg !default;
+$form-select-transition:          $input-transition !default;
 
 $form-range-track-width:          100% !default;
 $form-range-track-height:         .5rem !default;
@@ -945,9 +984,11 @@ $form-validation-states: (
 $zindex-dropdown:                   1000 !default;
 $zindex-sticky:                     1020 !default;
 $zindex-fixed:                      1030 !default;
+$zindex-offcanvas-backdrop:         1040 !default;
 $zindex-modal-backdrop:             1040 !default;
 $zindex-modal:                      1050 !default;
 $zindex-popover:                    1060 !default;
+$zindex-offcanvas:                  1045 !default;
 $zindex-tooltip:                    1070 !default;
 // scss-docs-end zindex-stack
 
@@ -1102,6 +1143,16 @@ $pagination-transition:              color .15s ease-in-out, background-color .1
 
 $pagination-border-radius-sm:       $border-radius-sm !default;
 $pagination-border-radius-lg:       $border-radius-lg !default;
+
+
+// Placeholders
+
+// scss-docs-start placeholders
+$placeholder-opacity-max:           .5 !default;
+$placeholder-opacity-min:           .2 !default;
+// scss-docs-end placeholders
+
+
 // Cards
 
 $card-spacer-y:                     $spacer !default;
@@ -1132,6 +1183,7 @@ $accordion-bg:                            transparent !default;
 $accordion-border-width:                  $border-width !default;
 $accordion-border-color:                  rgba($black, .125) !default;
 $accordion-border-radius:                 $border-radius !default;
+$accordion-inner-border-radius:           subtract($accordion-border-radius, $accordion-border-width) !default;
 
 $accordion-body-padding-y:                $accordion-padding-y !default;
 $accordion-body-padding-x:                $accordion-padding-x !default;
@@ -1432,6 +1484,24 @@ $btn-close-hover-opacity:    .75 !default;
 $btn-close-focus-opacity:    1 !default;
 $btn-close-disabled-opacity: .25 !default;
 $btn-close-white-filter:     invert(1) grayscale(100%) brightness(200%) !default;
+
+// Offcanvas
+
+// scss-docs-start offcanvas-variables
+$offcanvas-padding-y:               $modal-inner-padding !default;
+$offcanvas-padding-x:               $modal-inner-padding !default;
+$offcanvas-horizontal-width:        400px !default;
+$offcanvas-vertical-height:         30vh !default;
+$offcanvas-transition-duration:     .3s !default;
+$offcanvas-border-color:            $modal-content-border-color !default;
+$offcanvas-border-width:            $modal-content-border-width !default;
+$offcanvas-title-line-height:       $modal-title-line-height !default;
+$offcanvas-bg-color:                $modal-content-bg !default;
+$offcanvas-color:                   $modal-content-color !default;
+$offcanvas-box-shadow:              $modal-content-box-shadow-xs !default;
+$offcanvas-backdrop-bg:             $modal-backdrop-bg !default;
+$offcanvas-backdrop-opacity:        $modal-backdrop-opacity !default;
+// scss-docs-end offcanvas-variables
 
 // Code
 

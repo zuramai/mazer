@@ -17,6 +17,7 @@ mix
   // Attention: put all generated css files directly into a subfolder
   // of assets/css. Resource loading might fail otherwise.
   .sass(`${assetsPath}scss/app.scss`, "assets/css/main")
+  .sass(`${assetsPath}scss/themes/dark/app-dark.scss`, "assets/css/main")
   .sass(`${assetsPath}scss/pages/auth.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/error.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/pages/email.scss`, "assets/css/pages")

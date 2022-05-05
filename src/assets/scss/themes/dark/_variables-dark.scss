@@ -58,8 +58,9 @@ $body-bg:                   #151521;
 $body-color:                #fff;
 
 // Pages
-$page-auth-bg:   #151521;
-$page-error-bg:  $body-bg;
+$page-auth-bg:          #151521;
+$page-auth-right-bg:    linear-gradient(90deg, #151521, #151521) !default;
+$page-error-bg:         $body-bg;
 
 
 $link-color:                              $primary;

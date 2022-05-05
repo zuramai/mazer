@@ -1,5 +1,4 @@
 @import "../variables";
-@import "../variables-dark";
 
 #error {
     background-color: $page-error-bg;
@@ -11,5 +10,11 @@
     .error-title {
         font-size: 4rem;
         margin-top: 3rem;
+    }
+}
+.theme-dark {
+    #error {
+        @import "../themes/dark/variables-dark";
+        background-color: $page-error-bg;
     }
 }
