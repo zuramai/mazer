@@ -7,7 +7,7 @@
 
 [![All Contributors](https://img.shields.io/github/contributors/zuramai/mazer)](https://github.com/zuramai/mazer/graphs/contributors)
 ![GitHub last commit](https://img.shields.io/github/last-commit/zuramai/mazer.svg)
-![GitHub repo size in bytes](https://img.shields.io/github/repo-size/badges/shields.svg)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/zuramai/mazer)
 [![License](https://img.shields.io/github/license/zuramai/mazer.svg)](LICENSE)
 
 </div>
