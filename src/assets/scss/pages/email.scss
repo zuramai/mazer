@@ -576,7 +576,7 @@
     }
 }
 
-.theme-dark {
+body.theme-dark {
     .email-application .content-area-wrapper {
         border: 1px solid #2a2f3e;
     }
@@ -629,7 +629,7 @@
         border: 1px solid #373752;
     }
 
-    .theme-dark .form-check-input {
+    body.theme-dark .form-check-input {
         background-color: #151521;
         border: 2px solid #435ebe;
     }

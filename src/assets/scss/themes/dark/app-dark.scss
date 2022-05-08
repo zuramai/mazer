@@ -6,7 +6,7 @@
 @import "~bootstrap/scss/mixins";
 @import "./root";
 
-.theme-dark {
+body.theme-dark {
     // Bootstrap 
     @import "~bootstrap/scss/utilities";
     @import "~bootstrap/scss/reboot";
