@@ -1,50 +1,55 @@
-let bodyClass = document.body.classList
-let toggler = document.getElementById("toggle-dark")
+const THEME_KEY = "theme";
+const THEME_REGEX = /\btheme-[a-z0-9]+\b/g;
+const toggler = document.getElementById("toggle-dark");
 
-export function toggleTheme() {
-    if(bodyClass.contains("theme-dark"))
-        bodyClass.remove("theme-dark")
-    else 
-        bodyClass.add("theme-dark")
+export function toggleDarkTheme() {
+  setTheme(
+    document.body.classList.contains("theme-dark")
+      ? "theme-light"
+      : "theme-dark"
+  );
 }
 
 /**
  * Set theme for mazer
- * @param {"theme-dark"|"theme-light"} theme 
+ * @param {"theme-dark"|"theme-light"} theme
  */
-export function setTheme(theme) {
-    document.body.className = ""
-    console.log("change theme to ", theme);
-    bodyClass.add(theme)
-    localStorage.setItem(THEME_KEY, theme)
-    toggler.checked = theme == "theme-dark"
+export function setTheme(theme, dontPersist = false) {
+  document.body.className = document.body.className.replace(THEME_REGEX, "");
+  console.log("change theme to ", theme);
+  document.body.classList.add(theme);
+  toggler.checked = theme == "theme-dark";
+
+  if (!dontPersist) {
+    localStorage.setItem(THEME_KEY, theme);
+  }
 }
 
-toggler.addEventListener('input', e => {
-    setTheme(e.target.checked ? "theme-dark" : "theme-light")
-})
+toggler.addEventListener("input", (e) => {
+  setTheme(e.target.checked ? "theme-dark" : "theme-light");
+});
 
-window.onload = () => {
-    console.log("Dark Loaded");
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("Dark Loaded");
 
-    if(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-    
-        if(localStorage.getItem(THEME_KEY) == "theme-light") {
-            return setTheme("theme-light")
-        } 
-        
-        setTheme("theme-dark")
-    } else {
-        
-        if(localStorage.getItem(THEME_KEY) == "theme-dark") {
-            return setTheme("theme-dark")
-        } 
+  //If the user manually set a theme, we'll load that
+  let storedTheme;
+  if ((storedTheme = localStorage.getItem(THEME_KEY))) {
+    return setTheme(storedTheme);
+  }
 
-        setTheme("theme-light")
+  //Detect if the user set his preferred color scheme to dark
+  if (!window.matchMedia) {
+    return;
+  }
 
-    }
-}
+  //Media query to detect dark preference
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
-const THEME_KEY = "theme"
+  //Register change listener
+  mediaQuery.addEventListener("change", (e) =>
+    setTheme(e.matches ? "theme-dark" : "theme-light", true)
+  );
 
-
+  return setTheme(mediaQuery.matches ? "theme-dark" : "theme-light", true);
+});

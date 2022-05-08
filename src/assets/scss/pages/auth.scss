@@ -38,7 +38,7 @@ body {
     }
 }
 
-.theme-dark {
+body.theme-dark {
     @import "../themes/dark/variables-dark";
     @debug $page-auth-right-bg;
 
