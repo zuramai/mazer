@@ -18,12 +18,11 @@ export function setTheme(theme, dontPersist = false) {
   document.body.className = document.body.className.replace(THEME_REGEX, "");
   console.log("change theme to ", theme);
   document.body.classList.add(theme);
+  toggler.checked = theme == "theme-dark";
 
   if (!dontPersist) {
     localStorage.setItem(THEME_KEY, theme);
   }
-  
-  toggler.checked = theme == "theme-dark";
 }
 
 toggler.addEventListener("input", (e) => {
