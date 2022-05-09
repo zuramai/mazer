@@ -55,7 +55,7 @@ $card-box-shadow:                   -8px 12px 18px 0 rgba(25,42,70,.13);
 
 // Body
 $body-bg:                   #151521;
-$body-color:                rgb(243, 243, 243);
+$body-color:                #c2c2d9;
 
 // Pages
 $page-auth-bg:          #151521;
@@ -74,11 +74,12 @@ $text-muted:                  #7c8db5;
 $mark-bg:                     #fcf8e3;
 
 $table-color:                 $body-color;
-$table-border-color:          #eee;
+$table-border-color:          rgb(63, 63, 63);
 $table-striped-bg:            rgba($black, $table-striped-bg-factor);
 $table-active-bg:             rgba($black, $table-active-bg-factor);
-$table-hover-bg:              rgba($black, $table-hover-bg-factor);
-$table-group-separator-color: #dedede;
+$table-hover-color:           $white;
+$table-hover-bg:              rgba($white, $table-hover-bg-factor);
+$table-group-separator-color: #707070;
 $table-variants: (
   "primary":    shift-color($primary, $table-bg-scale),
   "secondary":  shift-color($secondary, $table-bg-scale),
