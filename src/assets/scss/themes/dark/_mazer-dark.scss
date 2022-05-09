@@ -14,6 +14,14 @@
     background-color: $swal-confirm-button-bg-hover !important;
 }
 
+// Apexcharts
+.apexcharts-text tspan {
+    fill: $body-color !important;
+}
+.apexcharts-legend-text {
+    color: $body-color !important;
+}
+
 // Toggle theme
 .theme-toggle {
     color: #9899ac;
