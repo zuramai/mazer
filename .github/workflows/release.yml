@@ -13,6 +13,19 @@ on:
         type: boolean
         description: Is it pre-release version?
 
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       version: 
+#         required: true
+#         type: string
+#         description: Release version number (semver)
+#       prerelease: 
+#         required: false
+#         default: false
+#         type: boolean
+#         description: Is it pre-release version?
+
 jobs:
   release:
     runs-on: ubuntu-latest
