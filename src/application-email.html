@@ -26,14 +26,14 @@
                 <div class="sidebar-content email-app-sidebar d-flex">
                     <!-- sidebar close icon -->
                     <span class="sidebar-close-icon">
-                        <i class="bx bx-x"></i>
+                        <i class="bi bi-x"></i>
                     </span>
                     <!-- sidebar close icon -->
                     <div class="email-app-menu">
                         <div class="form-group form-group-compose">
                             <!-- compose button  -->
                             <button type="button" class="btn btn-primary btn-block my-4 compose-btn">
-                                <i class="bx bx-plus"></i>
+                                <i class="bi bi-plus"></i>
                                 Compose
                             </button>
                         </div>
@@ -145,7 +145,7 @@
                         <div class="card-header">
                             <h3 class="card-title" id="emailCompose">New Message</h3>
                             <button type="button" class="close close-icon">
-                                <i class="bx bx-x"></i>
+                                <i class="bi bi-x"></i>
                             </button>
                         </div>
                         <!-- form start -->
@@ -244,11 +244,11 @@
                             </div>
                             <div class="card-footer d-flex justify-content-end pt-0">
                                 <button type="reset" class="btn btn-light-secondary cancel-btn mr-1">
-                                    <i class="bx bx-x me-3"></i>
+                                    <i class="bi bi-x me-3"></i>
                                     <span class="d-sm-inline d-none">Cancel</span>
                                 </button>
                                 <button type="submit" class="btn-send btn btn-primary">
-                                    <i class="bx bx-send me-3"></i> <span class="d-sm-inline d-none">Send</span>
+                                    <i class="bi bi-send me-3"></i> <span class="d-sm-inline d-none">Send</span>
                                 </button>
                             </div>
                         </form>
@@ -327,12 +327,12 @@
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-right"
                                                         aria-labelledby="folder">
-                                                        <a class="dropdown-item" href="#"><i class="bx bx-edit"></i>
+                                                        <a class="dropdown-item" href="#"><i class="bi bi-edit"></i>
                                                             Draft</a>
                                                         <a class="dropdown-item" href="#"><i
-                                                                class="bx bx-info-circle"></i>Spam</a>
+                                                                class="bi bi-info-circle"></i>Spam</a>
                                                         <a class="dropdown-item" href="#"><i
-                                                                class="bx bx-trash"></i>Trash</a>
+                                                                class="bi bi-trash"></i>Trash</a>
                                                     </div>
                                                 </div>
                                             </li>
@@ -383,11 +383,13 @@
                                     <!-- action right start here -->
                                     <div
                                         class="action-right d-flex flex-grow-1 align-items-center justify-content-around">
+                                        <div class="sidebar-toggle d-block d-lg-none">
+                                            <button class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-list fs-5" ></i>
+                                            </button>
+                                        </div>
                                         <!-- search bar  -->
                                         <div class="email-fixed-search flex-grow-1">
-                                            <div class="sidebar-toggle d-block d-lg-none">
-                                                <i class="bx bx-menu"></i>
-                                            </div>
 
                                             <div class="form-group position-relative  mb-0 has-icon-left">
                                                 <input type="text" class="form-control" placeholder="Search email..">
@@ -401,13 +403,13 @@
                                         </div>
                                         <!-- pagination and page count -->
                                         <span class="d-none d-sm-block">1-10 of 653</span>
-                                        <button class="btn btn-icon email-pagination-prev d-none d-sm-block">
+                                        <button class="btn btn-icon email-pagination-prev action-button d-none d-sm-block">
                                             <svg class="bi" width="1.5em" height="1.5em" fill="currentColor">
                                                 <use
                                                     xlink:href="assets/images/bootstrap-icons.svg#chevron-left" />
                                             </svg>
                                         </button>
-                                        <button class="btn btn-icon email-pagination-next d-none d-sm-block">
+                                        <button class="btn btn-icon email-pagination-next action-button d-none d-sm-block">
                                             <svg class="bi" width="1.5em" height="1.5em" fill="currentColor">
                                                 <use
                                                     xlink:href="assets/images/bootstrap-icons.svg#chevron-right" />
@@ -555,7 +557,7 @@
                                                     </p>
                                                     <div class="mail-meta-item">
                                                         <span class="float-right d-flex align-items-center">
-                                                            <i class="bx bx-paperclip me-3"></i>
+                                                            <i class="bi bi-paperclip me-3"></i>
                                                             <span class="bullet bullet-success bullet-sm"></span>
                                                         </span>
                                                     </div>
@@ -605,7 +607,7 @@
                                                     </p>
                                                     <div class="mail-meta-item">
                                                         <span class="float-right d-flex align-items-center">
-                                                            <i class="bx bx-paperclip me-3"></i>
+                                                            <i class="bi bi-paperclip me-3"></i>
                                                             <span class="bullet bullet-warning bullet-sm"></span>
                                                         </span>
                                                     </div>
@@ -654,7 +656,7 @@
                                                     </p>
                                                     <div class="mail-meta-item">
                                                         <span class="float-right d-flex align-items-center">
-                                                            <i class="bx bx-paperclip me-3"></i>
+                                                            <i class="bi bi-paperclip me-3"></i>
                                                             <span class="bullet bullet-warning bullet-sm"></span>
                                                         </span>
                                                     </div>
@@ -1003,7 +1005,7 @@
 
                                     <!-- no result when nothing to show on list -->
                                     <div class="no-results">
-                                        <i class="bx bx-error-circle font-large-2"></i>
+                                        <i class="bi bi-error-circle font-large-2"></i>
                                         <h5>No Items Found</h5>
                                     </div>
                                     <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
@@ -1062,11 +1064,11 @@
                                                 </button>
                                                 <div class="dropdown-menu dropdown-menu-right"
                                                     aria-labelledby="open-mail-menu">
-                                                    <a class="dropdown-item" href="#"><i class="bx bx-edit"></i>
+                                                    <a class="dropdown-item" href="#"><i class="bi bi-edit"></i>
                                                         Draft</a>
-                                                    <a class="dropdown-item" href="#"><i class="bx bx-info-circle"></i>
+                                                    <a class="dropdown-item" href="#"><i class="bi bi-info-circle"></i>
                                                         Spam</a>
-                                                    <a class="dropdown-item" href="#"><i class="bx bx-trash"></i>
+                                                    <a class="dropdown-item" href="#"><i class="bi bi-trash"></i>
                                                         Trash</a>
                                                 </div>
                                             </div>
@@ -1110,12 +1112,12 @@
                                         </li>
                                         <li class="list-inline-item">
                                             <button class="btn btn-icon email-pagination-prev action-icon">
-                                                <i class="bx bx-chevron-left"></i>
+                                                <i class="bi bi-chevron-left"></i>
                                             </button>
                                         </li>
                                         <li class="list-inline-item">
                                             <button class="btn btn-icon email-pagination-next action-icon">
-                                                <i class="bx bx-chevron-right"></i>
+                                                <i class="bi bi-chevron-right"></i>
                                             </button>
                                         </li>
                                     </ul>
@@ -1149,26 +1151,26 @@
                                                     <div class="information d-sm-flex d-none align-items-center">
                                                         <small class="text-muted me-3">15 Jul 2019, 10:30</small>
                                                         <span class="favorite">
-                                                            <i class="bx bx-star me-3"></i>
+                                                            <i class="bi bi-star me-3"></i>
                                                         </span>
                                                         <div class="dropdown">
                                                             <a href="#" class="dropdown-toggle" id="fisrt-open-submenu"
                                                                 data-toggle="dropdown" aria-haspopup="true"
                                                                 aria-expanded="false">
-                                                                <i class="bx bx-dots-vertical-rounded mr-0"></i>
+                                                                <i class="bi bi-dots-vertical-rounded mr-0"></i>
                                                             </a>
                                                             <div class="dropdown-menu dropdown-menu-right"
                                                                 aria-labelledby="fisrt-open-submenu">
                                                                 <a href="#" class="dropdown-item mail-reply">
-                                                                    <i class="bx bx-share"></i>
+                                                                    <i class="bi bi-share"></i>
                                                                     Reply
                                                                 </a>
                                                                 <a href="#" class="dropdown-item">
-                                                                    <i class="bx bx-redo"></i>
+                                                                    <i class="bi bi-redo"></i>
                                                                     Forward
                                                                 </a>
                                                                 <a href="#" class="dropdown-item">
-                                                                    <i class="bx bx-info-circle"></i>
+                                                                    <i class="bi bi-info-circle"></i>
                                                                     Report Spam
                                                                 </a>
                                                             </div>
@@ -1235,29 +1237,29 @@
                                                         </div>
                                                     </div>
                                                     <div class="information d-sm-flex d-none align-items-center">
-                                                        <i class="bx bx-paperclip me-3"></i>
+                                                        <i class="bi bi-paperclip me-3"></i>
                                                         <small class="text-muted me-3">10 Jul 2019, 10:30</small>
                                                         <span class="favorite">
-                                                            <i class="bx bx-star me-3"></i>
+                                                            <i class="bi bi-star me-3"></i>
                                                         </span>
                                                         <div class="dropdown">
                                                             <a href="#" class="dropdown-toggle" id="second-open-submenu"
                                                                 data-toggle="dropdown" aria-haspopup="true"
                                                                 aria-expanded="false">
-                                                                <i class="bx bx-dots-vertical-rounded mr-0"></i>
+                                                                <i class="bi bi-dots-vertical-rounded mr-0"></i>
                                                             </a>
                                                             <div class="dropdown-menu dropdown-menu-right"
                                                                 aria-labelledby="second-open-submenu">
                                                                 <a href="#" class="dropdown-item mail-reply">
-                                                                    <i class="bx bx-share"></i>
+                                                                    <i class="bi bi-share"></i>
                                                                     Reply
                                                                 </a>
                                                                 <a href="#" class="dropdown-item">
-                                                                    <i class="bx bx-redo"></i>
+                                                                    <i class="bi bi-redo"></i>
                                                                     Forward
                                                                 </a>
                                                                 <a href="#" class="dropdown-item">
-                                                                    <i class="bx bx-info-circle"></i>
+                                                                    <i class="bi bi-info-circle"></i>
                                                                     Report Spam
                                                                 </a>
                                                             </div>
@@ -1343,20 +1345,20 @@
                                                             <a href="#" class="dropdown-toggle" id="third-open-menu"
                                                                 data-toggle="dropdown" aria-haspopup="true"
                                                                 aria-expanded="false">
-                                                                <i class="bx bx-dots-vertical-rounded mr-0"></i>
+                                                                <i class="bi bi-dots-vertical-rounded mr-0"></i>
                                                             </a>
                                                             <div class="dropdown-menu dropdown-menu-right"
                                                                 aria-labelledby="second-open-submenu">
                                                                 <a href="#" class="dropdown-item mail-reply">
-                                                                    <i class="bx bx-share"></i>
+                                                                    <i class="bi bi-share"></i>
                                                                     Reply
                                                                 </a>
                                                                 <a href="#" class="dropdown-item">
-                                                                    <i class="bx bx-redo"></i>
+                                                                    <i class="bi bi-redo"></i>
                                                                     Forward
                                                                 </a>
                                                                 <a href="#" class="dropdown-item">
-                                                                    <i class="bx bx-info-circle"></i>
+                                                                    <i class="bi bi-info-circle"></i>
                                                                     Report Spam
                                                                 </a>
                                                             </div>
@@ -1486,7 +1488,7 @@
                                                             </span>
                                                         </div>
                                                         <button class="btn btn-primary send-btn">
-                                                            <i class="bx bx-send me-3"></i>
+                                                            <i class="bi bi-send me-3"></i>
                                                             <span class="d-none d-sm-inline"> Send</span>
                                                         </button>
                                                     </div>
@@ -1513,4 +1515,14 @@
 {% endblock %}
 {% block styles %}
 <link rel="stylesheet" href="assets/css/pages/email.css">
+{% endblock %}
+{% block js %}
+<script>
+    document.querySelector('.sidebar-toggle').addEventListener('click', () => {
+        document.querySelector('.email-app-sidebar').classList.toggle('show')
+    })
+    document.querySelector('.sidebar-close-icon').addEventListener('click', () => {
+        document.querySelector('.email-app-sidebar').classList.remove('show')
+    })
+</script>
 {% endblock %}
