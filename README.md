@@ -1,6 +1,6 @@
 <h1 align="center">Mazer Dashboard</h1>
 
-![Screenshot](https://raw.githubusercontent.com/zuramai/mazer/main/screenshot.png)
+![Mazer Screenshot](https://user-images.githubusercontent.com/45036724/167523601-9d20fb17-1989-488f-b619-cb53c0db8898.png)
 
 <p align="center">Mazer is an Admin Dashboard Template that can help you develop faster. Made with Bootstrap 5. No jQuery dependency.</p>
 <div align="center">
@@ -30,7 +30,6 @@ Open the index HTML file and explore the source code.
 
 ## Community Mazer-based open sources
 
-- [Mazer Dark Mode](https://github.com/kazemyavari/mazer-dark) by [@kazemyavari](https://github.com/kazemyavari/mazer-dark) 
 - [CodeIgniter 4](https://github.com/irsyadulibad/mazer-codeigniter) by [@irsyadulibad](https://github.com/irsyadulibad)
 - [Laravel + Livewire](https://github.com/zuramai/laravel-mazer) (unmaintained, looking for maintainer)
 - [NuxtJS](https://github.com/fauzan121002/mazer-nuxt) by [@fncolon](https://github.com/fncolon)
