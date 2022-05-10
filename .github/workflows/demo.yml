@@ -3,7 +3,7 @@ name: Deploy demo to docs
 # Will run on 2.0.0-rc.1 branch
 on:
   push:
-    branches: [ "2.0.0-rc.1" ]
+    branches: [ "main" ]
   
 jobs:
   build:
