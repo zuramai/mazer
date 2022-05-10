@@ -11,7 +11,7 @@
     "production": "mix --production",
     "rtl": "rtlcss -d \"dist/assets/css\" -e \".rtl.css\" && find . -type f -name '*.rtl.rtl.css' -delete",
     "prod-rtl": "mix --production && rtl",
-    "prodzip": "mix --production && bestzip dist.zip dist/*"
+    "zip": "bestzip dist.zip dist/*"
   },
   "author": "zuramai",
   "license": "MIT",
@@ -60,7 +60,6 @@
     "browser-sync": "^2.27.3",
     "browser-sync-webpack-plugin": "^2.0.1",
     "laravel-mix-nunjucks": "^1.1.0",
-    "laravel-mix-purgecss": "^6.0.0",
     "postcss": "^8.3.5",
     "release-it": "^14.14.2",
     "resolve-url-loader": "^3.1.4",
