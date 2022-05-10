@@ -4,3 +4,5 @@
 
 # ignore code scanning from package-lock
 package-lock.json
+
+dist.zip

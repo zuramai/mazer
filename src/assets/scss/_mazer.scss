@@ -1,0 +1,103 @@
+/*
+* Mazer, Technology Innovations Bootstrap HTML5 Landing Page
+* 
+* File: app.scss
+*
+* If you want to edit the components, just go to _variables.scss
+*/
+
+/**
+
+====== TABLE OF CONTENTS =======
+1. Mixins
+2. Bootstrap Components Override 
+    2.1 Alert
+    2.2 Avatar
+    2.3 Badge
+    2.4 Buttons
+    2.5 Breadcrumb
+    2.6 Carousel
+    2.7 Card
+    2.8 Divider
+    2.9 Dropdowns
+    2.10 Forms
+    2.11 Modal
+    2.12 Sidebar
+    2.13 Navs
+    2.14 Navbar
+    2.15 Pagination
+    2.16 Table
+    2.17 Progress
+4. Pages
+    4.0 Layout
+    4.1 Auth
+    4.2 Error
+5. Utilities
+
+
+*/
+
+// 1. Mixins
+@import "./mixins/navbar";
+
+// 2. Bootstrap Components Override
+
+// - 2.1. Alert
+@import "./components/alert";
+
+// - 2.2. Avatar
+@import "./components/avatar";
+
+// - 2.3. Badge
+@import "./components/badge";
+
+// - 2.4. Buttons
+@import "./components/buttons";
+
+// - 2.5. breadcrumb
+@import "./components/breadcrumb";
+
+// - 2.6. carousel
+@import "./components/carousel";
+
+// - 2.7. card
+@import "./components/card";
+
+// - 2.8. divider
+@import "./components/divider";
+
+// - 2.9. dropdowns
+@import "./components/dropdowns";
+
+// - 2.10. forms
+@import "./components/forms";
+
+// - 2.11. modal
+@import "./components/modal";
+
+// - 2.12. sidebar
+@import "./components/sidebar";
+
+// - 2.13. navs
+@import "./components/navs";
+
+// - 2.14. navbar
+@import "./components/navbar";
+
+// - 2.15. pagination
+@import "./components/pagination";
+
+// - 2.16. table
+@import "./components/table";
+
+// - 2.17. progress
+@import "./components/progress";
+
+// - 2.18. icons
+@import "./components/icons";
+
+// - 4.0 Layout
+@import "./layouts/main.scss";
+
+// - 5.0 Utilities
+@import "./utilities"

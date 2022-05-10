@@ -1,12 +1,20 @@
+@import "../variables";
+
 #error {
-    height: 100vh;
-    background-color: #ebf3ff;
-    padding-top: 5rem;
+    background-color: $page-error-bg;
+    padding: 5rem 0;
     .img-error {
-        width: 100%;
+        width: 63%;
+        padding: 3rem 0 3rem 0;
     }
     .error-title {
         font-size: 4rem;
         margin-top: 3rem;
+    }
+}
+body.theme-dark {
+    #error {
+        @import "../themes/dark/variables-dark";
+        background-color: $page-error-bg;
     }
 }

@@ -1,6 +1,6 @@
 <h1 align="center">Mazer Dashboard</h1>
 
-![Screenshot](https://raw.githubusercontent.com/zuramai/mazer/main/screenshot.png)
+![Mazer Screenshot](https://user-images.githubusercontent.com/45036724/167523601-9d20fb17-1989-488f-b619-cb53c0db8898.png)
 
 <p align="center">Mazer is an Admin Dashboard Template that can help you develop faster. Made with Bootstrap 5. No jQuery dependency.</p>
 <div align="center">
@@ -17,19 +17,19 @@
 	<a href="http://zuramai.github.io/mazer/docs">Documentation Page</a>&nbsp;&nbsp;&nbsp;
 </p>
 
-## Installation
-
-1. Clone this repository or download as zip.
-
-```sh
-git clone https://github.com/zuramai/mazer
-```
-
-2. Open the `mazer/dist/index.html` file to see the dashboard.
+## Usage
+#### Using a ready-made built
+Download the latest release from the [releases page](https://github.com/zuramai/mazer/releases "releases page")
+Open the index HTML file and explore the source code.
+#### Building yourself
+- Clone the repository `git clone https://github.com/zuramai/mazer`
+- Install dependencies using the node package manager of your choice. For example run `npm install` 
+- Files are bundled by Laravel Mix to the dist folder.
+    - Either run `npm run hot` and open `http://localhost:8080` to see a hot-reloading copy of the generated files
+    - Or run `npm run watch`  (rebuilds on file changes) or `npm run production` and open `index.html` in from the dist folder.
 
 ## Community Mazer-based open sources
 
-- [Mazer Dark Mode](https://github.com/kazemyavari/mazer-dark) by [@kazemyavari](https://github.com/kazemyavari/mazer-dark) 
 - [CodeIgniter 4](https://github.com/irsyadulibad/mazer-codeigniter) by [@irsyadulibad](https://github.com/irsyadulibad)
 - [Laravel + Livewire](https://github.com/zuramai/laravel-mazer) (unmaintained, looking for maintainer)
 - [NuxtJS](https://github.com/fauzan121002/mazer-nuxt) by [@fncolon](https://github.com/fncolon)
@@ -40,7 +40,7 @@ git clone https://github.com/zuramai/mazer
 
 ## Contributing
 
-Please follow [Contributing Guide](./CONTRIBUTING.md) before contribute.
+Please follow [Contributing Guide](./CONTRIBUTING.md) before contributing.
 
 ## License
 
@@ -48,7 +48,7 @@ Mazer is under [MIT License](./LICENSE).
 
 ## Author
 
-Mazer is created by <a href="https://ahmadsaugi.com">Ahmad Saugi</a>.
+Mazer is created by <a href="https://saugi.me">Saugi</a>.
 
 ## Donation
 

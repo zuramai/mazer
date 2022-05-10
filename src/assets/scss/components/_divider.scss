@@ -7,13 +7,13 @@
         position: relative;
         display: inline-block;
         padding: 0 1rem;
-        background-color: #FFF;
+        background-color: $divider-text-bg;
         &:before, &:after {
             content: '';
             position: absolute;
             top: 50%;
             width: 9999px;
-            border-top: 1px solid #DFE3E7;
+            border-top: 1px solid $divider-bg;
         }
         &:before {
             right: 100%;
@@ -23,9 +23,7 @@
         }
     }
     &.divider-left .divider-text {
-        left: 0;
         float: left;
-        padding-left: 0;
     }
     &.divider-left-center .divider-text {
         left: -25%;
@@ -35,6 +33,5 @@
     }
     &.divider-right .divider-text {
         float: right;
-        padding-right: 0;
     }
 }

@@ -1,0 +1,31 @@
+name: Deploy demo to docs
+
+# Will run on 2.0.0-rc.1 branch
+on:
+  push:
+    branches: [ "main" ]
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      
+      - name: Install and Build 🔧
+        run: |
+          npm install
+          npm run production
+          rm dist/.gitignore
+          
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        with:
+          branch: docs # The branch the action should deploy to.
+          folder: ./dist # The folder the action should deploy.
+          target-folder: demo # Deploy to `demo` folder in `docs` branch
+          commit-message: "update: demo"
+
+  
