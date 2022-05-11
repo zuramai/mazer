@@ -6,19 +6,19 @@
 body {
     background:  url(../images/bg.svg), white;
     background-size: 100%;
+    background-position: bottom;
     background-repeat: no-repeat;
     font-family: Lato;
 }
 
 .hero {
     padding: 5rem 0;
+    min-height: 100vh;
 }
 
 .hero h1 {
-    font-size: 3rem;
+    font-size: clamp(2rem, 3vw,3rem);
 }
-
-
 .hero-text > *, .hero-image {
     animation: fadeSlideDown 1s forwards cubic-bezier(0, 0.55, 0.45, 1);
     opacity: 0;
