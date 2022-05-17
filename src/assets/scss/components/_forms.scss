@@ -68,8 +68,6 @@
         }
         .form-control-icon {
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
             padding: 0 .6rem;
             i, svg {
                 width: 1.2rem;
@@ -84,9 +82,22 @@
     }
 }
 .form-control {
+    & ~ .form-control-icon {
+        top: .28rem;
+    }
+    &.form-control-lg {
+        padding: .55rem 1rem;
+        font-size: 1.05rem;
+        & ~ .form-control-icon {
+            top: .55rem;
+        }
+    }
     &.form-control-xl {
         padding: .85rem 1rem;
         font-size: 1.2rem;
+        & ~ .form-control-icon {
+            top: .55rem;
+        }
     }
 }
 .form-check {
