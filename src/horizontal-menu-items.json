@@ -34,6 +34,10 @@
           "url": "component-carousel.html"
         },
         {
+          "name": "Collapse",
+          "url": "component-collapse.html"
+        },
+        {
           "name": "Dropdown",
           "url": "component-dropdown.html"
         },
