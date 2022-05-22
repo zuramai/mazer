@@ -26,3 +26,28 @@
 .theme-toggle {
     color: #9899ac;
 }
+
+// override selector
+// see original on mixins\_forms.scss
+@mixin form-validation-state-selector($state) {
+    @if ($state == "valid" or $state == "invalid") {
+        .was-validated :#{$state},
+        .is-#{$state} {
+            @content;
+        }
+    } @else {
+        .is-#{$state} {
+            @content;
+        }
+    }
+}
+
+// to fix feedback message on input group
+@each $state in map-keys($form-validation-states) {
+    @include form-validation-state-selector($state) {
+        ~ .#{$state}-feedback,
+        ~ .#{$state}-tooltip {
+            display: block;
+        }
+    }
+}
