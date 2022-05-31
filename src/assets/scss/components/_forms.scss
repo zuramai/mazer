@@ -192,7 +192,7 @@
     border-color: $choices-border-color;
 }
 .choices__input {
-    background-color: $choices-bg;
+    background-color: $choices-bg !important;
     color: $choices-input-color;
 }
 .choices__list {
