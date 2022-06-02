@@ -1,12 +1,14 @@
 @use 'sass:color';
 
+$dark-mode: true;
+
 $theme-colors-light: (
-  'primary': rgba($primary, .6),
-  'secondary': rgba($secondary, .6),
-  'success': rgba($success, .6),
-  'danger': rgba($danger, .6),
-  'warning': rgba($warning, .6),
-  'info': rgba($info, .6),
+  'primary': tint-color($primary, 25%),
+  'secondary': tint-color($secondary, 25%),
+  'success': tint-color($success, 25%),
+  'danger': tint-color($danger, 35%),
+  'warning': tint-color($warning, 25%),
+  'info': tint-color($info, 25%),
 );
 
 $alert-colors: (
@@ -20,7 +22,7 @@ $alert-colors: (
     ),
     success: (
         text-color: #fff,
-        background-color: #28ab55  
+        background-color: #198754
     ),
     warning: (
         text-color: #3f3a26,
@@ -64,6 +66,7 @@ $page-error-bg:         $body-bg;
 
 
 $link-color:                              $primary;
+$link-shade-percentage:                   -20%;
 $link-hover-color:                        shift-color($link-color, $link-shade-percentage);
 
 $component-active-color:      #9899ac;
@@ -133,7 +136,9 @@ $form-textarea-title-bg:             lighten($input-bg,10%);
 $nav-link-disabled-color:           $gray-600;
 $nav-tabs-border-color:             $gray-300;
 $nav-tabs-link-hover-border-color:  $gray-200 $gray-200 $nav-tabs-border-color;
+$nav-tabs-link-active-bg:           rgba(44, 44, 58, 0.85);
 $nav-tabs-link-active-border-color: $gray-300 $gray-300 $nav-tabs-link-active-bg;
+
 
 $dropdown-color:                    #92929F;
 $dropdown-bg:                       #161b22;
@@ -190,7 +195,7 @@ $toast-header-background-color:     rgba($white, .85);
 $toast-header-border-color:         rgba(0, 0, 0, .05);
 
 $badge-color:                       $white;
-$border-color:                      $gray-400 !default;
+$border-color:                      $gray-600;
 
 $modal-content-bg:                  $card-bg;
 $modal-content-border-color:        rgba($black, .2);
