@@ -7,7 +7,7 @@
 
 // Fix icon placement
 body .bi::before, [class^=bi-]::before, [class*=" bi-"]::before {
-    vertical-align: middle;
+    vertical-align: sub;
 }
 
 // Import fonts
