@@ -27,6 +27,14 @@
     color: #9899ac;
 }
 
+// Pricing Card
+.pricing{
+    .card{
+        border: none;
+        box-shadow: none;
+    }
+}
+
 // override selector
 // see original on mixins\_forms.scss
 @mixin form-validation-state-selector($state) {
