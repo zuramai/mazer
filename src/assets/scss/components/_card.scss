@@ -7,7 +7,7 @@
         background: linear-gradient(to bottom, #25a6f1, #54b9ff);
         .card-title {
             text-transform: uppercase;
-            color: #fff;
+            color: rgba(255, 255, 255, 0.651);
             letter-spacing: .8px;
             font-weight: 400;
             font-size: 1.3rem;
@@ -114,16 +114,16 @@
         ul {
             li {
                 i, svg {
-                    color: $green-400;
+                    color: $teal-400;
                 }
-                color: $body-color;
+                color: #fff;
             }
         }
         .card-footer {
             background-color: map-get($theme-colors, 'primary');
         }
         .card-title {
-            color: $headings-color;
+            color: #fff;
             font-size: 1.8rem;
         }
     }
