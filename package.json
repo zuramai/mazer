@@ -59,6 +59,7 @@
     "bestzip": "^2.2.1",
     "browser-sync": "^2.27.9",
     "browser-sync-webpack-plugin": "^2.3.0",
+    "laravel-mix-glob": "^1.1.10",
     "laravel-mix-nunjucks": "^1.1.0",
     "postcss": "^8.4.12",
     "release-it": "^14.14.3",

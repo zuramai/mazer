@@ -1,9 +1,16 @@
 const mix = require("laravel-mix");
+const MixGlob = require('laravel-mix-glob');
 const sidebarItems = require("./src/sidebar-items.json");
 const horizontalMenuItems = require("./src/horizontal-menu-items.json");
-
 require("laravel-mix-nunjucks");
+
+
+// String constants
 const assetsPath = "src/assets/";
+
+// Create MixGlob instance
+const mixGlob = new MixGlob({mix}); // mix is required
+
 
 // Files loaded from css url()s will be placed alongside our resources
 mix.options({
@@ -13,49 +20,20 @@ mix.options({
   }
 });
 
-mix
+mixGlob
   // Attention: put all generated css files directly into a subfolder
   // of assets/css. Resource loading might fail otherwise.
   .sass(`${assetsPath}scss/app.scss`, "assets/css/main")
   .sass(`${assetsPath}scss/themes/dark/app-dark.scss`, "assets/css/main")
-  .sass(`${assetsPath}scss/pages/auth.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/pages/error.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/pages/email.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/pages/chat.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/pages/toastify.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/pages/dripicons.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/pages/sweetalert2.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/pages/fontawesome.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/pages/datatables.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/pages/simple-datatables.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/pages/rater-js.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/pages/quill.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/pages/summernote.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/pages/filepond.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/pages/form-element-select.scss`, "assets/css/pages")
+  .sass(`${assetsPath}scss/pages/*.scss`, "assets/css/pages")
   .sass(`${assetsPath}scss/widgets/chat.scss`, "assets/css/widgets")
   .sass(`${assetsPath}scss/widgets/todo.scss`, "assets/css/widgets")
   .sass(`${assetsPath}scss/iconly.scss`, "assets/css/shared")
-  .js(`${assetsPath}js/app.js`, "assets/js")
-  .js(`${assetsPath}js/bootstrap.js`, "assets/js")
-  .js(`${assetsPath}js/extensions/toastify.js`, "assets/js/extensions")
-  .js(`${assetsPath}js/extensions/sweetalert2.js`, "assets/js/extensions")
-  .js(`${assetsPath}js/extensions/ckeditor.js`, "assets/js/extensions")
-  .js(`${assetsPath}js/extensions/ui-apexchart.js`, "assets/js/extensions")
-  .js(`${assetsPath}js/extensions/ui-chartjs.js`, "assets/js/extensions")
-  .js(`${assetsPath}js/extensions/ui-todolist.js`, "assets/js/extensions")
-  .js(`${assetsPath}js/extensions/form-element-select.js`, "assets/js/extensions")
-  .js(`${assetsPath}js/extensions/datatables.js`, "assets/js/extensions")
-  .js(`${assetsPath}js/extensions/quill.js`, "assets/js/extensions")
-  .js(`${assetsPath}js/extensions/rater-js.js`, "assets/js/extensions")
-  .js(`${assetsPath}js/extensions/simple-datatables.js`, "assets/js/extensions")
-  .js(`${assetsPath}js/extensions/summernote.js`, "assets/js/extensions")
-  .js(`${assetsPath}js/extensions/tinymce.js`, "assets/js/extensions")
-  .js(`${assetsPath}js/extensions/filepond.js`, "assets/js/extensions")
-  .js(`${assetsPath}js/pages/dashboard.js`, "assets/js/pages")
-  .js(`${assetsPath}js/pages/form-editor.js`, "assets/js/pages")
-  .js(`${assetsPath}js/pages/horizontal-layout.js`, "assets/js/pages")
-  .copy(
+  .js(`${assetsPath}js/*.js`, "assets/js")
+  .js(`${assetsPath}js/extensions/*.js`, "assets/js/extensions")
+  .js(`${assetsPath}js/pages/*`, "assets/js/pages")
+
+  mix.copy(
     "src/assets/images",
     "dist/assets/images"
   )
