@@ -170,6 +170,17 @@
     "icon": "file-earmark-medical-fill"
   },
   {
+    "name": "Form Validation",
+    "icon": "pen-fill",
+    "key": "form-validation",
+    "submenu": [
+      {
+        "name": "Parsley",
+        "url": "form-validation-parsley.html"
+      }
+    ]
+  },
+  {
     "name": "Form Editor",
     "icon": "pen-fill",
     "key": "form-editor",
