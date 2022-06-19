@@ -35,7 +35,7 @@
                             <form class="form" data-parsley-validate>
                                 <div class="row">
                                     <div class="col-md-6 col-12">
-                                        <div class="form-group">
+                                        <div class="form-group mandatory">
                                             <label for="first-name-column" class="form-label">First Name</label>
                                             <input type="text" id="first-name-column" class="form-control" placeholder="First Name" name="fname-column" data-parsley-required="true">
                                         </div>
@@ -49,7 +49,7 @@
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                             <label for="city-column" class="form-label">City</label>
-                                            <input type="text" id="city-column" class="form-control" placeholder="City" name="city-column" data-parsley-restricted-city="Jakarta">
+                                            <input type="text" id="city-column" class="form-control" placeholder="Custom validation. Value has to be Jakarta." name="city-column" data-parsley-restricted-city="Jakarta">
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-12">
@@ -65,14 +65,14 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-12">
-                                        <div class="form-group">
+                                        <div class="form-group mandatory">
                                             <label for="email-id-column" class="form-label">Email</label>
                                             <input type="email" id="email-id-column" class="form-control" name="email-id-column" placeholder="Email" data-parsley-required="true">
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class='form-group'>
-                                          <div class="form-check">
+                                          <div class="form-check mandatory">
                                             <input type="checkbox" id="checkbox5" class='form-check-input' checked data-parsley-required="true" data-parsley-error-message="You have to accept our terms and conditions to proceed.">
                                             <label for="checkbox5" class="form-check-label form-label">I accept these terms and conditions.</label>
                                           </div>
@@ -81,7 +81,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-12">
-                                      <div class='form-group'>
+                                      <div class='form-group mandatory'>
                                         <fieldset>
                                           <label class="form-label">
                                             Favourite Colour

@@ -81,6 +81,11 @@
 
     }
 
+    &.mandatory .form-label:first-child:after {
+      content: ' *';
+      color: $form-feedback-invalid-color;
+    }
+
     &.is-invalid * {
       color: $form-feedback-invalid-color;
       border-color: $form-feedback-invalid-color;
