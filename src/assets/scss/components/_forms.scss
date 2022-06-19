@@ -80,6 +80,11 @@
         }
 
     }
+
+    &.is-invalid * {
+      color: $form-feedback-invalid-color;
+      border-color: $form-feedback-invalid-color;
+    }
 }
 .form-control {
     & ~ .form-control-icon {
