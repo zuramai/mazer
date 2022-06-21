@@ -168,7 +168,7 @@
       },
       {
         "name": "Form Validation",
-        "icon": "pen-fill",
+        "icon": "journal-check",
         "key": "form-validation",
         "submenu": [
           {
