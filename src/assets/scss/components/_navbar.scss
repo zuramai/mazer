@@ -45,6 +45,34 @@
     }
 }
 
+.navbar-top {
+    .notification-dropdown {
+        min-width: 20rem;
+    }
+    .notification-item {
+        margin-bottom: .4rem;
+        a {
+            color: $body-color;
+        }
+        p {
+            margin-bottom: 0;
+        }
+    }
+
+    .notification-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        color: white;
+        text-align: center;
+        vertical-align: middle;
+        i {
+            vertical-align: -moz-middle-with-baseline;
+            font-size: 20px;
+        }
+    }
+}
+
 .layout-horizontal {
     .header-top {
         background-color: $horizontal-header-bg;
