@@ -1,6 +1,10 @@
 <h1 align="center">Mazer Dashboard</h1>
 
-![Mazer Screenshot](https://user-images.githubusercontent.com/45036724/167523601-9d20fb17-1989-488f-b619-cb53c0db8898.png)
+<!-- ![Mazer Screenshot](https://user-images.githubusercontent.com/45036724/167523601-9d20fb17-1989-488f-b619-cb53c0db8898.png) -->
+
+<img width="5000" alt="ssmazer" src="https://user-images.githubusercontent.com/87259393/180425093-97fc2f22-8434-4c64-becc-c70b4bbb40bc.png">
+
+
 
 <p align="center">Mazer is an Admin Dashboard Template that can help you develop faster. Made with Bootstrap 5. No jQuery dependency.</p>
 <div align="center">
@@ -52,6 +56,6 @@ Mazer is created by <a href="https://saugi.me">Saugi</a>.
 
 ## Donation
 
-You can support Ahmad Saugi at [Ko-fi](https://ko-fi.com/saugi) or [Trakteer](https://trakteer.id/saugi)
+You can support Ahmad Saugi at  [Ko-fi](https://ko-fi.com/saugi) or [Trakteer](https://trakteer.id/saugi) 
 
 <a href="https://buymeacoffee.com/saugi" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
