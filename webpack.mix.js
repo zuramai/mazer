@@ -26,21 +26,26 @@ mixGlob
   .sass(`${assetsPath}scss/app.scss`, "assets/css/main")
   .sass(`${assetsPath}scss/themes/dark/app-dark.scss`, "assets/css/main")
   .sass(`${assetsPath}scss/pages/*.scss`, "assets/css/pages")
-  .sass(`${assetsPath}scss/widgets/chat.scss`, "assets/css/widgets")
-  .sass(`${assetsPath}scss/widgets/todo.scss`, "assets/css/widgets")
+  .sass(`${assetsPath}scss/widgets/*.scss`, "assets/css/widgets")
   .sass(`${assetsPath}scss/iconly.scss`, "assets/css/shared")
   .js(`${assetsPath}js/*.js`, "assets/js")
   .js(`${assetsPath}js/extensions/*.js`, "assets/js/extensions")
-  .js(`${assetsPath}js/pages/*`, "assets/js/pages")
 
-  mix.copy(
-    "src/assets/images",
-    "dist/assets/images"
-  )
-  .copy(
-    "node_modules/bootstrap-icons/bootstrap-icons.svg",
-    "dist/assets/images"
-  )
+// Modules and extensions
+const modulesToCopy = [
+    'simple-datatables'
+]
+modulesToCopy.forEach(mod => {
+  mix
+    .copy(`node_modules/${mod}/dist`, `dist/assets/extensions/${mod}`)
+})
+
+
+// Copying assets  
+mix
+  .copy("src/assets/images", "dist/assets/images")
+  .copy("node_modules/bootstrap-icons/bootstrap-icons.svg","dist/assets/images")
+  .copy(`${assetsPath}js/pages`, "dist/assets/js/pages")
   // TinyMCE automatically loads css and other resources from its relative path
   // so we need this hotfix to move them to the right places.
   .copy('node_modules/tinymce/skins', 'dist/assets/js/extensions/skins')
@@ -49,6 +54,7 @@ mixGlob
   .setResourceRoot("../../../")
   .setPublicPath("dist");
 
+// Nunjucks Templating
 mix.njk("src/*.html", "dist/", {
   ext: ".html",
   watch: true,
