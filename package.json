@@ -4,7 +4,7 @@
   "description": "Free and Open-source Bootstrap 5 Admin Dashboard Template and Landing Page",
   "main": "index.js",
   "scripts": {
-    "development": "mix",
+    "dev": "mix",
     "watch": "mix watch",
     "watch-poll": "mix watch -- --watch-options-poll=1000",
     "hot": "mix watch --hot",
