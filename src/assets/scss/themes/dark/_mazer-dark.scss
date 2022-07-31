@@ -35,6 +35,11 @@
     }
 }
 
+// Note
+.note-editing-area .note-editable  {
+    background-color: white;
+}
+
 // override selector
 // see original on mixins\_forms.scss
 @mixin form-validation-state-selector($state) {
