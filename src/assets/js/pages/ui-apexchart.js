@@ -1,6 +1,3 @@
-// Need: Dayjs
-import ApexCharts from "apexcharts";
-
 var lineOptions = {
   chart: {
     type: "line",
