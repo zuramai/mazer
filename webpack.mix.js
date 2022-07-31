@@ -20,6 +20,35 @@ mix.options({
   }
 });
 
+// Modules and extensions
+const modulesToCopy = {
+    'simple-datatables': true, // With dist folder = true
+    'rater-js': false, 
+    'bootstrap-icons': false, 
+    'apexcharts': true, 
+    'perfect-scrollbar': true, 
+    'filepond': true, 
+    'feather-icons': true, 
+    'dragula': true, 
+    'dayjs': false, 
+    'chart.js': true, 
+    'choices.js': false, 
+    'sweetalert2': true, 
+    'summernote': true, 
+    'jquery': true, 
+    'quill': true, 
+    'tinymce': false, 
+    'toastify-js': false, 
+    'datatables.net-bs5': false,
+}
+for (const mod in modulesToCopy) {
+  let modulePath = `node_modules/${mod}`
+  if (modulesToCopy[mod]) modulePath += '/dist'
+  
+  mix
+    .copy(modulePath, `dist/assets/extensions/${mod}`)
+}
+
 mixGlob
   // Attention: put all generated css files directly into a subfolder
   // of assets/css. Resource loading might fail otherwise.
@@ -31,15 +60,6 @@ mixGlob
   .js(`${assetsPath}js/*.js`, "assets/js")
   .js(`${assetsPath}js/extensions/*.js`, "assets/js/extensions")
 
-// Modules and extensions
-const modulesToCopy = [
-    'simple-datatables'
-]
-modulesToCopy.forEach(mod => {
-  mix
-    .copy(`node_modules/${mod}/dist`, `dist/assets/extensions/${mod}`)
-})
-
 
 // Copying assets  
 mix
@@ -48,7 +68,7 @@ mix
   .copy(`${assetsPath}js/pages`, "dist/assets/js/pages")
   // TinyMCE automatically loads css and other resources from its relative path
   // so we need this hotfix to move them to the right places.
-  .copy('node_modules/tinymce/skins', 'dist/assets/js/extensions/skins')
+  // .copy('node_modules/tinymce/skins', 'dist/assets/js/extensions/skins')
   // We place all generated css in /assets/css/xxx
   // This is the relative path to the fileLoaderDirs we specified above
   .setResourceRoot("../../../")
