@@ -1523,7 +1523,7 @@ $pre-color:                         null !default;
 
 $choices-bg:            $form-select-bg;
 $choices-border-color:  $form-select-border-color;
-$choices-input-color:   $white;
+$choices-input-color:   $body-color;
 $choices-dropdown-bg:   $form-select-bg;
 $choices-dropdown-color:    $choices-input-color;
 $choices-highlight-bg:      lighten($card-bg, 5%);
