@@ -16,6 +16,20 @@
   },
   "author": "zuramai",
   "license": "MIT",
+  "keywords": [
+    "bootstrap",
+    "template",
+    "dashboard",
+    "scss",
+    "admin-dashboard",
+    "hacktoberfest",
+    "free-template",
+    "bootstrap5",
+    "bootstrap5-template"
+  ],
+  "sponsor": {
+    "url": "https://github.com/sponsors/zuramai"
+  },
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^32.0.0",
     "@fontsource/nunito": "^4.5.4",
