@@ -36,6 +36,7 @@ const modulesToCopy = {
     'dayjs': false, 
     'chart.js': true, 
     'choices.js': false, 
+    'parsleyjs': true, 
     'sweetalert2': true, 
     'summernote': true, 
     'jquery': true, 
