@@ -23,7 +23,7 @@
     "@popperjs/core": "^2.11.4",
     "apexcharts": "^3.33.2",
     "bootstrap": "5.2.0",
-    "bootstrap-icons": "^1.8.1",
+    "bootstrap-icons": "^1.9.0",
     "chart.js": "^2.9.4",
     "choices.js": "^9.1.0",
     "cross-env": "^7.0.3",

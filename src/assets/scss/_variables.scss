@@ -57,9 +57,14 @@ $alert-colors: (
     ),
 ) !default;
 
-$modal-header-font-size:            1.1rem !default;
 
+// Body
+//
+// Settings for the `<body>` element.
 
+$body-bg: #f2f7ff !default;
+$body-color: #607080 !default;
+$body-text-align: null !default;
 
 // Bootstrap Variables
 $white:    #fff !default;
@@ -126,7 +131,7 @@ $info:          $cyan !default;
 $warning:       $yellow !default;
 $danger:        $red !default;
 $light:         $gray-100 !default;
-$dark:          $gray-900 !default;
+$dark:          $body-bg;
 
 
 // Mazer Variables
@@ -358,14 +363,6 @@ $position-values: (
   100: 100%
 ) !default;
 
-
-// Body
-//
-// Settings for the `<body>` element.
-
-$body-bg:                   #f2f7ff !default;
-$body-color:                #607080 !default;
-$body-text-align:           null !default;
 
 // Utilities maps
 //
@@ -1338,6 +1335,7 @@ $modal-header-border-width:         $modal-content-border-width !default;
 $modal-header-padding-y:            $modal-inner-padding !default;
 $modal-header-padding-x:            $modal-inner-padding !default;
 $modal-header-padding:              $modal-header-padding-y $modal-header-padding-x !default; // Keep this for backwards compatibility
+$modal-header-font-size:            1.1rem !default;
 
 $modal-footer-bg:                   null !default;
 $modal-footer-border-color:         $modal-header-border-color !default;
