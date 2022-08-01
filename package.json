@@ -8,10 +8,10 @@
     "watch": "mix watch",
     "watch-poll": "mix watch -- --watch-options-poll=1000",
     "hot": "mix watch --hot",
-    "production": "mix --production",
+    "production": "mix --production && npm run prettify",
     "rtl": "rtlcss -d \"dist/assets/css\" -e \".rtl.css\" && find . -type f -name '*.rtl.rtl.css' -delete",
     "prod-rtl": "mix --production && rtl",
-    "prettify": "prettier --check 'dist/*.html'",
+    "prettify": "prettier --write 'dist/*.html'",
     "zip": "bestzip dist.zip dist/*"
   },
   "author": "zuramai",
