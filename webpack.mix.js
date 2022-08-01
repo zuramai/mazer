@@ -23,11 +23,14 @@ mix.options({
 // Modules and extensions
 const modulesToCopy = {
     'simple-datatables': true, // With dist folder = true
+    '@icon/dripicons': false,
+    '@fortawesome/fontawesome-free': false,
     'rater-js': false, 
     'bootstrap-icons': false, 
     'apexcharts': true, 
     'perfect-scrollbar': true, 
     'filepond': true, 
+    'filepond-plugin-image-preview': true, 
     'feather-icons': true, 
     'dragula': true, 
     'dayjs': false, 
@@ -58,7 +61,6 @@ mixGlob
   .sass(`${assetsPath}scss/widgets/*.scss`, "assets/css/widgets")
   .sass(`${assetsPath}scss/iconly.scss`, "assets/css/shared")
   .js(`${assetsPath}js/*.js`, "assets/js")
-  .js(`${assetsPath}js/extensions/*.js`, "assets/js/extensions")
 
 
 // Copying assets  
@@ -66,9 +68,6 @@ mix
   .copy("src/assets/images", "dist/assets/images")
   .copy("node_modules/bootstrap-icons/bootstrap-icons.svg","dist/assets/images")
   .copy(`${assetsPath}js/pages`, "dist/assets/js/pages")
-  // TinyMCE automatically loads css and other resources from its relative path
-  // so we need this hotfix to move them to the right places.
-  // .copy('node_modules/tinymce/skins', 'dist/assets/js/extensions/skins')
   // We place all generated css in /assets/css/xxx
   // This is the relative path to the fileLoaderDirs we specified above
   .setResourceRoot("../../../")
