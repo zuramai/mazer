@@ -7,13 +7,13 @@
 
 // scss-docs-start import-stack
 // Configuration
-@import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 // Override variables
 @import "variables";
-
+@import "~bootstrap/scss/maps";
 @import "~bootstrap/scss/mixins";
 @import "~bootstrap/scss/utilities";
+
 
 // Layout & components
 @import "~bootstrap/scss/root";
@@ -47,6 +47,7 @@
 @import "~bootstrap/scss/spinners";
 @import "~bootstrap/scss/offcanvas";
 @import "~bootstrap/scss/placeholders";
+
 
 // Helpers
 @import "~bootstrap/scss/helpers";
