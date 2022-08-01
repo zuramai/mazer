@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0-alpha.3",
+  "name": "@icon/dripicons",
+  "description": "Dripicons V2 is available for free for use in both personal and commercial projects.",
+  "author": "Amit Jakhu",
+  "license": "CC-BY-4.0",
+  "repository": "https://github.com/thecreation/standard-icons/tree/master/modules/dripicons",
+  "bugs": {
+    "url": "https://github.com/thecreation/standard-icons/issues"
+  },
+  "scripts": {
+    "import": "../../scripts/module/import --module=dripicons",
+    "optimize": "../../scripts/module/optimize",
+    "update": "ncu -u"
+  },
+  "keywords": [
+    "icons",
+    "icon"
+  ],
+  "homepage": "https://github.com/amitjakhu/dripicons",
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "03bca77bca8c5dd936a375e9c556ef3e1a8d4074"
+}

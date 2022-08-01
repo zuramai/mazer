@@ -1,0 +1,95 @@
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    background-size: 100%;
+    margin: 0;
+    padding: 0;
+    color: #424242;
+}
+
+.container {
+    overflow: hidden;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    background-color: whitesmoke;
+    background-image: url("./pattern.png");
+}
+
+.hidden {
+    display: none;
+}
+
+.docs {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #e3e3e3;
+    padding: 20px 20px;
+    width: 60%;
+    border-radius: 4px;
+}
+
+.docs h2 {
+    margin-top: 0px;
+}
+
+code p {
+    margin: 2px;
+}
+
+.pad-left {
+    padding-left: 20px;
+}
+
+.buttons {
+    margin: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.button {
+    overflow: hidden;
+    margin: 10px;
+    padding: 12px 12px;
+    cursor: pointer;
+    -webkit-transition: all 200ms ease-in-out;
+    transition: all 200ms ease-in-out;
+    text-align: center;
+    white-space: nowrap;
+    text-decoration: none;
+    text-transform: none;
+    text-transform: capitalize;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.3;
+    min-width: 100px;
+    display: inline-block;
+    box-shadow: 0 5px 20px rgba(22, 22, 22, 0.15);
+    color: #5477f5;
+    background-color: Snow;
+    border: 1px solid #5477f5;
+}
+
+.button:hover {
+    color: #FFFFFF;
+    background: linear-gradient(135deg, #73a5ff, #5477f5);
+    border: 1px solid transparent;
+}
+
+.repo {
+    margin: 10px;
+}

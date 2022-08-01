@@ -1,0 +1,1 @@
+let initChoice,choices=document.querySelectorAll(".choices");for(let e=0;e<choices.length;e++)initChoice=choices[e].classList.contains("multiple-remove")?new Choices(choices[e],{delimiter:",",editItems:!0,maxItemCount:-1,removeItemButton:!0}):new Choices(choices[e]);
