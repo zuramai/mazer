@@ -1,5 +1,3 @@
-$ = require("jquery");
-require("summernote/dist/summernote-lite");
 
 $('#summernote').summernote({
     tabsize: 2,

@@ -1,5 +1,3 @@
-import Choices from "choices.js"
-
 let choices = document.querySelectorAll('.choices');
 let initChoice;
 for(let i=0; i<choices.length;i++) {

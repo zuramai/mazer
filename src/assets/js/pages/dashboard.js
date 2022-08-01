@@ -1,5 +1,3 @@
-import ApexCharts from "apexcharts";
-
 var optionsProfileVisit = {
 	annotations: {
 		position: 'back'

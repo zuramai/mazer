@@ -1,4 +1,3 @@
-import Toastify from "toastify-js"
 
 document.getElementById('basic').addEventListener('click', () => {
     Toastify({

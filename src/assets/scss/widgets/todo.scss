@@ -1,9 +1,16 @@
-@import "~dragula/dist/dragula.css";
+
 @import "./../variables";
 
 .widget-todo-list-wrapper {
     padding: 0;
     margin: 0;
+}
+#widget-todo-list {
+    padding: 0;
+}
+
+.theme-dark .widget-todo-item:hover {
+    background-color: $gray-900;
 }
 
 // Moved outside .widget-todo-list-wrapper because dragula

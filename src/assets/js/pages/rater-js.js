@@ -1,4 +1,3 @@
-import raterJs from "rater-js"
 
 raterJs({
     element: document.querySelector("#basic"), 

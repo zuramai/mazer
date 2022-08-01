@@ -1,4 +1,3 @@
-import Swal from "sweetalert2"
 
 document.getElementById('basic').addEventListener('click', (e) => {
     Swal.fire('Any fool can use a computer')
