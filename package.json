@@ -11,6 +11,7 @@
     "production": "mix --production",
     "rtl": "rtlcss -d \"dist/assets/css\" -e \".rtl.css\" && find . -type f -name '*.rtl.rtl.css' -delete",
     "prod-rtl": "mix --production && rtl",
+    "prettify": "prettier --check 'dist/*.html'",
     "zip": "bestzip dist.zip dist/*"
   },
   "author": "zuramai",
@@ -63,6 +64,7 @@
     "laravel-mix-glob": "^1.1.10",
     "laravel-mix-nunjucks": "^1.1.0",
     "postcss": "^8.4.12",
+    "prettier": "^2.7.1",
     "release-it": "^14.14.3",
     "resolve-url-loader": "^3.1.4",
     "sass": "^1.49.9",
