@@ -1,7 +1,7 @@
 FROM node:16 AS frontend
 
 WORKDIR /frontend
-COPY package*.json /frontend
+COPY package*.json /frontend/
 RUN npm install
 
 COPY . /frontend
