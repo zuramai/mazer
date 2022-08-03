@@ -28,6 +28,13 @@ Open the index HTML file and explore the source code.
     - Either run `npm run hot` and open `http://localhost:8080` to see a hot-reloading copy of the generated files
     - Or run `npm run watch`  (rebuilds on file changes) or `npm run production` and open `index.html` in from the dist folder.
 
+### Building with Docker
+- Clone the repository `git clone https://github.com/zuramai/mazer`
+- Make sure you have Docker installed and run:
+    - `docker build -t mazer-frontend .`
+    - `docker run -it -d -p 8080:80 --name mazer mazer-frontend`
+    - Open `http://localhost:8080`
+
 ## Community Mazer-based open sources
 
 - [CodeIgniter 4](https://github.com/irsyadulibad/mazer-codeigniter) by [@irsyadulibad](https://github.com/irsyadulibad)
