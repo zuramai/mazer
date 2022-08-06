@@ -8,6 +8,7 @@
 
 body.theme-dark {
     // Bootstrap 
+    @import "~bootstrap/scss/maps";
     @import "~bootstrap/scss/utilities";
     @import "~bootstrap/scss/reboot";
     @import "~bootstrap/scss/type";
@@ -49,4 +50,5 @@ body.theme-dark {
     
     // Additional dark-mode CSS
     @import "./mazer-dark";
+    @import "~bootstrap/scss/utilities";
 }

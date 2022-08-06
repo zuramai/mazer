@@ -32,6 +32,13 @@ Open the index HTML file and explore the source code.
     - Either run `npm run hot` and open `http://localhost:8080` to see a hot-reloading copy of the generated files
     - Or run `npm run watch`  (rebuilds on file changes) or `npm run production` and open `index.html` in from the dist folder.
 
+### Building with Docker
+- Clone the repository `git clone https://github.com/zuramai/mazer`
+- Make sure you have Docker installed and run:
+    - `docker build -t mazer-frontend .`
+    - `docker run -it -d -p 8080:80 --name mazer mazer-frontend`
+    - Open `http://localhost:8080`
+
 ## Community Mazer-based open sources
 
 - [CodeIgniter 4](https://github.com/irsyadulibad/mazer-codeigniter) by [@irsyadulibad](https://github.com/irsyadulibad)
@@ -40,6 +47,7 @@ Open the index HTML file and explore the source code.
 - [React JS Component Library](https://github.com/fachryansyah/react-mazer-ui) by [@fachryansyah](https://github.com/fachryansyah/)
 - [Adonisjs 5](https://github.com/afman42/mazer-adonisjs) by [@afman42](https://github.com/afman42/)
 - [Django](https://github.com/bimbims125/mazer-django) by [@bimbims125](https://github.com/bimbims125/)
+- [Flask](https://github.com/antheiz/mazer-flask) by [@antheiz](https://github.com/antheiz/)
 - Did you make in another framework or tools? Open up Pull Requests and put yours here! 😃
 
 ## Contributing

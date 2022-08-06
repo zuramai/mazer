@@ -35,6 +35,24 @@
     }
 }
 
+// Note
+.note-editing-area .note-editable  {
+    background-color: white;
+}
+// DataTable
+.dataTable-input {
+    background-color: $input-bg;
+    border-color: $input-border-color;
+    transition: all .2s ease-in-out;
+    
+    &:focus {
+        background-color: $input-focus-bg;
+        border-color: $input-focus-border-color;
+        color: $input-focus-color;
+    }
+    
+}
+
 // override selector
 // see original on mixins\_forms.scss
 @mixin form-validation-state-selector($state) {

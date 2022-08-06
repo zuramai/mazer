@@ -1,4 +1,3 @@
-import Quill from "quill"
 
 var snow = new Quill('#snow', {
     theme: 'snow'
