@@ -1,3 +1,4 @@
+
 const THEME_KEY = "theme"
 const THEME_REGEX = /\btheme-[a-z0-9]+\b/g
 const toggler = document.getElementById("toggle-dark")
