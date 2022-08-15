@@ -70,6 +70,10 @@
         "url": "component-spinner.html"
       },
       {
+        "name": "Toasts",
+        "url": "component-toasts.html"
+      },
+      {
         "name": "Tooltip",
         "url": "component-tooltip.html"
       }

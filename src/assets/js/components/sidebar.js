@@ -1,4 +1,4 @@
-function slideToggle(t,e,o){0===t.clientHeight?j(t,e,o,!0):j(t,e,o)}function slideUp(t,e,o){j(t,e,o)}function slideDown(t,e,o){j(t,e,o,!0)}function j(t,e,o,i){void 0===e&&(e=400),void 0===i&&(i=!1),t.style.overflow="hidden",i&&(t.style.display="block");var p,l=window.getComputedStyle(t),n=parseFloat(l.getPropertyValue("height")),a=parseFloat(l.getPropertyValue("padding-top")),s=parseFloat(l.getPropertyValue("padding-bottom")),r=parseFloat(l.getPropertyValue("margin-top")),d=parseFloat(l.getPropertyValue("margin-bottom")),g=n/e,y=a/e,m=s/e,u=r/e,h=d/e;window.requestAnimationFrame(function l(x){void 0===p&&(p=x);var f=x-p;i?(t.style.height=g*f+"px",t.style.paddingTop=y*f+"px",t.style.paddingBottom=m*f+"px",t.style.marginTop=u*f+"px",t.style.marginBottom=h*f+"px"):(t.style.height=n-g*f+"px",t.style.paddingTop=a-y*f+"px",t.style.paddingBottom=s-m*f+"px",t.style.marginTop=r-u*f+"px",t.style.marginBottom=d-h*f+"px"),f>=e?(t.style.height="",t.style.paddingTop="",t.style.paddingBottom="",t.style.marginTop="",t.style.marginBottom="",t.style.overflow="",i||(t.style.display="none"),"function"==typeof o&&o()):window.requestAnimationFrame(l)})}
+function slideToggle(a, b, c) { 0 === a.clientHeight ? j(a, b, c, !0) : j(a, b, c) } function slideUp(a, b, c) { j(a, b, c) } function slideDown(a, b, c) { j(a, b, c, !0) } function j(c, a, k, d) { void 0 === a && (a = 400), void 0 === d && (d = !1), c.style.overflow = "hidden", d && (c.style.display = "block"); var l, b = window.getComputedStyle(c), e = parseFloat(b.getPropertyValue("height")), f = parseFloat(b.getPropertyValue("padding-top")), g = parseFloat(b.getPropertyValue("padding-bottom")), h = parseFloat(b.getPropertyValue("margin-top")), i = parseFloat(b.getPropertyValue("margin-bottom")), m = e / a, n = f / a, o = g / a, p = h / a, q = i / a; window.requestAnimationFrame(function s(r) { void 0 === l && (l = r); var b = r - l; d ? (c.style.height = m * b + "px", c.style.paddingTop = n * b + "px", c.style.paddingBottom = o * b + "px", c.style.marginTop = p * b + "px", c.style.marginBottom = q * b + "px") : (c.style.height = e - m * b + "px", c.style.paddingTop = f - n * b + "px", c.style.paddingBottom = g - o * b + "px", c.style.marginTop = h - p * b + "px", c.style.marginBottom = i - q * b + "px"), b >= a ? (c.style.height = "", c.style.paddingTop = "", c.style.paddingBottom = "", c.style.marginTop = "", c.style.marginBottom = "", c.style.overflow = "", d || (c.style.display = "none"), "function" == typeof k && k()) : window.requestAnimationFrame(s) }) }
 
 /**
  * a Sidebar component
@@ -11,54 +11,67 @@ class Sidebar {
     this.options = options
     this.init()
   }
-  
+
   /**
    * initialize the sidebar
    */
   init() {
     // add event listener to sidebar
-    document.querySelectorAll('.burger-btn').forEach(el => el.addEventListener('click', this.toggle.bind(this)))
-    document.querySelectorAll('.sidebar-hide').forEach(el => el.addEventListener('click', this.toggle.bind(this)))
-    window.addEventListener('resize', this.onResize.bind(this));
+    document
+      .querySelectorAll(".burger-btn")
+      .forEach((el) => el.addEventListener("click", this.toggle.bind(this)))
+    document
+      .querySelectorAll(".sidebar-hide")
+      .forEach((el) => el.addEventListener("click", this.toggle.bind(this)))
+    window.addEventListener("resize", this.onResize.bind(this))
 
-    // 
-    let sidebarItems = document.querySelectorAll('.sidebar-item.has-sub');
-    for(var i = 0; i < sidebarItems.length; i++) {
-        let sidebarItem = sidebarItems[i];
-      sidebarItems[i].querySelector('.sidebar-link').addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            let submenu = sidebarItem.querySelector('.submenu');
-            if( submenu.classList.contains('active') ) submenu.style.display = "block"
+    //
+    let sidebarItems = document.querySelectorAll(".sidebar-item.has-sub")
+    for (var i = 0; i < sidebarItems.length; i++) {
+      let sidebarItem = sidebarItems[i]
+      sidebarItems[i]
+        .querySelector(".sidebar-link")
+        .addEventListener("click", (e) => {
+          e.preventDefault()
 
-            if( submenu.style.display == "none" ) submenu.classList.add('active')
-            else submenu.classList.remove('active')
-            slideToggle(submenu, 300, () => this.forceElementVisibility(sidebarItem))
+          let submenu = sidebarItem.querySelector(".submenu")
+          if (submenu.classList.contains("active"))
+            submenu.style.display = "block"
+
+          if (submenu.style.display == "none") submenu.classList.add("active")
+          else submenu.classList.remove("active")
+          slideToggle(submenu, 300, () =>
+            this.forceElementVisibility(sidebarItem)
+          )
         })
     }
 
     // Perfect Scrollbar Init
-    if(typeof PerfectScrollbar == 'function') {
-      const container = document.querySelector(".sidebar-wrapper");
+    if (typeof PerfectScrollbar == "function") {
+      const container = document.querySelector(".sidebar-wrapper")
       const ps = new PerfectScrollbar(container, {
-          wheelPropagation: false
-      });
+        wheelPropagation: false,
+      })
     }
 
     // Scroll into active sidebar
-    setTimeout(() => document.querySelector('.sidebar-item.active')?.scrollIntoView(false), 100);
+    setTimeout(
+      () =>
+        document.querySelector(".sidebar-item.active")?.scrollIntoView(false),
+      100
+    )
 
     // check responsive
-    this.onFirstLoad();
+    this.onFirstLoad()
   }
 
   /**
    * On First Load
    */
   onFirstLoad() {
-    var w = window.innerWidth;
-    if(w < 1200) {
-      this.sidebarEL.classList.remove('active');
+    var w = window.innerWidth
+    if (w < 1200) {
+      this.sidebarEL.classList.remove("active")
     }
   }
 
@@ -67,13 +80,13 @@ class Sidebar {
    */
   onResize() {
     var w = window.innerWidth
-    if(w < 1200) {
-      this.sidebarEL.classList.remove('active')
+    if (w < 1200) {
+      this.sidebarEL.classList.remove("active")
     } else {
-      this.sidebarEL.classList.add('active')
+      this.sidebarEL.classList.add("active")
     }
 
-    // reset 
+    // reset
     this.deleteBackdrop()
     this.toggleOverflowBody(true)
   }
@@ -82,11 +95,11 @@ class Sidebar {
    * Toggle Sidebar
    */
   toggle() {
-    const sidebarState = this.sidebarEL.classList.contains('active');
+    const sidebarState = this.sidebarEL.classList.contains("active")
     if (sidebarState) {
-      this.hide();
+      this.hide()
     } else {
-      this.show();
+      this.show()
     }
   }
 
@@ -94,40 +107,39 @@ class Sidebar {
    * Show Sidebar
    */
   show() {
-    this.sidebarEL.classList.add('active');
-    this.createBackdrop();
-    this.toggleOverflowBody();
+    this.sidebarEL.classList.add("active")
+    this.createBackdrop()
+    this.toggleOverflowBody()
   }
 
   /**
    * Hide Sidebar
    */
   hide() {
-    this.sidebarEL.classList.remove('active');
-    this.deleteBackdrop();
-    this.toggleOverflowBody();
+    this.sidebarEL.classList.remove("active")
+    this.deleteBackdrop()
+    this.toggleOverflowBody()
   }
-
 
   /**
    * Create Sidebar Backdrop
    */
   createBackdrop() {
-    if (window.body.clientWidth < 1200) return
-    this.deleteBackdrop();
-    const backdrop = document.createElement('div');
-    backdrop.classList.add('sidebar-backdrop');
-    backdrop.addEventListener('click', this.hide.bind(this));
-    document.body.appendChild(backdrop);
+    if (document.body.clientWidth < 1200) return
+    this.deleteBackdrop()
+    const backdrop = document.createElement("div")
+    backdrop.classList.add("sidebar-backdrop")
+    backdrop.addEventListener("click", this.hide.bind(this))
+    document.body.appendChild(backdrop)
   }
 
   /**
    * Delete Sidebar Backdrop
    */
   deleteBackdrop() {
-    const backdrop = document.querySelector('.sidebar-backdrop');
+    const backdrop = document.querySelector(".sidebar-backdrop")
     if (backdrop) {
-      backdrop.remove();
+      backdrop.remove()
     }
   }
 
@@ -135,30 +147,30 @@ class Sidebar {
    * Toggle Overflow Body
    */
   toggleOverflowBody(active) {
-    const sidebarState = this.sidebarEL.classList.contains('active');
-    const body = document.querySelector('body');
-    if (typeof active == 'undefined') {
-      body.style.overflowY = sidebarState ? 'hidden' : 'auto';
+    const sidebarState = this.sidebarEL.classList.contains("active")
+    const body = document.querySelector("body")
+    if (typeof active == "undefined") {
+      body.style.overflowY = sidebarState ? "hidden" : "auto"
     } else {
-      body.style.overflowY = active ? 'auto' : 'hidden';
+      body.style.overflowY = active ? "auto" : "hidden"
     }
   }
 
   isElementInViewport(el) {
-    var rect = el.getBoundingClientRect();
-  
+    var rect = el.getBoundingClientRect()
+
     return (
       rect.top >= 0 &&
       rect.left >= 0 &&
       rect.bottom <=
         (window.innerHeight || document.documentElement.clientHeight) &&
       rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
+    )
   }
-  
+
   forceElementVisibility(el) {
     if (!this.isElementInViewport(el)) {
-      el.scrollIntoView(false);
+      el.scrollIntoView(false)
     }
   }
 }

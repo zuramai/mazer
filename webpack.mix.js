@@ -1,56 +1,53 @@
-const mix = require("laravel-mix");
-const MixGlob = require('laravel-mix-glob');
-const sidebarItems = require("./src/sidebar-items.json");
-const horizontalMenuItems = require("./src/horizontal-menu-items.json");
-require("laravel-mix-nunjucks");
-
+const mix = require("laravel-mix")
+const MixGlob = require("laravel-mix-glob")
+const sidebarItems = require("./src/sidebar-items.json")
+const horizontalMenuItems = require("./src/horizontal-menu-items.json")
+require("laravel-mix-nunjucks")
 
 // String constants
-const assetsPath = "src/assets/";
+const assetsPath = "src/assets/"
 
 // Create MixGlob instance
-const mixGlob = new MixGlob({mix}); // mix is required
-
+const mixGlob = new MixGlob({ mix }) // mix is required
 
 // Files loaded from css url()s will be placed alongside our resources
 mix.options({
-  fileLoaderDirs:  {
-      fonts: 'assets/fonts',
-      images: 'assets/images'
-  }
-});
+  fileLoaderDirs: {
+    fonts: "assets/fonts",
+    images: "assets/images",
+  },
+})
 
 // Modules and extensions
 const modulesToCopy = {
-    'simple-datatables': true, // With dist folder = true
-    '@icon/dripicons': false,
-    '@fortawesome/fontawesome-free': false,
-    'rater-js': false, 
-    'bootstrap-icons': false, 
-    'apexcharts': true, 
-    'perfect-scrollbar': true, 
-    'filepond': true, 
-    'filepond-plugin-image-preview': true, 
-    'feather-icons': true, 
-    'dragula': true, 
-    'dayjs': false, 
-    'chart.js': true, 
-    'choices.js': false, 
-    'parsleyjs': true, 
-    'sweetalert2': true, 
-    'summernote': true, 
-    'jquery': true, 
-    'quill': true, 
-    'tinymce': false, 
-    'toastify-js': false, 
-    'datatables.net-bs5': false,
+  "simple-datatables": true, // With dist folder = true
+  "@icon/dripicons": false,
+  "@fortawesome/fontawesome-free": false,
+  "rater-js": false,
+  "bootstrap-icons": false,
+  apexcharts: true,
+  "perfect-scrollbar": true,
+  filepond: true,
+  "filepond-plugin-image-preview": true,
+  "feather-icons": true,
+  dragula: true,
+  dayjs: false,
+  "chart.js": true,
+  "choices.js": false,
+  parsleyjs: true,
+  sweetalert2: true,
+  summernote: true,
+  jquery: true,
+  quill: true,
+  tinymce: false,
+  "toastify-js": false,
+  "datatables.net-bs5": false,
 }
 for (const mod in modulesToCopy) {
   let modulePath = `node_modules/${mod}`
-  if (modulesToCopy[mod]) modulePath += '/dist'
-  
-  mix
-    .copy(modulePath, `dist/assets/extensions/${mod}`)
+  if (modulesToCopy[mod]) modulePath += "/dist"
+
+  mix.copy(modulePath, `dist/assets/extensions/${mod}`)
 }
 
 mixGlob
@@ -63,16 +60,18 @@ mixGlob
   .sass(`${assetsPath}scss/iconly.scss`, "assets/css/shared")
   .js(`${assetsPath}js/*.js`, "assets/js")
 
-
-// Copying assets  
+// Copying assets
 mix
   .copy("src/assets/images", "dist/assets/images")
-  .copy("node_modules/bootstrap-icons/bootstrap-icons.svg","dist/assets/images")
+  .copy(
+    "node_modules/bootstrap-icons/bootstrap-icons.svg",
+    "dist/assets/images"
+  )
   .copy(`${assetsPath}js/pages`, "dist/assets/js/pages")
   // We place all generated css in /assets/css/xxx
   // This is the relative path to the fileLoaderDirs we specified above
   .setResourceRoot("../../../")
-  .setPublicPath("dist");
+  .setPublicPath("dist")
 
 // Nunjucks Templating
 mix.njk("src/*.html", "dist/", {
@@ -90,12 +89,19 @@ mix.njk("src/*.html", "dist/", {
   },
   manageEnv: (nunjucks) => {
     nunjucks.addFilter("containString", (str, containStr) => {
-      if (!str.length) return false;
-      return str.indexOf(containStr) >= 0;
-    });
+      if (!str.length) return false
+      return str.indexOf(containStr) >= 0
+    })
     nunjucks.addFilter("startsWith", (str, targetStr) => {
-      if (!str.length) return false;
-      return str.startsWith(targetStr);
-    });
+      if (!str.length) return false
+      return str.startsWith(targetStr)
+    })
   },
-});
+})
+
+// Browsersync
+mix.browserSync({
+  files: ["src/scss/*.scss", "src/**/*.html", "src/assets/js/**/*.js"],
+  server: "dist",
+  port: 3003,
+})
