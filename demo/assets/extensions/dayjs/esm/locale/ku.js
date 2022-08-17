@@ -59,7 +59,7 @@ var locale = {
   },
   relativeTime: {
     future: 'لە %s',
-    past: '%s',
+    past: 'لەمەوپێش %s',
     s: 'چەند چرکەیەک',
     m: 'یەک خولەک',
     mm: '%d خولەک',

@@ -1,6 +1,6 @@
 {
   "name": "dayjs",
-  "version": "1.11.1",
+  "version": "1.11.5",
   "description": "2KB immutable date time library alternative to Moment.js with the same modern API ",
   "main": "dayjs.min.js",
   "types": "index.d.ts",
@@ -85,7 +85,7 @@
     "karma-jasmine": "^1.1.2",
     "karma-sauce-launcher": "^1.1.0",
     "mockdate": "^2.0.2",
-    "moment": "2.27.0",
+    "moment": "2.29.2",
     "moment-timezone": "0.5.31",
     "ncp": "^2.0.0",
     "pre-commit": "^1.2.2",

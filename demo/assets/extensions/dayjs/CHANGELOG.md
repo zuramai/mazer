@@ -1,3 +1,40 @@
+## [1.11.5](https://github.com/iamkun/dayjs/compare/v1.11.4...v1.11.5) (2022-08-12)
+
+
+### Bug Fixes
+
+* ordinal for nl not working ([#2011](https://github.com/iamkun/dayjs/issues/2011)) ([c93c85e](https://github.com/iamkun/dayjs/commit/c93c85eaa11564a1aae2d823480a417812c01bf4))
+* wrong ordinal for french locale ([#2010](https://github.com/iamkun/dayjs/issues/2010)) ([dd192a7](https://github.com/iamkun/dayjs/commit/dd192a72fc5d26ce56481e89b0c1ccf5f939be0c))
+
+## [1.11.4](https://github.com/iamkun/dayjs/compare/v1.11.3...v1.11.4) (2022-07-19)
+
+
+### Bug Fixes
+
+* correct past property in ku (kurdish) locale ([#1916](https://github.com/iamkun/dayjs/issues/1916)) ([74e82b9](https://github.com/iamkun/dayjs/commit/74e82b9da5ec8b90361fc27ac7c8b63faf354502))
+* fix French [fr] local ordinal ([#1932](https://github.com/iamkun/dayjs/issues/1932)) ([8f09834](https://github.com/iamkun/dayjs/commit/8f09834a88b8e7f8353c6e7473d4711596890a8c))
+* fix objectSupport plugin ConfigTypeMap type ([#1441](https://github.com/iamkun/dayjs/issues/1441)) ([#1990](https://github.com/iamkun/dayjs/issues/1990)) ([fd51fe4](https://github.com/iamkun/dayjs/commit/fd51fe4f7fa799d8c598343e71fa59299ec4cf93))
+* fix type error to add ordianl property in InstanceLocaleDataReturn and GlobalLocaleDataReturn types ([#1931](https://github.com/iamkun/dayjs/issues/1931)) ([526f0ae](https://github.com/iamkun/dayjs/commit/526f0ae549ffbeeb9ef1099ca23964791fc59743))
+* update locale ar-* meridiem function ([#1954](https://github.com/iamkun/dayjs/issues/1954)) ([3d31611](https://github.com/iamkun/dayjs/commit/3d316117f04362d31f4e8bd349620b8414ce5d0c))
+* zh-tw / zh-hk locale ordinal error ([#1976](https://github.com/iamkun/dayjs/issues/1976)) ([0a1bd08](https://github.com/iamkun/dayjs/commit/0a1bd08e736be7d4e378aaca280caa6543f8066d))
+
+## [1.11.3](https://github.com/iamkun/dayjs/compare/v1.11.2...v1.11.3) (2022-06-06)
+
+
+### Bug Fixes
+
+*  customParseFormat plugin to parse comma as a separator character ([#1913](https://github.com/iamkun/dayjs/issues/1913)) ([41b1405](https://github.com/iamkun/dayjs/commit/41b1405971e099431211ae6c2a100cd797da4427))
+* update Dutch [nl] locale ordinal ([#1908](https://github.com/iamkun/dayjs/issues/1908)) ([5da98f8](https://github.com/iamkun/dayjs/commit/5da98f8085d2d2847d79e38c795082703a14f24b))
+
+## [1.11.2](https://github.com/iamkun/dayjs/compare/v1.11.1...v1.11.2) (2022-05-06)
+
+
+### Bug Fixes
+
+* add OpUnitType (week) to quarterOfYear startOf/endOf types ([#1865](https://github.com/iamkun/dayjs/issues/1865)) ([400bc3e](https://github.com/iamkun/dayjs/commit/400bc3e8915e0c58e7abbfd3a1235364b1abaf3e))
+* Fix type issue with ManipulateType ([#1864](https://github.com/iamkun/dayjs/issues/1864)) ([d033dfc](https://github.com/iamkun/dayjs/commit/d033dfcfc1d2ced39b2733898e8d85ad5984c9e9))
+* fix UTC plugin .valueOf not taking DST into account  ([#1448](https://github.com/iamkun/dayjs/issues/1448)) ([27d1c50](https://github.com/iamkun/dayjs/commit/27d1c506100ae6624f258c21cc06b24768ced733))
+
 ## [1.11.1](https://github.com/iamkun/dayjs/compare/v1.11.0...v1.11.1) (2022-04-15)
 
 

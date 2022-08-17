@@ -19,7 +19,7 @@ var locale = {
     LLLL: 'dddd D MMMM YYYY HH:mm'
   },
   meridiem: function meridiem(hour) {
-    return hour > 12 ? 'ص' : 'م';
+    return hour > 12 ? 'م' : 'ص';
   },
   relativeTime: {
     future: 'في %s',

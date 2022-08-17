@@ -12,7 +12,7 @@ var locale = {
     return n;
   },
   meridiem: function meridiem(hour) {
-    return hour > 12 ? 'ص' : 'م';
+    return hour > 12 ? 'م' : 'ص';
   },
   formats: {
     LT: 'HH:mm',

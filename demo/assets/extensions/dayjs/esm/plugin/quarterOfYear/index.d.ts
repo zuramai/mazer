@@ -1,4 +1,4 @@
-import { PluginFunc, ConfigType, QUnitType } from 'dayjs/esm'
+import { PluginFunc, ConfigType, QUnitType, OpUnitType } from 'dayjs/esm'
 
 declare const plugin: PluginFunc
 export = plugin
@@ -13,9 +13,9 @@ declare module 'dayjs/esm' {
 
     subtract(value: number, unit: QUnitType): Dayjs
 
-    startOf(unit: QUnitType): Dayjs
+    startOf(unit: QUnitType | OpUnitType): Dayjs
 
-    endOf(unit: QUnitType): Dayjs
+    endOf(unit: QUnitType | OpUnitType): Dayjs
 
     isSame(date: ConfigType, unit?: QUnitType): boolean
 

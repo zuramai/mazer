@@ -148,7 +148,7 @@ export default (function (option, Dayjs, dayjs) {
   };
 
   proto.valueOf = function () {
-    var addedOffset = !this.$utils().u(this.$offset) ? this.$offset + (this.$x.$localOffset || new Date().getTimezoneOffset()) : 0;
+    var addedOffset = !this.$utils().u(this.$offset) ? this.$offset + (this.$x.$localOffset || this.$d.getTimezoneOffset()) : 0;
     return this.$d.valueOf() - addedOffset * MILLISECONDS_A_MINUTE;
   };
 

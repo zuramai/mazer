@@ -7,8 +7,14 @@ var locale = {
   weekdays: '星期日_星期一_星期二_星期三_星期四_星期五_星期六'.split('_'),
   weekdaysShort: '週日_週一_週二_週三_週四_週五_週六'.split('_'),
   weekdaysMin: '日_一_二_三_四_五_六'.split('_'),
-  ordinal: function ordinal(n) {
-    return n + "\u65E5";
+  ordinal: function ordinal(number, period) {
+    switch (period) {
+      case 'W':
+        return number + "\u9031";
+
+      default:
+        return number + "\u65E5";
+    }
   },
   formats: {
     LT: 'HH:mm',
