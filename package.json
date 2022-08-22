@@ -68,7 +68,7 @@
     "sweetalert2": "^11.4.6",
     "tinymce": "^5.10.3",
     "toastify-js": "^1.11.2",
-    "webpack": "^5.70.0"
+    "webpack": "^5.74.0"
   },
   "devDependencies": {
     "bestzip": "^2.2.1",
