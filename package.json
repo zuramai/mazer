@@ -41,7 +41,7 @@
     "chart.js": "^3.9.1",
     "choices.js": "^9.1.0",
     "cross-env": "^7.0.3",
-    "datatables.net": "^1.11.5",
+    "datatables.net": "^1.12.1",
     "datatables.net-bs5": "^1.11.5",
     "dayjs": "^1.11.5",
     "dragula": "^3.7.3",
