@@ -1,8 +1,8 @@
 <h1 align="center">Mazer Dashboard</h1>
 
-<!-- ![Mazer Screenshot](https://user-images.githubusercontent.com/45036724/167523601-9d20fb17-1989-488f-b619-cb53c0db8898.png) -->
+ ![Mazer Screenshot](https://user-images.githubusercontent.com/45036724/167523601-9d20fb17-1989-488f-b619-cb53c0db8898.png) 
 
-<img width="5000" alt="ssmazer" src="https://user-images.githubusercontent.com/87259393/180425093-97fc2f22-8434-4c64-becc-c70b4bbb40bc.png">
+<!-- <img width="5000" alt="ssmazer" src="https://user-images.githubusercontent.com/87259393/180425093-97fc2f22-8434-4c64-becc-c70b4bbb40bc.png"> -->
 
 
 
