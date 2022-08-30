@@ -42,8 +42,8 @@ Open the index HTML file and explore the source code.
 ## Community Mazer-based open sources
 
 - [CodeIgniter 4](https://github.com/irsyadulibad/mazer-codeigniter) by [@irsyadulibad](https://github.com/irsyadulibad)
-- [Laravel + Livewire](https://github.com/zuramai/laravel-mazer) (unmaintained, looking for maintainer)
-- [NuxtJS](https://github.com/fauzan121002/mazer-nuxt) by [@fncolon](https://github.com/fncolon)
+- [Laravel + Livewire (Unmaintained)](https://github.com/zuramai/laravel-mazer) (unmaintained, looking for maintainer)
+- [NuxtJS (Unmaintained)](https://github.com/fauzan121002/mazer-nuxt) by [@fncolon](https://github.com/fncolon) (unmaintained)
 - [React JS Component Library](https://github.com/fachryansyah/react-mazer-ui) by [@fachryansyah](https://github.com/fachryansyah/)
 - [Adonisjs 5](https://github.com/afman42/mazer-adonisjs) by [@afman42](https://github.com/afman42/)
 - [Django](https://github.com/bimbims125/mazer-django) by [@bimbims125](https://github.com/bimbims125/)
