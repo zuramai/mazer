@@ -46,6 +46,7 @@ Open the index HTML file and explore the source code.
 - [NuxtJS (Unmaintained)](https://github.com/fzn0x/mazer-nuxt) by [@fzn0x](https://github.com/fzn0x) (unmaintained)
 - [React JS Component Library](https://github.com/fachryansyah/react-mazer-ui) by [@fachryansyah](https://github.com/fachryansyah/)
 - [Adonisjs 5](https://github.com/afman42/mazer-adonisjs) by [@afman42](https://github.com/afman42/)
+- [Html 5](https://github.com/bagussatoto/mazer-html5) by [@bagussatoto](https://github.com/bagussatoto/)
 - [Django](https://github.com/bimbims125/mazer-django) by [@bimbims125](https://github.com/bimbims125/)
 - [Flask](https://github.com/antheiz/mazer-flask) by [@antheiz](https://github.com/antheiz/)
 - Did you make in another framework or tools? Open up Pull Requests and put yours here! 😃
