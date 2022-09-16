@@ -1,5 +1,5 @@
 /*!
- * Toastify js 1.11.2
+ * Toastify js 1.12.0
  * https://github.com/apvarun/toastify-js
  * @license MIT licensed
  *
@@ -18,7 +18,7 @@
       return new Toastify.lib.init(options);
     },
     // Library version
-    version = "1.11.2";
+    version = "1.12.0";
 
   // Set the default global options
   Toastify.defaults = {
@@ -43,6 +43,7 @@
     },
     offset: {x: 0, y: 0},
     escapeMarkup: true,
+    ariaLive: 'polite',
     style: {background: ''}
   };
 
@@ -83,6 +84,7 @@
       this.options.onClick = options.onClick || Toastify.defaults.onClick; // Callback after click
       this.options.offset = options.offset || Toastify.defaults.offset; // toast offset
       this.options.escapeMarkup = options.escapeMarkup !== undefined ? options.escapeMarkup : Toastify.defaults.escapeMarkup;
+      this.options.ariaLive = options.ariaLive || Toastify.defaults.ariaLive;
       this.options.style = options.style || Toastify.defaults.style;
       if(options.backgroundColor) {
         this.options.style.background = options.backgroundColor;
@@ -130,6 +132,11 @@
         divElement.style[property] = this.options.style[property];
       }
 
+      // Announce the toast to screen readers
+      if (this.options.ariaLive) {
+        divElement.setAttribute('aria-live', this.options.ariaLive)
+      }
+
       // Adding the toast message/node
       if (this.options.node && this.options.node.nodeType === Node.ELEMENT_NODE) {
         // If we have a valid node, we insert it
@@ -160,10 +167,11 @@
       // Adding a close icon to the toast
       if (this.options.close === true) {
         // Create a span for close element
-        var closeElement = document.createElement("span");
-        closeElement.innerHTML = "&#10006;";
-
+        var closeElement = document.createElement("button");
+        closeElement.type = "button";
+        closeElement.setAttribute("aria-label", "Close");
         closeElement.className = "toast-close";
+        closeElement.innerHTML = "&#10006;";
 
         // Triggering the removal of toast from DOM on close click
         closeElement.addEventListener(

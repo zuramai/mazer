@@ -2,6 +2,11 @@
 
 All the changes made to toastify-js library.
 
+## [1.12.0] - 2022-07-21
+
+* Accessibility fix: Support aria-live for the toast
+* Accessibility fix: Add aria-label for close icon
+
 ## [1.11.2] - 2021-10-06
 
 * Bugfix: Style Options: "backgroundColor" not working! (#81)

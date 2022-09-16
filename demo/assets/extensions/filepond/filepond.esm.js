@@ -1,1 +1,9723 @@
-const isNode=e=>e instanceof HTMLElement,createStore=(e,t=[],r=[])=>{const o={...e},i=[],n=[],s=(e,t,r)=>{!r||document.hidden?(d[e]&&d[e](t),i.push({type:e,data:t})):n.push({type:e,data:t})},a=(e,...t)=>c[e]?c[e](...t):null,l={getState:()=>({...o}),processActionQueue:()=>{const e=[...i];return i.length=0,e},processDispatchQueue:()=>{const e=[...n];n.length=0,e.forEach((({type:e,data:t})=>{s(e,t)}))},dispatch:s,query:a};let c={};t.forEach((e=>{c={...e(o),...c}}));let d={};return r.forEach((e=>{d={...e(s,a,o),...d}})),l},defineProperty=(e,t,r)=>{"function"!=typeof r?Object.defineProperty(e,t,{...r}):e[t]=r},forin=(e,t)=>{for(const r in e)e.hasOwnProperty(r)&&t(r,e[r])},createObject=e=>{const t={};return forin(e,(r=>{defineProperty(t,r,e[r])})),t},attr=(e,t,r=null)=>{if(null===r)return e.getAttribute(t)||e.hasAttribute(t);e.setAttribute(t,r)},ns="http://www.w3.org/2000/svg",svgElements=["svg","path"],isSVGElement=e=>svgElements.includes(e),createElement=(e,t,r={})=>{"object"==typeof t&&(r=t,t=null);const o=isSVGElement(e)?document.createElementNS(ns,e):document.createElement(e);return t&&(isSVGElement(e)?attr(o,"class",t):o.className=t),forin(r,((e,t)=>{attr(o,e,t)})),o},appendChild=e=>(t,r)=>{void 0!==r&&e.children[r]?e.insertBefore(t,e.children[r]):e.appendChild(t)},appendChildView=(e,t)=>(e,r)=>(void 0!==r?t.splice(r,0,e):t.push(e),e),removeChildView=(e,t)=>r=>(t.splice(t.indexOf(r),1),r.element.parentNode&&e.removeChild(r.element),r),IS_BROWSER="undefined"!=typeof window&&void 0!==window.document,isBrowser=()=>IS_BROWSER,testElement=isBrowser()?createElement("svg"):{},getChildCount="children"in testElement?e=>e.children.length:e=>e.childNodes.length,getViewRect=(e,t,r,o)=>{const i=r[0]||e.left,n=r[1]||e.top,s=i+e.width,a=n+e.height*(o[1]||1),l={element:{...e},inner:{left:e.left,top:e.top,right:e.right,bottom:e.bottom},outer:{left:i,top:n,right:s,bottom:a}};return t.filter((e=>!e.isRectIgnored())).map((e=>e.rect)).forEach((e=>{expandRect(l.inner,{...e.inner}),expandRect(l.outer,{...e.outer})})),calculateRectSize(l.inner),l.outer.bottom+=l.element.marginBottom,l.outer.right+=l.element.marginRight,calculateRectSize(l.outer),l},expandRect=(e,t)=>{t.top+=e.top,t.right+=e.left,t.bottom+=e.top,t.left+=e.left,t.bottom>e.bottom&&(e.bottom=t.bottom),t.right>e.right&&(e.right=t.right)},calculateRectSize=e=>{e.width=e.right-e.left,e.height=e.bottom-e.top},isNumber=e=>"number"==typeof e,thereYet=(e,t,r,o=.001)=>Math.abs(e-t)<o&&Math.abs(r)<o,spring=({stiffness:e=.5,damping:t=.75,mass:r=10}={})=>{let o=null,i=null,n=0,s=!1;const a=createObject({interpolate:(l,c)=>{if(s)return;if(!isNumber(o)||!isNumber(i))return s=!0,void(n=0);n+=-(i-o)*e/r,i+=n,n*=t,thereYet(i,o,n)||c?(i=o,n=0,s=!0,a.onupdate(i),a.oncomplete(i)):a.onupdate(i)},target:{set:e=>{if(isNumber(e)&&!isNumber(i)&&(i=e),null===o&&(o=e,i=e),o=e,i===o||void 0===o)return s=!0,n=0,a.onupdate(i),void a.oncomplete(i);s=!1},get:()=>o},resting:{get:()=>s},onupdate:e=>{},oncomplete:e=>{}});return a},easeLinear=e=>e,easeInOutQuad=e=>e<.5?2*e*e:(4-2*e)*e-1,tween=({duration:e=500,easing:t=easeInOutQuad,delay:r=0}={})=>{let o,i,n=null,s=!0,a=!1,l=null;const c=createObject({interpolate:(d,p)=>{s||null===l||(null===n&&(n=d),d-n<r||(o=d-n-r,o>=e||p?(o=1,i=a?0:1,c.onupdate(i*l),c.oncomplete(i*l),s=!0):(i=o/e,c.onupdate((o>=0?t(a?1-i:i):0)*l))))},target:{get:()=>a?0:l,set:e=>{if(null===l)return l=e,c.onupdate(e),void c.oncomplete(e);e<l?(l=1,a=!0):(a=!1,l=e),s=!1,n=null}},resting:{get:()=>s},onupdate:e=>{},oncomplete:e=>{}});return c},animator={spring:spring,tween:tween},createAnimator=(e,t,r)=>{const o=e[t]&&"object"==typeof e[t][r]?e[t][r]:e[t]||e,i="string"==typeof o?o:o.type,n="object"==typeof o?{...o}:{};return animator[i]?animator[i](n):null},addGetSet=(e,t,r,o=!1)=>{(t=Array.isArray(t)?t:[t]).forEach((t=>{e.forEach((e=>{let i=e,n=()=>r[e],s=t=>r[e]=t;"object"==typeof e&&(i=e.key,n=e.getter||n,s=e.setter||s),t[i]&&!o||(t[i]={get:n,set:s})}))}))},animations=({mixinConfig:e,viewProps:t,viewInternalAPI:r,viewExternalAPI:o})=>{const i={...t},n=[];return forin(e,((e,s)=>{const a=createAnimator(s);if(!a)return;a.onupdate=r=>{t[e]=r},a.target=i[e];addGetSet([{key:e,setter:e=>{a.target!==e&&(a.target=e)},getter:()=>t[e]}],[r,o],t,!0),n.push(a)})),{write:e=>{let t=document.hidden,r=!0;return n.forEach((o=>{o.resting||(r=!1),o.interpolate(e,t)})),r},destroy:()=>{}}},addEvent=e=>(t,r)=>{e.addEventListener(t,r)},removeEvent=e=>(t,r)=>{e.removeEventListener(t,r)},listeners=({mixinConfig:e,viewProps:t,viewInternalAPI:r,viewExternalAPI:o,viewState:i,view:n})=>{const s=[],a=(l=n.element,(e,t)=>{l.addEventListener(e,t)});var l;const c=removeEvent(n.element);return o.on=(e,t)=>{s.push({type:e,fn:t}),a(e,t)},o.off=(e,t)=>{s.splice(s.findIndex((r=>r.type===e&&r.fn===t)),1),c(e,t)},{write:()=>!0,destroy:()=>{s.forEach((e=>{c(e.type,e.fn)}))}}},apis=({mixinConfig:e,viewProps:t,viewExternalAPI:r})=>{addGetSet(e,r,t)},isDefined=e=>null!=e,defaults={opacity:1,scaleX:1,scaleY:1,translateX:0,translateY:0,rotateX:0,rotateY:0,rotateZ:0,originX:0,originY:0},styles=({mixinConfig:e,viewProps:t,viewInternalAPI:r,viewExternalAPI:o,view:i})=>{const n={...t},s={};addGetSet(e,[r,o],t);const a=()=>i.rect?getViewRect(i.rect,i.childViews,[t.translateX||0,t.translateY||0],[t.scaleX||0,t.scaleY||0]):null;return r.rect={get:a},o.rect={get:a},e.forEach((e=>{t[e]=void 0===n[e]?defaults[e]:n[e]})),{write:()=>{if(propsHaveChanged(s,t))return applyStyles(i.element,t),Object.assign(s,{...t}),!0},destroy:()=>{}}},propsHaveChanged=(e,t)=>{if(Object.keys(e).length!==Object.keys(t).length)return!0;for(const r in t)if(t[r]!==e[r])return!0;return!1},applyStyles=(e,{opacity:t,perspective:r,translateX:o,translateY:i,scaleX:n,scaleY:s,rotateX:a,rotateY:l,rotateZ:c,originX:d,originY:p,width:u,height:E})=>{let m="",I="";(isDefined(d)||isDefined(p))&&(I+=`transform-origin: ${d||0}px ${p||0}px;`),isDefined(r)&&(m+=`perspective(${r}px) `),(isDefined(o)||isDefined(i))&&(m+=`translate3d(${o||0}px, ${i||0}px, 0) `),(isDefined(n)||isDefined(s))&&(m+=`scale3d(${isDefined(n)?n:1}, ${isDefined(s)?s:1}, 1) `),isDefined(c)&&(m+=`rotateZ(${c}rad) `),isDefined(a)&&(m+=`rotateX(${a}rad) `),isDefined(l)&&(m+=`rotateY(${l}rad) `),m.length&&(I+=`transform:${m};`),isDefined(t)&&(I+=`opacity:${t};`,0===t&&(I+="visibility:hidden;"),t<1&&(I+="pointer-events:none;")),isDefined(E)&&(I+=`height:${E}px;`),isDefined(u)&&(I+=`width:${u}px;`);const T=e.elementCurrentStyle||"";I.length===T.length&&I===T||(e.style.cssText=I,e.elementCurrentStyle=I)},Mixins={styles:styles,listeners:listeners,animations:animations,apis:apis},updateRect=(e={},t={},r={})=>(t.layoutCalculated||(e.paddingTop=parseInt(r.paddingTop,10)||0,e.marginTop=parseInt(r.marginTop,10)||0,e.marginRight=parseInt(r.marginRight,10)||0,e.marginBottom=parseInt(r.marginBottom,10)||0,e.marginLeft=parseInt(r.marginLeft,10)||0,t.layoutCalculated=!0),e.left=t.offsetLeft||0,e.top=t.offsetTop||0,e.width=t.offsetWidth||0,e.height=t.offsetHeight||0,e.right=e.left+e.width,e.bottom=e.top+e.height,e.scrollTop=t.scrollTop,e.hidden=null===t.offsetParent,e),createView=({tag:e="div",name:t=null,attributes:r={},read:o=(()=>{}),write:i=(()=>{}),create:n=(()=>{}),destroy:s=(()=>{}),filterFrameActionsForChild:a=((e,t)=>t),didCreateView:l=(()=>{}),didWriteView:c=(()=>{}),ignoreRect:d=!1,ignoreRectUpdate:p=!1,mixins:u=[]}={})=>(E,m={})=>{const I=createElement(e,`filepond--${t}`,r),T=window.getComputedStyle(I,null),f=updateRect();let g=null,_=!1;const R=[],h=[],y={},O={},S=[i],D=[o],A=[s],P=()=>I,b=()=>R.concat(),L=()=>g||(g=getViewRect(f,R,[0,0],[1,1]),g),v={element:{get:P},style:{get:()=>T},childViews:{get:b}},M={...v,rect:{get:L},ref:{get:()=>y},is:e=>t===e,appendChild:(C=I,(e,t)=>{void 0!==t&&C.children[t]?C.insertBefore(e,C.children[t]):C.appendChild(e)}),createChildView:(e=>(t,r)=>t(e,r))(E),linkView:e=>(R.push(e),e),unlinkView:e=>{R.splice(R.indexOf(e),1)},appendChildView:appendChildView(0,R),removeChildView:removeChildView(I,R),registerWriter:e=>S.push(e),registerReader:e=>D.push(e),registerDestroyer:e=>A.push(e),invalidateLayout:()=>I.layoutCalculated=!1,dispatch:E.dispatch,query:E.query};var C;const w={element:{get:P},childViews:{get:b},rect:{get:L},resting:{get:()=>_},isRectIgnored:()=>d,_read:()=>{g=null,R.forEach((e=>e._read()));!(p&&f.width&&f.height)&&updateRect(f,I,T);const e={root:F,props:m,rect:f};D.forEach((t=>t(e)))},_write:(e,t,r)=>{let o=0===t.length;return S.forEach((i=>{!1===i({props:m,root:F,actions:t,timestamp:e,shouldOptimize:r})&&(o=!1)})),h.forEach((t=>{!1===t.write(e)&&(o=!1)})),R.filter((e=>!!e.element.parentNode)).forEach((i=>{i._write(e,a(i,t),r)||(o=!1)})),R.forEach(((i,n)=>{i.element.parentNode||(F.appendChild(i.element,n),i._read(),i._write(e,a(i,t),r),o=!1)})),_=o,c({props:m,root:F,actions:t,timestamp:e}),o},_destroy:()=>{h.forEach((e=>e.destroy())),A.forEach((e=>{e({root:F,props:m})})),R.forEach((e=>e._destroy()))}},N={...v,rect:{get:()=>f}};Object.keys(u).sort(((e,t)=>"styles"===e?1:"styles"===t?-1:0)).forEach((e=>{const t=Mixins[e]({mixinConfig:u[e],viewProps:m,viewState:O,viewInternalAPI:M,viewExternalAPI:w,view:createObject(N)});t&&h.push(t)}));const F=createObject(M);n({root:F,props:m});const G=getChildCount(I);return R.forEach(((e,t)=>{F.appendChild(e.element,G+t)})),l(F),createObject(w)},createPainter=(e,t,r=60)=>{const o="__framePainter";if(window[o])return window[o].readers.push(e),void window[o].writers.push(t);window[o]={readers:[e],writers:[t]};const i=window[o],n=1e3/r;let s=null,a=null,l=null,c=null;const d=()=>{document.hidden?(l=()=>window.setTimeout((()=>p(performance.now())),n),c=()=>window.clearTimeout(a)):(l=()=>window.requestAnimationFrame(p),c=()=>window.cancelAnimationFrame(a))};document.addEventListener("visibilitychange",(()=>{c&&c(),d(),p(performance.now())}));const p=e=>{a=l(p),s||(s=e);const t=e-s;t<=n||(s=e-t%n,i.readers.forEach((e=>e())),i.writers.forEach((t=>t(e))))};return d(),p(performance.now()),{pause:()=>{c(a)}}},createRoute=(e,t)=>({root:r,props:o,actions:i=[],timestamp:n,shouldOptimize:s})=>{i.filter((t=>e[t.type])).forEach((t=>e[t.type]({root:r,props:o,action:t.data,timestamp:n,shouldOptimize:s}))),t&&t({root:r,props:o,actions:i,timestamp:n,shouldOptimize:s})},insertBefore=(e,t)=>t.parentNode.insertBefore(e,t),insertAfter=(e,t)=>t.parentNode.insertBefore(e,t.nextSibling),isArray=e=>Array.isArray(e),isEmpty=e=>null==e,trim=e=>e.trim(),toString=e=>""+e,toArray=(e,t=",")=>isEmpty(e)?[]:isArray(e)?e:toString(e).split(t).map(trim).filter((e=>e.length)),isBoolean=e=>"boolean"==typeof e,toBoolean=e=>isBoolean(e)?e:"true"===e,isString=e=>"string"==typeof e,toNumber=e=>isNumber(e)?e:isString(e)?toString(e).replace(/[a-z]+/gi,""):0,toInt=e=>parseInt(toNumber(e),10),toFloat=e=>parseFloat(toNumber(e)),isInt=e=>isNumber(e)&&isFinite(e)&&Math.floor(e)===e,toBytes=(e,t=1e3)=>{if(isInt(e))return e;let r=toString(e).trim();return/MB$/i.test(r)?(r=r.replace(/MB$i/,"").trim(),toInt(r)*t*t):/KB/i.test(r)?(r=r.replace(/KB$i/,"").trim(),toInt(r)*t):toInt(r)},isFunction=e=>"function"==typeof e,toFunctionReference=e=>{let t=self,r=e.split("."),o=null;for(;o=r.shift();)if(t=t[o],!t)return null;return t},methods={process:"POST",patch:"PATCH",revert:"DELETE",fetch:"GET",restore:"GET",load:"GET"},createServerAPI=e=>{const t={};return t.url=isString(e)?e:e.url||"",t.timeout=e.timeout?parseInt(e.timeout,10):0,t.headers=e.headers?e.headers:{},forin(methods,(r=>{t[r]=createAction(r,e[r],methods[r],t.timeout,t.headers)})),t.process=e.process||isString(e)||e.url?t.process:null,t.remove=e.remove||null,delete t.headers,t},createAction=(e,t,r,o,i)=>{if(null===t)return null;if("function"==typeof t)return t;const n={url:"GET"===r||"PATCH"===r?`?${e}=`:"",method:r,headers:i,withCredentials:!1,timeout:o,onload:null,ondata:null,onerror:null};if(isString(t))return n.url=t,n;if(Object.assign(n,t),isString(n.headers)){const e=n.headers.split(/:(.+)/);n.headers={header:e[0],value:e[1]}}return n.withCredentials=toBoolean(n.withCredentials),n},toServerAPI=e=>createServerAPI(e),isNull=e=>null===e,isObject=e=>"object"==typeof e&&null!==e,isAPI=e=>isObject(e)&&isString(e.url)&&isObject(e.process)&&isObject(e.revert)&&isObject(e.restore)&&isObject(e.fetch),getType=e=>isArray(e)?"array":isNull(e)?"null":isInt(e)?"int":/^[0-9]+ ?(?:GB|MB|KB)$/gi.test(e)?"bytes":isAPI(e)?"api":typeof e,replaceSingleQuotes=e=>e.replace(/{\s*'/g,'{"').replace(/'\s*}/g,'"}').replace(/'\s*:/g,'":').replace(/:\s*'/g,':"').replace(/,\s*'/g,',"').replace(/'\s*,/g,'",'),conversionTable={array:toArray,boolean:toBoolean,int:e=>"bytes"===getType(e)?toBytes(e):toInt(e),number:toFloat,float:toFloat,bytes:toBytes,string:e=>isFunction(e)?e:toString(e),function:e=>toFunctionReference(e),serverapi:toServerAPI,object:e=>{try{return JSON.parse(e.replace(/{\s*'/g,'{"').replace(/'\s*}/g,'"}').replace(/'\s*:/g,'":').replace(/:\s*'/g,':"').replace(/,\s*'/g,',"').replace(/'\s*,/g,'",'))}catch(e){return null}}},convertTo=(e,t)=>conversionTable[t](e),getValueByType=(e,t,r)=>{if(e===t)return e;let o=getType(e);if(o!==r){const t=(i=e,conversionTable[r](i));if(o=getType(t),null===t)throw`Trying to assign value with incorrect type to "${option}", allowed type: "${r}"`;e=t}var i;return e},createOption=(e,t)=>{let r=e;return{enumerable:!0,get:()=>r,set:o=>{r=getValueByType(o,e,t)}}},createOptions=e=>{const t={};return forin(e,(r=>{const o=e[r];t[r]=createOption(o[0],o[1])})),createObject(t)},createInitialState=e=>({items:[],listUpdateTimeout:null,itemUpdateTimeout:null,processingQueue:[],options:createOptions(e)}),fromCamels=(e,t="-")=>e.split(/(?=[A-Z])/).map((e=>e.toLowerCase())).join(t),createOptionAPI=(e,t)=>{const r={};return forin(t,(t=>{r[t]={get:()=>e.getState().options[t],set:r=>{e.dispatch(`SET_${fromCamels(t,"_").toUpperCase()}`,{value:r})}}})),r},createOptionActions=e=>(t,r,o)=>{const i={};return forin(e,(e=>{const r=fromCamels(e,"_").toUpperCase();i[`SET_${r}`]=i=>{try{o.options[e]=i.value}catch(e){}t(`DID_SET_${r}`,{value:o.options[e]})}})),i},createOptionQueries=e=>t=>{const r={};return forin(e,(e=>{r[`GET_${fromCamels(e,"_").toUpperCase()}`]=r=>t.options[e]})),r},InteractionMethod={API:1,DROP:2,BROWSE:3,PASTE:4,NONE:5},getUniqueId=()=>Math.random().toString(36).substr(2,9),arrayRemove=(e,t)=>e.splice(t,1),run=(e,t)=>{t?e():document.hidden?Promise.resolve(1).then(e):setTimeout(e,0)},on=()=>{const e=[],t=(t,r)=>{arrayRemove(e,e.findIndex((e=>e.event===t&&(e.cb===r||!r))))},r=(t,r,o)=>{e.filter((e=>e.event===t)).map((e=>e.cb)).forEach((e=>run((()=>e(...r)),o)))};return{fireSync:(e,...t)=>{r(e,t,!0)},fire:(e,...t)=>{r(e,t,!1)},on:(t,r)=>{e.push({event:t,cb:r})},onOnce:(r,o)=>{e.push({event:r,cb:(...e)=>{t(r,o),o(...e)}})},off:t}},copyObjectPropertiesToObject=(e,t,r)=>{Object.getOwnPropertyNames(e).filter((e=>!r.includes(e))).forEach((r=>Object.defineProperty(t,r,Object.getOwnPropertyDescriptor(e,r))))},PRIVATE=["fire","process","revert","load","on","off","onOnce","retryLoad","extend","archive","archived","release","released","requestProcessing","freeze"],createItemAPI=e=>{const t={};return copyObjectPropertiesToObject(e,t,PRIVATE),t},removeReleasedItems=e=>{e.forEach(((t,r)=>{t.released&&arrayRemove(e,r)}))},ItemStatus={INIT:1,IDLE:2,PROCESSING_QUEUED:9,PROCESSING:3,PROCESSING_COMPLETE:5,PROCESSING_ERROR:6,PROCESSING_REVERT_ERROR:10,LOADING:7,LOAD_ERROR:8},FileOrigin={INPUT:1,LIMBO:2,LOCAL:3},getNonNumeric=e=>/[^0-9]+/.exec(e),getDecimalSeparator=()=>getNonNumeric(1.1.toLocaleString())[0],getThousandsSeparator=()=>{const e=getDecimalSeparator(),t=1e3.toLocaleString();return t!==1e3.toString()?getNonNumeric(t)[0]:"."===e?",":"."},Type={BOOLEAN:"boolean",INT:"int",NUMBER:"number",STRING:"string",ARRAY:"array",OBJECT:"object",FUNCTION:"function",ACTION:"action",SERVER_API:"serverapi",REGEX:"regex"},filters=[],applyFilterChain=(e,t,r)=>new Promise(((o,i)=>{const n=filters.filter((t=>t.key===e)).map((e=>e.cb));if(0===n.length)return void o(t);const s=n.shift();n.reduce(((e,t)=>e.then((e=>t(e,r)))),s(t,r)).then((e=>o(e))).catch((e=>i(e)))})),applyFilters=(e,t,r)=>filters.filter((t=>t.key===e)).map((e=>e.cb(t,r))),addFilter=(e,t)=>filters.push({key:e,cb:t}),extendDefaultOptions=e=>Object.assign(defaultOptions,e),getOptions=()=>({...defaultOptions}),setOptions=e=>{forin(e,((e,t)=>{defaultOptions[e]&&(defaultOptions[e][0]=getValueByType(t,defaultOptions[e][0],defaultOptions[e][1]))}))},defaultOptions={id:[null,Type.STRING],name:["filepond",Type.STRING],disabled:[!1,Type.BOOLEAN],className:[null,Type.STRING],required:[!1,Type.BOOLEAN],captureMethod:[null,Type.STRING],allowSyncAcceptAttribute:[!0,Type.BOOLEAN],allowDrop:[!0,Type.BOOLEAN],allowBrowse:[!0,Type.BOOLEAN],allowPaste:[!0,Type.BOOLEAN],allowMultiple:[!1,Type.BOOLEAN],allowReplace:[!0,Type.BOOLEAN],allowRevert:[!0,Type.BOOLEAN],allowRemove:[!0,Type.BOOLEAN],allowProcess:[!0,Type.BOOLEAN],allowReorder:[!1,Type.BOOLEAN],allowDirectoriesOnly:[!1,Type.BOOLEAN],storeAsFile:[!1,Type.BOOLEAN],forceRevert:[!1,Type.BOOLEAN],maxFiles:[null,Type.INT],checkValidity:[!1,Type.BOOLEAN],itemInsertLocationFreedom:[!0,Type.BOOLEAN],itemInsertLocation:["before",Type.STRING],itemInsertInterval:[75,Type.INT],dropOnPage:[!1,Type.BOOLEAN],dropOnElement:[!0,Type.BOOLEAN],dropValidation:[!1,Type.BOOLEAN],ignoredFiles:[[".ds_store","thumbs.db","desktop.ini"],Type.ARRAY],instantUpload:[!0,Type.BOOLEAN],maxParallelUploads:[2,Type.INT],allowMinimumUploadDuration:[!0,Type.BOOLEAN],chunkUploads:[!1,Type.BOOLEAN],chunkForce:[!1,Type.BOOLEAN],chunkSize:[5e6,Type.INT],chunkRetryDelays:[[500,1e3,3e3],Type.ARRAY],server:[null,Type.SERVER_API],fileSizeBase:[1e3,Type.INT],labelFileSizeBytes:["bytes",Type.STRING],labelFileSizeKilobytes:["KB",Type.STRING],labelFileSizeMegabytes:["MB",Type.STRING],labelFileSizeGigabytes:["GB",Type.STRING],labelDecimalSeparator:[getDecimalSeparator(),Type.STRING],labelThousandsSeparator:[getThousandsSeparator(),Type.STRING],labelIdle:['Drag & Drop your files or <span class="filepond--label-action">Browse</span>',Type.STRING],labelInvalidField:["Field contains invalid files",Type.STRING],labelFileWaitingForSize:["Waiting for size",Type.STRING],labelFileSizeNotAvailable:["Size not available",Type.STRING],labelFileCountSingular:["file in list",Type.STRING],labelFileCountPlural:["files in list",Type.STRING],labelFileLoading:["Loading",Type.STRING],labelFileAdded:["Added",Type.STRING],labelFileLoadError:["Error during load",Type.STRING],labelFileRemoved:["Removed",Type.STRING],labelFileRemoveError:["Error during remove",Type.STRING],labelFileProcessing:["Uploading",Type.STRING],labelFileProcessingComplete:["Upload complete",Type.STRING],labelFileProcessingAborted:["Upload cancelled",Type.STRING],labelFileProcessingError:["Error during upload",Type.STRING],labelFileProcessingRevertError:["Error during revert",Type.STRING],labelTapToCancel:["tap to cancel",Type.STRING],labelTapToRetry:["tap to retry",Type.STRING],labelTapToUndo:["tap to undo",Type.STRING],labelButtonRemoveItem:["Remove",Type.STRING],labelButtonAbortItemLoad:["Abort",Type.STRING],labelButtonRetryItemLoad:["Retry",Type.STRING],labelButtonAbortItemProcessing:["Cancel",Type.STRING],labelButtonUndoItemProcessing:["Undo",Type.STRING],labelButtonRetryItemProcessing:["Retry",Type.STRING],labelButtonProcessItem:["Upload",Type.STRING],iconRemove:['<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><path d="M11.586 13l-2.293 2.293a1 1 0 0 0 1.414 1.414L13 14.414l2.293 2.293a1 1 0 0 0 1.414-1.414L14.414 13l2.293-2.293a1 1 0 0 0-1.414-1.414L13 11.586l-2.293-2.293a1 1 0 0 0-1.414 1.414L11.586 13z" fill="currentColor" fill-rule="nonzero"/></svg>',Type.STRING],iconProcess:['<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><path d="M14 10.414v3.585a1 1 0 0 1-2 0v-3.585l-1.293 1.293a1 1 0 0 1-1.414-1.415l3-3a1 1 0 0 1 1.414 0l3 3a1 1 0 0 1-1.414 1.415L14 10.414zM9 18a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2H9z" fill="currentColor" fill-rule="evenodd"/></svg>',Type.STRING],iconRetry:['<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><path d="M10.81 9.185l-.038.02A4.997 4.997 0 0 0 8 13.683a5 5 0 0 0 5 5 5 5 0 0 0 5-5 1 1 0 0 1 2 0A7 7 0 1 1 9.722 7.496l-.842-.21a.999.999 0 1 1 .484-1.94l3.23.806c.535.133.86.675.73 1.21l-.804 3.233a.997.997 0 0 1-1.21.73.997.997 0 0 1-.73-1.21l.23-.928v-.002z" fill="currentColor" fill-rule="nonzero"/></svg>',Type.STRING],iconUndo:['<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><path d="M9.185 10.81l.02-.038A4.997 4.997 0 0 1 13.683 8a5 5 0 0 1 5 5 5 5 0 0 1-5 5 1 1 0 0 0 0 2A7 7 0 1 0 7.496 9.722l-.21-.842a.999.999 0 1 0-1.94.484l.806 3.23c.133.535.675.86 1.21.73l3.233-.803a.997.997 0 0 0 .73-1.21.997.997 0 0 0-1.21-.73l-.928.23-.002-.001z" fill="currentColor" fill-rule="nonzero"/></svg>',Type.STRING],iconDone:['<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><path d="M18.293 9.293a1 1 0 0 1 1.414 1.414l-7.002 7a1 1 0 0 1-1.414 0l-3.998-4a1 1 0 1 1 1.414-1.414L12 15.586l6.294-6.293z" fill="currentColor" fill-rule="nonzero"/></svg>',Type.STRING],oninit:[null,Type.FUNCTION],onwarning:[null,Type.FUNCTION],onerror:[null,Type.FUNCTION],onactivatefile:[null,Type.FUNCTION],oninitfile:[null,Type.FUNCTION],onaddfilestart:[null,Type.FUNCTION],onaddfileprogress:[null,Type.FUNCTION],onaddfile:[null,Type.FUNCTION],onprocessfilestart:[null,Type.FUNCTION],onprocessfileprogress:[null,Type.FUNCTION],onprocessfileabort:[null,Type.FUNCTION],onprocessfilerevert:[null,Type.FUNCTION],onprocessfile:[null,Type.FUNCTION],onprocessfiles:[null,Type.FUNCTION],onremovefile:[null,Type.FUNCTION],onpreparefile:[null,Type.FUNCTION],onupdatefiles:[null,Type.FUNCTION],onreorderfiles:[null,Type.FUNCTION],beforeDropFile:[null,Type.FUNCTION],beforeAddFile:[null,Type.FUNCTION],beforeRemoveFile:[null,Type.FUNCTION],beforePrepareFile:[null,Type.FUNCTION],stylePanelLayout:[null,Type.STRING],stylePanelAspectRatio:[null,Type.STRING],styleItemPanelAspectRatio:[null,Type.STRING],styleButtonRemoveItemPosition:["left",Type.STRING],styleButtonProcessItemPosition:["right",Type.STRING],styleLoadIndicatorPosition:["right",Type.STRING],styleProgressIndicatorPosition:["right",Type.STRING],styleButtonRemoveItemAlign:[!1,Type.BOOLEAN],files:[[],Type.ARRAY],credits:[["https://pqina.nl/","Powered by PQINA"],Type.ARRAY]},getItemByQuery=(e,t)=>isEmpty(t)?e[0]||null:isInt(t)?e[t]||null:("object"==typeof t&&(t=t.id),e.find((e=>e.id===t))||null),getNumericAspectRatioFromString=e=>{if(isEmpty(e))return e;if(/:/.test(e)){const t=e.split(":");return t[1]/t[0]}return parseFloat(e)},getActiveItems=e=>e.filter((e=>!e.archived)),Status={EMPTY:0,IDLE:1,ERROR:2,BUSY:3,READY:4};let res=null;const canUpdateFileInput=()=>{if(null===res)try{const e=new DataTransfer;e.items.add(new File(["hello world"],"This_Works.txt"));const t=document.createElement("input");t.setAttribute("type","file"),t.files=e.files,res=1===t.files.length}catch(e){res=!1}return res},ITEM_ERROR=[ItemStatus.LOAD_ERROR,ItemStatus.PROCESSING_ERROR,ItemStatus.PROCESSING_REVERT_ERROR],ITEM_BUSY=[ItemStatus.LOADING,ItemStatus.PROCESSING,ItemStatus.PROCESSING_QUEUED,ItemStatus.INIT],ITEM_READY=[ItemStatus.PROCESSING_COMPLETE],isItemInErrorState=e=>ITEM_ERROR.includes(e.status),isItemInBusyState=e=>ITEM_BUSY.includes(e.status),isItemInReadyState=e=>ITEM_READY.includes(e.status),isAsync=e=>isObject(e.options.server)&&(isObject(e.options.server.process)||isFunction(e.options.server.process)),queries=e=>({GET_STATUS:()=>{const t=getActiveItems(e.items),{EMPTY:r,ERROR:o,BUSY:i,IDLE:n,READY:s}=Status;return 0===t.length?r:t.some(isItemInErrorState)?o:t.some(isItemInBusyState)?i:t.some(isItemInReadyState)?s:n},GET_ITEM:t=>getItemByQuery(e.items,t),GET_ACTIVE_ITEM:t=>getItemByQuery(getActiveItems(e.items),t),GET_ACTIVE_ITEMS:()=>getActiveItems(e.items),GET_ITEMS:()=>e.items,GET_ITEM_NAME:t=>{const r=getItemByQuery(e.items,t);return r?r.filename:null},GET_ITEM_SIZE:t=>{const r=getItemByQuery(e.items,t);return r?r.fileSize:null},GET_STYLES:()=>Object.keys(e.options).filter((e=>/^style/.test(e))).map((t=>({name:t,value:e.options[t]}))),GET_PANEL_ASPECT_RATIO:()=>/circle/.test(e.options.stylePanelLayout)?1:getNumericAspectRatioFromString(e.options.stylePanelAspectRatio),GET_ITEM_PANEL_ASPECT_RATIO:()=>e.options.styleItemPanelAspectRatio,GET_ITEMS_BY_STATUS:t=>getActiveItems(e.items).filter((e=>e.status===t)),GET_TOTAL_ITEMS:()=>getActiveItems(e.items).length,SHOULD_UPDATE_FILE_INPUT:()=>e.options.storeAsFile&&canUpdateFileInput()&&!isAsync(e),IS_ASYNC:()=>isAsync(e),GET_FILE_SIZE_LABELS:e=>({labelBytes:e("GET_LABEL_FILE_SIZE_BYTES")||void 0,labelKilobytes:e("GET_LABEL_FILE_SIZE_KILOBYTES")||void 0,labelMegabytes:e("GET_LABEL_FILE_SIZE_MEGABYTES")||void 0,labelGigabytes:e("GET_LABEL_FILE_SIZE_GIGABYTES")||void 0})}),hasRoomForItem=e=>{const t=getActiveItems(e.items).length;if(!e.options.allowMultiple)return 0===t;const r=e.options.maxFiles;return null===r||t<r},limit=(e,t,r)=>Math.max(Math.min(r,e),t),arrayInsert=(e,t,r)=>e.splice(t,0,r),insertItem=(e,t,r)=>isEmpty(t)?null:void 0===r?(e.push(t),t):(r=limit(r,0,e.length),arrayInsert(e,r,t),t),isBase64DataURI=e=>/^\s*data:([a-z]+\/[a-z0-9-+.]+(;[a-z-]+=[a-z0-9-]+)?)?(;base64)?,([a-z0-9!$&',()*+;=\-._~:@\/?%\s]*)\s*$/i.test(e),getFilenameFromURL=e=>e.split("/").pop().split("?").shift(),getExtensionFromFilename=e=>e.split(".").pop(),guesstimateExtension=e=>{if("string"!=typeof e)return"";const t=e.split("/").pop();return/svg/.test(t)?"svg":/zip|compressed/.test(t)?"zip":/plain/.test(t)?"txt":/msword/.test(t)?"doc":/[a-z]+/.test(t)?"jpeg"===t?"jpg":t:""},leftPad=(e,t="")=>(t+e).slice(-t.length),getDateString=(e=new Date)=>`${e.getFullYear()}-${leftPad(e.getMonth()+1,"00")}-${leftPad(e.getDate(),"00")}_${leftPad(e.getHours(),"00")}-${leftPad(e.getMinutes(),"00")}-${leftPad(e.getSeconds(),"00")}`,getFileFromBlob=(e,t,r=null,o=null)=>{const i="string"==typeof r?e.slice(0,e.size,r):e.slice(0,e.size,e.type);return i.lastModifiedDate=new Date,e._relativePath&&(i._relativePath=e._relativePath),isString(t)||(t=getDateString()),t&&null===o&&getExtensionFromFilename(t)?i.name=t:(o=o||guesstimateExtension(i.type),i.name=t+(o?"."+o:"")),i},getBlobBuilder=()=>window.BlobBuilder=window.BlobBuilder||window.WebKitBlobBuilder||window.MozBlobBuilder||window.MSBlobBuilder,createBlob=(e,t)=>{const r=window.BlobBuilder=window.BlobBuilder||window.WebKitBlobBuilder||window.MozBlobBuilder||window.MSBlobBuilder;if(r){const o=new r;return o.append(e),o.getBlob(t)}return new Blob([e],{type:t})},getBlobFromByteStringWithMimeType=(e,t)=>{const r=new ArrayBuffer(e.length),o=new Uint8Array(r);for(let t=0;t<e.length;t++)o[t]=e.charCodeAt(t);return createBlob(r,t)},getMimeTypeFromBase64DataURI=e=>(/^data:(.+);/.exec(e)||[])[1]||null,getBase64DataFromBase64DataURI=e=>e.split(",")[1].replace(/\s/g,""),getByteStringFromBase64DataURI=e=>atob(getBase64DataFromBase64DataURI(e)),getBlobFromBase64DataURI=e=>{const t=getMimeTypeFromBase64DataURI(e),r=getByteStringFromBase64DataURI(e);return getBlobFromByteStringWithMimeType(r,t)},getFileFromBase64DataURI=(e,t,r)=>getFileFromBlob(getBlobFromBase64DataURI(e),t,null,r),getFileNameFromHeader=e=>{if(!/^content-disposition:/i.test(e))return null;const t=e.split(/filename=|filename\*=.+''/).splice(1).map((e=>e.trim().replace(/^["']|[;"']{0,2}$/g,""))).filter((e=>e.length));return t.length?decodeURI(t[t.length-1]):null},getFileSizeFromHeader=e=>{if(/content-length:/i.test(e)){const t=e.match(/[0-9]+/)[0];return t?parseInt(t,10):null}return null},getTranfserIdFromHeader=e=>{if(/x-content-transfer-id:/i.test(e)){return(e.split(":")[1]||"").trim()||null}return null},getFileInfoFromHeaders=e=>{const t={source:null,name:null,size:null},r=e.split("\n");for(let e of r){const r=getFileNameFromHeader(e);if(r){t.name=r;continue}const o=getFileSizeFromHeader(e);if(o){t.size=o;continue}const i=getTranfserIdFromHeader(e);i&&(t.source=i)}return t},createFileLoader=e=>{const t={source:null,complete:!1,progress:0,size:null,timestamp:null,duration:0,request:null},r=r=>{e?(t.timestamp=Date.now(),t.request=e(r,(e=>{t.duration=Date.now()-t.timestamp,t.complete=!0,e instanceof Blob&&(e=getFileFromBlob(e,e.name||getFilenameFromURL(r))),o.fire("load",e instanceof Blob?e:e?e.body:null)}),(e=>{o.fire("error","string"==typeof e?{type:"error",code:0,body:e}:e)}),((e,r,i)=>{i&&(t.size=i),t.duration=Date.now()-t.timestamp,e?(t.progress=r/i,o.fire("progress",t.progress)):t.progress=null}),(()=>{o.fire("abort")}),(e=>{const r=getFileInfoFromHeaders("string"==typeof e?e:e.headers);o.fire("meta",{size:t.size||r.size,filename:r.name,source:r.source})}))):o.fire("error",{type:"error",body:"Can't load URL",code:400})},o={...on(),setSource:e=>t.source=e,getProgress:()=>t.progress,abort:()=>{t.request&&t.request.abort&&t.request.abort()},load:()=>{const e=t.source;var i,n;o.fire("init",e),e instanceof File?o.fire("load",e):e instanceof Blob?o.fire("load",getFileFromBlob(e,e.name)):isBase64DataURI(e)?o.fire("load",getFileFromBlob(getBlobFromBase64DataURI(e),i,null,n)):r(e)}};return o},isGet=e=>/GET|HEAD/.test(e),sendRequest=(e,t,r)=>{const o={onheaders:()=>{},onprogress:()=>{},onload:()=>{},ontimeout:()=>{},onerror:()=>{},onabort:()=>{},abort:()=>{i=!0,s.abort()}};let i=!1,n=!1;r={method:"POST",headers:{},withCredentials:!1,...r},t=encodeURI(t),isGet(r.method)&&e&&(t=`${t}${encodeURIComponent("string"==typeof e?e:JSON.stringify(e))}`);const s=new XMLHttpRequest;return(isGet(r.method)?s:s.upload).onprogress=e=>{i||o.onprogress(e.lengthComputable,e.loaded,e.total)},s.onreadystatechange=()=>{s.readyState<2||4===s.readyState&&0===s.status||n||(n=!0,o.onheaders(s))},s.onload=()=>{s.status>=200&&s.status<300?o.onload(s):o.onerror(s)},s.onerror=()=>o.onerror(s),s.onabort=()=>{i=!0,o.onabort()},s.ontimeout=()=>o.ontimeout(s),s.open(r.method,t,!0),isInt(r.timeout)&&(s.timeout=r.timeout),Object.keys(r.headers).forEach((e=>{const t=unescape(encodeURIComponent(r.headers[e]));s.setRequestHeader(e,t)})),r.responseType&&(s.responseType=r.responseType),r.withCredentials&&(s.withCredentials=!0),s.send(e),o},createResponse=(e,t,r,o)=>({type:e,code:t,body:r,headers:o}),createTimeoutResponse=e=>t=>{e(createResponse("error",0,"Timeout",t.getAllResponseHeaders()))},hasQS=e=>/\?/.test(e),buildURL=(...e)=>{let t="";return e.forEach((e=>{t+=hasQS(t)&&hasQS(e)?e.replace(/\?/,"&"):e})),t},createFetchFunction=(e="",t)=>{if("function"==typeof t)return t;if(!t||!isString(t.url))return null;const r=t.onload||(e=>e),o=t.onerror||(e=>null);return(i,n,s,a,l,c)=>{const d=sendRequest(i,buildURL(e,t.url),{...t,responseType:"blob"});return d.onload=e=>{const o=e.getAllResponseHeaders(),s=getFileInfoFromHeaders(o).name||getFilenameFromURL(i);n(createResponse("load",e.status,"HEAD"===t.method?null:getFileFromBlob(r(e.response),s),o))},d.onerror=e=>{s(createResponse("error",e.status,o(e.response)||e.statusText,e.getAllResponseHeaders()))},d.onheaders=e=>{c(createResponse("headers",e.status,null,e.getAllResponseHeaders()))},d.ontimeout=createTimeoutResponse(s),d.onprogress=a,d.onabort=l,d}},ChunkStatus={QUEUED:0,COMPLETE:1,PROCESSING:2,ERROR:3,WAITING:4},processFileChunked=(e,t,r,o,i,n,s,a,l,c,d)=>{const p=[],{chunkTransferId:u,chunkServer:E,chunkSize:m,chunkRetryDelays:I}=d,T={serverId:u,aborted:!1},f=t.ondata||(e=>e),g=t.onload||((e,t)=>"HEAD"===t?e.getResponseHeader("Upload-Offset"):e.response),_=t.onerror||(e=>null),R=Math.floor(o.size/m);for(let e=0;e<=R;e++){const t=e*m,r=o.slice(t,t+m,"application/offset+octet-stream");p[e]={index:e,size:r.size,offset:t,data:r,file:o,progress:0,retries:[...I],status:ChunkStatus.QUEUED,error:null,request:null,timeout:null}}const h=e=>e.status===ChunkStatus.QUEUED||e.status===ChunkStatus.ERROR,y=t=>{if(T.aborted)return;if(!(t=t||p.find(h)))return void(p.every((e=>e.status===ChunkStatus.COMPLETE))&&n(T.serverId));t.status=ChunkStatus.PROCESSING,t.progress=null;const r=E.ondata||(e=>e),i=E.onerror||(e=>null),a=buildURL(e,E.url,T.serverId),c="function"==typeof E.headers?E.headers(t):{...E.headers,"Content-Type":"application/offset+octet-stream","Upload-Offset":t.offset,"Upload-Length":o.size,"Upload-Name":o.name},d=t.request=sendRequest(r(t.data),a,{...E,headers:c});d.onload=()=>{t.status=ChunkStatus.COMPLETE,t.request=null,D()},d.onprogress=(e,r,o)=>{t.progress=e?r:null,S()},d.onerror=e=>{t.status=ChunkStatus.ERROR,t.request=null,t.error=i(e.response)||e.statusText,O(t)||s(createResponse("error",e.status,i(e.response)||e.statusText,e.getAllResponseHeaders()))},d.ontimeout=e=>{t.status=ChunkStatus.ERROR,t.request=null,O(t)||createTimeoutResponse(s)(e)},d.onabort=()=>{t.status=ChunkStatus.QUEUED,t.request=null,l()}},O=e=>0!==e.retries.length&&(e.status=ChunkStatus.WAITING,clearTimeout(e.timeout),e.timeout=setTimeout((()=>{y(e)}),e.retries.shift()),!0),S=()=>{const e=p.reduce(((e,t)=>null===e||null===t.progress?null:e+t.progress),0);if(null===e)return a(!1,0,0);const t=p.reduce(((e,t)=>e+t.size),0);a(!0,e,t)},D=()=>{p.filter((e=>e.status===ChunkStatus.PROCESSING)).length>=1||y()};return T.serverId?(r=>{const o=buildURL(e,E.url,T.serverId),i={headers:"function"==typeof t.headers?t.headers(T.serverId):{...t.headers},method:"HEAD"},n=sendRequest(null,o,i);n.onload=e=>r(g(e,i.method)),n.onerror=e=>s(createResponse("error",e.status,_(e.response)||e.statusText,e.getAllResponseHeaders())),n.ontimeout=createTimeoutResponse(s)})((e=>{T.aborted||(p.filter((t=>t.offset<e)).forEach((e=>{e.status=ChunkStatus.COMPLETE,e.progress=e.size})),D())})):(n=>{const a=new FormData;isObject(i)&&a.append(r,JSON.stringify(i));const l="function"==typeof t.headers?t.headers(o,i):{...t.headers,"Upload-Length":o.size},c={...t,headers:l},d=sendRequest(f(a),buildURL(e,t.url),c);d.onload=e=>n(g(e,c.method)),d.onerror=e=>s(createResponse("error",e.status,_(e.response)||e.statusText,e.getAllResponseHeaders())),d.ontimeout=createTimeoutResponse(s)})((e=>{T.aborted||(c(e),T.serverId=e,D())})),{abort:()=>{T.aborted=!0,p.forEach((e=>{clearTimeout(e.timeout),e.request&&e.request.abort()}))}}},createFileProcessorFunction=(e,t,r,o)=>(i,n,s,a,l,c,d)=>{if(!i)return;const p=o.chunkUploads,u=p&&i.size>o.chunkSize,E=p&&(u||o.chunkForce);if(i instanceof Blob&&E)return processFileChunked(e,t,r,i,n,s,a,l,c,d,o);const m=t.ondata||(e=>e),I=t.onload||(e=>e),T=t.onerror||(e=>null),f="function"==typeof t.headers?t.headers(i,n)||{}:{...t.headers},g={...t,headers:f};var _=new FormData;isObject(n)&&_.append(r,JSON.stringify(n)),(i instanceof Blob?[{name:null,file:i}]:i).forEach((e=>{_.append(r,e.file,null===e.name?e.file.name:`${e.name}${e.file.name}`)}));const R=sendRequest(m(_),buildURL(e,t.url),g);return R.onload=e=>{s(createResponse("load",e.status,I(e.response),e.getAllResponseHeaders()))},R.onerror=e=>{a(createResponse("error",e.status,T(e.response)||e.statusText,e.getAllResponseHeaders()))},R.ontimeout=createTimeoutResponse(a),R.onprogress=l,R.onabort=c,R},createProcessorFunction=(e="",t,r,o)=>"function"==typeof t?(...e)=>t(r,...e,o):t&&isString(t.url)?createFileProcessorFunction(e,t,r,o):null,createRevertFunction=(e="",t)=>{if("function"==typeof t)return t;if(!t||!isString(t.url))return(e,t)=>t();const r=t.onload||(e=>e),o=t.onerror||(e=>null);return(i,n,s)=>{const a=sendRequest(i,e+t.url,t);return a.onload=e=>{n(createResponse("load",e.status,r(e.response),e.getAllResponseHeaders()))},a.onerror=e=>{s(createResponse("error",e.status,o(e.response)||e.statusText,e.getAllResponseHeaders()))},a.ontimeout=createTimeoutResponse(s),a}},getRandomNumber=(e=0,t=1)=>e+Math.random()*(t-e),createPerceivedPerformanceUpdater=(e,t=1e3,r=0,o=25,i=250)=>{let n=null;const s=Date.now(),a=()=>{let r=Date.now()-s,l=getRandomNumber(o,i);r+l>t&&(l=r+l-t);let c=r/t;c>=1||document.hidden?e(1):(e(c),n=setTimeout(a,l))};return t>0&&a(),{clear:()=>{clearTimeout(n)}}},createFileProcessor=(e,t)=>{const r={complete:!1,perceivedProgress:0,perceivedPerformanceUpdater:null,progress:null,timestamp:null,perceivedDuration:0,duration:0,request:null,response:null},{allowMinimumUploadDuration:o}=t,i=()=>{r.request&&(r.perceivedPerformanceUpdater.clear(),r.request.abort&&r.request.abort(),r.complete=!0)},n=o?()=>r.progress?Math.min(r.progress,r.perceivedProgress):null:()=>r.progress||null,s=o?()=>Math.min(r.duration,r.perceivedDuration):()=>r.duration,a={...on(),process:(t,i)=>{const n=()=>{0!==r.duration&&null!==r.progress&&a.fire("progress",a.getProgress())},s=()=>{r.complete=!0,a.fire("load-perceived",r.response.body)};a.fire("start"),r.timestamp=Date.now(),r.perceivedPerformanceUpdater=createPerceivedPerformanceUpdater((e=>{r.perceivedProgress=e,r.perceivedDuration=Date.now()-r.timestamp,n(),r.response&&1===r.perceivedProgress&&!r.complete&&s()}),o?getRandomNumber(750,1500):0),r.request=e(t,i,(e=>{r.response=isObject(e)?e:{type:"load",code:200,body:`${e}`,headers:{}},r.duration=Date.now()-r.timestamp,r.progress=1,a.fire("load",r.response.body),(!o||o&&1===r.perceivedProgress)&&s()}),(e=>{r.perceivedPerformanceUpdater.clear(),a.fire("error",isObject(e)?e:{type:"error",code:0,body:`${e}`})}),((e,t,o)=>{r.duration=Date.now()-r.timestamp,r.progress=e?t/o:null,n()}),(()=>{r.perceivedPerformanceUpdater.clear(),a.fire("abort",r.response?r.response.body:null)}),(e=>{a.fire("transfer",e)}))},abort:i,getProgress:n,getDuration:s,reset:()=>{i(),r.complete=!1,r.perceivedProgress=0,r.progress=0,r.timestamp=null,r.perceivedDuration=0,r.duration=0,r.request=null,r.response=null}};return a},getFilenameWithoutExtension=e=>e.substr(0,e.lastIndexOf("."))||e,createFileStub=e=>{let t=[e.name,e.size,e.type];return e instanceof Blob||isBase64DataURI(e)?t[0]=e.name||getDateString():isBase64DataURI(e)?(t[1]=e.length,t[2]=getMimeTypeFromBase64DataURI(e)):isString(e)&&(t[0]=getFilenameFromURL(e),t[1]=0,t[2]="application/octet-stream"),{name:t[0],size:t[1],type:t[2]}},isFile=e=>!!(e instanceof File||e instanceof Blob&&e.name),deepCloneObject=e=>{if(!isObject(e))return e;const t=isArray(e)?[]:{};for(const r in e){if(!e.hasOwnProperty(r))continue;const o=e[r];t[r]=o&&isObject(o)?deepCloneObject(o):o}return t},createItem=(e=null,t=null,r=null)=>{const o=getUniqueId(),i={archived:!1,frozen:!1,released:!1,source:null,file:r,serverFileReference:t,transferId:null,processingAborted:!1,status:t?ItemStatus.PROCESSING_COMPLETE:ItemStatus.INIT,activeLoader:null,activeProcessor:null};let n=null;const s={},a=e=>i.status=e,l=(e,...t)=>{i.released||i.frozen||p.fire(e,...t)},c=(e,t)=>{if(i.processingAborted)return void(i.processingAborted=!1);if(a(ItemStatus.PROCESSING),n=null,!(i.file instanceof Blob))return void p.on("load",(()=>{c(e,t)}));e.on("load",(e=>{i.transferId=null,i.serverFileReference=e})),e.on("transfer",(e=>{i.transferId=e})),e.on("load-perceived",(e=>{i.activeProcessor=null,i.transferId=null,i.serverFileReference=e,a(ItemStatus.PROCESSING_COMPLETE),l("process-complete",e)})),e.on("start",(()=>{l("process-start")})),e.on("error",(e=>{i.activeProcessor=null,a(ItemStatus.PROCESSING_ERROR),l("process-error",e)})),e.on("abort",(e=>{i.activeProcessor=null,i.serverFileReference=e,a(ItemStatus.IDLE),l("process-abort"),n&&n()})),e.on("progress",(e=>{l("process-progress",e)}));const r=console.error;t(i.file,(t=>{i.archived||e.process(t,{...s})}),r),i.activeProcessor=e},d=(e,t,r)=>{const o=e.split("."),i=o[0],n=o.pop();let a=s;o.forEach((e=>a=a[e])),JSON.stringify(a[n])!==JSON.stringify(t)&&(a[n]=t,l("metadata-update",{key:i,value:s[i],silent:r}))},p={id:{get:()=>o},origin:{get:()=>e,set:t=>e=t},serverId:{get:()=>i.serverFileReference},transferId:{get:()=>i.transferId},status:{get:()=>i.status},filename:{get:()=>i.file.name},filenameWithoutExtension:{get:()=>getFilenameWithoutExtension(i.file.name)},fileExtension:{get:()=>getExtensionFromFilename(i.file.name)},fileType:{get:()=>i.file.type},fileSize:{get:()=>i.file.size},file:{get:()=>i.file},relativePath:{get:()=>i.file._relativePath},source:{get:()=>i.source},getMetadata:e=>deepCloneObject(e?s[e]:s),setMetadata:(e,t,r)=>{if(isObject(e)){const r=e;return Object.keys(r).forEach((e=>{d(e,r[e],t)})),e}return d(e,t,r),t},extend:(e,t)=>u[e]=t,abortLoad:()=>{i.activeLoader?i.activeLoader.abort():(a(ItemStatus.INIT),l("load-abort"))},retryLoad:()=>{i.activeLoader&&i.activeLoader.load()},requestProcessing:()=>{i.processingAborted=!1,a(ItemStatus.PROCESSING_QUEUED)},abortProcessing:()=>new Promise((e=>{if(!i.activeProcessor)return i.processingAborted=!0,a(ItemStatus.IDLE),l("process-abort"),void e();n=()=>{e()},i.activeProcessor.abort()})),load:(t,r,o)=>{i.source=t,p.fireSync("init"),i.file?p.fireSync("load-skip"):(i.file=createFileStub(t),r.on("init",(()=>{l("load-init")})),r.on("meta",(t=>{i.file.size=t.size,i.file.filename=t.filename,t.source&&(e=FileOrigin.LIMBO,i.serverFileReference=t.source,i.status=ItemStatus.PROCESSING_COMPLETE),l("load-meta")})),r.on("progress",(e=>{a(ItemStatus.LOADING),l("load-progress",e)})),r.on("error",(e=>{a(ItemStatus.LOAD_ERROR),l("load-request-error",e)})),r.on("abort",(()=>{a(ItemStatus.INIT),l("load-abort")})),r.on("load",(t=>{i.activeLoader=null;const r=t=>{i.file=isFile(t)?t:i.file,e===FileOrigin.LIMBO&&i.serverFileReference?a(ItemStatus.PROCESSING_COMPLETE):a(ItemStatus.IDLE),l("load")};i.serverFileReference?r(t):o(t,r,(e=>{i.file=t,l("load-meta"),a(ItemStatus.LOAD_ERROR),l("load-file-error",e)}))})),r.setSource(t),i.activeLoader=r,r.load())},process:c,revert:(e,t)=>new Promise(((r,o)=>{const n=null!==i.serverFileReference?i.serverFileReference:i.transferId;null!==n?(e(n,(()=>{i.serverFileReference=null,i.transferId=null,r()}),(e=>{t?(a(ItemStatus.PROCESSING_REVERT_ERROR),l("process-revert-error"),o(e)):r()})),a(ItemStatus.IDLE),l("process-revert")):r()})),...on(),freeze:()=>i.frozen=!0,release:()=>i.released=!0,released:{get:()=>i.released},archive:()=>i.archived=!0,archived:{get:()=>i.archived}},u=createObject(p);return u},getItemIndexByQuery=(e,t)=>isEmpty(t)?0:isString(t)?e.findIndex((e=>e.id===t)):-1,getItemById=(e,t)=>{const r=getItemIndexByQuery(e,t);if(!(r<0))return e[r]||null},fetchBlob=(e,t,r,o,i,n)=>{const s=sendRequest(null,e,{method:"GET",responseType:"blob"});return s.onload=r=>{const o=r.getAllResponseHeaders(),i=getFileInfoFromHeaders(o).name||getFilenameFromURL(e);t(createResponse("load",r.status,getFileFromBlob(r.response,i),o))},s.onerror=e=>{r(createResponse("error",e.status,e.statusText,e.getAllResponseHeaders()))},s.onheaders=e=>{n(createResponse("headers",e.status,null,e.getAllResponseHeaders()))},s.ontimeout=createTimeoutResponse(r),s.onprogress=o,s.onabort=i,s},getDomainFromURL=e=>(0===e.indexOf("//")&&(e=location.protocol+e),e.toLowerCase().replace("blob:","").replace(/([a-z])?:\/\//,"$1").split("/")[0]),isExternalURL=e=>(e.indexOf(":")>-1||e.indexOf("//")>-1)&&getDomainFromURL(location.href)!==getDomainFromURL(e),dynamicLabel=e=>(...t)=>isFunction(e)?e(...t):e,isMockItem=e=>!isFile(e.file),listUpdated=(e,t)=>{clearTimeout(t.listUpdateTimeout),t.listUpdateTimeout=setTimeout((()=>{e("DID_UPDATE_ITEMS",{items:getActiveItems(t.items)})}),0)},optionalPromise=(e,...t)=>new Promise((r=>{if(!e)return r(!0);const o=e(...t);return null==o?r(!0):"boolean"==typeof o?r(o):void("function"==typeof o.then&&o.then(r))})),sortItems=(e,t)=>{e.items.sort(((e,r)=>t(createItemAPI(e),createItemAPI(r))))},getItemByQueryFromState=(e,t)=>({query:r,success:o=(()=>{}),failure:i=(()=>{}),...n}={})=>{const s=getItemByQuery(e.items,r);s?t(s,o,i,n||{}):i({error:createResponse("error",0,"Item not found"),file:null})},actions=(e,t,r)=>({ABORT_ALL:()=>{getActiveItems(r.items).forEach((e=>{e.freeze(),e.abortLoad(),e.abortProcessing()}))},DID_SET_FILES:({value:t=[]})=>{const o=t.map((e=>({source:e.source?e.source:e,options:e.options})));let i=getActiveItems(r.items);i.forEach((t=>{o.find((e=>e.source===t.source||e.source===t.file))||e("REMOVE_ITEM",{query:t,remove:!1})})),i=getActiveItems(r.items),o.forEach(((t,r)=>{i.find((e=>e.source===t.source||e.file===t.source))||e("ADD_ITEM",{...t,interactionMethod:InteractionMethod.NONE,index:r})}))},DID_UPDATE_ITEM_METADATA:({id:o,action:i,change:n})=>{n.silent||(clearTimeout(r.itemUpdateTimeout),r.itemUpdateTimeout=setTimeout((()=>{const s=getItemById(r.items,o);if(!t("IS_ASYNC"))return void applyFilterChain("SHOULD_PREPARE_OUTPUT",!1,{item:s,query:t,action:i,change:n}).then((r=>{const i=t("GET_BEFORE_PREPARE_FILE");i&&(r=i(s,r)),r&&e("REQUEST_PREPARE_OUTPUT",{query:o,item:s,success:t=>{e("DID_PREPARE_OUTPUT",{id:o,file:t})}},!0)}));s.origin===FileOrigin.LOCAL&&e("DID_LOAD_ITEM",{id:s.id,error:null,serverFileReference:s.source});const a=()=>{setTimeout((()=>{e("REQUEST_ITEM_PROCESSING",{query:o})}),32)};return s.status===ItemStatus.PROCESSING_COMPLETE?(l=r.options.instantUpload,void s.revert(createRevertFunction(r.options.server.url,r.options.server.revert),t("GET_FORCE_REVERT")).then(l?a:()=>{}).catch((()=>{}))):s.status===ItemStatus.PROCESSING?(e=>{s.abortProcessing().then(e?a:()=>{})})(r.options.instantUpload):void(r.options.instantUpload&&a());var l}),0))},MOVE_ITEM:({query:e,index:t})=>{const o=getItemByQuery(r.items,e);if(!o)return;const i=r.items.indexOf(o);i!==(t=limit(t,0,r.items.length-1))&&r.items.splice(t,0,r.items.splice(i,1)[0])},SORT:({compare:o})=>{sortItems(r,o),e("DID_SORT_ITEMS",{items:t("GET_ACTIVE_ITEMS")})},ADD_ITEMS:({items:r,index:o,interactionMethod:i,success:n=(()=>{}),failure:s=(()=>{})})=>{let a=o;if(-1===o||void 0===o){const e=t("GET_ITEM_INSERT_LOCATION"),r=t("GET_TOTAL_ITEMS");a="before"===e?0:r}const l=t("GET_IGNORED_FILES"),c=r.filter((e=>isFile(e)?!l.includes(e.name.toLowerCase()):!isEmpty(e))).map((t=>new Promise(((r,o)=>{e("ADD_ITEM",{interactionMethod:i,source:t.source||t,success:r,failure:o,index:a++,options:t.options||{}})}))));Promise.all(c).then(n).catch(s)},ADD_ITEM:({source:o,index:i=-1,interactionMethod:n,success:s=(()=>{}),failure:a=(()=>{}),options:l={}})=>{if(isEmpty(o))return void a({error:createResponse("error",0,"No source"),file:null});if(isFile(o)&&r.options.ignoredFiles.includes(o.name.toLowerCase()))return;if(!hasRoomForItem(r)){if(r.options.allowMultiple||!r.options.allowMultiple&&!r.options.allowReplace){const t=createResponse("warning",0,"Max files");return e("DID_THROW_MAX_FILES",{source:o,error:t}),void a({error:t,file:null})}const c=getActiveItems(r.items)[0];if(c.status===ItemStatus.PROCESSING_COMPLETE||c.status===ItemStatus.PROCESSING_REVERT_ERROR){const d=t("GET_FORCE_REVERT");if(c.revert(createRevertFunction(r.options.server.url,r.options.server.revert),d).then((()=>{d&&e("ADD_ITEM",{source:o,index:i,interactionMethod:n,success:s,failure:a,options:l})})).catch((()=>{})),d)return}e("REMOVE_ITEM",{query:c.id})}const c="local"===l.type?FileOrigin.LOCAL:"limbo"===l.type?FileOrigin.LIMBO:FileOrigin.INPUT,d=createItem(c,c===FileOrigin.INPUT?null:o,l.file);Object.keys(l.metadata||{}).forEach((e=>{d.setMetadata(e,l.metadata[e])})),applyFilters("DID_CREATE_ITEM",d,{query:t,dispatch:e});const p=t("GET_ITEM_INSERT_LOCATION");r.options.itemInsertLocationFreedom||(i="before"===p?-1:r.items.length),insertItem(r.items,d,i),isFunction(p)&&o&&sortItems(r,p);const u=d.id;d.on("init",(()=>{e("DID_INIT_ITEM",{id:u})})),d.on("load-init",(()=>{e("DID_START_ITEM_LOAD",{id:u})})),d.on("load-meta",(()=>{e("DID_UPDATE_ITEM_META",{id:u})})),d.on("load-progress",(t=>{e("DID_UPDATE_ITEM_LOAD_PROGRESS",{id:u,progress:t})})),d.on("load-request-error",(t=>{const o=dynamicLabel(r.options.labelFileLoadError)(t);if(t.code>=400&&t.code<500)return e("DID_THROW_ITEM_INVALID",{id:u,error:t,status:{main:o,sub:`${t.code} (${t.body})`}}),void a({error:t,file:createItemAPI(d)});e("DID_THROW_ITEM_LOAD_ERROR",{id:u,error:t,status:{main:o,sub:r.options.labelTapToRetry}})})),d.on("load-file-error",(t=>{e("DID_THROW_ITEM_INVALID",{id:u,error:t.status,status:t.status}),a({error:t.status,file:createItemAPI(d)})})),d.on("load-abort",(()=>{e("REMOVE_ITEM",{query:u})})),d.on("load-skip",(()=>{e("COMPLETE_LOAD_ITEM",{query:u,item:d,data:{source:o,success:s}})})),d.on("load",(()=>{const i=i=>{i?(d.on("metadata-update",(t=>{e("DID_UPDATE_ITEM_METADATA",{id:u,change:t})})),applyFilterChain("SHOULD_PREPARE_OUTPUT",!1,{item:d,query:t}).then((i=>{const n=t("GET_BEFORE_PREPARE_FILE");n&&(i=n(d,i));const a=()=>{e("COMPLETE_LOAD_ITEM",{query:u,item:d,data:{source:o,success:s}}),listUpdated(e,r)};i?e("REQUEST_PREPARE_OUTPUT",{query:u,item:d,success:t=>{e("DID_PREPARE_OUTPUT",{id:u,file:t}),a()}},!0):a()}))):e("REMOVE_ITEM",{query:u})};applyFilterChain("DID_LOAD_ITEM",d,{query:t,dispatch:e}).then((()=>{optionalPromise(t("GET_BEFORE_ADD_FILE"),createItemAPI(d)).then(i)})).catch((t=>{if(!t||!t.error||!t.status)return i(!1);e("DID_THROW_ITEM_INVALID",{id:u,error:t.error,status:t.status})}))})),d.on("process-start",(()=>{e("DID_START_ITEM_PROCESSING",{id:u})})),d.on("process-progress",(t=>{e("DID_UPDATE_ITEM_PROCESS_PROGRESS",{id:u,progress:t})})),d.on("process-error",(t=>{e("DID_THROW_ITEM_PROCESSING_ERROR",{id:u,error:t,status:{main:dynamicLabel(r.options.labelFileProcessingError)(t),sub:r.options.labelTapToRetry}})})),d.on("process-revert-error",(t=>{e("DID_THROW_ITEM_PROCESSING_REVERT_ERROR",{id:u,error:t,status:{main:dynamicLabel(r.options.labelFileProcessingRevertError)(t),sub:r.options.labelTapToRetry}})})),d.on("process-complete",(t=>{e("DID_COMPLETE_ITEM_PROCESSING",{id:u,error:null,serverFileReference:t}),e("DID_DEFINE_VALUE",{id:u,value:t})})),d.on("process-abort",(()=>{e("DID_ABORT_ITEM_PROCESSING",{id:u})})),d.on("process-revert",(()=>{e("DID_REVERT_ITEM_PROCESSING",{id:u}),e("DID_DEFINE_VALUE",{id:u,value:null})})),e("DID_ADD_ITEM",{id:u,index:i,interactionMethod:n}),listUpdated(e,r);const{url:E,load:m,restore:I,fetch:T}=r.options.server||{};d.load(o,createFileLoader(c===FileOrigin.INPUT?isString(o)&&isExternalURL(o)&&T?createFetchFunction(E,T):fetchBlob:createFetchFunction(E,c===FileOrigin.LIMBO?I:m)),((e,r,o)=>{applyFilterChain("LOAD_FILE",e,{query:t}).then(r).catch(o)}))},REQUEST_PREPARE_OUTPUT:({item:e,success:r,failure:o=(()=>{})})=>{const i={error:createResponse("error",0,"Item not found"),file:null};if(e.archived)return o(i);applyFilterChain("PREPARE_OUTPUT",e.file,{query:t,item:e}).then((n=>{applyFilterChain("COMPLETE_PREPARE_OUTPUT",n,{query:t,item:e}).then((t=>{if(e.archived)return o(i);r(t)}))}))},COMPLETE_LOAD_ITEM:({item:o,data:i})=>{const{success:n,source:s}=i,a=t("GET_ITEM_INSERT_LOCATION");if(isFunction(a)&&s&&sortItems(r,a),e("DID_LOAD_ITEM",{id:o.id,error:null,serverFileReference:o.origin===FileOrigin.INPUT?null:s}),n(createItemAPI(o)),o.origin!==FileOrigin.LOCAL)return o.origin===FileOrigin.LIMBO?(e("DID_COMPLETE_ITEM_PROCESSING",{id:o.id,error:null,serverFileReference:s}),void e("DID_DEFINE_VALUE",{id:o.id,value:o.serverId||s})):void(t("IS_ASYNC")&&r.options.instantUpload&&e("REQUEST_ITEM_PROCESSING",{query:o.id}));e("DID_LOAD_LOCAL_ITEM",{id:o.id})},RETRY_ITEM_LOAD:getItemByQueryFromState(r,(e=>{e.retryLoad()})),REQUEST_ITEM_PREPARE:getItemByQueryFromState(r,((t,r,o)=>{e("REQUEST_PREPARE_OUTPUT",{query:t.id,item:t,success:o=>{e("DID_PREPARE_OUTPUT",{id:t.id,file:o}),r({file:t,output:o})},failure:o},!0)})),REQUEST_ITEM_PROCESSING:getItemByQueryFromState(r,((o,i,n)=>{if(o.status===ItemStatus.IDLE||o.status===ItemStatus.PROCESSING_ERROR)o.status!==ItemStatus.PROCESSING_QUEUED&&(o.requestProcessing(),e("DID_REQUEST_ITEM_PROCESSING",{id:o.id}),e("PROCESS_ITEM",{query:o,success:i,failure:n},!0));else{const s=()=>e("REQUEST_ITEM_PROCESSING",{query:o,success:i,failure:n}),a=()=>document.hidden?s():setTimeout(s,32);o.status===ItemStatus.PROCESSING_COMPLETE||o.status===ItemStatus.PROCESSING_REVERT_ERROR?o.revert(createRevertFunction(r.options.server.url,r.options.server.revert),t("GET_FORCE_REVERT")).then(a).catch((()=>{})):o.status===ItemStatus.PROCESSING&&o.abortProcessing().then(a)}})),PROCESS_ITEM:getItemByQueryFromState(r,((o,i,n)=>{const s=t("GET_MAX_PARALLEL_UPLOADS");if(t("GET_ITEMS_BY_STATUS",ItemStatus.PROCESSING).length===s)return void r.processingQueue.push({id:o.id,success:i,failure:n});if(o.status===ItemStatus.PROCESSING)return;const a=()=>{const t=r.processingQueue.shift();if(!t)return;const{id:o,success:i,failure:n}=t,s=getItemByQuery(r.items,o);s&&!s.archived?e("PROCESS_ITEM",{query:o,success:i,failure:n},!0):a()};o.onOnce("process-complete",(()=>{i(createItemAPI(o)),a();const n=r.options.server;if(r.options.instantUpload&&o.origin===FileOrigin.LOCAL&&isFunction(n.remove)){const e=()=>{};o.origin=FileOrigin.LIMBO,r.options.server.remove(o.source,e,e)}t("GET_ITEMS_BY_STATUS",ItemStatus.PROCESSING_COMPLETE).length===r.items.length&&e("DID_COMPLETE_ITEM_PROCESSING_ALL")})),o.onOnce("process-error",(e=>{n({error:e,file:createItemAPI(o)}),a()}));const l=r.options;o.process(createFileProcessor(createProcessorFunction(l.server.url,l.server.process,l.name,{chunkTransferId:o.transferId,chunkServer:l.server.patch,chunkUploads:l.chunkUploads,chunkForce:l.chunkForce,chunkSize:l.chunkSize,chunkRetryDelays:l.chunkRetryDelays}),{allowMinimumUploadDuration:t("GET_ALLOW_MINIMUM_UPLOAD_DURATION")}),((r,i,n)=>{applyFilterChain("PREPARE_OUTPUT",r,{query:t,item:o}).then((t=>{e("DID_PREPARE_OUTPUT",{id:o.id,file:t}),i(t)})).catch(n)}))})),RETRY_ITEM_PROCESSING:getItemByQueryFromState(r,(t=>{e("REQUEST_ITEM_PROCESSING",{query:t})})),REQUEST_REMOVE_ITEM:getItemByQueryFromState(r,(r=>{optionalPromise(t("GET_BEFORE_REMOVE_FILE"),createItemAPI(r)).then((t=>{t&&e("REMOVE_ITEM",{query:r})}))})),RELEASE_ITEM:getItemByQueryFromState(r,(e=>{e.release()})),REMOVE_ITEM:getItemByQueryFromState(r,((o,i,n,s)=>{const a=()=>{const t=o.id;getItemById(r.items,t).archive(),e("DID_REMOVE_ITEM",{error:null,id:t,item:o}),listUpdated(e,r),i(createItemAPI(o))},l=r.options.server;o.origin===FileOrigin.LOCAL&&l&&isFunction(l.remove)&&!1!==s.remove?(e("DID_START_ITEM_REMOVE",{id:o.id}),l.remove(o.source,(()=>a()),(t=>{e("DID_THROW_ITEM_REMOVE_ERROR",{id:o.id,error:createResponse("error",0,t,null),status:{main:dynamicLabel(r.options.labelFileRemoveError)(t),sub:r.options.labelTapToRetry}})}))):((s.revert&&o.origin!==FileOrigin.LOCAL&&null!==o.serverId||r.options.chunkUploads&&o.file.size>r.options.chunkSize||r.options.chunkUploads&&r.options.chunkForce)&&o.revert(createRevertFunction(r.options.server.url,r.options.server.revert),t("GET_FORCE_REVERT")),a())})),ABORT_ITEM_LOAD:getItemByQueryFromState(r,(e=>{e.abortLoad()})),ABORT_ITEM_PROCESSING:getItemByQueryFromState(r,(t=>{t.serverId?e("REVERT_ITEM_PROCESSING",{id:t.id}):t.abortProcessing().then((()=>{r.options.instantUpload&&e("REMOVE_ITEM",{query:t.id})}))})),REQUEST_REVERT_ITEM_PROCESSING:getItemByQueryFromState(r,(o=>{if(!r.options.instantUpload)return void e("REVERT_ITEM_PROCESSING",{query:o});const i=t=>{t&&e("REVERT_ITEM_PROCESSING",{query:o})},n=t("GET_BEFORE_REMOVE_FILE");if(!n)return i(!0);const s=n(createItemAPI(o));return null==s?i(!0):"boolean"==typeof s?i(s):void("function"==typeof s.then&&s.then(i))})),REVERT_ITEM_PROCESSING:getItemByQueryFromState(r,(o=>{o.revert(createRevertFunction(r.options.server.url,r.options.server.revert),t("GET_FORCE_REVERT")).then((()=>{(r.options.instantUpload||isMockItem(o))&&e("REMOVE_ITEM",{query:o.id})})).catch((()=>{}))})),SET_OPTIONS:({options:t})=>{const r=Object.keys(t),o=PrioritizedOptions.filter((e=>r.includes(e)));[...o,...Object.keys(t).filter((e=>!o.includes(e)))].forEach((r=>{e(`SET_${fromCamels(r,"_").toUpperCase()}`,{value:t[r]})}))}}),PrioritizedOptions=["server"],formatFilename=e=>e,createElement$1=e=>document.createElement(e),text=(e,t)=>{let r=e.childNodes[0];r?t!==r.nodeValue&&(r.nodeValue=t):(r=document.createTextNode(t),e.appendChild(r))},polarToCartesian=(e,t,r,o)=>{const i=(o%360-90)*Math.PI/180;return{x:e+r*Math.cos(i),y:t+r*Math.sin(i)}},describeArc=(e,t,r,o,i,n)=>{const s=polarToCartesian(e,t,r,i),a=polarToCartesian(e,t,r,o);return["M",s.x,s.y,"A",r,r,0,n,0,a.x,a.y].join(" ")},percentageArc=(e,t,r,o,i)=>{let n=1;return i>o&&i-o<=.5&&(n=0),o>i&&o-i>=.5&&(n=0),describeArc(e,t,r,360*Math.min(.9999,o),360*Math.min(.9999,i),n)},create=({root:e,props:t})=>{t.spin=!1,t.progress=0,t.opacity=0;const r=createElement("svg");e.ref.path=createElement("path",{"stroke-width":2,"stroke-linecap":"round"}),r.appendChild(e.ref.path),e.ref.svg=r,e.appendChild(r)},write=({root:e,props:t})=>{if(0===t.opacity)return;t.align&&(e.element.dataset.align=t.align);const r=parseInt(attr(e.ref.path,"stroke-width"),10),o=.5*e.rect.element.width;let i=0,n=0;t.spin?(i=0,n=.5):(i=0,n=t.progress);const s=percentageArc(o,o,o-r,i,n);attr(e.ref.path,"d",s),attr(e.ref.path,"stroke-opacity",t.spin||t.progress>0?1:0)},progressIndicator=createView({tag:"div",name:"progress-indicator",ignoreRectUpdate:!0,ignoreRect:!0,create:create,write:write,mixins:{apis:["progress","spin","align"],styles:["opacity"],animations:{opacity:{type:"tween",duration:500},progress:{type:"spring",stiffness:.95,damping:.65,mass:10}}}}),create$1=({root:e,props:t})=>{e.element.innerHTML=(t.icon||"")+`<span>${t.label}</span>`,t.isDisabled=!1},write$1=({root:e,props:t})=>{const{isDisabled:r}=t,o=e.query("GET_DISABLED")||0===t.opacity;o&&!r?(t.isDisabled=!0,attr(e.element,"disabled","disabled")):!o&&r&&(t.isDisabled=!1,e.element.removeAttribute("disabled"))},fileActionButton=createView({tag:"button",attributes:{type:"button"},ignoreRect:!0,ignoreRectUpdate:!0,name:"file-action-button",mixins:{apis:["label"],styles:["translateX","translateY","scaleX","scaleY","opacity"],animations:{scaleX:"spring",scaleY:"spring",translateX:"spring",translateY:"spring",opacity:{type:"tween",duration:250}},listeners:!0},create:create$1,write:write$1}),toNaturalFileSize=(e,t=".",r=1e3,o={})=>{const{labelBytes:i="bytes",labelKilobytes:n="KB",labelMegabytes:s="MB",labelGigabytes:a="GB"}=o,l=r,c=r*r,d=r*r*r;return(e=Math.round(Math.abs(e)))<l?`${e} ${i}`:e<c?`${Math.floor(e/l)} ${n}`:e<d?`${removeDecimalsWhenZero(e/c,1,t)} ${s}`:`${removeDecimalsWhenZero(e/d,2,t)} ${a}`},removeDecimalsWhenZero=(e,t,r)=>e.toFixed(t).split(".").filter((e=>"0"!==e)).join(r),create$2=({root:e,props:t})=>{const r=createElement$1("span");r.className="filepond--file-info-main",attr(r,"aria-hidden","true"),e.appendChild(r),e.ref.fileName=r;const o=createElement$1("span");o.className="filepond--file-info-sub",e.appendChild(o),e.ref.fileSize=o,text(o,e.query("GET_LABEL_FILE_WAITING_FOR_SIZE")),text(r,e.query("GET_ITEM_NAME",t.id))},updateFile=({root:e,props:t})=>{text(e.ref.fileSize,toNaturalFileSize(e.query("GET_ITEM_SIZE",t.id),".",e.query("GET_FILE_SIZE_BASE"),e.query("GET_FILE_SIZE_LABELS",e.query))),text(e.ref.fileName,e.query("GET_ITEM_NAME",t.id))},updateFileSizeOnError=({root:e,props:t})=>{isInt(e.query("GET_ITEM_SIZE",t.id))?updateFile({root:e,props:t}):text(e.ref.fileSize,e.query("GET_LABEL_FILE_SIZE_NOT_AVAILABLE"))},fileInfo=createView({name:"file-info",ignoreRect:!0,ignoreRectUpdate:!0,write:createRoute({DID_LOAD_ITEM:updateFile,DID_UPDATE_ITEM_META:updateFile,DID_THROW_ITEM_LOAD_ERROR:updateFileSizeOnError,DID_THROW_ITEM_INVALID:updateFileSizeOnError}),didCreateView:e=>{applyFilters("CREATE_VIEW",{...e,view:e})},create:create$2,mixins:{styles:["translateX","translateY"],animations:{translateX:"spring",translateY:"spring"}}}),toPercentage=e=>Math.round(100*e),create$3=({root:e})=>{const t=createElement$1("span");t.className="filepond--file-status-main",e.appendChild(t),e.ref.main=t;const r=createElement$1("span");r.className="filepond--file-status-sub",e.appendChild(r),e.ref.sub=r,didSetItemLoadProgress({root:e,action:{progress:null}})},didSetItemLoadProgress=({root:e,action:t})=>{const r=null===t.progress?e.query("GET_LABEL_FILE_LOADING"):`${e.query("GET_LABEL_FILE_LOADING")} ${toPercentage(t.progress)}%`;text(e.ref.main,r),text(e.ref.sub,e.query("GET_LABEL_TAP_TO_CANCEL"))},didSetItemProcessProgress=({root:e,action:t})=>{const r=null===t.progress?e.query("GET_LABEL_FILE_PROCESSING"):`${e.query("GET_LABEL_FILE_PROCESSING")} ${toPercentage(t.progress)}%`;text(e.ref.main,r),text(e.ref.sub,e.query("GET_LABEL_TAP_TO_CANCEL"))},didRequestItemProcessing=({root:e})=>{text(e.ref.main,e.query("GET_LABEL_FILE_PROCESSING")),text(e.ref.sub,e.query("GET_LABEL_TAP_TO_CANCEL"))},didAbortItemProcessing=({root:e})=>{text(e.ref.main,e.query("GET_LABEL_FILE_PROCESSING_ABORTED")),text(e.ref.sub,e.query("GET_LABEL_TAP_TO_RETRY"))},didCompleteItemProcessing=({root:e})=>{text(e.ref.main,e.query("GET_LABEL_FILE_PROCESSING_COMPLETE")),text(e.ref.sub,e.query("GET_LABEL_TAP_TO_UNDO"))},clear=({root:e})=>{text(e.ref.main,""),text(e.ref.sub,"")},error=({root:e,action:t})=>{text(e.ref.main,t.status.main),text(e.ref.sub,t.status.sub)},fileStatus=createView({name:"file-status",ignoreRect:!0,ignoreRectUpdate:!0,write:createRoute({DID_LOAD_ITEM:clear,DID_REVERT_ITEM_PROCESSING:clear,DID_REQUEST_ITEM_PROCESSING:didRequestItemProcessing,DID_ABORT_ITEM_PROCESSING:didAbortItemProcessing,DID_COMPLETE_ITEM_PROCESSING:didCompleteItemProcessing,DID_UPDATE_ITEM_PROCESS_PROGRESS:didSetItemProcessProgress,DID_UPDATE_ITEM_LOAD_PROGRESS:didSetItemLoadProgress,DID_THROW_ITEM_LOAD_ERROR:error,DID_THROW_ITEM_INVALID:error,DID_THROW_ITEM_PROCESSING_ERROR:error,DID_THROW_ITEM_PROCESSING_REVERT_ERROR:error,DID_THROW_ITEM_REMOVE_ERROR:error}),didCreateView:e=>{applyFilters("CREATE_VIEW",{...e,view:e})},create:create$3,mixins:{styles:["translateX","translateY","opacity"],animations:{opacity:{type:"tween",duration:250},translateX:"spring",translateY:"spring"}}}),Buttons={AbortItemLoad:{label:"GET_LABEL_BUTTON_ABORT_ITEM_LOAD",action:"ABORT_ITEM_LOAD",className:"filepond--action-abort-item-load",align:"LOAD_INDICATOR_POSITION"},RetryItemLoad:{label:"GET_LABEL_BUTTON_RETRY_ITEM_LOAD",action:"RETRY_ITEM_LOAD",icon:"GET_ICON_RETRY",className:"filepond--action-retry-item-load",align:"BUTTON_PROCESS_ITEM_POSITION"},RemoveItem:{label:"GET_LABEL_BUTTON_REMOVE_ITEM",action:"REQUEST_REMOVE_ITEM",icon:"GET_ICON_REMOVE",className:"filepond--action-remove-item",align:"BUTTON_REMOVE_ITEM_POSITION"},ProcessItem:{label:"GET_LABEL_BUTTON_PROCESS_ITEM",action:"REQUEST_ITEM_PROCESSING",icon:"GET_ICON_PROCESS",className:"filepond--action-process-item",align:"BUTTON_PROCESS_ITEM_POSITION"},AbortItemProcessing:{label:"GET_LABEL_BUTTON_ABORT_ITEM_PROCESSING",action:"ABORT_ITEM_PROCESSING",className:"filepond--action-abort-item-processing",align:"BUTTON_PROCESS_ITEM_POSITION"},RetryItemProcessing:{label:"GET_LABEL_BUTTON_RETRY_ITEM_PROCESSING",action:"RETRY_ITEM_PROCESSING",icon:"GET_ICON_RETRY",className:"filepond--action-retry-item-processing",align:"BUTTON_PROCESS_ITEM_POSITION"},RevertItemProcessing:{label:"GET_LABEL_BUTTON_UNDO_ITEM_PROCESSING",action:"REQUEST_REVERT_ITEM_PROCESSING",icon:"GET_ICON_UNDO",className:"filepond--action-revert-item-processing",align:"BUTTON_PROCESS_ITEM_POSITION"}},ButtonKeys=[];forin(Buttons,(e=>{ButtonKeys.push(e)}));const calculateFileInfoOffset=e=>{if("right"===getRemoveIndicatorAligment(e))return 0;const t=e.ref.buttonRemoveItem.rect.element;return t.hidden?null:t.width+t.left},calculateButtonWidth=e=>e.ref.buttonAbortItemLoad.rect.element.width,calculateFileVerticalCenterOffset=e=>Math.floor(e.ref.buttonRemoveItem.rect.element.height/4),calculateFileHorizontalCenterOffset=e=>Math.floor(e.ref.buttonRemoveItem.rect.element.left/2),getLoadIndicatorAlignment=e=>e.query("GET_STYLE_LOAD_INDICATOR_POSITION"),getProcessIndicatorAlignment=e=>e.query("GET_STYLE_PROGRESS_INDICATOR_POSITION"),getRemoveIndicatorAligment=e=>e.query("GET_STYLE_BUTTON_REMOVE_ITEM_POSITION"),DefaultStyle={buttonAbortItemLoad:{opacity:0},buttonRetryItemLoad:{opacity:0},buttonRemoveItem:{opacity:0},buttonProcessItem:{opacity:0},buttonAbortItemProcessing:{opacity:0},buttonRetryItemProcessing:{opacity:0},buttonRevertItemProcessing:{opacity:0},loadProgressIndicator:{opacity:0,align:getLoadIndicatorAlignment},processProgressIndicator:{opacity:0,align:getProcessIndicatorAlignment},processingCompleteIndicator:{opacity:0,scaleX:.75,scaleY:.75},info:{translateX:0,translateY:0,opacity:0},status:{translateX:0,translateY:0,opacity:0}},IdleStyle={buttonRemoveItem:{opacity:1},buttonProcessItem:{opacity:1},info:{translateX:calculateFileInfoOffset},status:{translateX:calculateFileInfoOffset}},ProcessingStyle={buttonAbortItemProcessing:{opacity:1},processProgressIndicator:{opacity:1},status:{opacity:1}},StyleMap={DID_THROW_ITEM_INVALID:{buttonRemoveItem:{opacity:1},info:{translateX:calculateFileInfoOffset},status:{translateX:calculateFileInfoOffset,opacity:1}},DID_START_ITEM_LOAD:{buttonAbortItemLoad:{opacity:1},loadProgressIndicator:{opacity:1},status:{opacity:1}},DID_THROW_ITEM_LOAD_ERROR:{buttonRetryItemLoad:{opacity:1},buttonRemoveItem:{opacity:1},info:{translateX:calculateFileInfoOffset},status:{opacity:1}},DID_START_ITEM_REMOVE:{processProgressIndicator:{opacity:1,align:getRemoveIndicatorAligment},info:{translateX:calculateFileInfoOffset},status:{opacity:0}},DID_THROW_ITEM_REMOVE_ERROR:{processProgressIndicator:{opacity:0,align:getRemoveIndicatorAligment},buttonRemoveItem:{opacity:1},info:{translateX:calculateFileInfoOffset},status:{opacity:1,translateX:calculateFileInfoOffset}},DID_LOAD_ITEM:IdleStyle,DID_LOAD_LOCAL_ITEM:{buttonRemoveItem:{opacity:1},info:{translateX:calculateFileInfoOffset},status:{translateX:calculateFileInfoOffset}},DID_START_ITEM_PROCESSING:ProcessingStyle,DID_REQUEST_ITEM_PROCESSING:ProcessingStyle,DID_UPDATE_ITEM_PROCESS_PROGRESS:ProcessingStyle,DID_COMPLETE_ITEM_PROCESSING:{buttonRevertItemProcessing:{opacity:1},info:{opacity:1},status:{opacity:1}},DID_THROW_ITEM_PROCESSING_ERROR:{buttonRemoveItem:{opacity:1},buttonRetryItemProcessing:{opacity:1},status:{opacity:1},info:{translateX:calculateFileInfoOffset}},DID_THROW_ITEM_PROCESSING_REVERT_ERROR:{buttonRevertItemProcessing:{opacity:1},status:{opacity:1},info:{opacity:1}},DID_ABORT_ITEM_PROCESSING:{buttonRemoveItem:{opacity:1},buttonProcessItem:{opacity:1},info:{translateX:calculateFileInfoOffset},status:{opacity:1}},DID_REVERT_ITEM_PROCESSING:IdleStyle},processingCompleteIndicatorView=createView({create:({root:e})=>{e.element.innerHTML=e.query("GET_ICON_DONE")},name:"processing-complete-indicator",ignoreRect:!0,mixins:{styles:["scaleX","scaleY","opacity"],animations:{scaleX:"spring",scaleY:"spring",opacity:{type:"tween",duration:250}}}}),create$4=({root:e,props:t})=>{const r=Object.keys(Buttons).reduce(((e,t)=>(e[t]={...Buttons[t]},e)),{}),{id:o}=t,i=e.query("GET_ALLOW_REVERT"),n=e.query("GET_ALLOW_REMOVE"),s=e.query("GET_ALLOW_PROCESS"),a=e.query("GET_INSTANT_UPLOAD"),l=e.query("IS_ASYNC"),c=e.query("GET_STYLE_BUTTON_REMOVE_ITEM_ALIGN");let d;l?s&&!i?d=e=>!/RevertItemProcessing/.test(e):!s&&i?d=e=>!/ProcessItem|RetryItemProcessing|AbortItemProcessing/.test(e):s||i||(d=e=>!/Process/.test(e)):d=e=>!/Process/.test(e);const p=d?ButtonKeys.filter(d):ButtonKeys.concat();if(a&&i&&(r.RevertItemProcessing.label="GET_LABEL_BUTTON_REMOVE_ITEM",r.RevertItemProcessing.icon="GET_ICON_REMOVE"),l&&!i){const e=StyleMap.DID_COMPLETE_ITEM_PROCESSING;e.info.translateX=calculateFileHorizontalCenterOffset,e.info.translateY=calculateFileVerticalCenterOffset,e.status.translateY=calculateFileVerticalCenterOffset,e.processingCompleteIndicator={opacity:1,scaleX:1,scaleY:1}}if(l&&!s&&(["DID_START_ITEM_PROCESSING","DID_REQUEST_ITEM_PROCESSING","DID_UPDATE_ITEM_PROCESS_PROGRESS","DID_THROW_ITEM_PROCESSING_ERROR"].forEach((e=>{StyleMap[e].status.translateY=calculateFileVerticalCenterOffset})),StyleMap.DID_THROW_ITEM_PROCESSING_ERROR.status.translateX=calculateButtonWidth),c&&i){r.RevertItemProcessing.align="BUTTON_REMOVE_ITEM_POSITION";const e=StyleMap.DID_COMPLETE_ITEM_PROCESSING;e.info.translateX=calculateFileInfoOffset,e.status.translateY=calculateFileVerticalCenterOffset,e.processingCompleteIndicator={opacity:1,scaleX:1,scaleY:1}}n||(r.RemoveItem.disabled=!0),forin(r,((t,r)=>{const i=e.createChildView(fileActionButton,{label:e.query(r.label),icon:e.query(r.icon),opacity:0});p.includes(t)&&e.appendChildView(i),r.disabled&&(i.element.setAttribute("disabled","disabled"),i.element.setAttribute("hidden","hidden")),i.element.dataset.align=e.query(`GET_STYLE_${r.align}`),i.element.classList.add(r.className),i.on("click",(t=>{t.stopPropagation(),r.disabled||e.dispatch(r.action,{query:o})})),e.ref[`button${t}`]=i})),e.ref.processingCompleteIndicator=e.appendChildView(e.createChildView(processingCompleteIndicatorView)),e.ref.processingCompleteIndicator.element.dataset.align=e.query("GET_STYLE_BUTTON_PROCESS_ITEM_POSITION"),e.ref.info=e.appendChildView(e.createChildView(fileInfo,{id:o})),e.ref.status=e.appendChildView(e.createChildView(fileStatus,{id:o}));const u=e.appendChildView(e.createChildView(progressIndicator,{opacity:0,align:e.query("GET_STYLE_LOAD_INDICATOR_POSITION")}));u.element.classList.add("filepond--load-indicator"),e.ref.loadProgressIndicator=u;const E=e.appendChildView(e.createChildView(progressIndicator,{opacity:0,align:e.query("GET_STYLE_PROGRESS_INDICATOR_POSITION")}));E.element.classList.add("filepond--process-indicator"),e.ref.processProgressIndicator=E,e.ref.activeStyles=[]},write$2=({root:e,actions:t,props:r})=>{route({root:e,actions:t,props:r});let o=t.concat().filter((e=>/^DID_/.test(e.type))).reverse().find((e=>StyleMap[e.type]));if(o){e.ref.activeStyles=[];const t=StyleMap[o.type];forin(DefaultStyle,((r,o)=>{const i=e.ref[r];forin(o,((o,n)=>{const s=t[r]&&void 0!==t[r][o]?t[r][o]:n;e.ref.activeStyles.push({control:i,key:o,value:s})}))}))}e.ref.activeStyles.forEach((({control:t,key:r,value:o})=>{t[r]="function"==typeof o?o(e):o}))},route=createRoute({DID_SET_LABEL_BUTTON_ABORT_ITEM_PROCESSING:({root:e,action:t})=>{e.ref.buttonAbortItemProcessing.label=t.value},DID_SET_LABEL_BUTTON_ABORT_ITEM_LOAD:({root:e,action:t})=>{e.ref.buttonAbortItemLoad.label=t.value},DID_SET_LABEL_BUTTON_ABORT_ITEM_REMOVAL:({root:e,action:t})=>{e.ref.buttonAbortItemRemoval.label=t.value},DID_REQUEST_ITEM_PROCESSING:({root:e})=>{e.ref.processProgressIndicator.spin=!0,e.ref.processProgressIndicator.progress=0},DID_START_ITEM_LOAD:({root:e})=>{e.ref.loadProgressIndicator.spin=!0,e.ref.loadProgressIndicator.progress=0},DID_START_ITEM_REMOVE:({root:e})=>{e.ref.processProgressIndicator.spin=!0,e.ref.processProgressIndicator.progress=0},DID_UPDATE_ITEM_LOAD_PROGRESS:({root:e,action:t})=>{e.ref.loadProgressIndicator.spin=!1,e.ref.loadProgressIndicator.progress=t.progress},DID_UPDATE_ITEM_PROCESS_PROGRESS:({root:e,action:t})=>{e.ref.processProgressIndicator.spin=!1,e.ref.processProgressIndicator.progress=t.progress}}),file=createView({create:create$4,write:write$2,didCreateView:e=>{applyFilters("CREATE_VIEW",{...e,view:e})},name:"file"}),create$5=({root:e,props:t})=>{e.ref.fileName=createElement$1("legend"),e.appendChild(e.ref.fileName),e.ref.file=e.appendChildView(e.createChildView(file,{id:t.id})),e.ref.data=!1},didLoadItem=({root:e,props:t})=>{text(e.ref.fileName,e.query("GET_ITEM_NAME",t.id))},fileWrapper=createView({create:create$5,ignoreRect:!0,write:createRoute({DID_LOAD_ITEM:didLoadItem}),didCreateView:e=>{applyFilters("CREATE_VIEW",{...e,view:e})},tag:"fieldset",name:"file-wrapper"}),PANEL_SPRING_PROPS={type:"spring",damping:.6,mass:7},create$6=({root:e,props:t})=>{[{name:"top"},{name:"center",props:{translateY:null,scaleY:null},mixins:{animations:{scaleY:PANEL_SPRING_PROPS},styles:["translateY","scaleY"]}},{name:"bottom",props:{translateY:null},mixins:{animations:{translateY:PANEL_SPRING_PROPS},styles:["translateY"]}}].forEach((r=>{createSection(e,r,t.name)})),e.element.classList.add(`filepond--${t.name}`),e.ref.scalable=null},createSection=(e,t,r)=>{const o=createView({name:`panel-${t.name} filepond--${r}`,mixins:t.mixins,ignoreRectUpdate:!0}),i=e.createChildView(o,t.props);e.ref[t.name]=e.appendChildView(i)},write$3=({root:e,props:t})=>{if(null!==e.ref.scalable&&t.scalable===e.ref.scalable||(e.ref.scalable=!isBoolean(t.scalable)||t.scalable,e.element.dataset.scalable=e.ref.scalable),!t.height)return;const r=e.ref.top.rect.element,o=e.ref.bottom.rect.element,i=Math.max(r.height+o.height,t.height);e.ref.center.translateY=r.height,e.ref.center.scaleY=(i-r.height-o.height)/100,e.ref.bottom.translateY=i-o.height},panel=createView({name:"panel",read:({root:e,props:t})=>t.heightCurrent=e.ref.bottom.translateY,write:write$3,create:create$6,ignoreRect:!0,mixins:{apis:["height","heightCurrent","scalable"]}}),createDragHelper=e=>{const t=e.map((e=>e.id));let r;return{setIndex:e=>{r=e},getIndex:()=>r,getItemIndex:e=>t.indexOf(e.id)}},ITEM_TRANSLATE_SPRING={type:"spring",stiffness:.75,damping:.45,mass:10},ITEM_SCALE_SPRING="spring",StateMap={DID_START_ITEM_LOAD:"busy",DID_UPDATE_ITEM_LOAD_PROGRESS:"loading",DID_THROW_ITEM_INVALID:"load-invalid",DID_THROW_ITEM_LOAD_ERROR:"load-error",DID_LOAD_ITEM:"idle",DID_THROW_ITEM_REMOVE_ERROR:"remove-error",DID_START_ITEM_REMOVE:"busy",DID_START_ITEM_PROCESSING:"busy processing",DID_REQUEST_ITEM_PROCESSING:"busy processing",DID_UPDATE_ITEM_PROCESS_PROGRESS:"processing",DID_COMPLETE_ITEM_PROCESSING:"processing-complete",DID_THROW_ITEM_PROCESSING_ERROR:"processing-error",DID_THROW_ITEM_PROCESSING_REVERT_ERROR:"processing-revert-error",DID_ABORT_ITEM_PROCESSING:"cancelled",DID_REVERT_ITEM_PROCESSING:"idle"},create$7=({root:e,props:t})=>{if(e.ref.handleClick=r=>e.dispatch("DID_ACTIVATE_ITEM",{id:t.id}),e.element.id=`filepond--item-${t.id}`,e.element.addEventListener("click",e.ref.handleClick),e.ref.container=e.appendChildView(e.createChildView(fileWrapper,{id:t.id})),e.ref.panel=e.appendChildView(e.createChildView(panel,{name:"item-panel"})),e.ref.panel.height=null,t.markedForRemoval=!1,!e.query("GET_ALLOW_REORDER"))return;e.element.dataset.dragState="idle";e.element.addEventListener("pointerdown",(r=>{if(!r.isPrimary)return;let o=!1;const i=r.pageX,n=r.pageY;t.dragOrigin={x:e.translateX,y:e.translateY},t.dragCenter={x:r.offsetX,y:r.offsetY};const s=createDragHelper(e.query("GET_ACTIVE_ITEMS"));e.dispatch("DID_GRAB_ITEM",{id:t.id,dragState:s});const a=r=>{if(!r.isPrimary)return;r.stopPropagation(),r.preventDefault(),t.dragOffset={x:r.pageX-i,y:r.pageY-n};t.dragOffset.x*t.dragOffset.x+t.dragOffset.y*t.dragOffset.y>16&&!o&&(o=!0,e.element.removeEventListener("click",e.ref.handleClick)),e.dispatch("DID_DRAG_ITEM",{id:t.id,dragState:s})},l=r=>{r.isPrimary&&(document.removeEventListener("pointermove",a),document.removeEventListener("pointerup",l),t.dragOffset={x:r.pageX-i,y:r.pageY-n},e.dispatch("DID_DROP_ITEM",{id:t.id,dragState:s}),o&&setTimeout((()=>e.element.addEventListener("click",e.ref.handleClick)),0))};document.addEventListener("pointermove",a),document.addEventListener("pointerup",l)}))},route$1=createRoute({DID_UPDATE_PANEL_HEIGHT:({root:e,action:t})=>{e.height=t.height}}),write$4=createRoute({DID_GRAB_ITEM:({root:e,props:t})=>{t.dragOrigin={x:e.translateX,y:e.translateY}},DID_DRAG_ITEM:({root:e})=>{e.element.dataset.dragState="drag"},DID_DROP_ITEM:({root:e,props:t})=>{t.dragOffset=null,t.dragOrigin=null,e.element.dataset.dragState="drop"}},(({root:e,actions:t,props:r,shouldOptimize:o})=>{"drop"===e.element.dataset.dragState&&e.scaleX<=1&&(e.element.dataset.dragState="idle");let i=t.concat().filter((e=>/^DID_/.test(e.type))).reverse().find((e=>StateMap[e.type]));i&&i.type!==r.currentState&&(r.currentState=i.type,e.element.dataset.filepondItemState=StateMap[r.currentState]||"");const n=e.query("GET_ITEM_PANEL_ASPECT_RATIO")||e.query("GET_PANEL_ASPECT_RATIO");n?o||(e.height=e.rect.element.width*n):(route$1({root:e,actions:t,props:r}),!e.height&&e.ref.container.rect.element.height>0&&(e.height=e.ref.container.rect.element.height)),o&&(e.ref.panel.height=null),e.ref.panel.height=e.height})),item=createView({create:create$7,write:write$4,destroy:({root:e,props:t})=>{e.element.removeEventListener("click",e.ref.handleClick),e.dispatch("RELEASE_ITEM",{query:t.id})},tag:"li",name:"item",mixins:{apis:["id","interactionMethod","markedForRemoval","spawnDate","dragCenter","dragOrigin","dragOffset"],styles:["translateX","translateY","scaleX","scaleY","opacity","height"],animations:{scaleX:"spring",scaleY:"spring",translateX:ITEM_TRANSLATE_SPRING,translateY:ITEM_TRANSLATE_SPRING,opacity:{type:"tween",duration:150}}}});var getItemsPerRow=(e,t)=>Math.max(1,Math.floor((e+1)/t));const getItemIndexByPosition=(e,t,r)=>{if(!r)return;const o=e.rect.element.width,i=t.length;let n=null;if(0===i||r.top<t[0].rect.element.top)return-1;const s=t[0].rect.element,a=s.marginLeft+s.marginRight,l=s.width+a,c=getItemsPerRow(o,l);if(1===c){for(let e=0;e<i;e++){const o=t[e],i=o.rect.outer.top+.5*o.rect.element.height;if(r.top<i)return e}return i}const d=s.marginTop+s.marginBottom,p=s.height+d;for(let e=0;e<i;e++){const t=e%c*l,o=Math.floor(e/c)*p,a=o-s.marginTop,d=t+l,u=o+p+s.marginBottom;if(r.top<u&&r.top>a){if(r.left<d)return e;n=e!==i-1?e:null}}return null!==n?n:i},dropAreaDimensions={height:0,width:0,get getHeight(){return this.height},set setHeight(e){0!==this.height&&0!==e||(this.height=e)},get getWidth(){return this.width},set setWidth(e){0!==this.width&&0!==e||(this.width=e)},setDimensions:function(e,t){0!==this.height&&0!==e||(this.height=e),0!==this.width&&0!==t||(this.width=t)}},create$8=({root:e})=>{attr(e.element,"role","list"),e.ref.lastItemSpanwDate=Date.now()},addItemView=({root:e,action:t})=>{const{id:r,index:o,interactionMethod:i}=t;e.ref.addIndex=o;const n=Date.now();let s=n,a=1;if(i!==InteractionMethod.NONE){a=0;const t=e.query("GET_ITEM_INSERT_INTERVAL"),r=n-e.ref.lastItemSpanwDate;s=r<t?n+(t-r):n}e.ref.lastItemSpanwDate=s,e.appendChildView(e.createChildView(item,{spawnDate:s,id:r,opacity:a,interactionMethod:i}),o)},moveItem=(e,t,r,o=0,i=1)=>{e.dragOffset?(e.translateX=null,e.translateY=null,e.translateX=e.dragOrigin.x+e.dragOffset.x,e.translateY=e.dragOrigin.y+e.dragOffset.y,e.scaleX=1.025,e.scaleY=1.025):(e.translateX=t,e.translateY=r,Date.now()>e.spawnDate&&(0===e.opacity&&introItemView(e,t,r,o,i),e.scaleX=1,e.scaleY=1,e.opacity=1))},introItemView=(e,t,r,o,i)=>{e.interactionMethod===InteractionMethod.NONE?(e.translateX=null,e.translateX=t,e.translateY=null,e.translateY=r):e.interactionMethod===InteractionMethod.DROP?(e.translateX=null,e.translateX=t-20*o,e.translateY=null,e.translateY=r-10*i,e.scaleX=.8,e.scaleY=.8):e.interactionMethod===InteractionMethod.BROWSE?(e.translateY=null,e.translateY=r-30):e.interactionMethod===InteractionMethod.API&&(e.translateX=null,e.translateX=t-30,e.translateY=null)},removeItemView=({root:e,action:t})=>{const{id:r}=t,o=e.childViews.find((e=>e.id===r));o&&(o.scaleX=.9,o.scaleY=.9,o.opacity=0,o.markedForRemoval=!0)},getItemHeight=e=>e.rect.element.height+.5*e.rect.element.marginBottom+.5*e.rect.element.marginTop,getItemWidth=e=>e.rect.element.width+.5*e.rect.element.marginLeft+.5*e.rect.element.marginRight,dragItem=({root:e,action:t})=>{const{id:r,dragState:o}=t,i=e.query("GET_ITEM",{id:r}),n=e.childViews.find((e=>e.id===r)),s=e.childViews.length,a=o.getItemIndex(i);if(!n)return;const l=n.dragOrigin.x+n.dragOffset.x+n.dragCenter.x,c=n.dragOrigin.y+n.dragOffset.y+n.dragCenter.y,d=getItemHeight(n),p=(u=n).rect.element.width+.5*u.rect.element.marginLeft+.5*u.rect.element.marginRight;var u;let E=Math.floor(e.rect.outer.width/p);E>s&&(E=s);const m=Math.floor(s/E+1);dropAreaDimensions.setHeight=d*m,dropAreaDimensions.setWidth=p*E;var I={y:Math.floor(c/d),x:Math.floor(l/p),getGridIndex:function(){return c>dropAreaDimensions.getHeight||c<0||l>dropAreaDimensions.getWidth||l<0?a:this.y*E+this.x},getColIndex:function(){const t=e.query("GET_ACTIVE_ITEMS"),r=e.childViews.filter((e=>e.rect.element.height)),o=t.map((e=>r.find((t=>t.id===e.id)))),i=o.findIndex((e=>e===n)),s=getItemHeight(n),a=o.length;let l=a,d=0,p=0,u=0;for(let e=0;e<a;e++)if(d=getItemHeight(o[e]),u=p,p=u+d,c<p){if(i>e){if(c<u+s){l=e;break}continue}l=e;break}return l}};const T=E>1?I.getGridIndex():I.getColIndex();e.dispatch("MOVE_ITEM",{query:n,index:T});const f=o.getIndex();if(void 0===f||f!==T){if(o.setIndex(T),void 0===f)return;e.dispatch("DID_REORDER_ITEMS",{items:e.query("GET_ACTIVE_ITEMS"),origin:a,target:T})}},route$2=createRoute({DID_ADD_ITEM:addItemView,DID_REMOVE_ITEM:removeItemView,DID_DRAG_ITEM:dragItem}),write$5=({root:e,props:t,actions:r,shouldOptimize:o})=>{route$2({root:e,props:t,actions:r});const{dragCoordinates:i}=t,n=e.rect.element.width,s=e.childViews.filter((e=>e.rect.element.height)),a=e.query("GET_ACTIVE_ITEMS").map((e=>s.find((t=>t.id===e.id)))).filter((e=>e)),l=i?getItemIndexByPosition(e,a,i):null,c=e.ref.addIndex||null;e.ref.addIndex=null;let d=0,p=0,u=0;if(0===a.length)return;const E=a[0].rect.element,m=E.marginTop+E.marginBottom,I=E.marginLeft+E.marginRight,T=E.width+I,f=E.height+m,g=getItemsPerRow(n,T);if(1===g){let e=0,t=0;a.forEach(((r,i)=>{if(l){let e=i-l;t=-2===e?.25*-m:-1===e?.75*-m:0===e?.75*m:1===e?.25*m:0}o&&(r.translateX=null,r.translateY=null),r.markedForRemoval||moveItem(r,0,e+t);let n=(r.rect.element.height+m)*(r.markedForRemoval?r.opacity:1);e+=n}))}else{let e=0,t=0;a.forEach(((r,i)=>{i===l&&(d=1),i===c&&(u+=1),r.markedForRemoval&&r.opacity<.5&&(p-=1);const n=i+u+d+p,s=n%g,a=Math.floor(n/g),E=s*T,m=a*f,I=Math.sign(E-e),_=Math.sign(m-t);e=E,t=m,r.markedForRemoval||(o&&(r.translateX=null,r.translateY=null),moveItem(r,E,m,I,_))}))}},filterSetItemActions=(e,t)=>t.filter((t=>!t.data||!t.data.id||e.id===t.data.id)),list=createView({create:create$8,write:write$5,tag:"ul",name:"list",didWriteView:({root:e})=>{e.childViews.filter((e=>e.markedForRemoval&&0===e.opacity&&e.resting)).forEach((t=>{t._destroy(),e.removeChildView(t)}))},filterFrameActionsForChild:filterSetItemActions,mixins:{apis:["dragCoordinates"]}}),create$9=({root:e,props:t})=>{e.ref.list=e.appendChildView(e.createChildView(list)),t.dragCoordinates=null,t.overflowing=!1},storeDragCoordinates=({root:e,props:t,action:r})=>{e.query("GET_ITEM_INSERT_LOCATION_FREEDOM")&&(t.dragCoordinates={left:r.position.scopeLeft-e.ref.list.rect.element.left,top:r.position.scopeTop-(e.rect.outer.top+e.rect.element.marginTop+e.rect.element.scrollTop)})},clearDragCoordinates=({props:e})=>{e.dragCoordinates=null},route$3=createRoute({DID_DRAG:storeDragCoordinates,DID_END_DRAG:clearDragCoordinates}),write$6=({root:e,props:t,actions:r})=>{if(route$3({root:e,props:t,actions:r}),e.ref.list.dragCoordinates=t.dragCoordinates,t.overflowing&&!t.overflow&&(t.overflowing=!1,e.element.dataset.state="",e.height=null),t.overflow){const r=Math.round(t.overflow);r!==e.height&&(t.overflowing=!0,e.element.dataset.state="overflow",e.height=r)}},listScroller=createView({create:create$9,write:write$6,name:"list-scroller",mixins:{apis:["overflow","dragCoordinates"],styles:["height","translateY"],animations:{translateY:"spring"}}}),attrToggle=(e,t,r,o="")=>{r?attr(e,t,o):e.removeAttribute(t)},resetFileInput=e=>{if(e&&""!==e.value){try{e.value=""}catch(e){}if(e.value){const t=createElement$1("form"),r=e.parentNode,o=e.nextSibling;t.appendChild(e),t.reset(),o?r.insertBefore(e,o):r.appendChild(e)}}},create$a=({root:e,props:t})=>{e.element.id=`filepond--browser-${t.id}`,attr(e.element,"name",e.query("GET_NAME")),attr(e.element,"aria-controls",`filepond--assistant-${t.id}`),attr(e.element,"aria-labelledby",`filepond--drop-label-${t.id}`),setAcceptedFileTypes({root:e,action:{value:e.query("GET_ACCEPTED_FILE_TYPES")}}),toggleAllowMultiple({root:e,action:{value:e.query("GET_ALLOW_MULTIPLE")}}),toggleDirectoryFilter({root:e,action:{value:e.query("GET_ALLOW_DIRECTORIES_ONLY")}}),toggleDisabled({root:e}),toggleRequired({root:e,action:{value:e.query("GET_REQUIRED")}}),setCaptureMethod({root:e,action:{value:e.query("GET_CAPTURE_METHOD")}}),e.ref.handleChange=r=>{if(!e.element.value)return;const o=Array.from(e.element.files).map((e=>(e._relativePath=e.webkitRelativePath,e)));setTimeout((()=>{t.onload(o),resetFileInput(e.element)}),250)},e.element.addEventListener("change",e.ref.handleChange)},setAcceptedFileTypes=({root:e,action:t})=>{e.query("GET_ALLOW_SYNC_ACCEPT_ATTRIBUTE")&&attrToggle(e.element,"accept",!!t.value,t.value?t.value.join(","):"")},toggleAllowMultiple=({root:e,action:t})=>{attrToggle(e.element,"multiple",t.value)},toggleDirectoryFilter=({root:e,action:t})=>{attrToggle(e.element,"webkitdirectory",t.value)},toggleDisabled=({root:e})=>{const t=e.query("GET_DISABLED"),r=e.query("GET_ALLOW_BROWSE"),o=t||!r;attrToggle(e.element,"disabled",o)},toggleRequired=({root:e,action:t})=>{t.value?0===e.query("GET_TOTAL_ITEMS")&&attrToggle(e.element,"required",!0):attrToggle(e.element,"required",!1)},setCaptureMethod=({root:e,action:t})=>{attrToggle(e.element,"capture",!!t.value,!0===t.value?"":t.value)},updateRequiredStatus=({root:e})=>{const{element:t}=e;if(e.query("GET_TOTAL_ITEMS")>0)attrToggle(t,"required",!1),attrToggle(t,"name",!1);else{attrToggle(t,"name",!0,e.query("GET_NAME"));e.query("GET_CHECK_VALIDITY")&&t.setCustomValidity(""),e.query("GET_REQUIRED")&&attrToggle(t,"required",!0)}},updateFieldValidityStatus=({root:e})=>{e.query("GET_CHECK_VALIDITY")&&e.element.setCustomValidity(e.query("GET_LABEL_INVALID_FIELD"))},browser=createView({tag:"input",name:"browser",ignoreRect:!0,ignoreRectUpdate:!0,attributes:{type:"file"},create:create$a,destroy:({root:e})=>{e.element.removeEventListener("change",e.ref.handleChange)},write:createRoute({DID_LOAD_ITEM:updateRequiredStatus,DID_REMOVE_ITEM:updateRequiredStatus,DID_THROW_ITEM_INVALID:updateFieldValidityStatus,DID_SET_DISABLED:toggleDisabled,DID_SET_ALLOW_BROWSE:toggleDisabled,DID_SET_ALLOW_DIRECTORIES_ONLY:toggleDirectoryFilter,DID_SET_ALLOW_MULTIPLE:toggleAllowMultiple,DID_SET_ACCEPTED_FILE_TYPES:setAcceptedFileTypes,DID_SET_CAPTURE_METHOD:setCaptureMethod,DID_SET_REQUIRED:toggleRequired})}),Key={ENTER:13,SPACE:32},create$b=({root:e,props:t})=>{const r=createElement$1("label");attr(r,"for",`filepond--browser-${t.id}`),attr(r,"id",`filepond--drop-label-${t.id}`),attr(r,"aria-hidden","true"),e.ref.handleKeyDown=t=>{(t.keyCode===Key.ENTER||t.keyCode===Key.SPACE)&&(t.preventDefault(),e.ref.label.click())},e.ref.handleClick=t=>{t.target===r||r.contains(t.target)||e.ref.label.click()},r.addEventListener("keydown",e.ref.handleKeyDown),e.element.addEventListener("click",e.ref.handleClick),updateLabelValue(r,t.caption),e.appendChild(r),e.ref.label=r},updateLabelValue=(e,t)=>{e.innerHTML=t;const r=e.querySelector(".filepond--label-action");return r&&attr(r,"tabindex","0"),t},dropLabel=createView({name:"drop-label",ignoreRect:!0,create:create$b,destroy:({root:e})=>{e.ref.label.addEventListener("keydown",e.ref.handleKeyDown),e.element.removeEventListener("click",e.ref.handleClick)},write:createRoute({DID_SET_LABEL_IDLE:({root:e,action:t})=>{updateLabelValue(e.ref.label,t.value)}}),mixins:{styles:["opacity","translateX","translateY"],animations:{opacity:{type:"tween",duration:150},translateX:"spring",translateY:"spring"}}}),blob=createView({name:"drip-blob",ignoreRect:!0,mixins:{styles:["translateX","translateY","scaleX","scaleY","opacity"],animations:{scaleX:"spring",scaleY:"spring",translateX:"spring",translateY:"spring",opacity:{type:"tween",duration:250}}}}),addBlob=({root:e})=>{const t=.5*e.rect.element.width,r=.5*e.rect.element.height;e.ref.blob=e.appendChildView(e.createChildView(blob,{opacity:0,scaleX:2.5,scaleY:2.5,translateX:t,translateY:r}))},moveBlob=({root:e,action:t})=>{e.ref.blob?(e.ref.blob.translateX=t.position.scopeLeft,e.ref.blob.translateY=t.position.scopeTop,e.ref.blob.scaleX=1,e.ref.blob.scaleY=1,e.ref.blob.opacity=1):addBlob({root:e})},hideBlob=({root:e})=>{e.ref.blob&&(e.ref.blob.opacity=0)},explodeBlob=({root:e})=>{e.ref.blob&&(e.ref.blob.scaleX=2.5,e.ref.blob.scaleY=2.5,e.ref.blob.opacity=0)},write$7=({root:e,props:t,actions:r})=>{route$4({root:e,props:t,actions:r});const{blob:o}=e.ref;0===r.length&&o&&0===o.opacity&&(e.removeChildView(o),e.ref.blob=null)},route$4=createRoute({DID_DRAG:moveBlob,DID_DROP:explodeBlob,DID_END_DRAG:hideBlob}),drip=createView({ignoreRect:!0,ignoreRectUpdate:!0,name:"drip",write:write$7}),setInputFiles=(e,t)=>{try{const r=new DataTransfer;t.forEach((e=>{e instanceof File?r.items.add(e):r.items.add(new File([e],e.name,{type:e.type}))})),e.files=r.files}catch(e){return!1}return!0},create$c=({root:e})=>e.ref.fields={},getField=(e,t)=>e.ref.fields[t],syncFieldPositionsWithItems=e=>{e.query("GET_ACTIVE_ITEMS").forEach((t=>{e.ref.fields[t.id]&&e.element.appendChild(e.ref.fields[t.id])}))},didReorderItems=({root:e})=>syncFieldPositionsWithItems(e),didAddItem=({root:e,action:t})=>{const r=!(e.query("GET_ITEM",t.id).origin===FileOrigin.LOCAL)&&e.query("SHOULD_UPDATE_FILE_INPUT"),o=createElement$1("input");o.type=r?"file":"hidden",o.name=e.query("GET_NAME"),o.disabled=e.query("GET_DISABLED"),e.ref.fields[t.id]=o,syncFieldPositionsWithItems(e)},didLoadItem$1=({root:e,action:t})=>{const r=getField(e,t.id);if(!r)return;if(null!==t.serverFileReference&&(r.value=t.serverFileReference),!e.query("SHOULD_UPDATE_FILE_INPUT"))return;const o=e.query("GET_ITEM",t.id);setInputFiles(r,[o.file])},didPrepareOutput=({root:e,action:t})=>{e.query("SHOULD_UPDATE_FILE_INPUT")&&setTimeout((()=>{const r=getField(e,t.id);r&&setInputFiles(r,[t.file])}),0)},didSetDisabled=({root:e})=>{e.element.disabled=e.query("GET_DISABLED")},didRemoveItem=({root:e,action:t})=>{const r=getField(e,t.id);r&&(r.parentNode&&r.parentNode.removeChild(r),delete e.ref.fields[t.id])},didDefineValue=({root:e,action:t})=>{const r=getField(e,t.id);r&&(null===t.value?r.removeAttribute("value"):r.value=t.value,syncFieldPositionsWithItems(e))},write$8=createRoute({DID_SET_DISABLED:didSetDisabled,DID_ADD_ITEM:didAddItem,DID_LOAD_ITEM:didLoadItem$1,DID_REMOVE_ITEM:didRemoveItem,DID_DEFINE_VALUE:didDefineValue,DID_PREPARE_OUTPUT:didPrepareOutput,DID_REORDER_ITEMS:didReorderItems,DID_SORT_ITEMS:didReorderItems}),data=createView({tag:"fieldset",name:"data",create:create$c,write:write$8,ignoreRect:!0}),getRootNode=e=>"getRootNode"in e?e.getRootNode():document,images=["jpg","jpeg","png","gif","bmp","webp","svg","tiff"],text$1=["css","csv","html","txt"],map={zip:"zip|compressed",epub:"application/epub+zip"},guesstimateMimeType=(e="")=>(e=e.toLowerCase(),images.includes(e)?"image/"+("jpg"===e?"jpeg":"svg"===e?"svg+xml":e):text$1.includes(e)?"text/"+e:map[e]||""),requestDataTransferItems=e=>new Promise(((t,r)=>{const o=getLinks(e);if(o.length&&!hasFiles(e))return t(o);getFiles(e).then(t)})),hasFiles=e=>!!e.files&&e.files.length>0,getFiles=e=>new Promise(((t,r)=>{const o=(e.items?Array.from(e.items):[]).filter((e=>isFileSystemItem(e))).map((e=>getFilesFromItem(e)));o.length?Promise.all(o).then((e=>{const r=[];e.forEach((e=>{r.push.apply(r,e)})),t(r.filter((e=>e)).map((e=>(e._relativePath||(e._relativePath=e.webkitRelativePath),e))))})).catch(console.error):t(e.files?Array.from(e.files):[])})),isFileSystemItem=e=>{if(isEntry(e)){const t=getAsEntry(e);if(t)return t.isFile||t.isDirectory}return"file"===e.kind},getFilesFromItem=e=>new Promise(((t,r)=>{isDirectoryEntry(e)?getFilesInDirectory(getAsEntry(e)).then(t).catch(r):t([e.getAsFile()])})),getFilesInDirectory=e=>new Promise(((t,r)=>{const o=[];let i=0,n=0;const s=()=>{0===n&&0===i&&t(o)},a=e=>{i++;const t=e.createReader(),l=()=>{t.readEntries((e=>{if(0===e.length)return i--,void s();e.forEach((e=>{e.isDirectory?a(e):(n++,e.file((t=>{const r=correctMissingFileType(t);e.fullPath&&(r._relativePath=e.fullPath),o.push(r),n--,s()})))})),l()}),r)};l()};a(e)})),correctMissingFileType=e=>{if(e.type.length)return e;const t=e.lastModifiedDate,r=e.name,o=guesstimateMimeType(getExtensionFromFilename(e.name));return o.length?((e=e.slice(0,e.size,o)).name=r,e.lastModifiedDate=t,e):e},isDirectoryEntry=e=>isEntry(e)&&(getAsEntry(e)||{}).isDirectory,isEntry=e=>"webkitGetAsEntry"in e,getAsEntry=e=>e.webkitGetAsEntry(),getLinks=e=>{let t=[];try{if(t=getLinksFromTransferMetaData(e),t.length)return t;t=getLinksFromTransferURLData(e)}catch(e){}return t},getLinksFromTransferURLData=e=>{let t=e.getData("url");return"string"==typeof t&&t.length?[t]:[]},getLinksFromTransferMetaData=e=>{let t=e.getData("text/html");if("string"==typeof t&&t.length){const e=t.match(/src\s*=\s*"(.+?)"/);if(e)return[e[1]]}return[]},dragNDropObservers=[],eventPosition=e=>({pageLeft:e.pageX,pageTop:e.pageY,scopeLeft:e.offsetX||e.layerX,scopeTop:e.offsetY||e.layerY}),createDragNDropClient=(e,t,r)=>{const o=getDragNDropObserver(t),i={element:e,filterElement:r,state:null,ondrop:()=>{},onenter:()=>{},ondrag:()=>{},onexit:()=>{},onload:()=>{},allowdrop:()=>{}};return i.destroy=o.addListener(i),i},getDragNDropObserver=e=>{const t=dragNDropObservers.find((t=>t.element===e));if(t)return t;const r=createDragNDropObserver(e);return dragNDropObservers.push(r),r},createDragNDropObserver=e=>{const t=[],r={dragenter:dragenter,dragover:dragover,dragleave:dragleave,drop:drop},o={};forin(r,((r,i)=>{o[r]=i(e,t),e.addEventListener(r,o[r],!1)}));const i={element:e,addListener:n=>(t.push(n),()=>{t.splice(t.indexOf(n),1),0===t.length&&(dragNDropObservers.splice(dragNDropObservers.indexOf(i),1),forin(r,(t=>{e.removeEventListener(t,o[t],!1)})))})};return i},elementFromPoint=(e,t)=>("elementFromPoint"in e||(e=document),e.elementFromPoint(t.x,t.y)),isEventTarget=(e,t)=>{const r="getRootNode"in(o=t)?o.getRootNode():document;var o;const i=elementFromPoint(r,{x:e.pageX-window.pageXOffset,y:e.pageY-window.pageYOffset});return i===t||t.contains(i)};let initialTarget=null;const setDropEffect=(e,t)=>{try{e.dropEffect=t}catch(e){}},dragenter=(e,t)=>e=>{e.preventDefault(),initialTarget=e.target,t.forEach((t=>{const{element:r,onenter:o}=t;isEventTarget(e,r)&&(t.state="enter",o(eventPosition(e)))}))},dragover=(e,t)=>e=>{e.preventDefault();const r=e.dataTransfer;requestDataTransferItems(r).then((o=>{let i=!1;t.some((t=>{const{filterElement:n,element:s,onenter:a,onexit:l,ondrag:c,allowdrop:d}=t;setDropEffect(r,"copy");const p=d(o);if(p)if(isEventTarget(e,s)){if(i=!0,null===t.state)return t.state="enter",void a(eventPosition(e));if(t.state="over",n&&!p)return void setDropEffect(r,"none");c(eventPosition(e))}else n&&!i&&setDropEffect(r,"none"),t.state&&(t.state=null,l(eventPosition(e)));else setDropEffect(r,"none")}))}))},drop=(e,t)=>e=>{e.preventDefault();const r=e.dataTransfer;requestDataTransferItems(r).then((r=>{t.forEach((t=>{const{filterElement:o,element:i,ondrop:n,onexit:s,allowdrop:a}=t;if(t.state=null,!o||isEventTarget(e,i))return a(r)?void n(eventPosition(e),r):s(eventPosition(e))}))}))},dragleave=(e,t)=>e=>{initialTarget===e.target&&t.forEach((t=>{const{onexit:r}=t;t.state=null,r(eventPosition(e))}))},createHopper=(e,t,r)=>{e.classList.add("filepond--hopper");const{catchesDropsOnPage:o,requiresDropOnElement:i,filterItems:n=(e=>e)}=r,s=createDragNDropClient(e,o?document.documentElement:e,i);let a="",l="";s.allowdrop=e=>t(n(e)),s.ondrop=(e,r)=>{const o=n(r);t(o)?(l="drag-drop",c.onload(o,e)):c.ondragend(e)},s.ondrag=e=>{c.ondrag(e)},s.onenter=e=>{l="drag-over",c.ondragstart(e)},s.onexit=e=>{l="drag-exit",c.ondragend(e)};const c={updateHopperState:()=>{a!==l&&(e.dataset.hopperState=l,a=l)},onload:()=>{},ondragstart:()=>{},ondrag:()=>{},ondragend:()=>{},destroy:()=>{s.destroy()}};return c};let listening=!1;const listeners$1=[],handlePaste=e=>{const t=document.activeElement;if(t&&/textarea|input/i.test(t.nodeName)){let e=!1,r=t;for(;r!==document.body;){if(r.classList.contains("filepond--root")){e=!0;break}r=r.parentNode}if(!e)return}requestDataTransferItems(e.clipboardData).then((e=>{e.length&&listeners$1.forEach((t=>t(e)))}))},listen=e=>{listeners$1.includes(e)||(listeners$1.push(e),listening||(listening=!0,document.addEventListener("paste",handlePaste)))},unlisten=e=>{arrayRemove(listeners$1,listeners$1.indexOf(e)),0===listeners$1.length&&(document.removeEventListener("paste",handlePaste),listening=!1)},createPaster=()=>{const e=e=>{t.onload(e)},t={destroy:()=>{var t;t=e,arrayRemove(listeners$1,listeners$1.indexOf(t)),0===listeners$1.length&&(document.removeEventListener("paste",handlePaste),listening=!1)},onload:()=>{}};return listen(e),t},create$d=({root:e,props:t})=>{e.element.id=`filepond--assistant-${t.id}`,attr(e.element,"role","status"),attr(e.element,"aria-live","polite"),attr(e.element,"aria-relevant","additions")};let addFilesNotificationTimeout=null,notificationClearTimeout=null;const filenames=[],assist=(e,t)=>{e.element.textContent=t},clear$1=e=>{e.element.textContent=""},listModified=(e,t,r)=>{const o=e.query("GET_TOTAL_ITEMS");assist(e,`${r} ${t}, ${o} ${1===o?e.query("GET_LABEL_FILE_COUNT_SINGULAR"):e.query("GET_LABEL_FILE_COUNT_PLURAL")}`),clearTimeout(notificationClearTimeout),notificationClearTimeout=setTimeout((()=>{clear$1(e)}),1500)},isUsingFilePond=e=>e.element.parentNode.contains(document.activeElement),itemAdded=({root:e,action:t})=>{if(!isUsingFilePond(e))return;e.element.textContent="";const r=e.query("GET_ITEM",t.id);filenames.push(r.filename),clearTimeout(addFilesNotificationTimeout),addFilesNotificationTimeout=setTimeout((()=>{listModified(e,filenames.join(", "),e.query("GET_LABEL_FILE_ADDED")),filenames.length=0}),750)},itemRemoved=({root:e,action:t})=>{if(!isUsingFilePond(e))return;const r=t.item;listModified(e,r.filename,e.query("GET_LABEL_FILE_REMOVED"))},itemProcessed=({root:e,action:t})=>{const r=e.query("GET_ITEM",t.id).filename,o=e.query("GET_LABEL_FILE_PROCESSING_COMPLETE");assist(e,`${r} ${o}`)},itemProcessedUndo=({root:e,action:t})=>{const r=e.query("GET_ITEM",t.id).filename,o=e.query("GET_LABEL_FILE_PROCESSING_ABORTED");assist(e,`${r} ${o}`)},itemError=({root:e,action:t})=>{const r=e.query("GET_ITEM",t.id).filename;assist(e,`${t.status.main} ${r} ${t.status.sub}`)},assistant=createView({create:create$d,ignoreRect:!0,ignoreRectUpdate:!0,write:createRoute({DID_LOAD_ITEM:itemAdded,DID_REMOVE_ITEM:itemRemoved,DID_COMPLETE_ITEM_PROCESSING:itemProcessed,DID_ABORT_ITEM_PROCESSING:itemProcessedUndo,DID_REVERT_ITEM_PROCESSING:itemProcessedUndo,DID_THROW_ITEM_REMOVE_ERROR:itemError,DID_THROW_ITEM_LOAD_ERROR:itemError,DID_THROW_ITEM_INVALID:itemError,DID_THROW_ITEM_PROCESSING_ERROR:itemError}),tag:"span",name:"assistant"}),toCamels=(e,t="-")=>e.replace(new RegExp(`${t}.`,"g"),(e=>e.charAt(1).toUpperCase())),debounce=(e,t=16,r=!0)=>{let o=Date.now(),i=null;return(...n)=>{clearTimeout(i);const s=Date.now()-o,a=()=>{o=Date.now(),e(...n)};s<t?r||(i=setTimeout(a,t-s)):a()}},MAX_FILES_LIMIT=1e6,prevent=e=>e.preventDefault(),create$e=({root:e,props:t})=>{const r=e.query("GET_ID");r&&(e.element.id=r);const o=e.query("GET_CLASS_NAME");o&&o.split(" ").filter((e=>e.length)).forEach((t=>{e.element.classList.add(t)})),e.ref.label=e.appendChildView(e.createChildView(dropLabel,{...t,translateY:null,caption:e.query("GET_LABEL_IDLE")})),e.ref.list=e.appendChildView(e.createChildView(listScroller,{translateY:null})),e.ref.panel=e.appendChildView(e.createChildView(panel,{name:"panel-root"})),e.ref.assistant=e.appendChildView(e.createChildView(assistant,{...t})),e.ref.data=e.appendChildView(e.createChildView(data,{...t})),e.ref.measure=createElement$1("div"),e.ref.measure.style.height="100%",e.element.appendChild(e.ref.measure),e.ref.bounds=null,e.query("GET_STYLES").filter((e=>!isEmpty(e.value))).map((({name:t,value:r})=>{e.element.dataset[t]=r})),e.ref.widthPrevious=null,e.ref.widthUpdated=debounce((()=>{e.ref.updateHistory=[],e.dispatch("DID_RESIZE_ROOT")}),250),e.ref.previousAspectRatio=null,e.ref.updateHistory=[];const i=window.matchMedia("(pointer: fine) and (hover: hover)").matches,n="PointerEvent"in window;e.query("GET_ALLOW_REORDER")&&n&&!i&&(e.element.addEventListener("touchmove",prevent,{passive:!1}),e.element.addEventListener("gesturestart",prevent));const s=e.query("GET_CREDITS");if(2===s.length){const t=document.createElement("a");t.className="filepond--credits",t.setAttribute("aria-hidden","true"),t.href=s[0],t.tabindex=-1,t.target="_blank",t.rel="noopener noreferrer",t.textContent=s[1],e.element.appendChild(t),e.ref.credits=t}},write$9=({root:e,props:t,actions:r})=>{if(route$5({root:e,props:t,actions:r}),r.filter((e=>/^DID_SET_STYLE_/.test(e.type))).filter((e=>!isEmpty(e.data.value))).map((({type:t,data:r})=>{const o=toCamels(t.substr(8).toLowerCase(),"_");e.element.dataset[o]=r.value,e.invalidateLayout()})),e.rect.element.hidden)return;e.rect.element.width!==e.ref.widthPrevious&&(e.ref.widthPrevious=e.rect.element.width,e.ref.widthUpdated());let o=e.ref.bounds;o||(o=e.ref.bounds=calculateRootBoundingBoxHeight(e),e.element.removeChild(e.ref.measure),e.ref.measure=null);const{hopper:i,label:n,list:s,panel:a}=e.ref;i&&i.updateHopperState();const l=e.query("GET_PANEL_ASPECT_RATIO"),c=e.query("GET_ALLOW_MULTIPLE"),d=e.query("GET_TOTAL_ITEMS"),p=d===(c?e.query("GET_MAX_FILES")||1e6:1),u=r.find((e=>"DID_ADD_ITEM"===e.type));if(p&&u){const e=u.data.interactionMethod;n.opacity=0,c?n.translateY=-40:e===InteractionMethod.API?n.translateX=40:n.translateY=e===InteractionMethod.BROWSE?40:30}else p||(n.opacity=1,n.translateX=0,n.translateY=0);const E=calculateListItemMargin(e),m=calculateListHeight(e),I=n.rect.element.height,T=!c||p?0:I,f=p?s.rect.element.marginTop:0,g=0===d?0:s.rect.element.marginBottom,_=T+f+m.visual+g,R=T+f+m.bounds+g;if(s.translateY=Math.max(0,T-s.rect.element.marginTop)-E.top,l){const t=e.rect.element.width,r=t*l;l!==e.ref.previousAspectRatio&&(e.ref.previousAspectRatio=l,e.ref.updateHistory=[]);const o=e.ref.updateHistory;o.push(t);const i=2;if(o.length>2*i){const e=o.length,t=e-10;let r=0;for(let n=e;n>=t;n--)if(o[n]===o[n-2]&&r++,r>=i)return}a.scalable=!1,a.height=r;const n=r-T-(g-E.bottom)-(p?f:0);m.visual>n?s.overflow=n:s.overflow=null,e.height=r}else if(o.fixedHeight){a.scalable=!1;const e=o.fixedHeight-T-(g-E.bottom)-(p?f:0);m.visual>e?s.overflow=e:s.overflow=null}else if(o.cappedHeight){const t=_>=o.cappedHeight,r=Math.min(o.cappedHeight,_);a.scalable=!0,a.height=t?r:r-E.top-E.bottom;const i=r-T-(g-E.bottom)-(p?f:0);_>o.cappedHeight&&m.visual>i?s.overflow=i:s.overflow=null,e.height=Math.min(o.cappedHeight,R-E.top-E.bottom)}else{const t=d>0?E.top+E.bottom:0;a.scalable=!0,a.height=Math.max(I,_-t),e.height=Math.max(I,R-t)}e.ref.credits&&a.heightCurrent&&(e.ref.credits.style.transform=`translateY(${a.heightCurrent}px)`)},calculateListItemMargin=e=>{const t=e.ref.list.childViews[0].childViews[0];return t?{top:t.rect.element.marginTop,bottom:t.rect.element.marginBottom}:{top:0,bottom:0}},calculateListHeight=e=>{let t=0,r=0;const o=e.ref.list,i=o.childViews[0],n=i.childViews.filter((e=>e.rect.element.height)),s=e.query("GET_ACTIVE_ITEMS").map((e=>n.find((t=>t.id===e.id)))).filter((e=>e));if(0===s.length)return{visual:t,bounds:r};const a=i.rect.element.width,l=getItemIndexByPosition(i,s,o.dragCoordinates),c=s[0].rect.element,d=c.marginTop+c.marginBottom,p=c.marginLeft+c.marginRight,u=c.width+p,E=c.height+d,m=void 0!==l&&l>=0?1:0,I=s.find((e=>e.markedForRemoval&&e.opacity<.45))?-1:0,T=s.length+m+I,f=getItemsPerRow(a,u);return 1===f?s.forEach((e=>{const o=e.rect.element.height+d;r+=o,t+=o*e.opacity})):(r=Math.ceil(T/f)*E,t=r),{visual:t,bounds:r}},calculateRootBoundingBoxHeight=e=>{const t=e.ref.measureHeight||null;return{cappedHeight:parseInt(e.style.maxHeight,10)||null,fixedHeight:0===t?null:t}},exceedsMaxFiles=(e,t)=>{const r=e.query("GET_ALLOW_REPLACE"),o=e.query("GET_ALLOW_MULTIPLE"),i=e.query("GET_TOTAL_ITEMS");let n=e.query("GET_MAX_FILES");const s=t.length;if(!o&&s>1)return!0;n=o||r?n:1;return!!(isInt(n)&&i+s>n)&&(e.dispatch("DID_THROW_MAX_FILES",{source:t,error:createResponse("warning",0,"Max files")}),!0)},getDragIndex=(e,t,r)=>{const o=e.childViews[0];return getItemIndexByPosition(o,t,{left:r.scopeLeft-o.rect.element.left,top:r.scopeTop-(e.rect.outer.top+e.rect.element.marginTop+e.rect.element.scrollTop)})},toggleDrop=e=>{const t=e.query("GET_ALLOW_DROP"),r=e.query("GET_DISABLED"),o=t&&!r;if(o&&!e.ref.hopper){const t=createHopper(e.element,(t=>{const r=e.query("GET_BEFORE_DROP_FILE")||(()=>!0);return!e.query("GET_DROP_VALIDATION")||t.every((t=>applyFilters("ALLOW_HOPPER_ITEM",t,{query:e.query}).every((e=>!0===e))&&r(t)))}),{filterItems:t=>{const r=e.query("GET_IGNORED_FILES");return t.filter((e=>!isFile(e)||!r.includes(e.name.toLowerCase())))},catchesDropsOnPage:e.query("GET_DROP_ON_PAGE"),requiresDropOnElement:e.query("GET_DROP_ON_ELEMENT")});t.onload=(t,r)=>{const o=e.ref.list.childViews[0].childViews.filter((e=>e.rect.element.height)),i=e.query("GET_ACTIVE_ITEMS").map((e=>o.find((t=>t.id===e.id)))).filter((e=>e));applyFilterChain("ADD_ITEMS",t,{dispatch:e.dispatch}).then((t=>{if(exceedsMaxFiles(e,t))return!1;e.dispatch("ADD_ITEMS",{items:t,index:getDragIndex(e.ref.list,i,r),interactionMethod:InteractionMethod.DROP})})),e.dispatch("DID_DROP",{position:r}),e.dispatch("DID_END_DRAG",{position:r})},t.ondragstart=t=>{e.dispatch("DID_START_DRAG",{position:t})},t.ondrag=debounce((t=>{e.dispatch("DID_DRAG",{position:t})})),t.ondragend=t=>{e.dispatch("DID_END_DRAG",{position:t})},e.ref.hopper=t,e.ref.drip=e.appendChildView(e.createChildView(drip))}else!o&&e.ref.hopper&&(e.ref.hopper.destroy(),e.ref.hopper=null,e.removeChildView(e.ref.drip))},toggleBrowse=(e,t)=>{const r=e.query("GET_ALLOW_BROWSE"),o=e.query("GET_DISABLED"),i=r&&!o;i&&!e.ref.browser?e.ref.browser=e.appendChildView(e.createChildView(browser,{...t,onload:t=>{applyFilterChain("ADD_ITEMS",t,{dispatch:e.dispatch}).then((t=>{if(exceedsMaxFiles(e,t))return!1;e.dispatch("ADD_ITEMS",{items:t,index:-1,interactionMethod:InteractionMethod.BROWSE})}))}}),0):!i&&e.ref.browser&&(e.removeChildView(e.ref.browser),e.ref.browser=null)},togglePaste=e=>{const t=e.query("GET_ALLOW_PASTE"),r=e.query("GET_DISABLED"),o=t&&!r;o&&!e.ref.paster?(e.ref.paster=createPaster(),e.ref.paster.onload=t=>{applyFilterChain("ADD_ITEMS",t,{dispatch:e.dispatch}).then((t=>{if(exceedsMaxFiles(e,t))return!1;e.dispatch("ADD_ITEMS",{items:t,index:-1,interactionMethod:InteractionMethod.PASTE})}))}):!o&&e.ref.paster&&(e.ref.paster.destroy(),e.ref.paster=null)},route$5=createRoute({DID_SET_ALLOW_BROWSE:({root:e,props:t})=>{toggleBrowse(e,t)},DID_SET_ALLOW_DROP:({root:e})=>{toggleDrop(e)},DID_SET_ALLOW_PASTE:({root:e})=>{togglePaste(e)},DID_SET_DISABLED:({root:e,props:t})=>{toggleDrop(e),togglePaste(e),toggleBrowse(e,t);e.query("GET_DISABLED")?e.element.dataset.disabled="disabled":e.element.removeAttribute("data-disabled")}}),root=createView({name:"root",read:({root:e})=>{e.ref.measure&&(e.ref.measureHeight=e.ref.measure.offsetHeight)},create:create$e,write:write$9,destroy:({root:e})=>{e.ref.paster&&e.ref.paster.destroy(),e.ref.hopper&&e.ref.hopper.destroy(),e.element.removeEventListener("touchmove",prevent),e.element.removeEventListener("gesturestart",prevent)},mixins:{styles:["height"]}}),createApp=(e={})=>{let t=null;const r=getOptions(),o=createStore({items:[],listUpdateTimeout:null,itemUpdateTimeout:null,processingQueue:[],options:createOptions(r)},[queries,createOptionQueries(r)],[actions,createOptionActions(r)]);o.dispatch("SET_OPTIONS",{options:e});const i=()=>{document.hidden||o.dispatch("KICK")};document.addEventListener("visibilitychange",i);let n=null,s=!1,a=!1,l=null,c=null;const d=()=>{s||(s=!0),clearTimeout(n),n=setTimeout((()=>{s=!1,l=null,c=null,a&&(a=!1,o.dispatch("DID_STOP_RESIZE"))}),500)};window.addEventListener("resize",d);const p=root(o,{id:getUniqueId()});let u=!1,E=!1;const m={_read:()=>{s&&(c=window.innerWidth,l||(l=c),a||c===l||(o.dispatch("DID_START_RESIZE"),a=!0)),E&&u&&(u=null===p.element.offsetParent),u||(p._read(),E=p.rect.element.hidden)},_write:e=>{const t=o.processActionQueue().filter((e=>!/^SET_/.test(e.type)));var r;u&&!t.length||(g(t),u=p._write(e,t,a),(r=o.query("GET_ITEMS")).forEach(((e,t)=>{e.released&&arrayRemove(r,t)})),u&&o.processDispatchQueue())}},I=e=>t=>{const r={type:e};if(!t)return r;if(t.hasOwnProperty("error")&&(r.error=t.error?{...t.error}:null),t.status&&(r.status={...t.status}),t.file&&(r.output=t.file),t.source)r.file=t.source;else if(t.item||t.id){const e=t.item?t.item:o.query("GET_ITEM",t.id);r.file=e?createItemAPI(e):null}return t.items&&(r.items=t.items.map(createItemAPI)),/progress/.test(e)&&(r.progress=t.progress),t.hasOwnProperty("origin")&&t.hasOwnProperty("target")&&(r.origin=t.origin,r.target=t.target),r},T={DID_DESTROY:I("destroy"),DID_INIT:I("init"),DID_THROW_MAX_FILES:I("warning"),DID_INIT_ITEM:I("initfile"),DID_START_ITEM_LOAD:I("addfilestart"),DID_UPDATE_ITEM_LOAD_PROGRESS:I("addfileprogress"),DID_LOAD_ITEM:I("addfile"),DID_THROW_ITEM_INVALID:[I("error"),I("addfile")],DID_THROW_ITEM_LOAD_ERROR:[I("error"),I("addfile")],DID_THROW_ITEM_REMOVE_ERROR:[I("error"),I("removefile")],DID_PREPARE_OUTPUT:I("preparefile"),DID_START_ITEM_PROCESSING:I("processfilestart"),DID_UPDATE_ITEM_PROCESS_PROGRESS:I("processfileprogress"),DID_ABORT_ITEM_PROCESSING:I("processfileabort"),DID_COMPLETE_ITEM_PROCESSING:I("processfile"),DID_COMPLETE_ITEM_PROCESSING_ALL:I("processfiles"),DID_REVERT_ITEM_PROCESSING:I("processfilerevert"),DID_THROW_ITEM_PROCESSING_ERROR:[I("error"),I("processfile")],DID_REMOVE_ITEM:I("removefile"),DID_UPDATE_ITEMS:I("updatefiles"),DID_ACTIVATE_ITEM:I("activatefile"),DID_REORDER_ITEMS:I("reorderfiles")},f=e=>{const t={pond:S,...e};delete t.type,p.element.dispatchEvent(new CustomEvent(`FilePond:${e.type}`,{detail:t,bubbles:!0,cancelable:!0,composed:!0}));const r=[];e.hasOwnProperty("error")&&r.push(e.error),e.hasOwnProperty("file")&&r.push(e.file);const i=["type","error","file"];Object.keys(e).filter((e=>!i.includes(e))).forEach((t=>r.push(e[t]))),S.fire(e.type,...r);const n=o.query(`GET_ON${e.type.toUpperCase()}`);n&&n(...r)},g=e=>{e.length&&e.filter((e=>T[e.type])).forEach((e=>{const t=T[e.type];(Array.isArray(t)?t:[t]).forEach((t=>{"DID_INIT_ITEM"===e.type?f(t(e.data)):setTimeout((()=>{f(t(e.data))}),0)}))}))},_=e=>new Promise(((t,r)=>{o.dispatch("REQUEST_ITEM_PREPARE",{query:e,success:e=>{t(e)},failure:e=>{r(e)}})})),R=(e,t)=>{var r;return"object"!=typeof e||(r=e).file&&r.id||t||(t=e,e=void 0),o.dispatch("REMOVE_ITEM",{...t,query:e}),null===o.query("GET_ACTIVE_ITEM",e)},h=(...e)=>new Promise(((t,r)=>{const i=[],n={};if(isArray(e[0]))i.push.apply(i,e[0]),Object.assign(n,e[1]||{});else{const t=e[e.length-1];"object"!=typeof t||t instanceof Blob||Object.assign(n,e.pop()),i.push(...e)}o.dispatch("ADD_ITEMS",{items:i,index:n.index,interactionMethod:InteractionMethod.API,success:t,failure:r})})),y=()=>o.query("GET_ACTIVE_ITEMS"),O=e=>new Promise(((t,r)=>{o.dispatch("REQUEST_ITEM_PROCESSING",{query:e,success:e=>{t(e)},failure:e=>{r(e)}})})),S={...on(),...m,...createOptionAPI(o,r),setOptions:e=>o.dispatch("SET_OPTIONS",{options:e}),addFile:(e,t={})=>new Promise(((r,o)=>{h([{source:e,options:t}],{index:t.index}).then((e=>r(e&&e[0]))).catch(o)})),addFiles:h,getFile:e=>o.query("GET_ACTIVE_ITEM",e),processFile:O,prepareFile:_,removeFile:R,moveFile:(e,t)=>o.dispatch("MOVE_ITEM",{query:e,index:t}),getFiles:y,processFiles:(...e)=>{const t=Array.isArray(e[0])?e[0]:e;if(!t.length){const e=y().filter((e=>!(e.status===ItemStatus.IDLE&&e.origin===FileOrigin.LOCAL)&&e.status!==ItemStatus.PROCESSING&&e.status!==ItemStatus.PROCESSING_COMPLETE&&e.status!==ItemStatus.PROCESSING_REVERT_ERROR));return Promise.all(e.map(O))}return Promise.all(t.map(O))},removeFiles:(...e)=>{const t=Array.isArray(e[0])?e[0]:e;let r;"object"==typeof t[t.length-1]?r=t.pop():Array.isArray(e[0])&&(r=e[1]);const o=y();if(!t.length)return Promise.all(o.map((e=>R(e,r))));return t.map((e=>isNumber(e)?o[e]?o[e].id:null:e)).filter((e=>e)).map((e=>R(e,r)))},prepareFiles:(...e)=>{const t=Array.isArray(e[0])?e[0]:e,r=t.length?t:y();return Promise.all(r.map(_))},sort:e=>o.dispatch("SORT",{compare:e}),browse:()=>{var e=p.element.querySelector("input[type=file]");e&&e.click()},destroy:()=>{S.fire("destroy",p.element),o.dispatch("ABORT_ALL"),p._destroy(),window.removeEventListener("resize",d),document.removeEventListener("visibilitychange",i),o.dispatch("DID_DESTROY")},insertBefore:e=>insertBefore(p.element,e),insertAfter:e=>insertAfter(p.element,e),appendTo:e=>e.appendChild(p.element),replaceElement:e=>{insertBefore(p.element,e),e.parentNode.removeChild(e),t=e},restoreElement:()=>{t&&(insertAfter(t,p.element),p.element.parentNode.removeChild(p.element),t=null)},isAttachedTo:e=>p.element===e||t===e,element:{get:()=>p.element},status:{get:()=>o.query("GET_STATUS")}};return o.dispatch("DID_INIT"),createObject(S)},createAppObject=(e={})=>{const t={};forin(getOptions(),((e,r)=>{t[e]=r[0]}));return createApp({...t,...e})},lowerCaseFirstLetter=e=>e.charAt(0).toLowerCase()+e.slice(1),attributeNameToPropertyName=e=>toCamels(e.replace(/^data-/,"")),mapObject=(e,t)=>{forin(t,((t,r)=>{forin(e,((o,i)=>{const n=new RegExp(t);if(!n.test(o))return;if(delete e[o],!1===r)return;if(isString(r))return void(e[r]=i);const s=r.group;var a;isObject(r)&&!e[s]&&(e[s]={}),e[s][(a=o.replace(n,""),a.charAt(0).toLowerCase()+a.slice(1))]=i})),r.mapping&&mapObject(e[r.group],r.mapping)}))},getAttributesAsObject=(e,t={})=>{const r=[];forin(e.attributes,(t=>{r.push(e.attributes[t])}));const o=r.filter((e=>e.name)).reduce(((t,r)=>{const o=attr(e,r.name);var i;return t[(i=r.name,toCamels(i.replace(/^data-/,"")))]=o===r.name||o,t}),{});return mapObject(o,t),o},createAppAtElement=(e,t={})=>{const r={"^class$":"className","^multiple$":"allowMultiple","^capture$":"captureMethod","^webkitdirectory$":"allowDirectoriesOnly","^server":{group:"server",mapping:{"^process":{group:"process"},"^revert":{group:"revert"},"^fetch":{group:"fetch"},"^restore":{group:"restore"},"^load":{group:"load"}}},"^type$":!1,"^files$":!1};applyFilters("SET_ATTRIBUTE_TO_OPTION_MAP",r);const o={...t},i=getAttributesAsObject("FIELDSET"===e.nodeName?e.querySelector("input[type=file]"):e,r);Object.keys(i).forEach((e=>{isObject(i[e])?(isObject(o[e])||(o[e]={}),Object.assign(o[e],i[e])):o[e]=i[e]})),o.files=(t.files||[]).concat(Array.from(e.querySelectorAll("input:not([type=file])")).map((e=>({source:e.value,options:{type:e.dataset.type}}))));const n=createAppObject(o);return e.files&&Array.from(e.files).forEach((e=>{n.addFile(e)})),n.replaceElement(e),n},createApp$1=(...e)=>e[0]instanceof HTMLElement?createAppAtElement(...e):createAppObject(...e),PRIVATE_METHODS=["fire","_read","_write"],createAppAPI=e=>{const t={};return copyObjectPropertiesToObject(e,t,PRIVATE_METHODS),t},replaceInString=(e,t)=>e.replace(/(?:{([a-zA-Z]+)})/g,((e,r)=>t[r])),createWorker=e=>{const t=new Blob(["(",e.toString(),")()"],{type:"application/javascript"}),r=URL.createObjectURL(t),o=new Worker(r);return{transfer:(e,t)=>{},post:(e,t,r)=>{const i=getUniqueId();o.onmessage=e=>{e.data.id===i&&t(e.data.message)},o.postMessage({id:i,message:e},r)},terminate:()=>{o.terminate(),URL.revokeObjectURL(r)}}},loadImage=e=>new Promise(((t,r)=>{const o=new Image;o.onload=()=>{t(o)},o.onerror=e=>{r(e)},o.src=e})),renameFile=(e,t)=>{const r=e.slice(0,e.size,e.type);return r.lastModifiedDate=e.lastModifiedDate,r.name=t,r},copyFile=e=>renameFile(e,e.name),registeredPlugins=[],createAppPlugin=e=>{if(registeredPlugins.includes(e))return;registeredPlugins.push(e);const t=e({addFilter:addFilter,utils:{Type:Type,forin:forin,isString:isString,isFile:isFile,toNaturalFileSize:toNaturalFileSize,replaceInString:replaceInString,getExtensionFromFilename:getExtensionFromFilename,getFilenameWithoutExtension:getFilenameWithoutExtension,guesstimateMimeType:guesstimateMimeType,getFileFromBlob:getFileFromBlob,getFilenameFromURL:getFilenameFromURL,createRoute:createRoute,createWorker:createWorker,createView:createView,createItemAPI:createItemAPI,loadImage:loadImage,copyFile:copyFile,renameFile:renameFile,createBlob:createBlob,applyFilterChain:applyFilterChain,text:text,getNumericAspectRatioFromString:getNumericAspectRatioFromString},views:{fileActionButton:fileActionButton}});var r;r=t.options,Object.assign(defaultOptions,r)},isOperaMini=()=>"[object OperaMini]"===Object.prototype.toString.call(window.operamini),hasPromises=()=>"Promise"in window,hasBlobSlice=()=>"slice"in Blob.prototype,hasCreateObjectURL=()=>"URL"in window&&"createObjectURL"in window.URL,hasVisibility=()=>"visibilityState"in document,hasTiming=()=>"performance"in window,hasCSSSupports=()=>"supports"in(window.CSS||{}),isIE11=()=>/MSIE|Trident/.test(window.navigator.userAgent),supported=(()=>{const e=isBrowser()&&!("[object OperaMini]"===Object.prototype.toString.call(window.operamini))&&"visibilityState"in document&&"Promise"in window&&"slice"in Blob.prototype&&"URL"in window&&"createObjectURL"in window.URL&&"performance"in window&&("supports"in(window.CSS||{})||/MSIE|Trident/.test(window.navigator.userAgent));return()=>e})(),state={apps:[]},name="filepond",fn=()=>{};let Status$1={},FileStatus={},FileOrigin$1={},OptionTypes={},create$f=fn,destroy=fn,parse=fn,find=fn,registerPlugin=fn,getOptions$1=fn,setOptions$1=fn;if(supported()){createPainter((()=>{state.apps.forEach((e=>e._read()))}),(e=>{state.apps.forEach((t=>t._write(e)))}));const e=()=>{document.dispatchEvent(new CustomEvent("FilePond:loaded",{detail:{supported:supported,create:create$f,destroy:destroy,parse:parse,find:find,registerPlugin:registerPlugin,setOptions:setOptions$1}})),document.removeEventListener("DOMContentLoaded",e)};"loading"!==document.readyState?setTimeout((()=>e()),0):document.addEventListener("DOMContentLoaded",e);const t=()=>forin(getOptions(),((e,t)=>{OptionTypes[e]=t[1]}));Status$1={...Status},FileOrigin$1={...FileOrigin},FileStatus={...ItemStatus},OptionTypes={},t(),create$f=(...e)=>{const t=createApp$1(...e);return t.on("destroy",destroy),state.apps.push(t),createAppAPI(t)},destroy=e=>{const t=state.apps.findIndex((t=>t.isAttachedTo(e)));if(t>=0){return state.apps.splice(t,1)[0].restoreElement(),!0}return!1},parse=e=>Array.from(e.querySelectorAll(`.${name}`)).filter((e=>!state.apps.find((t=>t.isAttachedTo(e))))).map((e=>create$f(e))),find=e=>{const t=state.apps.find((t=>t.isAttachedTo(e)));return t?createAppAPI(t):null},registerPlugin=(...e)=>{e.forEach(createAppPlugin),t()},getOptions$1=()=>{const e={};return forin(getOptions(),((t,r)=>{e[t]=r[0]})),e},setOptions$1=e=>(isObject(e)&&(state.apps.forEach((t=>{t.setOptions(e)})),setOptions(e)),getOptions$1())}export{FileOrigin$1 as FileOrigin,FileStatus,OptionTypes,Status$1 as Status,create$f as create,destroy,find,getOptions$1 as getOptions,parse,registerPlugin,setOptions$1 as setOptions,supported};
+/*!
+ * FilePond 4.30.4
+ * Licensed under MIT, https://opensource.org/licenses/MIT/
+ * Please visit https://pqina.nl/filepond/ for details.
+ */
+
+/* eslint-disable */
+
+const isNode = value => value instanceof HTMLElement;
+
+const createStore = (initialState, queries = [], actions = []) => {
+    // internal state
+    const state = {
+        ...initialState,
+    };
+
+    // contains all actions for next frame, is clear when actions are requested
+    const actionQueue = [];
+    const dispatchQueue = [];
+
+    // returns a duplicate of the current state
+    const getState = () => ({ ...state });
+
+    // returns a duplicate of the actions array and clears the actions array
+    const processActionQueue = () => {
+        // create copy of actions queue
+        const queue = [...actionQueue];
+
+        // clear actions queue (we don't want no double actions)
+        actionQueue.length = 0;
+
+        return queue;
+    };
+
+    // processes actions that might block the main UI thread
+    const processDispatchQueue = () => {
+        // create copy of actions queue
+        const queue = [...dispatchQueue];
+
+        // clear actions queue (we don't want no double actions)
+        dispatchQueue.length = 0;
+
+        // now dispatch these actions
+        queue.forEach(({ type, data }) => {
+            dispatch(type, data);
+        });
+    };
+
+    // adds a new action, calls its handler and
+    const dispatch = (type, data, isBlocking) => {
+        // is blocking action (should never block if document is hidden)
+        if (isBlocking && !document.hidden) {
+            dispatchQueue.push({ type, data });
+            return;
+        }
+
+        // if this action has a handler, handle the action
+        if (actionHandlers[type]) {
+            actionHandlers[type](data);
+        }
+
+        // now add action
+        actionQueue.push({
+            type,
+            data,
+        });
+    };
+
+    const query = (str, ...args) => (queryHandles[str] ? queryHandles[str](...args) : null);
+
+    const api = {
+        getState,
+        processActionQueue,
+        processDispatchQueue,
+        dispatch,
+        query,
+    };
+
+    let queryHandles = {};
+    queries.forEach(query => {
+        queryHandles = {
+            ...query(state),
+            ...queryHandles,
+        };
+    });
+
+    let actionHandlers = {};
+    actions.forEach(action => {
+        actionHandlers = {
+            ...action(dispatch, query, state),
+            ...actionHandlers,
+        };
+    });
+
+    return api;
+};
+
+const defineProperty = (obj, property, definition) => {
+    if (typeof definition === 'function') {
+        obj[property] = definition;
+        return;
+    }
+    Object.defineProperty(obj, property, { ...definition });
+};
+
+const forin = (obj, cb) => {
+    for (const key in obj) {
+        if (!obj.hasOwnProperty(key)) {
+            continue;
+        }
+
+        cb(key, obj[key]);
+    }
+};
+
+const createObject = definition => {
+    const obj = {};
+    forin(definition, property => {
+        defineProperty(obj, property, definition[property]);
+    });
+    return obj;
+};
+
+const attr = (node, name, value = null) => {
+    if (value === null) {
+        return node.getAttribute(name) || node.hasAttribute(name);
+    }
+    node.setAttribute(name, value);
+};
+
+const ns = 'http://www.w3.org/2000/svg';
+const svgElements = ['svg', 'path']; // only svg elements used
+
+const isSVGElement = tag => svgElements.includes(tag);
+
+const createElement = (tag, className, attributes = {}) => {
+    if (typeof className === 'object') {
+        attributes = className;
+        className = null;
+    }
+    const element = isSVGElement(tag)
+        ? document.createElementNS(ns, tag)
+        : document.createElement(tag);
+    if (className) {
+        if (isSVGElement(tag)) {
+            attr(element, 'class', className);
+        } else {
+            element.className = className;
+        }
+    }
+    forin(attributes, (name, value) => {
+        attr(element, name, value);
+    });
+    return element;
+};
+
+const appendChild = parent => (child, index) => {
+    if (typeof index !== 'undefined' && parent.children[index]) {
+        parent.insertBefore(child, parent.children[index]);
+    } else {
+        parent.appendChild(child);
+    }
+};
+
+const appendChildView = (parent, childViews) => (view, index) => {
+    if (typeof index !== 'undefined') {
+        childViews.splice(index, 0, view);
+    } else {
+        childViews.push(view);
+    }
+
+    return view;
+};
+
+const removeChildView = (parent, childViews) => view => {
+    // remove from child views
+    childViews.splice(childViews.indexOf(view), 1);
+
+    // remove the element
+    if (view.element.parentNode) {
+        parent.removeChild(view.element);
+    }
+
+    return view;
+};
+
+const IS_BROWSER = (() =>
+    typeof window !== 'undefined' && typeof window.document !== 'undefined')();
+const isBrowser = () => IS_BROWSER;
+
+const testElement = isBrowser() ? createElement('svg') : {};
+const getChildCount =
+    'children' in testElement ? el => el.children.length : el => el.childNodes.length;
+
+const getViewRect = (elementRect, childViews, offset, scale) => {
+    const left = offset[0] || elementRect.left;
+    const top = offset[1] || elementRect.top;
+    const right = left + elementRect.width;
+    const bottom = top + elementRect.height * (scale[1] || 1);
+
+    const rect = {
+        // the rectangle of the element itself
+        element: {
+            ...elementRect,
+        },
+
+        // the rectangle of the element expanded to contain its children, does not include any margins
+        inner: {
+            left: elementRect.left,
+            top: elementRect.top,
+            right: elementRect.right,
+            bottom: elementRect.bottom,
+        },
+
+        // the rectangle of the element expanded to contain its children including own margin and child margins
+        // margins will be added after we've recalculated the size
+        outer: {
+            left,
+            top,
+            right,
+            bottom,
+        },
+    };
+
+    // expand rect to fit all child rectangles
+    childViews
+        .filter(childView => !childView.isRectIgnored())
+        .map(childView => childView.rect)
+        .forEach(childViewRect => {
+            expandRect(rect.inner, { ...childViewRect.inner });
+            expandRect(rect.outer, { ...childViewRect.outer });
+        });
+
+    // calculate inner width and height
+    calculateRectSize(rect.inner);
+
+    // append additional margin (top and left margins are included in top and left automatically)
+    rect.outer.bottom += rect.element.marginBottom;
+    rect.outer.right += rect.element.marginRight;
+
+    // calculate outer width and height
+    calculateRectSize(rect.outer);
+
+    return rect;
+};
+
+const expandRect = (parent, child) => {
+    // adjust for parent offset
+    child.top += parent.top;
+    child.right += parent.left;
+    child.bottom += parent.top;
+    child.left += parent.left;
+
+    if (child.bottom > parent.bottom) {
+        parent.bottom = child.bottom;
+    }
+
+    if (child.right > parent.right) {
+        parent.right = child.right;
+    }
+};
+
+const calculateRectSize = rect => {
+    rect.width = rect.right - rect.left;
+    rect.height = rect.bottom - rect.top;
+};
+
+const isNumber = value => typeof value === 'number';
+
+/**
+ * Determines if position is at destination
+ * @param position
+ * @param destination
+ * @param velocity
+ * @param errorMargin
+ * @returns {boolean}
+ */
+const thereYet = (position, destination, velocity, errorMargin = 0.001) => {
+    return Math.abs(position - destination) < errorMargin && Math.abs(velocity) < errorMargin;
+};
+
+/**
+ * Spring animation
+ */
+const spring =
+    // default options
+    ({ stiffness = 0.5, damping = 0.75, mass = 10 } = {}) =>
+        // method definition
+        {
+            let target = null;
+            let position = null;
+            let velocity = 0;
+            let resting = false;
+
+            // updates spring state
+            const interpolate = (ts, skipToEndState) => {
+                // in rest, don't animate
+                if (resting) return;
+
+                // need at least a target or position to do springy things
+                if (!(isNumber(target) && isNumber(position))) {
+                    resting = true;
+                    velocity = 0;
+                    return;
+                }
+
+                // calculate spring force
+                const f = -(position - target) * stiffness;
+
+                // update velocity by adding force based on mass
+                velocity += f / mass;
+
+                // update position by adding velocity
+                position += velocity;
+
+                // slow down based on amount of damping
+                velocity *= damping;
+
+                // we've arrived if we're near target and our velocity is near zero
+                if (thereYet(position, target, velocity) || skipToEndState) {
+                    position = target;
+                    velocity = 0;
+                    resting = true;
+
+                    // we done
+                    api.onupdate(position);
+                    api.oncomplete(position);
+                } else {
+                    // progress update
+                    api.onupdate(position);
+                }
+            };
+
+            /**
+             * Set new target value
+             * @param value
+             */
+            const setTarget = value => {
+                // if currently has no position, set target and position to this value
+                if (isNumber(value) && !isNumber(position)) {
+                    position = value;
+                }
+
+                // next target value will not be animated to
+                if (target === null) {
+                    target = value;
+                    position = value;
+                }
+
+                // let start moving to target
+                target = value;
+
+                // already at target
+                if (position === target || typeof target === 'undefined') {
+                    // now resting as target is current position, stop moving
+                    resting = true;
+                    velocity = 0;
+
+                    // done!
+                    api.onupdate(position);
+                    api.oncomplete(position);
+
+                    return;
+                }
+
+                resting = false;
+            };
+
+            // need 'api' to call onupdate callback
+            const api = createObject({
+                interpolate,
+                target: {
+                    set: setTarget,
+                    get: () => target,
+                },
+                resting: {
+                    get: () => resting,
+                },
+                onupdate: value => {},
+                oncomplete: value => {},
+            });
+
+            return api;
+        };
+
+const easeLinear = t => t;
+const easeInOutQuad = t => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
+
+const tween =
+    // default values
+    ({ duration = 500, easing = easeInOutQuad, delay = 0 } = {}) =>
+        // method definition
+        {
+            let start = null;
+            let t;
+            let p;
+            let resting = true;
+            let reverse = false;
+            let target = null;
+
+            const interpolate = (ts, skipToEndState) => {
+                if (resting || target === null) return;
+
+                if (start === null) {
+                    start = ts;
+                }
+
+                if (ts - start < delay) return;
+
+                t = ts - start - delay;
+
+                if (t >= duration || skipToEndState) {
+                    t = 1;
+                    p = reverse ? 0 : 1;
+                    api.onupdate(p * target);
+                    api.oncomplete(p * target);
+                    resting = true;
+                } else {
+                    p = t / duration;
+                    api.onupdate((t >= 0 ? easing(reverse ? 1 - p : p) : 0) * target);
+                }
+            };
+
+            // need 'api' to call onupdate callback
+            const api = createObject({
+                interpolate,
+                target: {
+                    get: () => (reverse ? 0 : target),
+                    set: value => {
+                        // is initial value
+                        if (target === null) {
+                            target = value;
+                            api.onupdate(value);
+                            api.oncomplete(value);
+                            return;
+                        }
+
+                        // want to tween to a smaller value and have a current value
+                        if (value < target) {
+                            target = 1;
+                            reverse = true;
+                        } else {
+                            // not tweening to a smaller value
+                            reverse = false;
+                            target = value;
+                        }
+
+                        // let's go!
+                        resting = false;
+                        start = null;
+                    },
+                },
+                resting: {
+                    get: () => resting,
+                },
+                onupdate: value => {},
+                oncomplete: value => {},
+            });
+
+            return api;
+        };
+
+const animator = {
+    spring,
+    tween,
+};
+
+/*
+ { type: 'spring', stiffness: .5, damping: .75, mass: 10 };
+ { translation: { type: 'spring', ... }, ... }
+ { translation: { x: { type: 'spring', ... } } }
+*/
+const createAnimator = (definition, category, property) => {
+    // default is single definition
+    // we check if transform is set, if so, we check if property is set
+    const def =
+        definition[category] && typeof definition[category][property] === 'object'
+            ? definition[category][property]
+            : definition[category] || definition;
+
+    const type = typeof def === 'string' ? def : def.type;
+    const props = typeof def === 'object' ? { ...def } : {};
+
+    return animator[type] ? animator[type](props) : null;
+};
+
+const addGetSet = (keys, obj, props, overwrite = false) => {
+    obj = Array.isArray(obj) ? obj : [obj];
+    obj.forEach(o => {
+        keys.forEach(key => {
+            let name = key;
+            let getter = () => props[key];
+            let setter = value => (props[key] = value);
+
+            if (typeof key === 'object') {
+                name = key.key;
+                getter = key.getter || getter;
+                setter = key.setter || setter;
+            }
+
+            if (o[name] && !overwrite) {
+                return;
+            }
+
+            o[name] = {
+                get: getter,
+                set: setter,
+            };
+        });
+    });
+};
+
+// add to state,
+// add getters and setters to internal and external api (if not set)
+// setup animators
+
+const animations = ({ mixinConfig, viewProps, viewInternalAPI, viewExternalAPI }) => {
+    // initial properties
+    const initialProps = { ...viewProps };
+
+    // list of all active animations
+    const animations = [];
+
+    // setup animators
+    forin(mixinConfig, (property, animation) => {
+        const animator = createAnimator(animation);
+        if (!animator) {
+            return;
+        }
+
+        // when the animator updates, update the view state value
+        animator.onupdate = value => {
+            viewProps[property] = value;
+        };
+
+        // set animator target
+        animator.target = initialProps[property];
+
+        // when value is set, set the animator target value
+        const prop = {
+            key: property,
+            setter: value => {
+                // if already at target, we done!
+                if (animator.target === value) {
+                    return;
+                }
+
+                animator.target = value;
+            },
+            getter: () => viewProps[property],
+        };
+
+        // add getters and setters
+        addGetSet([prop], [viewInternalAPI, viewExternalAPI], viewProps, true);
+
+        // add it to the list for easy updating from the _write method
+        animations.push(animator);
+    });
+
+    // expose internal write api
+    return {
+        write: ts => {
+            let skipToEndState = document.hidden;
+            let resting = true;
+            animations.forEach(animation => {
+                if (!animation.resting) resting = false;
+                animation.interpolate(ts, skipToEndState);
+            });
+            return resting;
+        },
+        destroy: () => {},
+    };
+};
+
+const addEvent = element => (type, fn) => {
+    element.addEventListener(type, fn);
+};
+
+const removeEvent = element => (type, fn) => {
+    element.removeEventListener(type, fn);
+};
+
+// mixin
+const listeners = ({
+    mixinConfig,
+    viewProps,
+    viewInternalAPI,
+    viewExternalAPI,
+    viewState,
+    view,
+}) => {
+    const events = [];
+
+    const add = addEvent(view.element);
+    const remove = removeEvent(view.element);
+
+    viewExternalAPI.on = (type, fn) => {
+        events.push({
+            type,
+            fn,
+        });
+        add(type, fn);
+    };
+
+    viewExternalAPI.off = (type, fn) => {
+        events.splice(events.findIndex(event => event.type === type && event.fn === fn), 1);
+        remove(type, fn);
+    };
+
+    return {
+        write: () => {
+            // not busy
+            return true;
+        },
+        destroy: () => {
+            events.forEach(event => {
+                remove(event.type, event.fn);
+            });
+        },
+    };
+};
+
+// add to external api and link to props
+
+const apis = ({ mixinConfig, viewProps, viewExternalAPI }) => {
+    addGetSet(mixinConfig, viewExternalAPI, viewProps);
+};
+
+const isDefined = value => value != null;
+
+// add to state,
+// add getters and setters to internal and external api (if not set)
+// set initial state based on props in viewProps
+// apply as transforms each frame
+
+const defaults = {
+    opacity: 1,
+    scaleX: 1,
+    scaleY: 1,
+    translateX: 0,
+    translateY: 0,
+    rotateX: 0,
+    rotateY: 0,
+    rotateZ: 0,
+    originX: 0,
+    originY: 0,
+};
+
+const styles = ({ mixinConfig, viewProps, viewInternalAPI, viewExternalAPI, view }) => {
+    // initial props
+    const initialProps = { ...viewProps };
+
+    // current props
+    const currentProps = {};
+
+    // we will add those properties to the external API and link them to the viewState
+    addGetSet(mixinConfig, [viewInternalAPI, viewExternalAPI], viewProps);
+
+    // override rect on internal and external rect getter so it takes in account transforms
+    const getOffset = () => [viewProps['translateX'] || 0, viewProps['translateY'] || 0];
+    const getScale = () => [viewProps['scaleX'] || 0, viewProps['scaleY'] || 0];
+    const getRect = () =>
+        view.rect ? getViewRect(view.rect, view.childViews, getOffset(), getScale()) : null;
+    viewInternalAPI.rect = { get: getRect };
+    viewExternalAPI.rect = { get: getRect };
+
+    // apply view props
+    mixinConfig.forEach(key => {
+        viewProps[key] =
+            typeof initialProps[key] === 'undefined' ? defaults[key] : initialProps[key];
+    });
+
+    // expose api
+    return {
+        write: () => {
+            // see if props have changed
+            if (!propsHaveChanged(currentProps, viewProps)) {
+                return;
+            }
+
+            // moves element to correct position on screen
+            applyStyles(view.element, viewProps);
+
+            // store new transforms
+            Object.assign(currentProps, { ...viewProps });
+
+            // no longer busy
+            return true;
+        },
+        destroy: () => {},
+    };
+};
+
+const propsHaveChanged = (currentProps, newProps) => {
+    // different amount of keys
+    if (Object.keys(currentProps).length !== Object.keys(newProps).length) {
+        return true;
+    }
+
+    // lets analyze the individual props
+    for (const prop in newProps) {
+        if (newProps[prop] !== currentProps[prop]) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+const applyStyles = (
+    element,
+    {
+        opacity,
+        perspective,
+        translateX,
+        translateY,
+        scaleX,
+        scaleY,
+        rotateX,
+        rotateY,
+        rotateZ,
+        originX,
+        originY,
+        width,
+        height,
+    }
+) => {
+    let transforms = '';
+    let styles = '';
+
+    // handle transform origin
+    if (isDefined(originX) || isDefined(originY)) {
+        styles += `transform-origin: ${originX || 0}px ${originY || 0}px;`;
+    }
+
+    // transform order is relevant
+    // 0. perspective
+    if (isDefined(perspective)) {
+        transforms += `perspective(${perspective}px) `;
+    }
+
+    // 1. translate
+    if (isDefined(translateX) || isDefined(translateY)) {
+        transforms += `translate3d(${translateX || 0}px, ${translateY || 0}px, 0) `;
+    }
+
+    // 2. scale
+    if (isDefined(scaleX) || isDefined(scaleY)) {
+        transforms += `scale3d(${isDefined(scaleX) ? scaleX : 1}, ${
+            isDefined(scaleY) ? scaleY : 1
+        }, 1) `;
+    }
+
+    // 3. rotate
+    if (isDefined(rotateZ)) {
+        transforms += `rotateZ(${rotateZ}rad) `;
+    }
+
+    if (isDefined(rotateX)) {
+        transforms += `rotateX(${rotateX}rad) `;
+    }
+
+    if (isDefined(rotateY)) {
+        transforms += `rotateY(${rotateY}rad) `;
+    }
+
+    // add transforms
+    if (transforms.length) {
+        styles += `transform:${transforms};`;
+    }
+
+    // add opacity
+    if (isDefined(opacity)) {
+        styles += `opacity:${opacity};`;
+
+        // if we reach zero, we make the element inaccessible
+        if (opacity === 0) {
+            styles += `visibility:hidden;`;
+        }
+
+        // if we're below 100% opacity this element can't be clicked
+        if (opacity < 1) {
+            styles += `pointer-events:none;`;
+        }
+    }
+
+    // add height
+    if (isDefined(height)) {
+        styles += `height:${height}px;`;
+    }
+
+    // add width
+    if (isDefined(width)) {
+        styles += `width:${width}px;`;
+    }
+
+    // apply styles
+    const elementCurrentStyle = element.elementCurrentStyle || '';
+
+    // if new styles does not match current styles, lets update!
+    if (styles.length !== elementCurrentStyle.length || styles !== elementCurrentStyle) {
+        element.style.cssText = styles;
+        // store current styles so we can compare them to new styles later on
+        // _not_ getting the style value is faster
+        element.elementCurrentStyle = styles;
+    }
+};
+
+const Mixins = {
+    styles,
+    listeners,
+    animations,
+    apis,
+};
+
+const updateRect = (rect = {}, element = {}, style = {}) => {
+    if (!element.layoutCalculated) {
+        rect.paddingTop = parseInt(style.paddingTop, 10) || 0;
+        rect.marginTop = parseInt(style.marginTop, 10) || 0;
+        rect.marginRight = parseInt(style.marginRight, 10) || 0;
+        rect.marginBottom = parseInt(style.marginBottom, 10) || 0;
+        rect.marginLeft = parseInt(style.marginLeft, 10) || 0;
+        element.layoutCalculated = true;
+    }
+
+    rect.left = element.offsetLeft || 0;
+    rect.top = element.offsetTop || 0;
+    rect.width = element.offsetWidth || 0;
+    rect.height = element.offsetHeight || 0;
+
+    rect.right = rect.left + rect.width;
+    rect.bottom = rect.top + rect.height;
+
+    rect.scrollTop = element.scrollTop;
+
+    rect.hidden = element.offsetParent === null;
+
+    return rect;
+};
+
+const createView =
+    // default view definition
+    ({
+        // element definition
+        tag = 'div',
+        name = null,
+        attributes = {},
+
+        // view interaction
+        read = () => {},
+        write = () => {},
+        create = () => {},
+        destroy = () => {},
+
+        // hooks
+        filterFrameActionsForChild = (child, actions) => actions,
+        didCreateView = () => {},
+        didWriteView = () => {},
+
+        // rect related
+        ignoreRect = false,
+        ignoreRectUpdate = false,
+
+        // mixins
+        mixins = [],
+    } = {}) => (
+        // each view requires reference to store
+        store,
+        // specific properties for this view
+        props = {}
+    ) => {
+        // root element should not be changed
+        const element = createElement(tag, `filepond--${name}`, attributes);
+
+        // style reference should also not be changed
+        const style = window.getComputedStyle(element, null);
+
+        // element rectangle
+        const rect = updateRect();
+        let frameRect = null;
+
+        // rest state
+        let isResting = false;
+
+        // pretty self explanatory
+        const childViews = [];
+
+        // loaded mixins
+        const activeMixins = [];
+
+        // references to created children
+        const ref = {};
+
+        // state used for each instance
+        const state = {};
+
+        // list of writers that will be called to update this view
+        const writers = [
+            write, // default writer
+        ];
+
+        const readers = [
+            read, // default reader
+        ];
+
+        const destroyers = [
+            destroy, // default destroy
+        ];
+
+        // core view methods
+        const getElement = () => element;
+        const getChildViews = () => childViews.concat();
+        const getReference = () => ref;
+        const createChildView = store => (view, props) => view(store, props);
+        const getRect = () => {
+            if (frameRect) {
+                return frameRect;
+            }
+            frameRect = getViewRect(rect, childViews, [0, 0], [1, 1]);
+            return frameRect;
+        };
+        const getStyle = () => style;
+
+        /**
+         * Read data from DOM
+         * @private
+         */
+        const _read = () => {
+            frameRect = null;
+
+            // read child views
+            childViews.forEach(child => child._read());
+
+            const shouldUpdate = !(ignoreRectUpdate && rect.width && rect.height);
+            if (shouldUpdate) {
+                updateRect(rect, element, style);
+            }
+
+            // readers
+            const api = { root: internalAPI, props, rect };
+            readers.forEach(reader => reader(api));
+        };
+
+        /**
+         * Write data to DOM
+         * @private
+         */
+        const _write = (ts, frameActions, shouldOptimize) => {
+            // if no actions, we assume that the view is resting
+            let resting = frameActions.length === 0;
+
+            // writers
+            writers.forEach(writer => {
+                const writerResting = writer({
+                    props,
+                    root: internalAPI,
+                    actions: frameActions,
+                    timestamp: ts,
+                    shouldOptimize,
+                });
+                if (writerResting === false) {
+                    resting = false;
+                }
+            });
+
+            // run mixins
+            activeMixins.forEach(mixin => {
+                // if one of the mixins is still busy after write operation, we are not resting
+                const mixinResting = mixin.write(ts);
+                if (mixinResting === false) {
+                    resting = false;
+                }
+            });
+
+            // updates child views that are currently attached to the DOM
+            childViews
+                .filter(child => !!child.element.parentNode)
+                .forEach(child => {
+                    // if a child view is not resting, we are not resting
+                    const childResting = child._write(
+                        ts,
+                        filterFrameActionsForChild(child, frameActions),
+                        shouldOptimize
+                    );
+                    if (!childResting) {
+                        resting = false;
+                    }
+                });
+
+            // append new elements to DOM and update those
+            childViews
+                //.filter(child => !child.element.parentNode)
+                .forEach((child, index) => {
+                    // skip
+                    if (child.element.parentNode) {
+                        return;
+                    }
+
+                    // append to DOM
+                    internalAPI.appendChild(child.element, index);
+
+                    // call read (need to know the size of these elements)
+                    child._read();
+
+                    // re-call write
+                    child._write(
+                        ts,
+                        filterFrameActionsForChild(child, frameActions),
+                        shouldOptimize
+                    );
+
+                    // we just added somthing to the dom, no rest
+                    resting = false;
+                });
+
+            // update resting state
+            isResting = resting;
+
+            didWriteView({
+                props,
+                root: internalAPI,
+                actions: frameActions,
+                timestamp: ts,
+            });
+
+            // let parent know if we are resting
+            return resting;
+        };
+
+        const _destroy = () => {
+            activeMixins.forEach(mixin => mixin.destroy());
+            destroyers.forEach(destroyer => {
+                destroyer({ root: internalAPI, props });
+            });
+            childViews.forEach(child => child._destroy());
+        };
+
+        // sharedAPI
+        const sharedAPIDefinition = {
+            element: {
+                get: getElement,
+            },
+            style: {
+                get: getStyle,
+            },
+            childViews: {
+                get: getChildViews,
+            },
+        };
+
+        // private API definition
+        const internalAPIDefinition = {
+            ...sharedAPIDefinition,
+            rect: {
+                get: getRect,
+            },
+
+            // access to custom children references
+            ref: {
+                get: getReference,
+            },
+
+            // dom modifiers
+            is: needle => name === needle,
+            appendChild: appendChild(element),
+            createChildView: createChildView(store),
+            linkView: view => {
+                childViews.push(view);
+                return view;
+            },
+            unlinkView: view => {
+                childViews.splice(childViews.indexOf(view), 1);
+            },
+            appendChildView: appendChildView(element, childViews),
+            removeChildView: removeChildView(element, childViews),
+            registerWriter: writer => writers.push(writer),
+            registerReader: reader => readers.push(reader),
+            registerDestroyer: destroyer => destroyers.push(destroyer),
+            invalidateLayout: () => (element.layoutCalculated = false),
+
+            // access to data store
+            dispatch: store.dispatch,
+            query: store.query,
+        };
+
+        // public view API methods
+        const externalAPIDefinition = {
+            element: {
+                get: getElement,
+            },
+            childViews: {
+                get: getChildViews,
+            },
+            rect: {
+                get: getRect,
+            },
+            resting: {
+                get: () => isResting,
+            },
+            isRectIgnored: () => ignoreRect,
+            _read,
+            _write,
+            _destroy,
+        };
+
+        // mixin API methods
+        const mixinAPIDefinition = {
+            ...sharedAPIDefinition,
+            rect: {
+                get: () => rect,
+            },
+        };
+
+        // add mixin functionality
+        Object.keys(mixins)
+            .sort((a, b) => {
+                // move styles to the back of the mixin list (so adjustments of other mixins are applied to the props correctly)
+                if (a === 'styles') {
+                    return 1;
+                } else if (b === 'styles') {
+                    return -1;
+                }
+                return 0;
+            })
+            .forEach(key => {
+                const mixinAPI = Mixins[key]({
+                    mixinConfig: mixins[key],
+                    viewProps: props,
+                    viewState: state,
+                    viewInternalAPI: internalAPIDefinition,
+                    viewExternalAPI: externalAPIDefinition,
+                    view: createObject(mixinAPIDefinition),
+                });
+
+                if (mixinAPI) {
+                    activeMixins.push(mixinAPI);
+                }
+            });
+
+        // construct private api
+        const internalAPI = createObject(internalAPIDefinition);
+
+        // create the view
+        create({
+            root: internalAPI,
+            props,
+        });
+
+        // append created child views to root node
+        const childCount = getChildCount(element); // need to know the current child count so appending happens in correct order
+        childViews.forEach((child, index) => {
+            internalAPI.appendChild(child.element, childCount + index);
+        });
+
+        // call did create
+        didCreateView(internalAPI);
+
+        // expose public api
+        return createObject(externalAPIDefinition);
+    };
+
+const createPainter = (read, write, fps = 60) => {
+    const name = '__framePainter';
+
+    // set global painter
+    if (window[name]) {
+        window[name].readers.push(read);
+        window[name].writers.push(write);
+        return;
+    }
+
+    window[name] = {
+        readers: [read],
+        writers: [write],
+    };
+
+    const painter = window[name];
+
+    const interval = 1000 / fps;
+    let last = null;
+    let id = null;
+    let requestTick = null;
+    let cancelTick = null;
+
+    const setTimerType = () => {
+        if (document.hidden) {
+            requestTick = () => window.setTimeout(() => tick(performance.now()), interval);
+            cancelTick = () => window.clearTimeout(id);
+        } else {
+            requestTick = () => window.requestAnimationFrame(tick);
+            cancelTick = () => window.cancelAnimationFrame(id);
+        }
+    };
+
+    document.addEventListener('visibilitychange', () => {
+        if (cancelTick) cancelTick();
+        setTimerType();
+        tick(performance.now());
+    });
+
+    const tick = ts => {
+        // queue next tick
+        id = requestTick(tick);
+
+        // limit fps
+        if (!last) {
+            last = ts;
+        }
+
+        const delta = ts - last;
+
+        if (delta <= interval) {
+            // skip frame
+            return;
+        }
+
+        // align next frame
+        last = ts - (delta % interval);
+
+        // update view
+        painter.readers.forEach(read => read());
+        painter.writers.forEach(write => write(ts));
+    };
+
+    setTimerType();
+    tick(performance.now());
+
+    return {
+        pause: () => {
+            cancelTick(id);
+        },
+    };
+};
+
+const createRoute = (routes, fn) => ({ root, props, actions = [], timestamp, shouldOptimize }) => {
+    actions
+        .filter(action => routes[action.type])
+        .forEach(action =>
+            routes[action.type]({ root, props, action: action.data, timestamp, shouldOptimize })
+        );
+    if (fn) {
+        fn({ root, props, actions, timestamp, shouldOptimize });
+    }
+};
+
+const insertBefore = (newNode, referenceNode) =>
+    referenceNode.parentNode.insertBefore(newNode, referenceNode);
+
+const insertAfter = (newNode, referenceNode) => {
+    return referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+};
+
+const isArray = value => Array.isArray(value);
+
+const isEmpty = value => value == null;
+
+const trim = str => str.trim();
+
+const toString = value => '' + value;
+
+const toArray = (value, splitter = ',') => {
+    if (isEmpty(value)) {
+        return [];
+    }
+    if (isArray(value)) {
+        return value;
+    }
+    return toString(value)
+        .split(splitter)
+        .map(trim)
+        .filter(str => str.length);
+};
+
+const isBoolean = value => typeof value === 'boolean';
+
+const toBoolean = value => (isBoolean(value) ? value : value === 'true');
+
+const isString = value => typeof value === 'string';
+
+const toNumber = value =>
+    isNumber(value) ? value : isString(value) ? toString(value).replace(/[a-z]+/gi, '') : 0;
+
+const toInt = value => parseInt(toNumber(value), 10);
+
+const toFloat = value => parseFloat(toNumber(value));
+
+const isInt = value => isNumber(value) && isFinite(value) && Math.floor(value) === value;
+
+const toBytes = (value, base = 1000) => {
+    // is in bytes
+    if (isInt(value)) {
+        return value;
+    }
+
+    // is natural file size
+    let naturalFileSize = toString(value).trim();
+
+    // if is value in megabytes
+    if (/MB$/i.test(naturalFileSize)) {
+        naturalFileSize = naturalFileSize.replace(/MB$i/, '').trim();
+        return toInt(naturalFileSize) * base * base;
+    }
+
+    // if is value in kilobytes
+    if (/KB/i.test(naturalFileSize)) {
+        naturalFileSize = naturalFileSize.replace(/KB$i/, '').trim();
+        return toInt(naturalFileSize) * base;
+    }
+
+    return toInt(naturalFileSize);
+};
+
+const isFunction = value => typeof value === 'function';
+
+const toFunctionReference = string => {
+    let ref = self;
+    let levels = string.split('.');
+    let level = null;
+    while ((level = levels.shift())) {
+        ref = ref[level];
+        if (!ref) {
+            return null;
+        }
+    }
+    return ref;
+};
+
+const methods = {
+    process: 'POST',
+    patch: 'PATCH',
+    revert: 'DELETE',
+    fetch: 'GET',
+    restore: 'GET',
+    load: 'GET',
+};
+
+const createServerAPI = outline => {
+    const api = {};
+
+    api.url = isString(outline) ? outline : outline.url || '';
+    api.timeout = outline.timeout ? parseInt(outline.timeout, 10) : 0;
+    api.headers = outline.headers ? outline.headers : {};
+
+    forin(methods, key => {
+        api[key] = createAction(key, outline[key], methods[key], api.timeout, api.headers);
+    });
+
+    // remove process if no url or process on outline
+    api.process = outline.process || isString(outline) || outline.url ? api.process : null;
+
+    // special treatment for remove
+    api.remove = outline.remove || null;
+
+    // remove generic headers from api object
+    delete api.headers;
+
+    return api;
+};
+
+const createAction = (name, outline, method, timeout, headers) => {
+    // is explicitely set to null so disable
+    if (outline === null) {
+        return null;
+    }
+
+    // if is custom function, done! Dev handles everything.
+    if (typeof outline === 'function') {
+        return outline;
+    }
+
+    // build action object
+    const action = {
+        url: method === 'GET' || method === 'PATCH' ? `?${name}=` : '',
+        method,
+        headers,
+        withCredentials: false,
+        timeout,
+        onload: null,
+        ondata: null,
+        onerror: null,
+    };
+
+    // is a single url
+    if (isString(outline)) {
+        action.url = outline;
+        return action;
+    }
+
+    // overwrite
+    Object.assign(action, outline);
+
+    // see if should reformat headers;
+    if (isString(action.headers)) {
+        const parts = action.headers.split(/:(.+)/);
+        action.headers = {
+            header: parts[0],
+            value: parts[1],
+        };
+    }
+
+    // if is bool withCredentials
+    action.withCredentials = toBoolean(action.withCredentials);
+
+    return action;
+};
+
+const toServerAPI = value => createServerAPI(value);
+
+const isNull = value => value === null;
+
+const isObject = value => typeof value === 'object' && value !== null;
+
+const isAPI = value => {
+    return (
+        isObject(value) &&
+        isString(value.url) &&
+        isObject(value.process) &&
+        isObject(value.revert) &&
+        isObject(value.restore) &&
+        isObject(value.fetch)
+    );
+};
+
+const getType = value => {
+    if (isArray(value)) {
+        return 'array';
+    }
+
+    if (isNull(value)) {
+        return 'null';
+    }
+
+    if (isInt(value)) {
+        return 'int';
+    }
+
+    if (/^[0-9]+ ?(?:GB|MB|KB)$/gi.test(value)) {
+        return 'bytes';
+    }
+
+    if (isAPI(value)) {
+        return 'api';
+    }
+
+    return typeof value;
+};
+
+const replaceSingleQuotes = str =>
+    str
+        .replace(/{\s*'/g, '{"')
+        .replace(/'\s*}/g, '"}')
+        .replace(/'\s*:/g, '":')
+        .replace(/:\s*'/g, ':"')
+        .replace(/,\s*'/g, ',"')
+        .replace(/'\s*,/g, '",');
+
+const conversionTable = {
+    array: toArray,
+    boolean: toBoolean,
+    int: value => (getType(value) === 'bytes' ? toBytes(value) : toInt(value)),
+    number: toFloat,
+    float: toFloat,
+    bytes: toBytes,
+    string: value => (isFunction(value) ? value : toString(value)),
+    function: value => toFunctionReference(value),
+    serverapi: toServerAPI,
+    object: value => {
+        try {
+            return JSON.parse(replaceSingleQuotes(value));
+        } catch (e) {
+            return null;
+        }
+    },
+};
+
+const convertTo = (value, type) => conversionTable[type](value);
+
+const getValueByType = (newValue, defaultValue, valueType) => {
+    // can always assign default value
+    if (newValue === defaultValue) {
+        return newValue;
+    }
+
+    // get the type of the new value
+    let newValueType = getType(newValue);
+
+    // is valid type?
+    if (newValueType !== valueType) {
+        // is string input, let's attempt to convert
+        const convertedValue = convertTo(newValue, valueType);
+
+        // what is the type now
+        newValueType = getType(convertedValue);
+
+        // no valid conversions found
+        if (convertedValue === null) {
+            throw `Trying to assign value with incorrect type to "${option}", allowed type: "${valueType}"`;
+        } else {
+            newValue = convertedValue;
+        }
+    }
+
+    // assign new value
+    return newValue;
+};
+
+const createOption = (defaultValue, valueType) => {
+    let currentValue = defaultValue;
+    return {
+        enumerable: true,
+        get: () => currentValue,
+        set: newValue => {
+            currentValue = getValueByType(newValue, defaultValue, valueType);
+        },
+    };
+};
+
+const createOptions = options => {
+    const obj = {};
+    forin(options, prop => {
+        const optionDefinition = options[prop];
+        obj[prop] = createOption(optionDefinition[0], optionDefinition[1]);
+    });
+    return createObject(obj);
+};
+
+const createInitialState = options => ({
+    // model
+    items: [],
+
+    // timeout used for calling update items
+    listUpdateTimeout: null,
+
+    // timeout used for stacking metadata updates
+    itemUpdateTimeout: null,
+
+    // queue of items waiting to be processed
+    processingQueue: [],
+
+    // options
+    options: createOptions(options),
+});
+
+const fromCamels = (string, separator = '-') =>
+    string
+        .split(/(?=[A-Z])/)
+        .map(part => part.toLowerCase())
+        .join(separator);
+
+const createOptionAPI = (store, options) => {
+    const obj = {};
+    forin(options, key => {
+        obj[key] = {
+            get: () => store.getState().options[key],
+            set: value => {
+                store.dispatch(`SET_${fromCamels(key, '_').toUpperCase()}`, {
+                    value,
+                });
+            },
+        };
+    });
+    return obj;
+};
+
+const createOptionActions = options => (dispatch, query, state) => {
+    const obj = {};
+    forin(options, key => {
+        const name = fromCamels(key, '_').toUpperCase();
+
+        obj[`SET_${name}`] = action => {
+            try {
+                state.options[key] = action.value;
+            } catch (e) {
+                // nope, failed
+            }
+
+            // we successfully set the value of this option
+            dispatch(`DID_SET_${name}`, { value: state.options[key] });
+        };
+    });
+    return obj;
+};
+
+const createOptionQueries = options => state => {
+    const obj = {};
+    forin(options, key => {
+        obj[`GET_${fromCamels(key, '_').toUpperCase()}`] = action => state.options[key];
+    });
+    return obj;
+};
+
+const InteractionMethod = {
+    API: 1,
+    DROP: 2,
+    BROWSE: 3,
+    PASTE: 4,
+    NONE: 5,
+};
+
+const getUniqueId = () =>
+    Math.random()
+        .toString(36)
+        .substring(2, 11);
+
+const arrayRemove = (arr, index) => arr.splice(index, 1);
+
+const run = (cb, sync) => {
+    if (sync) {
+        cb();
+    } else if (document.hidden) {
+        Promise.resolve(1).then(cb);
+    } else {
+        setTimeout(cb, 0);
+    }
+};
+
+const on = () => {
+    const listeners = [];
+    const off = (event, cb) => {
+        arrayRemove(
+            listeners,
+            listeners.findIndex(listener => listener.event === event && (listener.cb === cb || !cb))
+        );
+    };
+    const fire = (event, args, sync) => {
+        listeners
+            .filter(listener => listener.event === event)
+            .map(listener => listener.cb)
+            .forEach(cb => run(() => cb(...args), sync));
+    };
+    return {
+        fireSync: (event, ...args) => {
+            fire(event, args, true);
+        },
+        fire: (event, ...args) => {
+            fire(event, args, false);
+        },
+        on: (event, cb) => {
+            listeners.push({ event, cb });
+        },
+        onOnce: (event, cb) => {
+            listeners.push({
+                event,
+                cb: (...args) => {
+                    off(event, cb);
+                    cb(...args);
+                },
+            });
+        },
+        off,
+    };
+};
+
+const copyObjectPropertiesToObject = (src, target, excluded) => {
+    Object.getOwnPropertyNames(src)
+        .filter(property => !excluded.includes(property))
+        .forEach(key =>
+            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(src, key))
+        );
+};
+
+const PRIVATE = [
+    'fire',
+    'process',
+    'revert',
+    'load',
+    'on',
+    'off',
+    'onOnce',
+    'retryLoad',
+    'extend',
+    'archive',
+    'archived',
+    'release',
+    'released',
+    'requestProcessing',
+    'freeze',
+];
+
+const createItemAPI = item => {
+    const api = {};
+    copyObjectPropertiesToObject(item, api, PRIVATE);
+    return api;
+};
+
+const removeReleasedItems = items => {
+    items.forEach((item, index) => {
+        if (item.released) {
+            arrayRemove(items, index);
+        }
+    });
+};
+
+const ItemStatus = {
+    INIT: 1,
+    IDLE: 2,
+    PROCESSING_QUEUED: 9,
+    PROCESSING: 3,
+    PROCESSING_COMPLETE: 5,
+    PROCESSING_ERROR: 6,
+    PROCESSING_REVERT_ERROR: 10,
+    LOADING: 7,
+    LOAD_ERROR: 8,
+};
+
+const FileOrigin = {
+    INPUT: 1,
+    LIMBO: 2,
+    LOCAL: 3,
+};
+
+const getNonNumeric = str => /[^0-9]+/.exec(str);
+
+const getDecimalSeparator = () => getNonNumeric((1.1).toLocaleString())[0];
+
+const getThousandsSeparator = () => {
+    // Added for browsers that do not return the thousands separator (happend on native browser Android 4.4.4)
+    // We check against the normal toString output and if they're the same return a comma when decimal separator is a dot
+    const decimalSeparator = getDecimalSeparator();
+    const thousandsStringWithSeparator = (1000.0).toLocaleString();
+    const thousandsStringWithoutSeparator = (1000.0).toString();
+    if (thousandsStringWithSeparator !== thousandsStringWithoutSeparator) {
+        return getNonNumeric(thousandsStringWithSeparator)[0];
+    }
+    return decimalSeparator === '.' ? ',' : '.';
+};
+
+const Type = {
+    BOOLEAN: 'boolean',
+    INT: 'int',
+    NUMBER: 'number',
+    STRING: 'string',
+    ARRAY: 'array',
+    OBJECT: 'object',
+    FUNCTION: 'function',
+    ACTION: 'action',
+    SERVER_API: 'serverapi',
+    REGEX: 'regex',
+};
+
+// all registered filters
+const filters = [];
+
+// loops over matching filters and passes options to each filter, returning the mapped results
+const applyFilterChain = (key, value, utils) =>
+    new Promise((resolve, reject) => {
+        // find matching filters for this key
+        const matchingFilters = filters.filter(f => f.key === key).map(f => f.cb);
+
+        // resolve now
+        if (matchingFilters.length === 0) {
+            resolve(value);
+            return;
+        }
+
+        // first filter to kick things of
+        const initialFilter = matchingFilters.shift();
+
+        // chain filters
+        matchingFilters
+            .reduce(
+                // loop over promises passing value to next promise
+                (current, next) => current.then(value => next(value, utils)),
+
+                // call initial filter, will return a promise
+                initialFilter(value, utils)
+
+                // all executed
+            )
+            .then(value => resolve(value))
+            .catch(error => reject(error));
+    });
+
+const applyFilters = (key, value, utils) =>
+    filters.filter(f => f.key === key).map(f => f.cb(value, utils));
+
+// adds a new filter to the list
+const addFilter = (key, cb) => filters.push({ key, cb });
+
+const extendDefaultOptions = additionalOptions => Object.assign(defaultOptions, additionalOptions);
+
+const getOptions = () => ({ ...defaultOptions });
+
+const setOptions = opts => {
+    forin(opts, (key, value) => {
+        // key does not exist, so this option cannot be set
+        if (!defaultOptions[key]) {
+            return;
+        }
+        defaultOptions[key][0] = getValueByType(
+            value,
+            defaultOptions[key][0],
+            defaultOptions[key][1]
+        );
+    });
+};
+
+// default options on app
+const defaultOptions = {
+    // the id to add to the root element
+    id: [null, Type.STRING],
+
+    // input field name to use
+    name: ['filepond', Type.STRING],
+
+    // disable the field
+    disabled: [false, Type.BOOLEAN],
+
+    // classname to put on wrapper
+    className: [null, Type.STRING],
+
+    // is the field required
+    required: [false, Type.BOOLEAN],
+
+    // Allow media capture when value is set
+    captureMethod: [null, Type.STRING],
+    // - "camera", "microphone" or "camcorder",
+    // - Does not work with multiple on apple devices
+    // - If set, acceptedFileTypes must be made to match with media wildcard "image/*", "audio/*" or "video/*"
+
+    // sync `acceptedFileTypes` property with `accept` attribute
+    allowSyncAcceptAttribute: [true, Type.BOOLEAN],
+
+    // Feature toggles
+    allowDrop: [true, Type.BOOLEAN], // Allow dropping of files
+    allowBrowse: [true, Type.BOOLEAN], // Allow browsing the file system
+    allowPaste: [true, Type.BOOLEAN], // Allow pasting files
+    allowMultiple: [false, Type.BOOLEAN], // Allow multiple files (disabled by default, as multiple attribute is also required on input to allow multiple)
+    allowReplace: [true, Type.BOOLEAN], // Allow dropping a file on other file to replace it (only works when multiple is set to false)
+    allowRevert: [true, Type.BOOLEAN], // Allows user to revert file upload
+    allowRemove: [true, Type.BOOLEAN], // Allow user to remove a file
+    allowProcess: [true, Type.BOOLEAN], // Allows user to process a file, when set to false, this removes the file upload button
+    allowReorder: [false, Type.BOOLEAN], // Allow reordering of files
+    allowDirectoriesOnly: [false, Type.BOOLEAN], // Allow only selecting directories with browse (no support for filtering dnd at this point)
+
+    // Try store file if `server` not set
+    storeAsFile: [false, Type.BOOLEAN],
+
+    // Revert mode
+    forceRevert: [false, Type.BOOLEAN], // Set to 'force' to require the file to be reverted before removal
+
+    // Input requirements
+    maxFiles: [null, Type.INT], // Max number of files
+    checkValidity: [false, Type.BOOLEAN], // Enables custom validity messages
+
+    // Where to put file
+    itemInsertLocationFreedom: [true, Type.BOOLEAN], // Set to false to always add items to begin or end of list
+    itemInsertLocation: ['before', Type.STRING], // Default index in list to add items that have been dropped at the top of the list
+    itemInsertInterval: [75, Type.INT],
+
+    // Drag 'n Drop related
+    dropOnPage: [false, Type.BOOLEAN], // Allow dropping of files anywhere on page (prevents browser from opening file if dropped outside of Up)
+    dropOnElement: [true, Type.BOOLEAN], // Drop needs to happen on element (set to false to also load drops outside of Up)
+    dropValidation: [false, Type.BOOLEAN], // Enable or disable validating files on drop
+    ignoredFiles: [['.ds_store', 'thumbs.db', 'desktop.ini'], Type.ARRAY],
+
+    // Upload related
+    instantUpload: [true, Type.BOOLEAN], // Should upload files immediately on drop
+    maxParallelUploads: [2, Type.INT], // Maximum files to upload in parallel
+    allowMinimumUploadDuration: [true, Type.BOOLEAN], // if true uploads take at least 750 ms, this ensures the user sees the upload progress giving trust the upload actually happened
+
+    // Chunks
+    chunkUploads: [false, Type.BOOLEAN], // Enable chunked uploads
+    chunkForce: [false, Type.BOOLEAN], // Force use of chunk uploads even for files smaller than chunk size
+    chunkSize: [5000000, Type.INT], // Size of chunks (5MB default)
+    chunkRetryDelays: [[500, 1000, 3000], Type.ARRAY], // Amount of times to retry upload of a chunk when it fails
+
+    // The server api end points to use for uploading (see docs)
+    server: [null, Type.SERVER_API],
+
+    // File size calculations, can set to 1024, this is only used for display, properties use file size base 1000
+    fileSizeBase: [1000, Type.INT],
+
+    // Labels and status messages
+    labelFileSizeBytes: ['bytes', Type.STRING],
+    labelFileSizeKilobytes: ['KB', Type.STRING],
+    labelFileSizeMegabytes: ['MB', Type.STRING],
+    labelFileSizeGigabytes: ['GB', Type.STRING],
+
+    labelDecimalSeparator: [getDecimalSeparator(), Type.STRING], // Default is locale separator
+    labelThousandsSeparator: [getThousandsSeparator(), Type.STRING], // Default is locale separator
+
+    labelIdle: [
+        'Drag & Drop your files or <span class="filepond--label-action">Browse</span>',
+        Type.STRING,
+    ],
+    labelInvalidField: ['Field contains invalid files', Type.STRING],
+    labelFileWaitingForSize: ['Waiting for size', Type.STRING],
+    labelFileSizeNotAvailable: ['Size not available', Type.STRING],
+    labelFileCountSingular: ['file in list', Type.STRING],
+    labelFileCountPlural: ['files in list', Type.STRING],
+    labelFileLoading: ['Loading', Type.STRING],
+    labelFileAdded: ['Added', Type.STRING], // assistive only
+    labelFileLoadError: ['Error during load', Type.STRING],
+    labelFileRemoved: ['Removed', Type.STRING], // assistive only
+    labelFileRemoveError: ['Error during remove', Type.STRING],
+    labelFileProcessing: ['Uploading', Type.STRING],
+    labelFileProcessingComplete: ['Upload complete', Type.STRING],
+    labelFileProcessingAborted: ['Upload cancelled', Type.STRING],
+    labelFileProcessingError: ['Error during upload', Type.STRING],
+    labelFileProcessingRevertError: ['Error during revert', Type.STRING],
+
+    labelTapToCancel: ['tap to cancel', Type.STRING],
+    labelTapToRetry: ['tap to retry', Type.STRING],
+    labelTapToUndo: ['tap to undo', Type.STRING],
+
+    labelButtonRemoveItem: ['Remove', Type.STRING],
+    labelButtonAbortItemLoad: ['Abort', Type.STRING],
+    labelButtonRetryItemLoad: ['Retry', Type.STRING],
+    labelButtonAbortItemProcessing: ['Cancel', Type.STRING],
+    labelButtonUndoItemProcessing: ['Undo', Type.STRING],
+    labelButtonRetryItemProcessing: ['Retry', Type.STRING],
+    labelButtonProcessItem: ['Upload', Type.STRING],
+
+    // make sure width and height plus viewpox are even numbers so icons are nicely centered
+    iconRemove: [
+        '<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><path d="M11.586 13l-2.293 2.293a1 1 0 0 0 1.414 1.414L13 14.414l2.293 2.293a1 1 0 0 0 1.414-1.414L14.414 13l2.293-2.293a1 1 0 0 0-1.414-1.414L13 11.586l-2.293-2.293a1 1 0 0 0-1.414 1.414L11.586 13z" fill="currentColor" fill-rule="nonzero"/></svg>',
+        Type.STRING,
+    ],
+    iconProcess: [
+        '<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><path d="M14 10.414v3.585a1 1 0 0 1-2 0v-3.585l-1.293 1.293a1 1 0 0 1-1.414-1.415l3-3a1 1 0 0 1 1.414 0l3 3a1 1 0 0 1-1.414 1.415L14 10.414zM9 18a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2H9z" fill="currentColor" fill-rule="evenodd"/></svg>',
+        Type.STRING,
+    ],
+    iconRetry: [
+        '<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><path d="M10.81 9.185l-.038.02A4.997 4.997 0 0 0 8 13.683a5 5 0 0 0 5 5 5 5 0 0 0 5-5 1 1 0 0 1 2 0A7 7 0 1 1 9.722 7.496l-.842-.21a.999.999 0 1 1 .484-1.94l3.23.806c.535.133.86.675.73 1.21l-.804 3.233a.997.997 0 0 1-1.21.73.997.997 0 0 1-.73-1.21l.23-.928v-.002z" fill="currentColor" fill-rule="nonzero"/></svg>',
+        Type.STRING,
+    ],
+    iconUndo: [
+        '<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><path d="M9.185 10.81l.02-.038A4.997 4.997 0 0 1 13.683 8a5 5 0 0 1 5 5 5 5 0 0 1-5 5 1 1 0 0 0 0 2A7 7 0 1 0 7.496 9.722l-.21-.842a.999.999 0 1 0-1.94.484l.806 3.23c.133.535.675.86 1.21.73l3.233-.803a.997.997 0 0 0 .73-1.21.997.997 0 0 0-1.21-.73l-.928.23-.002-.001z" fill="currentColor" fill-rule="nonzero"/></svg>',
+        Type.STRING,
+    ],
+    iconDone: [
+        '<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><path d="M18.293 9.293a1 1 0 0 1 1.414 1.414l-7.002 7a1 1 0 0 1-1.414 0l-3.998-4a1 1 0 1 1 1.414-1.414L12 15.586l6.294-6.293z" fill="currentColor" fill-rule="nonzero"/></svg>',
+        Type.STRING,
+    ],
+
+    // event handlers
+    oninit: [null, Type.FUNCTION],
+    onwarning: [null, Type.FUNCTION],
+    onerror: [null, Type.FUNCTION],
+    onactivatefile: [null, Type.FUNCTION],
+    oninitfile: [null, Type.FUNCTION],
+    onaddfilestart: [null, Type.FUNCTION],
+    onaddfileprogress: [null, Type.FUNCTION],
+    onaddfile: [null, Type.FUNCTION],
+    onprocessfilestart: [null, Type.FUNCTION],
+    onprocessfileprogress: [null, Type.FUNCTION],
+    onprocessfileabort: [null, Type.FUNCTION],
+    onprocessfilerevert: [null, Type.FUNCTION],
+    onprocessfile: [null, Type.FUNCTION],
+    onprocessfiles: [null, Type.FUNCTION],
+    onremovefile: [null, Type.FUNCTION],
+    onpreparefile: [null, Type.FUNCTION],
+    onupdatefiles: [null, Type.FUNCTION],
+    onreorderfiles: [null, Type.FUNCTION],
+
+    // hooks
+    beforeDropFile: [null, Type.FUNCTION],
+    beforeAddFile: [null, Type.FUNCTION],
+    beforeRemoveFile: [null, Type.FUNCTION],
+    beforePrepareFile: [null, Type.FUNCTION],
+
+    // styles
+    stylePanelLayout: [null, Type.STRING], // null 'integrated', 'compact', 'circle'
+    stylePanelAspectRatio: [null, Type.STRING], // null or '3:2' or 1
+    styleItemPanelAspectRatio: [null, Type.STRING],
+    styleButtonRemoveItemPosition: ['left', Type.STRING],
+    styleButtonProcessItemPosition: ['right', Type.STRING],
+    styleLoadIndicatorPosition: ['right', Type.STRING],
+    styleProgressIndicatorPosition: ['right', Type.STRING],
+    styleButtonRemoveItemAlign: [false, Type.BOOLEAN],
+
+    // custom initial files array
+    files: [[], Type.ARRAY],
+
+    // show support by displaying credits
+    credits: [['https://pqina.nl/', 'Powered by PQINA'], Type.ARRAY],
+};
+
+const getItemByQuery = (items, query) => {
+    // just return first index
+    if (isEmpty(query)) {
+        return items[0] || null;
+    }
+
+    // query is index
+    if (isInt(query)) {
+        return items[query] || null;
+    }
+
+    // if query is item, get the id
+    if (typeof query === 'object') {
+        query = query.id;
+    }
+
+    // assume query is a string and return item by id
+    return items.find(item => item.id === query) || null;
+};
+
+const getNumericAspectRatioFromString = aspectRatio => {
+    if (isEmpty(aspectRatio)) {
+        return aspectRatio;
+    }
+    if (/:/.test(aspectRatio)) {
+        const parts = aspectRatio.split(':');
+        return parts[1] / parts[0];
+    }
+    return parseFloat(aspectRatio);
+};
+
+const getActiveItems = items => items.filter(item => !item.archived);
+
+const Status = {
+    EMPTY: 0,
+    IDLE: 1, // waiting
+    ERROR: 2, // a file is in error state
+    BUSY: 3, // busy processing or loading
+    READY: 4, // all files uploaded
+};
+
+let res = null;
+const canUpdateFileInput = () => {
+    if (res === null) {
+        try {
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(new File(['hello world'], 'This_Works.txt'));
+            const el = document.createElement('input');
+            el.setAttribute('type', 'file');
+            el.files = dataTransfer.files;
+            res = el.files.length === 1;
+        } catch (err) {
+            res = false;
+        }
+    }
+    return res;
+};
+
+const ITEM_ERROR = [
+    ItemStatus.LOAD_ERROR,
+    ItemStatus.PROCESSING_ERROR,
+    ItemStatus.PROCESSING_REVERT_ERROR,
+];
+const ITEM_BUSY = [
+    ItemStatus.LOADING,
+    ItemStatus.PROCESSING,
+    ItemStatus.PROCESSING_QUEUED,
+    ItemStatus.INIT,
+];
+const ITEM_READY = [ItemStatus.PROCESSING_COMPLETE];
+
+const isItemInErrorState = item => ITEM_ERROR.includes(item.status);
+const isItemInBusyState = item => ITEM_BUSY.includes(item.status);
+const isItemInReadyState = item => ITEM_READY.includes(item.status);
+
+const isAsync = state =>
+    isObject(state.options.server) &&
+    (isObject(state.options.server.process) || isFunction(state.options.server.process));
+
+const queries = state => ({
+    GET_STATUS: () => {
+        const items = getActiveItems(state.items);
+
+        const { EMPTY, ERROR, BUSY, IDLE, READY } = Status;
+
+        if (items.length === 0) return EMPTY;
+
+        if (items.some(isItemInErrorState)) return ERROR;
+
+        if (items.some(isItemInBusyState)) return BUSY;
+
+        if (items.some(isItemInReadyState)) return READY;
+
+        return IDLE;
+    },
+
+    GET_ITEM: query => getItemByQuery(state.items, query),
+
+    GET_ACTIVE_ITEM: query => getItemByQuery(getActiveItems(state.items), query),
+
+    GET_ACTIVE_ITEMS: () => getActiveItems(state.items),
+
+    GET_ITEMS: () => state.items,
+
+    GET_ITEM_NAME: query => {
+        const item = getItemByQuery(state.items, query);
+        return item ? item.filename : null;
+    },
+
+    GET_ITEM_SIZE: query => {
+        const item = getItemByQuery(state.items, query);
+        return item ? item.fileSize : null;
+    },
+
+    GET_STYLES: () =>
+        Object.keys(state.options)
+            .filter(key => /^style/.test(key))
+            .map(option => ({
+                name: option,
+                value: state.options[option],
+            })),
+
+    GET_PANEL_ASPECT_RATIO: () => {
+        const isShapeCircle = /circle/.test(state.options.stylePanelLayout);
+        const aspectRatio = isShapeCircle
+            ? 1
+            : getNumericAspectRatioFromString(state.options.stylePanelAspectRatio);
+        return aspectRatio;
+    },
+
+    GET_ITEM_PANEL_ASPECT_RATIO: () => state.options.styleItemPanelAspectRatio,
+
+    GET_ITEMS_BY_STATUS: status =>
+        getActiveItems(state.items).filter(item => item.status === status),
+
+    GET_TOTAL_ITEMS: () => getActiveItems(state.items).length,
+
+    SHOULD_UPDATE_FILE_INPUT: () =>
+        state.options.storeAsFile && canUpdateFileInput() && !isAsync(state),
+
+    IS_ASYNC: () => isAsync(state),
+
+    GET_FILE_SIZE_LABELS: query => ({
+        labelBytes: query('GET_LABEL_FILE_SIZE_BYTES') || undefined,
+        labelKilobytes: query('GET_LABEL_FILE_SIZE_KILOBYTES') || undefined,
+        labelMegabytes: query('GET_LABEL_FILE_SIZE_MEGABYTES') || undefined,
+        labelGigabytes: query('GET_LABEL_FILE_SIZE_GIGABYTES') || undefined,
+    }),
+});
+
+const hasRoomForItem = state => {
+    const count = getActiveItems(state.items).length;
+
+    // if cannot have multiple items, to add one item it should currently not contain items
+    if (!state.options.allowMultiple) {
+        return count === 0;
+    }
+
+    // if allows multiple items, we check if a max item count has been set, if not, there's no limit
+    const maxFileCount = state.options.maxFiles;
+    if (maxFileCount === null) {
+        return true;
+    }
+
+    // we check if the current count is smaller than the max count, if so, another file can still be added
+    if (count < maxFileCount) {
+        return true;
+    }
+
+    // no more room for another file
+    return false;
+};
+
+const limit = (value, min, max) => Math.max(Math.min(max, value), min);
+
+const arrayInsert = (arr, index, item) => arr.splice(index, 0, item);
+
+const insertItem = (items, item, index) => {
+    if (isEmpty(item)) {
+        return null;
+    }
+
+    // if index is undefined, append
+    if (typeof index === 'undefined') {
+        items.push(item);
+        return item;
+    }
+
+    // limit the index to the size of the items array
+    index = limit(index, 0, items.length);
+
+    // add item to array
+    arrayInsert(items, index, item);
+
+    // expose
+    return item;
+};
+
+const isBase64DataURI = str =>
+    /^\s*data:([a-z]+\/[a-z0-9-+.]+(;[a-z-]+=[a-z0-9-]+)?)?(;base64)?,([a-z0-9!$&',()*+;=\-._~:@\/?%\s]*)\s*$/i.test(
+        str
+    );
+
+const getFilenameFromURL = url =>
+    url
+        .split('/')
+        .pop()
+        .split('?')
+        .shift();
+
+const getExtensionFromFilename = name => name.split('.').pop();
+
+const guesstimateExtension = type => {
+    // if no extension supplied, exit here
+    if (typeof type !== 'string') {
+        return '';
+    }
+
+    // get subtype
+    const subtype = type.split('/').pop();
+
+    // is svg subtype
+    if (/svg/.test(subtype)) {
+        return 'svg';
+    }
+
+    if (/zip|compressed/.test(subtype)) {
+        return 'zip';
+    }
+
+    if (/plain/.test(subtype)) {
+        return 'txt';
+    }
+
+    if (/msword/.test(subtype)) {
+        return 'doc';
+    }
+
+    // if is valid subtype
+    if (/[a-z]+/.test(subtype)) {
+        // always use jpg extension
+        if (subtype === 'jpeg') {
+            return 'jpg';
+        }
+
+        // return subtype
+        return subtype;
+    }
+
+    return '';
+};
+
+const leftPad = (value, padding = '') => (padding + value).slice(-padding.length);
+
+const getDateString = (date = new Date()) =>
+    `${date.getFullYear()}-${leftPad(date.getMonth() + 1, '00')}-${leftPad(
+        date.getDate(),
+        '00'
+    )}_${leftPad(date.getHours(), '00')}-${leftPad(date.getMinutes(), '00')}-${leftPad(
+        date.getSeconds(),
+        '00'
+    )}`;
+
+const getFileFromBlob = (blob, filename, type = null, extension = null) => {
+    const file =
+        typeof type === 'string'
+            ? blob.slice(0, blob.size, type)
+            : blob.slice(0, blob.size, blob.type);
+    file.lastModifiedDate = new Date();
+
+    // copy relative path
+    if (blob._relativePath) file._relativePath = blob._relativePath;
+
+    // if blob has name property, use as filename if no filename supplied
+    if (!isString(filename)) {
+        filename = getDateString();
+    }
+
+    // if filename supplied but no extension and filename has extension
+    if (filename && extension === null && getExtensionFromFilename(filename)) {
+        file.name = filename;
+    } else {
+        extension = extension || guesstimateExtension(file.type);
+        file.name = filename + (extension ? '.' + extension : '');
+    }
+
+    return file;
+};
+
+const getBlobBuilder = () => {
+    return (window.BlobBuilder =
+        window.BlobBuilder ||
+        window.WebKitBlobBuilder ||
+        window.MozBlobBuilder ||
+        window.MSBlobBuilder);
+};
+
+const createBlob = (arrayBuffer, mimeType) => {
+    const BB = getBlobBuilder();
+
+    if (BB) {
+        const bb = new BB();
+        bb.append(arrayBuffer);
+        return bb.getBlob(mimeType);
+    }
+
+    return new Blob([arrayBuffer], {
+        type: mimeType,
+    });
+};
+
+const getBlobFromByteStringWithMimeType = (byteString, mimeType) => {
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+
+    for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    return createBlob(ab, mimeType);
+};
+
+const getMimeTypeFromBase64DataURI = dataURI => {
+    return (/^data:(.+);/.exec(dataURI) || [])[1] || null;
+};
+
+const getBase64DataFromBase64DataURI = dataURI => {
+    // get data part of string (remove data:image/jpeg...,)
+    const data = dataURI.split(',')[1];
+
+    // remove any whitespace as that causes InvalidCharacterError in IE
+    return data.replace(/\s/g, '');
+};
+
+const getByteStringFromBase64DataURI = dataURI => {
+    return atob(getBase64DataFromBase64DataURI(dataURI));
+};
+
+const getBlobFromBase64DataURI = dataURI => {
+    const mimeType = getMimeTypeFromBase64DataURI(dataURI);
+    const byteString = getByteStringFromBase64DataURI(dataURI);
+
+    return getBlobFromByteStringWithMimeType(byteString, mimeType);
+};
+
+const getFileFromBase64DataURI = (dataURI, filename, extension) => {
+    return getFileFromBlob(getBlobFromBase64DataURI(dataURI), filename, null, extension);
+};
+
+const getFileNameFromHeader = header => {
+    // test if is content disposition header, if not exit
+    if (!/^content-disposition:/i.test(header)) return null;
+
+    // get filename parts
+    const matches = header
+        .split(/filename=|filename\*=.+''/)
+        .splice(1)
+        .map(name => name.trim().replace(/^["']|[;"']{0,2}$/g, ''))
+        .filter(name => name.length);
+
+    return matches.length ? decodeURI(matches[matches.length - 1]) : null;
+};
+
+const getFileSizeFromHeader = header => {
+    if (/content-length:/i.test(header)) {
+        const size = header.match(/[0-9]+/)[0];
+        return size ? parseInt(size, 10) : null;
+    }
+    return null;
+};
+
+const getTranfserIdFromHeader = header => {
+    if (/x-content-transfer-id:/i.test(header)) {
+        const id = (header.split(':')[1] || '').trim();
+        return id || null;
+    }
+    return null;
+};
+
+const getFileInfoFromHeaders = headers => {
+    const info = {
+        source: null,
+        name: null,
+        size: null,
+    };
+
+    const rows = headers.split('\n');
+    for (let header of rows) {
+        const name = getFileNameFromHeader(header);
+        if (name) {
+            info.name = name;
+            continue;
+        }
+
+        const size = getFileSizeFromHeader(header);
+        if (size) {
+            info.size = size;
+            continue;
+        }
+
+        const source = getTranfserIdFromHeader(header);
+        if (source) {
+            info.source = source;
+            continue;
+        }
+    }
+
+    return info;
+};
+
+const createFileLoader = fetchFn => {
+    const state = {
+        source: null,
+        complete: false,
+        progress: 0,
+        size: null,
+        timestamp: null,
+        duration: 0,
+        request: null,
+    };
+
+    const getProgress = () => state.progress;
+    const abort = () => {
+        if (state.request && state.request.abort) {
+            state.request.abort();
+        }
+    };
+
+    // load source
+    const load = () => {
+        // get quick reference
+        const source = state.source;
+
+        api.fire('init', source);
+
+        // Load Files
+        if (source instanceof File) {
+            api.fire('load', source);
+        } else if (source instanceof Blob) {
+            // Load blobs, set default name to current date
+            api.fire('load', getFileFromBlob(source, source.name));
+        } else if (isBase64DataURI(source)) {
+            // Load base 64, set default name to current date
+            api.fire('load', getFileFromBase64DataURI(source));
+        } else {
+            // Deal as if is external URL, let's load it!
+            loadURL(source);
+        }
+    };
+
+    // loads a url
+    const loadURL = url => {
+        // is remote url and no fetch method supplied
+        if (!fetchFn) {
+            api.fire('error', {
+                type: 'error',
+                body: "Can't load URL",
+                code: 400,
+            });
+            return;
+        }
+
+        // set request start
+        state.timestamp = Date.now();
+
+        // load file
+        state.request = fetchFn(
+            url,
+            response => {
+                // update duration
+                state.duration = Date.now() - state.timestamp;
+
+                // done!
+                state.complete = true;
+
+                // turn blob response into a file
+                if (response instanceof Blob) {
+                    response = getFileFromBlob(response, response.name || getFilenameFromURL(url));
+                }
+
+                api.fire(
+                    'load',
+                    // if has received blob, we go with blob, if no response, we return null
+                    response instanceof Blob ? response : response ? response.body : null
+                );
+            },
+            error => {
+                api.fire(
+                    'error',
+                    typeof error === 'string'
+                        ? {
+                              type: 'error',
+                              code: 0,
+                              body: error,
+                          }
+                        : error
+                );
+            },
+            (computable, current, total) => {
+                // collected some meta data already
+                if (total) {
+                    state.size = total;
+                }
+
+                // update duration
+                state.duration = Date.now() - state.timestamp;
+
+                // if we can't compute progress, we're not going to fire progress events
+                if (!computable) {
+                    state.progress = null;
+                    return;
+                }
+
+                // update progress percentage
+                state.progress = current / total;
+
+                // expose
+                api.fire('progress', state.progress);
+            },
+            () => {
+                api.fire('abort');
+            },
+            response => {
+                const fileinfo = getFileInfoFromHeaders(
+                    typeof response === 'string' ? response : response.headers
+                );
+                api.fire('meta', {
+                    size: state.size || fileinfo.size,
+                    filename: fileinfo.name,
+                    source: fileinfo.source,
+                });
+            }
+        );
+    };
+
+    const api = {
+        ...on(),
+        setSource: source => (state.source = source),
+        getProgress, // file load progress
+        abort, // abort file load
+        load, // start load
+    };
+
+    return api;
+};
+
+const isGet = method => /GET|HEAD/.test(method);
+
+const sendRequest = (data, url, options) => {
+    const api = {
+        onheaders: () => {},
+        onprogress: () => {},
+        onload: () => {},
+        ontimeout: () => {},
+        onerror: () => {},
+        onabort: () => {},
+        abort: () => {
+            aborted = true;
+            xhr.abort();
+        },
+    };
+
+    // timeout identifier, only used when timeout is defined
+    let aborted = false;
+    let headersReceived = false;
+
+    // set default options
+    options = {
+        method: 'POST',
+        headers: {},
+        withCredentials: false,
+        ...options,
+    };
+
+    // encode url
+    url = encodeURI(url);
+
+    // if method is GET, add any received data to url
+
+    if (isGet(options.method) && data) {
+        url = `${url}${encodeURIComponent(typeof data === 'string' ? data : JSON.stringify(data))}`;
+    }
+
+    // create request
+    const xhr = new XMLHttpRequest();
+
+    // progress of load
+    const process = isGet(options.method) ? xhr : xhr.upload;
+    process.onprogress = e => {
+        // no progress event when aborted ( onprogress is called once after abort() )
+        if (aborted) {
+            return;
+        }
+
+        api.onprogress(e.lengthComputable, e.loaded, e.total);
+    };
+
+    // tries to get header info to the app as fast as possible
+    xhr.onreadystatechange = () => {
+        // not interesting in these states ('unsent' and 'openend' as they don't give us any additional info)
+        if (xhr.readyState < 2) {
+            return;
+        }
+
+        // no server response
+        if (xhr.readyState === 4 && xhr.status === 0) {
+            return;
+        }
+
+        if (headersReceived) {
+            return;
+        }
+
+        headersReceived = true;
+
+        // we've probably received some useful data in response headers
+        api.onheaders(xhr);
+    };
+
+    // load successful
+    xhr.onload = () => {
+        // is classified as valid response
+        if (xhr.status >= 200 && xhr.status < 300) {
+            api.onload(xhr);
+        } else {
+            api.onerror(xhr);
+        }
+    };
+
+    // error during load
+    xhr.onerror = () => api.onerror(xhr);
+
+    // request aborted
+    xhr.onabort = () => {
+        aborted = true;
+        api.onabort();
+    };
+
+    // request timeout
+    xhr.ontimeout = () => api.ontimeout(xhr);
+
+    // open up open up!
+    xhr.open(options.method, url, true);
+
+    // set timeout if defined (do it after open so IE11 plays ball)
+    if (isInt(options.timeout)) {
+        xhr.timeout = options.timeout;
+    }
+
+    // add headers
+    Object.keys(options.headers).forEach(key => {
+        const value = unescape(encodeURIComponent(options.headers[key]));
+        xhr.setRequestHeader(key, value);
+    });
+
+    // set type of response
+    if (options.responseType) {
+        xhr.responseType = options.responseType;
+    }
+
+    // set credentials
+    if (options.withCredentials) {
+        xhr.withCredentials = true;
+    }
+
+    // let's send our data
+    xhr.send(data);
+
+    return api;
+};
+
+const createResponse = (type, code, body, headers) => ({
+    type,
+    code,
+    body,
+    headers,
+});
+
+const createTimeoutResponse = cb => xhr => {
+    cb(createResponse('error', 0, 'Timeout', xhr.getAllResponseHeaders()));
+};
+
+const hasQS = str => /\?/.test(str);
+const buildURL = (...parts) => {
+    let url = '';
+    parts.forEach(part => {
+        url += hasQS(url) && hasQS(part) ? part.replace(/\?/, '&') : part;
+    });
+    return url;
+};
+
+const createFetchFunction = (apiUrl = '', action) => {
+    // custom handler (should also handle file, load, error, progress and abort)
+    if (typeof action === 'function') {
+        return action;
+    }
+
+    // no action supplied
+    if (!action || !isString(action.url)) {
+        return null;
+    }
+
+    // set onload hanlder
+    const onload = action.onload || (res => res);
+    const onerror = action.onerror || (res => null);
+
+    // internal handler
+    return (url, load, error, progress, abort, headers) => {
+        // do local or remote request based on if the url is external
+        const request = sendRequest(url, buildURL(apiUrl, action.url), {
+            ...action,
+            responseType: 'blob',
+        });
+
+        request.onload = xhr => {
+            // get headers
+            const headers = xhr.getAllResponseHeaders();
+
+            // get filename
+            const filename = getFileInfoFromHeaders(headers).name || getFilenameFromURL(url);
+
+            // create response
+            load(
+                createResponse(
+                    'load',
+                    xhr.status,
+                    action.method === 'HEAD'
+                        ? null
+                        : getFileFromBlob(onload(xhr.response), filename),
+                    headers
+                )
+            );
+        };
+
+        request.onerror = xhr => {
+            error(
+                createResponse(
+                    'error',
+                    xhr.status,
+                    onerror(xhr.response) || xhr.statusText,
+                    xhr.getAllResponseHeaders()
+                )
+            );
+        };
+
+        request.onheaders = xhr => {
+            headers(createResponse('headers', xhr.status, null, xhr.getAllResponseHeaders()));
+        };
+
+        request.ontimeout = createTimeoutResponse(error);
+        request.onprogress = progress;
+        request.onabort = abort;
+
+        // should return request
+        return request;
+    };
+};
+
+const ChunkStatus = {
+    QUEUED: 0,
+    COMPLETE: 1,
+    PROCESSING: 2,
+    ERROR: 3,
+    WAITING: 4,
+};
+
+/*
+function signature:
+  (file, metadata, load, error, progress, abort, transfer, options) => {
+    return {
+    abort:() => {}
+  }
+}
+*/
+
+// apiUrl, action, name, file, metadata, load, error, progress, abort, transfer, options
+const processFileChunked = (
+    apiUrl,
+    action,
+    name,
+    file,
+    metadata,
+    load,
+    error,
+    progress,
+    abort,
+    transfer,
+    options
+) => {
+    // all chunks
+    const chunks = [];
+    const { chunkTransferId, chunkServer, chunkSize, chunkRetryDelays } = options;
+
+    // default state
+    const state = {
+        serverId: chunkTransferId,
+        aborted: false,
+    };
+
+    // set onload handlers
+    const ondata = action.ondata || (fd => fd);
+    const onload =
+        action.onload ||
+        ((xhr, method) =>
+            method === 'HEAD' ? xhr.getResponseHeader('Upload-Offset') : xhr.response);
+    const onerror = action.onerror || (res => null);
+
+    // create server hook
+    const requestTransferId = cb => {
+        const formData = new FormData();
+
+        // add metadata under same name
+        if (isObject(metadata)) formData.append(name, JSON.stringify(metadata));
+
+        const headers =
+            typeof action.headers === 'function'
+                ? action.headers(file, metadata)
+                : {
+                      ...action.headers,
+                      'Upload-Length': file.size,
+                  };
+
+        const requestParams = {
+            ...action,
+            headers,
+        };
+
+        // send request object
+        const request = sendRequest(ondata(formData), buildURL(apiUrl, action.url), requestParams);
+
+        request.onload = xhr => cb(onload(xhr, requestParams.method));
+
+        request.onerror = xhr =>
+            error(
+                createResponse(
+                    'error',
+                    xhr.status,
+                    onerror(xhr.response) || xhr.statusText,
+                    xhr.getAllResponseHeaders()
+                )
+            );
+
+        request.ontimeout = createTimeoutResponse(error);
+    };
+
+    const requestTransferOffset = cb => {
+        const requestUrl = buildURL(apiUrl, chunkServer.url, state.serverId);
+
+        const headers =
+            typeof action.headers === 'function'
+                ? action.headers(state.serverId)
+                : {
+                      ...action.headers,
+                  };
+
+        const requestParams = {
+            headers,
+            method: 'HEAD',
+        };
+
+        const request = sendRequest(null, requestUrl, requestParams);
+
+        request.onload = xhr => cb(onload(xhr, requestParams.method));
+
+        request.onerror = xhr =>
+            error(
+                createResponse(
+                    'error',
+                    xhr.status,
+                    onerror(xhr.response) || xhr.statusText,
+                    xhr.getAllResponseHeaders()
+                )
+            );
+
+        request.ontimeout = createTimeoutResponse(error);
+    };
+
+    // create chunks
+    const lastChunkIndex = Math.floor(file.size / chunkSize);
+    for (let i = 0; i <= lastChunkIndex; i++) {
+        const offset = i * chunkSize;
+        const data = file.slice(offset, offset + chunkSize, 'application/offset+octet-stream');
+        chunks[i] = {
+            index: i,
+            size: data.size,
+            offset,
+            data,
+            file,
+            progress: 0,
+            retries: [...chunkRetryDelays],
+            status: ChunkStatus.QUEUED,
+            error: null,
+            request: null,
+            timeout: null,
+        };
+    }
+
+    const completeProcessingChunks = () => load(state.serverId);
+
+    const canProcessChunk = chunk =>
+        chunk.status === ChunkStatus.QUEUED || chunk.status === ChunkStatus.ERROR;
+
+    const processChunk = chunk => {
+        // processing is paused, wait here
+        if (state.aborted) return;
+
+        // get next chunk to process
+        chunk = chunk || chunks.find(canProcessChunk);
+
+        // no more chunks to process
+        if (!chunk) {
+            // all done?
+            if (chunks.every(chunk => chunk.status === ChunkStatus.COMPLETE)) {
+                completeProcessingChunks();
+            }
+
+            // no chunk to handle
+            return;
+        }
+
+        // now processing this chunk
+        chunk.status = ChunkStatus.PROCESSING;
+        chunk.progress = null;
+
+        // allow parsing of formdata
+        const ondata = chunkServer.ondata || (fd => fd);
+        const onerror = chunkServer.onerror || (res => null);
+
+        // send request object
+        const requestUrl = buildURL(apiUrl, chunkServer.url, state.serverId);
+
+        const headers =
+            typeof chunkServer.headers === 'function'
+                ? chunkServer.headers(chunk)
+                : {
+                      ...chunkServer.headers,
+                      'Content-Type': 'application/offset+octet-stream',
+                      'Upload-Offset': chunk.offset,
+                      'Upload-Length': file.size,
+                      'Upload-Name': file.name,
+                  };
+
+        const request = (chunk.request = sendRequest(ondata(chunk.data), requestUrl, {
+            ...chunkServer,
+            headers,
+        }));
+
+        request.onload = () => {
+            // done!
+            chunk.status = ChunkStatus.COMPLETE;
+
+            // remove request reference
+            chunk.request = null;
+
+            // start processing more chunks
+            processChunks();
+        };
+
+        request.onprogress = (lengthComputable, loaded, total) => {
+            chunk.progress = lengthComputable ? loaded : null;
+            updateTotalProgress();
+        };
+
+        request.onerror = xhr => {
+            chunk.status = ChunkStatus.ERROR;
+            chunk.request = null;
+            chunk.error = onerror(xhr.response) || xhr.statusText;
+            if (!retryProcessChunk(chunk)) {
+                error(
+                    createResponse(
+                        'error',
+                        xhr.status,
+                        onerror(xhr.response) || xhr.statusText,
+                        xhr.getAllResponseHeaders()
+                    )
+                );
+            }
+        };
+
+        request.ontimeout = xhr => {
+            chunk.status = ChunkStatus.ERROR;
+            chunk.request = null;
+            if (!retryProcessChunk(chunk)) {
+                createTimeoutResponse(error)(xhr);
+            }
+        };
+
+        request.onabort = () => {
+            chunk.status = ChunkStatus.QUEUED;
+            chunk.request = null;
+            abort();
+        };
+    };
+
+    const retryProcessChunk = chunk => {
+        // no more retries left
+        if (chunk.retries.length === 0) return false;
+
+        // new retry
+        chunk.status = ChunkStatus.WAITING;
+        clearTimeout(chunk.timeout);
+        chunk.timeout = setTimeout(() => {
+            processChunk(chunk);
+        }, chunk.retries.shift());
+
+        // we're going to retry
+        return true;
+    };
+
+    const updateTotalProgress = () => {
+        // calculate total progress fraction
+        const totalBytesTransfered = chunks.reduce((p, chunk) => {
+            if (p === null || chunk.progress === null) return null;
+            return p + chunk.progress;
+        }, 0);
+
+        // can't compute progress
+        if (totalBytesTransfered === null) return progress(false, 0, 0);
+
+        // calculate progress values
+        const totalSize = chunks.reduce((total, chunk) => total + chunk.size, 0);
+
+        // can update progress indicator
+        progress(true, totalBytesTransfered, totalSize);
+    };
+
+    // process new chunks
+    const processChunks = () => {
+        const totalProcessing = chunks.filter(chunk => chunk.status === ChunkStatus.PROCESSING)
+            .length;
+        if (totalProcessing >= 1) return;
+        processChunk();
+    };
+
+    const abortChunks = () => {
+        chunks.forEach(chunk => {
+            clearTimeout(chunk.timeout);
+            if (chunk.request) {
+                chunk.request.abort();
+            }
+        });
+    };
+
+    // let's go!
+    if (!state.serverId) {
+        requestTransferId(serverId => {
+            // stop here if aborted, might have happened in between request and callback
+            if (state.aborted) return;
+
+            // pass back to item so we can use it if something goes wrong
+            transfer(serverId);
+
+            // store internally
+            state.serverId = serverId;
+            processChunks();
+        });
+    } else {
+        requestTransferOffset(offset => {
+            // stop here if aborted, might have happened in between request and callback
+            if (state.aborted) return;
+
+            // mark chunks with lower offset as complete
+            chunks
+                .filter(chunk => chunk.offset < offset)
+                .forEach(chunk => {
+                    chunk.status = ChunkStatus.COMPLETE;
+                    chunk.progress = chunk.size;
+                });
+
+            // continue processing
+            processChunks();
+        });
+    }
+
+    return {
+        abort: () => {
+            state.aborted = true;
+            abortChunks();
+        },
+    };
+};
+
+/*
+function signature:
+  (file, metadata, load, error, progress, abort) => {
+    return {
+    abort:() => {}
+  }
+}
+*/
+const createFileProcessorFunction = (apiUrl, action, name, options) => (
+    file,
+    metadata,
+    load,
+    error,
+    progress,
+    abort,
+    transfer
+) => {
+    // no file received
+    if (!file) return;
+
+    // if was passed a file, and we can chunk it, exit here
+    const canChunkUpload = options.chunkUploads;
+    const shouldChunkUpload = canChunkUpload && file.size > options.chunkSize;
+    const willChunkUpload = canChunkUpload && (shouldChunkUpload || options.chunkForce);
+    if (file instanceof Blob && willChunkUpload)
+        return processFileChunked(
+            apiUrl,
+            action,
+            name,
+            file,
+            metadata,
+            load,
+            error,
+            progress,
+            abort,
+            transfer,
+            options
+        );
+
+    // set handlers
+    const ondata = action.ondata || (fd => fd);
+    const onload = action.onload || (res => res);
+    const onerror = action.onerror || (res => null);
+
+    const headers =
+        typeof action.headers === 'function'
+            ? action.headers(file, metadata) || {}
+            : {
+                  ...action.headers,
+              };
+
+    const requestParams = {
+        ...action,
+        headers,
+    };
+
+    // create formdata object
+    var formData = new FormData();
+
+    // add metadata under same name
+    if (isObject(metadata)) {
+        formData.append(name, JSON.stringify(metadata));
+    }
+
+    // Turn into an array of objects so no matter what the input, we can handle it the same way
+    (file instanceof Blob ? [{ name: null, file }] : file).forEach(item => {
+        formData.append(
+            name,
+            item.file,
+            item.name === null ? item.file.name : `${item.name}${item.file.name}`
+        );
+    });
+
+    // send request object
+    const request = sendRequest(ondata(formData), buildURL(apiUrl, action.url), requestParams);
+    request.onload = xhr => {
+        load(createResponse('load', xhr.status, onload(xhr.response), xhr.getAllResponseHeaders()));
+    };
+
+    request.onerror = xhr => {
+        error(
+            createResponse(
+                'error',
+                xhr.status,
+                onerror(xhr.response) || xhr.statusText,
+                xhr.getAllResponseHeaders()
+            )
+        );
+    };
+
+    request.ontimeout = createTimeoutResponse(error);
+    request.onprogress = progress;
+    request.onabort = abort;
+
+    // should return request
+    return request;
+};
+
+const createProcessorFunction = (apiUrl = '', action, name, options) => {
+    // custom handler (should also handle file, load, error, progress and abort)
+    if (typeof action === 'function') return (...params) => action(name, ...params, options);
+
+    // no action supplied
+    if (!action || !isString(action.url)) return null;
+
+    // internal handler
+    return createFileProcessorFunction(apiUrl, action, name, options);
+};
+
+/*
+ function signature:
+ (uniqueFileId, load, error) => { }
+ */
+const createRevertFunction = (apiUrl = '', action) => {
+    // is custom implementation
+    if (typeof action === 'function') {
+        return action;
+    }
+
+    // no action supplied, return stub function, interface will work, but file won't be removed
+    if (!action || !isString(action.url)) {
+        return (uniqueFileId, load) => load();
+    }
+
+    // set onload hanlder
+    const onload = action.onload || (res => res);
+    const onerror = action.onerror || (res => null);
+
+    // internal implementation
+    return (uniqueFileId, load, error) => {
+        const request = sendRequest(
+            uniqueFileId,
+            apiUrl + action.url,
+            action // contains method, headers and withCredentials properties
+        );
+        request.onload = xhr => {
+            load(
+                createResponse(
+                    'load',
+                    xhr.status,
+                    onload(xhr.response),
+                    xhr.getAllResponseHeaders()
+                )
+            );
+        };
+
+        request.onerror = xhr => {
+            error(
+                createResponse(
+                    'error',
+                    xhr.status,
+                    onerror(xhr.response) || xhr.statusText,
+                    xhr.getAllResponseHeaders()
+                )
+            );
+        };
+
+        request.ontimeout = createTimeoutResponse(error);
+
+        return request;
+    };
+};
+
+const getRandomNumber = (min = 0, max = 1) => min + Math.random() * (max - min);
+
+const createPerceivedPerformanceUpdater = (
+    cb,
+    duration = 1000,
+    offset = 0,
+    tickMin = 25,
+    tickMax = 250
+) => {
+    let timeout = null;
+    const start = Date.now();
+
+    const tick = () => {
+        let runtime = Date.now() - start;
+        let delay = getRandomNumber(tickMin, tickMax);
+
+        if (runtime + delay > duration) {
+            delay = runtime + delay - duration;
+        }
+
+        let progress = runtime / duration;
+        if (progress >= 1 || document.hidden) {
+            cb(1);
+            return;
+        }
+
+        cb(progress);
+
+        timeout = setTimeout(tick, delay);
+    };
+
+    if (duration > 0) tick();
+
+    return {
+        clear: () => {
+            clearTimeout(timeout);
+        },
+    };
+};
+
+const createFileProcessor = (processFn, options) => {
+    const state = {
+        complete: false,
+        perceivedProgress: 0,
+        perceivedPerformanceUpdater: null,
+        progress: null,
+        timestamp: null,
+        perceivedDuration: 0,
+        duration: 0,
+        request: null,
+        response: null,
+    };
+
+    const { allowMinimumUploadDuration } = options;
+
+    const process = (file, metadata) => {
+        const progressFn = () => {
+            // we've not yet started the real download, stop here
+            // the request might not go through, for instance, there might be some server trouble
+            // if state.progress is null, the server does not allow computing progress and we show the spinner instead
+            if (state.duration === 0 || state.progress === null) return;
+
+            // as we're now processing, fire the progress event
+            api.fire('progress', api.getProgress());
+        };
+
+        const completeFn = () => {
+            state.complete = true;
+            api.fire('load-perceived', state.response.body);
+        };
+
+        // let's start processing
+        api.fire('start');
+
+        // set request start
+        state.timestamp = Date.now();
+
+        // create perceived performance progress indicator
+        state.perceivedPerformanceUpdater = createPerceivedPerformanceUpdater(
+            progress => {
+                state.perceivedProgress = progress;
+                state.perceivedDuration = Date.now() - state.timestamp;
+
+                progressFn();
+
+                // if fake progress is done, and a response has been received,
+                // and we've not yet called the complete method
+                if (state.response && state.perceivedProgress === 1 && !state.complete) {
+                    // we done!
+                    completeFn();
+                }
+            },
+            // random delay as in a list of files you start noticing
+            // files uploading at the exact same speed
+            allowMinimumUploadDuration ? getRandomNumber(750, 1500) : 0
+        );
+
+        // remember request so we can abort it later
+        state.request = processFn(
+            // the file to process
+            file,
+
+            // the metadata to send along
+            metadata,
+
+            // callbacks (load, error, progress, abort, transfer)
+            // load expects the body to be a server id if
+            // you want to make use of revert
+            response => {
+                // we put the response in state so we can access
+                // it outside of this method
+                state.response = isObject(response)
+                    ? response
+                    : {
+                          type: 'load',
+                          code: 200,
+                          body: `${response}`,
+                          headers: {},
+                      };
+
+                // update duration
+                state.duration = Date.now() - state.timestamp;
+
+                // force progress to 1 as we're now done
+                state.progress = 1;
+
+                // actual load is done let's share results
+                api.fire('load', state.response.body);
+
+                // we are really done
+                // if perceived progress is 1 ( wait for perceived progress to complete )
+                // or if server does not support progress ( null )
+                if (
+                    !allowMinimumUploadDuration ||
+                    (allowMinimumUploadDuration && state.perceivedProgress === 1)
+                ) {
+                    completeFn();
+                }
+            },
+
+            // error is expected to be an object with type, code, body
+            error => {
+                // cancel updater
+                state.perceivedPerformanceUpdater.clear();
+
+                // update others about this error
+                api.fire(
+                    'error',
+                    isObject(error)
+                        ? error
+                        : {
+                              type: 'error',
+                              code: 0,
+                              body: `${error}`,
+                          }
+                );
+            },
+
+            // actual processing progress
+            (computable, current, total) => {
+                // update actual duration
+                state.duration = Date.now() - state.timestamp;
+
+                // update actual progress
+                state.progress = computable ? current / total : null;
+
+                progressFn();
+            },
+
+            // abort does not expect a value
+            () => {
+                // stop updater
+                state.perceivedPerformanceUpdater.clear();
+
+                // fire the abort event so we can switch visuals
+                api.fire('abort', state.response ? state.response.body : null);
+            },
+
+            // register the id for this transfer
+            transferId => {
+                api.fire('transfer', transferId);
+            }
+        );
+    };
+
+    const abort = () => {
+        // no request running, can't abort
+        if (!state.request) return;
+
+        // stop updater
+        state.perceivedPerformanceUpdater.clear();
+
+        // abort actual request
+        if (state.request.abort) state.request.abort();
+
+        // if has response object, we've completed the request
+        state.complete = true;
+    };
+
+    const reset = () => {
+        abort();
+        state.complete = false;
+        state.perceivedProgress = 0;
+        state.progress = 0;
+        state.timestamp = null;
+        state.perceivedDuration = 0;
+        state.duration = 0;
+        state.request = null;
+        state.response = null;
+    };
+
+    const getProgress = allowMinimumUploadDuration
+        ? () => (state.progress ? Math.min(state.progress, state.perceivedProgress) : null)
+        : () => state.progress || null;
+
+    const getDuration = allowMinimumUploadDuration
+        ? () => Math.min(state.duration, state.perceivedDuration)
+        : () => state.duration;
+
+    const api = {
+        ...on(),
+        process, // start processing file
+        abort, // abort active process request
+        getProgress,
+        getDuration,
+        reset,
+    };
+
+    return api;
+};
+
+const getFilenameWithoutExtension = name => name.substring(0, name.lastIndexOf('.')) || name;
+
+const createFileStub = source => {
+    let data = [source.name, source.size, source.type];
+
+    // is blob or base64, then we need to set the name
+    if (source instanceof Blob || isBase64DataURI(source)) {
+        data[0] = source.name || getDateString();
+    } else if (isBase64DataURI(source)) {
+        // if is base64 data uri we need to determine the average size and type
+        data[1] = source.length;
+        data[2] = getMimeTypeFromBase64DataURI(source);
+    } else if (isString(source)) {
+        // url
+        data[0] = getFilenameFromURL(source);
+        data[1] = 0;
+        data[2] = 'application/octet-stream';
+    }
+
+    return {
+        name: data[0],
+        size: data[1],
+        type: data[2],
+    };
+};
+
+const isFile = value => !!(value instanceof File || (value instanceof Blob && value.name));
+
+const deepCloneObject = src => {
+    if (!isObject(src)) return src;
+    const target = isArray(src) ? [] : {};
+    for (const key in src) {
+        if (!src.hasOwnProperty(key)) continue;
+        const v = src[key];
+        target[key] = v && isObject(v) ? deepCloneObject(v) : v;
+    }
+    return target;
+};
+
+const createItem = (origin = null, serverFileReference = null, file = null) => {
+    // unique id for this item, is used to identify the item across views
+    const id = getUniqueId();
+
+    /**
+     * Internal item state
+     */
+    const state = {
+        // is archived
+        archived: false,
+
+        // if is frozen, no longer fires events
+        frozen: false,
+
+        // removed from view
+        released: false,
+
+        // original source
+        source: null,
+
+        // file model reference
+        file,
+
+        // id of file on server
+        serverFileReference,
+
+        // id of file transfer on server
+        transferId: null,
+
+        // is aborted
+        processingAborted: false,
+
+        // current item status
+        status: serverFileReference ? ItemStatus.PROCESSING_COMPLETE : ItemStatus.INIT,
+
+        // active processes
+        activeLoader: null,
+        activeProcessor: null,
+    };
+
+    // callback used when abort processing is called to link back to the resolve method
+    let abortProcessingRequestComplete = null;
+
+    /**
+     * Externally added item metadata
+     */
+    const metadata = {};
+
+    // item data
+    const setStatus = status => (state.status = status);
+
+    // fire event unless the item has been archived
+    const fire = (event, ...params) => {
+        if (state.released || state.frozen) return;
+        api.fire(event, ...params);
+    };
+
+    // file data
+    const getFileExtension = () => getExtensionFromFilename(state.file.name);
+    const getFileType = () => state.file.type;
+    const getFileSize = () => state.file.size;
+    const getFile = () => state.file;
+
+    //
+    // logic to load a file
+    //
+    const load = (source, loader, onload) => {
+        // remember the original item source
+        state.source = source;
+
+        // source is known
+        api.fireSync('init');
+
+        // file stub is already there
+        if (state.file) {
+            api.fireSync('load-skip');
+            return;
+        }
+
+        // set a stub file object while loading the actual data
+        state.file = createFileStub(source);
+
+        // starts loading
+        loader.on('init', () => {
+            fire('load-init');
+        });
+
+        // we'eve received a size indication, let's update the stub
+        loader.on('meta', meta => {
+            // set size of file stub
+            state.file.size = meta.size;
+
+            // set name of file stub
+            state.file.filename = meta.filename;
+
+            // if has received source, we done
+            if (meta.source) {
+                origin = FileOrigin.LIMBO;
+                state.serverFileReference = meta.source;
+                state.status = ItemStatus.PROCESSING_COMPLETE;
+            }
+
+            // size has been updated
+            fire('load-meta');
+        });
+
+        // the file is now loading we need to update the progress indicators
+        loader.on('progress', progress => {
+            setStatus(ItemStatus.LOADING);
+
+            fire('load-progress', progress);
+        });
+
+        // an error was thrown while loading the file, we need to switch to error state
+        loader.on('error', error => {
+            setStatus(ItemStatus.LOAD_ERROR);
+
+            fire('load-request-error', error);
+        });
+
+        // user or another process aborted the file load (cannot retry)
+        loader.on('abort', () => {
+            setStatus(ItemStatus.INIT);
+            fire('load-abort');
+        });
+
+        // done loading
+        loader.on('load', file => {
+            // as we've now loaded the file the loader is no longer required
+            state.activeLoader = null;
+
+            // called when file has loaded succesfully
+            const success = result => {
+                // set (possibly) transformed file
+                state.file = isFile(result) ? result : state.file;
+
+                // file received
+                if (origin === FileOrigin.LIMBO && state.serverFileReference) {
+                    setStatus(ItemStatus.PROCESSING_COMPLETE);
+                } else {
+                    setStatus(ItemStatus.IDLE);
+                }
+
+                fire('load');
+            };
+
+            const error = result => {
+                // set original file
+                state.file = file;
+                fire('load-meta');
+
+                setStatus(ItemStatus.LOAD_ERROR);
+                fire('load-file-error', result);
+            };
+
+            // if we already have a server file reference, we don't need to call the onload method
+            if (state.serverFileReference) {
+                success(file);
+                return;
+            }
+
+            // no server id, let's give this file the full treatment
+            onload(file, success, error);
+        });
+
+        // set loader source data
+        loader.setSource(source);
+
+        // set as active loader
+        state.activeLoader = loader;
+
+        // load the source data
+        loader.load();
+    };
+
+    const retryLoad = () => {
+        if (!state.activeLoader) {
+            return;
+        }
+        state.activeLoader.load();
+    };
+
+    const abortLoad = () => {
+        if (state.activeLoader) {
+            state.activeLoader.abort();
+            return;
+        }
+        setStatus(ItemStatus.INIT);
+        fire('load-abort');
+    };
+
+    //
+    // logic to process a file
+    //
+    const process = (processor, onprocess) => {
+        // processing was aborted
+        if (state.processingAborted) {
+            state.processingAborted = false;
+            return;
+        }
+
+        // now processing
+        setStatus(ItemStatus.PROCESSING);
+
+        // reset abort callback
+        abortProcessingRequestComplete = null;
+
+        // if no file loaded we'll wait for the load event
+        if (!(state.file instanceof Blob)) {
+            api.on('load', () => {
+                process(processor, onprocess);
+            });
+            return;
+        }
+
+        // setup processor
+        processor.on('load', serverFileReference => {
+            // need this id to be able to revert the upload
+            state.transferId = null;
+            state.serverFileReference = serverFileReference;
+        });
+
+        // register transfer id
+        processor.on('transfer', transferId => {
+            // need this id to be able to revert the upload
+            state.transferId = transferId;
+        });
+
+        processor.on('load-perceived', serverFileReference => {
+            // no longer required
+            state.activeProcessor = null;
+
+            // need this id to be able to rever the upload
+            state.transferId = null;
+            state.serverFileReference = serverFileReference;
+
+            setStatus(ItemStatus.PROCESSING_COMPLETE);
+            fire('process-complete', serverFileReference);
+        });
+
+        processor.on('start', () => {
+            fire('process-start');
+        });
+
+        processor.on('error', error => {
+            state.activeProcessor = null;
+            setStatus(ItemStatus.PROCESSING_ERROR);
+            fire('process-error', error);
+        });
+
+        processor.on('abort', serverFileReference => {
+            state.activeProcessor = null;
+
+            // if file was uploaded but processing was cancelled during perceived processor time store file reference
+            state.serverFileReference = serverFileReference;
+
+            setStatus(ItemStatus.IDLE);
+            fire('process-abort');
+
+            // has timeout so doesn't interfere with remove action
+            if (abortProcessingRequestComplete) {
+                abortProcessingRequestComplete();
+            }
+        });
+
+        processor.on('progress', progress => {
+            fire('process-progress', progress);
+        });
+
+        // when successfully transformed
+        const success = file => {
+            // if was archived in the mean time, don't process
+            if (state.archived) return;
+
+            // process file!
+            processor.process(file, { ...metadata });
+        };
+
+        // something went wrong during transform phase
+        const error = console.error;
+
+        // start processing the file
+        onprocess(state.file, success, error);
+
+        // set as active processor
+        state.activeProcessor = processor;
+    };
+
+    const requestProcessing = () => {
+        state.processingAborted = false;
+        setStatus(ItemStatus.PROCESSING_QUEUED);
+    };
+
+    const abortProcessing = () =>
+        new Promise(resolve => {
+            if (!state.activeProcessor) {
+                state.processingAborted = true;
+
+                setStatus(ItemStatus.IDLE);
+                fire('process-abort');
+
+                resolve();
+                return;
+            }
+
+            abortProcessingRequestComplete = () => {
+                resolve();
+            };
+
+            state.activeProcessor.abort();
+        });
+
+    //
+    // logic to revert a processed file
+    //
+    const revert = (revertFileUpload, forceRevert) =>
+        new Promise((resolve, reject) => {
+            // a completed upload will have a serverFileReference, a failed chunked upload where
+            // getting a serverId succeeded but >=0 chunks have been uploaded will have transferId set
+            const serverTransferId =
+                state.serverFileReference !== null ? state.serverFileReference : state.transferId;
+
+            // cannot revert without a server id for this process
+            if (serverTransferId === null) {
+                resolve();
+                return;
+            }
+
+            // revert the upload (fire and forget)
+            revertFileUpload(
+                serverTransferId,
+                () => {
+                    // reset file server id and transfer id as now it's not available on the server
+                    state.serverFileReference = null;
+                    state.transferId = null;
+                    resolve();
+                },
+                error => {
+                    // don't set error state when reverting is optional, it will always resolve
+                    if (!forceRevert) {
+                        resolve();
+                        return;
+                    }
+
+                    // oh no errors
+                    setStatus(ItemStatus.PROCESSING_REVERT_ERROR);
+                    fire('process-revert-error');
+                    reject(error);
+                }
+            );
+
+            // fire event
+            setStatus(ItemStatus.IDLE);
+            fire('process-revert');
+        });
+
+    // exposed methods
+    const setMetadata = (key, value, silent) => {
+        const keys = key.split('.');
+        const root = keys[0];
+        const last = keys.pop();
+        let data = metadata;
+        keys.forEach(key => (data = data[key]));
+
+        // compare old value against new value, if they're the same, we're not updating
+        if (JSON.stringify(data[last]) === JSON.stringify(value)) return;
+
+        // update value
+        data[last] = value;
+
+        // fire update
+        fire('metadata-update', {
+            key: root,
+            value: metadata[root],
+            silent,
+        });
+    };
+
+    const getMetadata = key => deepCloneObject(key ? metadata[key] : metadata);
+
+    const api = {
+        id: { get: () => id },
+        origin: { get: () => origin, set: value => (origin = value) },
+        serverId: { get: () => state.serverFileReference },
+        transferId: { get: () => state.transferId },
+        status: { get: () => state.status },
+        filename: { get: () => state.file.name },
+        filenameWithoutExtension: { get: () => getFilenameWithoutExtension(state.file.name) },
+        fileExtension: { get: getFileExtension },
+        fileType: { get: getFileType },
+        fileSize: { get: getFileSize },
+        file: { get: getFile },
+        relativePath: { get: () => state.file._relativePath },
+
+        source: { get: () => state.source },
+
+        getMetadata,
+        setMetadata: (key, value, silent) => {
+            if (isObject(key)) {
+                const data = key;
+                Object.keys(data).forEach(key => {
+                    setMetadata(key, data[key], value);
+                });
+                return key;
+            }
+            setMetadata(key, value, silent);
+            return value;
+        },
+
+        extend: (name, handler) => (itemAPI[name] = handler),
+
+        abortLoad,
+        retryLoad,
+        requestProcessing,
+        abortProcessing,
+
+        load,
+        process,
+        revert,
+
+        ...on(),
+
+        freeze: () => (state.frozen = true),
+
+        release: () => (state.released = true),
+        released: { get: () => state.released },
+
+        archive: () => (state.archived = true),
+        archived: { get: () => state.archived },
+    };
+
+    // create it here instead of returning it instantly so we can extend it later
+    const itemAPI = createObject(api);
+
+    return itemAPI;
+};
+
+const getItemIndexByQuery = (items, query) => {
+    // just return first index
+    if (isEmpty(query)) {
+        return 0;
+    }
+
+    // invalid queries
+    if (!isString(query)) {
+        return -1;
+    }
+
+    // return item by id (or -1 if not found)
+    return items.findIndex(item => item.id === query);
+};
+
+const getItemById = (items, itemId) => {
+    const index = getItemIndexByQuery(items, itemId);
+    if (index < 0) {
+        return;
+    }
+    return items[index] || null;
+};
+
+const fetchBlob = (url, load, error, progress, abort, headers) => {
+    const request = sendRequest(null, url, {
+        method: 'GET',
+        responseType: 'blob',
+    });
+
+    request.onload = xhr => {
+        // get headers
+        const headers = xhr.getAllResponseHeaders();
+
+        // get filename
+        const filename = getFileInfoFromHeaders(headers).name || getFilenameFromURL(url);
+
+        // create response
+        load(createResponse('load', xhr.status, getFileFromBlob(xhr.response, filename), headers));
+    };
+
+    request.onerror = xhr => {
+        error(createResponse('error', xhr.status, xhr.statusText, xhr.getAllResponseHeaders()));
+    };
+
+    request.onheaders = xhr => {
+        headers(createResponse('headers', xhr.status, null, xhr.getAllResponseHeaders()));
+    };
+
+    request.ontimeout = createTimeoutResponse(error);
+    request.onprogress = progress;
+    request.onabort = abort;
+
+    // should return request
+    return request;
+};
+
+const getDomainFromURL = url => {
+    if (url.indexOf('//') === 0) {
+        url = location.protocol + url;
+    }
+    return url
+        .toLowerCase()
+        .replace('blob:', '')
+        .replace(/([a-z])?:\/\//, '$1')
+        .split('/')[0];
+};
+
+const isExternalURL = url =>
+    (url.indexOf(':') > -1 || url.indexOf('//') > -1) &&
+    getDomainFromURL(location.href) !== getDomainFromURL(url);
+
+const dynamicLabel = label => (...params) => (isFunction(label) ? label(...params) : label);
+
+const isMockItem = item => !isFile(item.file);
+
+const listUpdated = (dispatch, state) => {
+    clearTimeout(state.listUpdateTimeout);
+    state.listUpdateTimeout = setTimeout(() => {
+        dispatch('DID_UPDATE_ITEMS', { items: getActiveItems(state.items) });
+    }, 0);
+};
+
+const optionalPromise = (fn, ...params) =>
+    new Promise(resolve => {
+        if (!fn) {
+            return resolve(true);
+        }
+
+        const result = fn(...params);
+
+        if (result == null) {
+            return resolve(true);
+        }
+
+        if (typeof result === 'boolean') {
+            return resolve(result);
+        }
+
+        if (typeof result.then === 'function') {
+            result.then(resolve);
+        }
+    });
+
+const sortItems = (state, compare) => {
+    state.items.sort((a, b) => compare(createItemAPI(a), createItemAPI(b)));
+};
+
+// returns item based on state
+const getItemByQueryFromState = (state, itemHandler) => ({
+    query,
+    success = () => {},
+    failure = () => {},
+    ...options
+} = {}) => {
+    const item = getItemByQuery(state.items, query);
+    if (!item) {
+        failure({
+            error: createResponse('error', 0, 'Item not found'),
+            file: null,
+        });
+        return;
+    }
+    itemHandler(item, success, failure, options || {});
+};
+
+const actions = (dispatch, query, state) => ({
+    /**
+     * Aborts all ongoing processes
+     */
+    ABORT_ALL: () => {
+        getActiveItems(state.items).forEach(item => {
+            item.freeze();
+            item.abortLoad();
+            item.abortProcessing();
+        });
+    },
+
+    /**
+     * Sets initial files
+     */
+    DID_SET_FILES: ({ value = [] }) => {
+        // map values to file objects
+        const files = value.map(file => ({
+            source: file.source ? file.source : file,
+            options: file.options,
+        }));
+
+        // loop over files, if file is in list, leave it be, if not, remove
+        // test if items should be moved
+        let activeItems = getActiveItems(state.items);
+
+        activeItems.forEach(item => {
+            // if item not is in new value, remove
+            if (!files.find(file => file.source === item.source || file.source === item.file)) {
+                dispatch('REMOVE_ITEM', { query: item, remove: false });
+            }
+        });
+
+        // add new files
+        activeItems = getActiveItems(state.items);
+        files.forEach((file, index) => {
+            // if file is already in list
+            if (activeItems.find(item => item.source === file.source || item.file === file.source))
+                return;
+
+            // not in list, add
+            dispatch('ADD_ITEM', {
+                ...file,
+                interactionMethod: InteractionMethod.NONE,
+                index,
+            });
+        });
+    },
+
+    DID_UPDATE_ITEM_METADATA: ({ id, action, change }) => {
+        // don't do anything
+        if (change.silent) return;
+
+        // if is called multiple times in close succession we combined all calls together to save resources
+        clearTimeout(state.itemUpdateTimeout);
+        state.itemUpdateTimeout = setTimeout(() => {
+            const item = getItemById(state.items, id);
+
+            // only revert and attempt to upload when we're uploading to a server
+            if (!query('IS_ASYNC')) {
+                // should we update the output data
+                applyFilterChain('SHOULD_PREPARE_OUTPUT', false, {
+                    item,
+                    query,
+                    action,
+                    change,
+                }).then(shouldPrepareOutput => {
+                    // plugins determined the output data should be prepared (or not), can be adjusted with beforePrepareOutput hook
+                    const beforePrepareFile = query('GET_BEFORE_PREPARE_FILE');
+                    if (beforePrepareFile)
+                        shouldPrepareOutput = beforePrepareFile(item, shouldPrepareOutput);
+
+                    if (!shouldPrepareOutput) return;
+
+                    dispatch(
+                        'REQUEST_PREPARE_OUTPUT',
+                        {
+                            query: id,
+                            item,
+                            success: file => {
+                                dispatch('DID_PREPARE_OUTPUT', { id, file });
+                            },
+                        },
+                        true
+                    );
+                });
+
+                return;
+            }
+
+            // if is local item we need to enable upload button so change can be propagated to server
+            if (item.origin === FileOrigin.LOCAL) {
+                dispatch('DID_LOAD_ITEM', {
+                    id: item.id,
+                    error: null,
+                    serverFileReference: item.source,
+                });
+            }
+
+            // for async scenarios
+            const upload = () => {
+                // we push this forward a bit so the interface is updated correctly
+                setTimeout(() => {
+                    dispatch('REQUEST_ITEM_PROCESSING', { query: id });
+                }, 32);
+            };
+
+            const revert = doUpload => {
+                item.revert(
+                    createRevertFunction(state.options.server.url, state.options.server.revert),
+                    query('GET_FORCE_REVERT')
+                )
+                    .then(doUpload ? upload : () => {})
+                    .catch(() => {});
+            };
+
+            const abort = doUpload => {
+                item.abortProcessing().then(doUpload ? upload : () => {});
+            };
+
+            // if we should re-upload the file immediately
+            if (item.status === ItemStatus.PROCESSING_COMPLETE) {
+                return revert(state.options.instantUpload);
+            }
+
+            // if currently uploading, cancel upload
+            if (item.status === ItemStatus.PROCESSING) {
+                return abort(state.options.instantUpload);
+            }
+
+            if (state.options.instantUpload) {
+                upload();
+            }
+        }, 0);
+    },
+
+    MOVE_ITEM: ({ query, index }) => {
+        const item = getItemByQuery(state.items, query);
+        if (!item) return;
+        const currentIndex = state.items.indexOf(item);
+        index = limit(index, 0, state.items.length - 1);
+        if (currentIndex === index) return;
+        state.items.splice(index, 0, state.items.splice(currentIndex, 1)[0]);
+    },
+
+    SORT: ({ compare }) => {
+        sortItems(state, compare);
+        dispatch('DID_SORT_ITEMS', {
+            items: query('GET_ACTIVE_ITEMS'),
+        });
+    },
+
+    ADD_ITEMS: ({ items, index, interactionMethod, success = () => {}, failure = () => {} }) => {
+        let currentIndex = index;
+
+        if (index === -1 || typeof index === 'undefined') {
+            const insertLocation = query('GET_ITEM_INSERT_LOCATION');
+            const totalItems = query('GET_TOTAL_ITEMS');
+            currentIndex = insertLocation === 'before' ? 0 : totalItems;
+        }
+
+        const ignoredFiles = query('GET_IGNORED_FILES');
+        const isValidFile = source =>
+            isFile(source) ? !ignoredFiles.includes(source.name.toLowerCase()) : !isEmpty(source);
+        const validItems = items.filter(isValidFile);
+
+        const promises = validItems.map(
+            source =>
+                new Promise((resolve, reject) => {
+                    dispatch('ADD_ITEM', {
+                        interactionMethod,
+                        source: source.source || source,
+                        success: resolve,
+                        failure: reject,
+                        index: currentIndex++,
+                        options: source.options || {},
+                    });
+                })
+        );
+
+        Promise.all(promises)
+            .then(success)
+            .catch(failure);
+    },
+
+    /**
+     * @param source
+     * @param index
+     * @param interactionMethod
+     */
+    ADD_ITEM: ({
+        source,
+        index = -1,
+        interactionMethod,
+        success = () => {},
+        failure = () => {},
+        options = {},
+    }) => {
+        // if no source supplied
+        if (isEmpty(source)) {
+            failure({
+                error: createResponse('error', 0, 'No source'),
+                file: null,
+            });
+            return;
+        }
+
+        // filter out invalid file items, used to filter dropped directory contents
+        if (isFile(source) && state.options.ignoredFiles.includes(source.name.toLowerCase())) {
+            // fail silently
+            return;
+        }
+
+        // test if there's still room in the list of files
+        if (!hasRoomForItem(state)) {
+            // if multiple allowed, we can't replace
+            // or if only a single item is allowed but we're not allowed to replace it we exit
+            if (
+                state.options.allowMultiple ||
+                (!state.options.allowMultiple && !state.options.allowReplace)
+            ) {
+                const error = createResponse('warning', 0, 'Max files');
+
+                dispatch('DID_THROW_MAX_FILES', {
+                    source,
+                    error,
+                });
+
+                failure({ error, file: null });
+
+                return;
+            }
+
+            // let's replace the item
+            // id of first item we're about to remove
+            const item = getActiveItems(state.items)[0];
+
+            // if has been processed remove it from the server as well
+            if (
+                item.status === ItemStatus.PROCESSING_COMPLETE ||
+                item.status === ItemStatus.PROCESSING_REVERT_ERROR
+            ) {
+                const forceRevert = query('GET_FORCE_REVERT');
+                item.revert(
+                    createRevertFunction(state.options.server.url, state.options.server.revert),
+                    forceRevert
+                )
+                    .then(() => {
+                        if (!forceRevert) return;
+
+                        // try to add now
+                        dispatch('ADD_ITEM', {
+                            source,
+                            index,
+                            interactionMethod,
+                            success,
+                            failure,
+                            options,
+                        });
+                    })
+                    .catch(() => {}); // no need to handle this catch state for now
+
+                if (forceRevert) return;
+            }
+
+            // remove first item as it will be replaced by this item
+            dispatch('REMOVE_ITEM', { query: item.id });
+        }
+
+        // where did the file originate
+        const origin =
+            options.type === 'local'
+                ? FileOrigin.LOCAL
+                : options.type === 'limbo'
+                ? FileOrigin.LIMBO
+                : FileOrigin.INPUT;
+
+        // create a new blank item
+        const item = createItem(
+            // where did this file come from
+            origin,
+
+            // an input file never has a server file reference
+            origin === FileOrigin.INPUT ? null : source,
+
+            // file mock data, if defined
+            options.file
+        );
+
+        // set initial meta data
+        Object.keys(options.metadata || {}).forEach(key => {
+            item.setMetadata(key, options.metadata[key]);
+        });
+
+        // created the item, let plugins add methods
+        applyFilters('DID_CREATE_ITEM', item, { query, dispatch });
+
+        // where to insert new items
+        const itemInsertLocation = query('GET_ITEM_INSERT_LOCATION');
+
+        // adjust index if is not allowed to pick location
+        if (!state.options.itemInsertLocationFreedom) {
+            index = itemInsertLocation === 'before' ? -1 : state.items.length;
+        }
+
+        // add item to list
+        insertItem(state.items, item, index);
+
+        // sort items in list
+        if (isFunction(itemInsertLocation) && source) {
+            sortItems(state, itemInsertLocation);
+        }
+
+        // get a quick reference to the item id
+        const id = item.id;
+
+        // observe item events
+        item.on('init', () => {
+            dispatch('DID_INIT_ITEM', { id });
+        });
+
+        item.on('load-init', () => {
+            dispatch('DID_START_ITEM_LOAD', { id });
+        });
+
+        item.on('load-meta', () => {
+            dispatch('DID_UPDATE_ITEM_META', { id });
+        });
+
+        item.on('load-progress', progress => {
+            dispatch('DID_UPDATE_ITEM_LOAD_PROGRESS', { id, progress });
+        });
+
+        item.on('load-request-error', error => {
+            const mainStatus = dynamicLabel(state.options.labelFileLoadError)(error);
+
+            // is client error, no way to recover
+            if (error.code >= 400 && error.code < 500) {
+                dispatch('DID_THROW_ITEM_INVALID', {
+                    id,
+                    error,
+                    status: {
+                        main: mainStatus,
+                        sub: `${error.code} (${error.body})`,
+                    },
+                });
+
+                // reject the file so can be dealt with through API
+                failure({ error, file: createItemAPI(item) });
+                return;
+            }
+
+            // is possible server error, so might be possible to retry
+            dispatch('DID_THROW_ITEM_LOAD_ERROR', {
+                id,
+                error,
+                status: {
+                    main: mainStatus,
+                    sub: state.options.labelTapToRetry,
+                },
+            });
+        });
+
+        item.on('load-file-error', error => {
+            dispatch('DID_THROW_ITEM_INVALID', {
+                id,
+                error: error.status,
+                status: error.status,
+            });
+            failure({ error: error.status, file: createItemAPI(item) });
+        });
+
+        item.on('load-abort', () => {
+            dispatch('REMOVE_ITEM', { query: id });
+        });
+
+        item.on('load-skip', () => {
+            dispatch('COMPLETE_LOAD_ITEM', {
+                query: id,
+                item,
+                data: {
+                    source,
+                    success,
+                },
+            });
+        });
+
+        item.on('load', () => {
+            const handleAdd = shouldAdd => {
+                // no should not add this file
+                if (!shouldAdd) {
+                    dispatch('REMOVE_ITEM', {
+                        query: id,
+                    });
+                    return;
+                }
+
+                // now interested in metadata updates
+                item.on('metadata-update', change => {
+                    dispatch('DID_UPDATE_ITEM_METADATA', { id, change });
+                });
+
+                // let plugins decide if the output data should be prepared at this point
+                // means we'll do this and wait for idle state
+                applyFilterChain('SHOULD_PREPARE_OUTPUT', false, { item, query }).then(
+                    shouldPrepareOutput => {
+                        // plugins determined the output data should be prepared (or not), can be adjusted with beforePrepareOutput hook
+                        const beforePrepareFile = query('GET_BEFORE_PREPARE_FILE');
+                        if (beforePrepareFile)
+                            shouldPrepareOutput = beforePrepareFile(item, shouldPrepareOutput);
+
+                        const loadComplete = () => {
+                            dispatch('COMPLETE_LOAD_ITEM', {
+                                query: id,
+                                item,
+                                data: {
+                                    source,
+                                    success,
+                                },
+                            });
+
+                            listUpdated(dispatch, state);
+                        };
+
+                        // exit
+                        if (shouldPrepareOutput) {
+                            // wait for idle state and then run PREPARE_OUTPUT
+                            dispatch(
+                                'REQUEST_PREPARE_OUTPUT',
+                                {
+                                    query: id,
+                                    item,
+                                    success: file => {
+                                        dispatch('DID_PREPARE_OUTPUT', { id, file });
+                                        loadComplete();
+                                    },
+                                },
+                                true
+                            );
+
+                            return;
+                        }
+
+                        loadComplete();
+                    }
+                );
+            };
+
+            // item loaded, allow plugins to
+            // - read data (quickly)
+            // - add metadata
+            applyFilterChain('DID_LOAD_ITEM', item, { query, dispatch })
+                .then(() => {
+                    optionalPromise(query('GET_BEFORE_ADD_FILE'), createItemAPI(item)).then(
+                        handleAdd
+                    );
+                })
+                .catch(e => {
+                    if (!e || !e.error || !e.status) return handleAdd(false);
+                    dispatch('DID_THROW_ITEM_INVALID', {
+                        id,
+                        error: e.error,
+                        status: e.status,
+                    });
+                });
+        });
+
+        item.on('process-start', () => {
+            dispatch('DID_START_ITEM_PROCESSING', { id });
+        });
+
+        item.on('process-progress', progress => {
+            dispatch('DID_UPDATE_ITEM_PROCESS_PROGRESS', { id, progress });
+        });
+
+        item.on('process-error', error => {
+            dispatch('DID_THROW_ITEM_PROCESSING_ERROR', {
+                id,
+                error,
+                status: {
+                    main: dynamicLabel(state.options.labelFileProcessingError)(error),
+                    sub: state.options.labelTapToRetry,
+                },
+            });
+        });
+
+        item.on('process-revert-error', error => {
+            dispatch('DID_THROW_ITEM_PROCESSING_REVERT_ERROR', {
+                id,
+                error,
+                status: {
+                    main: dynamicLabel(state.options.labelFileProcessingRevertError)(error),
+                    sub: state.options.labelTapToRetry,
+                },
+            });
+        });
+
+        item.on('process-complete', serverFileReference => {
+            dispatch('DID_COMPLETE_ITEM_PROCESSING', {
+                id,
+                error: null,
+                serverFileReference,
+            });
+            dispatch('DID_DEFINE_VALUE', { id, value: serverFileReference });
+        });
+
+        item.on('process-abort', () => {
+            dispatch('DID_ABORT_ITEM_PROCESSING', { id });
+        });
+
+        item.on('process-revert', () => {
+            dispatch('DID_REVERT_ITEM_PROCESSING', { id });
+            dispatch('DID_DEFINE_VALUE', { id, value: null });
+        });
+
+        // let view know the item has been inserted
+        dispatch('DID_ADD_ITEM', { id, index, interactionMethod });
+
+        listUpdated(dispatch, state);
+
+        // start loading the source
+        const { url, load, restore, fetch } = state.options.server || {};
+
+        item.load(
+            source,
+
+            // this creates a function that loads the file based on the type of file (string, base64, blob, file) and location of file (local, remote, limbo)
+            createFileLoader(
+                origin === FileOrigin.INPUT
+                    ? // input, if is remote, see if should use custom fetch, else use default fetchBlob
+                      isString(source) && isExternalURL(source)
+                        ? fetch
+                            ? createFetchFunction(url, fetch)
+                            : fetchBlob // remote url
+                        : fetchBlob // try to fetch url
+                    : // limbo or local
+                    origin === FileOrigin.LIMBO
+                    ? createFetchFunction(url, restore) // limbo
+                    : createFetchFunction(url, load) // local
+            ),
+
+            // called when the file is loaded so it can be piped through the filters
+            (file, success, error) => {
+                // let's process the file
+                applyFilterChain('LOAD_FILE', file, { query })
+                    .then(success)
+                    .catch(error);
+            }
+        );
+    },
+
+    REQUEST_PREPARE_OUTPUT: ({ item, success, failure = () => {} }) => {
+        // error response if item archived
+        const err = {
+            error: createResponse('error', 0, 'Item not found'),
+            file: null,
+        };
+
+        // don't handle archived items, an item could have been archived (load aborted) while waiting to be prepared
+        if (item.archived) return failure(err);
+
+        // allow plugins to alter the file data
+        applyFilterChain('PREPARE_OUTPUT', item.file, { query, item }).then(result => {
+            applyFilterChain('COMPLETE_PREPARE_OUTPUT', result, { query, item }).then(result => {
+                // don't handle archived items, an item could have been archived (load aborted) while being prepared
+                if (item.archived) return failure(err);
+
+                // we done!
+                success(result);
+            });
+        });
+    },
+
+    COMPLETE_LOAD_ITEM: ({ item, data }) => {
+        const { success, source } = data;
+
+        // sort items in list
+        const itemInsertLocation = query('GET_ITEM_INSERT_LOCATION');
+        if (isFunction(itemInsertLocation) && source) {
+            sortItems(state, itemInsertLocation);
+        }
+
+        // let interface know the item has loaded
+        dispatch('DID_LOAD_ITEM', {
+            id: item.id,
+            error: null,
+            serverFileReference: item.origin === FileOrigin.INPUT ? null : source,
+        });
+
+        // item has been successfully loaded and added to the
+        // list of items so can now be safely returned for use
+        success(createItemAPI(item));
+
+        // if this is a local server file we need to show a different state
+        if (item.origin === FileOrigin.LOCAL) {
+            dispatch('DID_LOAD_LOCAL_ITEM', { id: item.id });
+            return;
+        }
+
+        // if is a temp server file we prevent async upload call here (as the file is already on the server)
+        if (item.origin === FileOrigin.LIMBO) {
+            dispatch('DID_COMPLETE_ITEM_PROCESSING', {
+                id: item.id,
+                error: null,
+                serverFileReference: source,
+            });
+
+            dispatch('DID_DEFINE_VALUE', {
+                id: item.id,
+                value: item.serverId || source,
+            });
+            return;
+        }
+
+        // id we are allowed to upload the file immediately, lets do it
+        if (query('IS_ASYNC') && state.options.instantUpload) {
+            dispatch('REQUEST_ITEM_PROCESSING', { query: item.id });
+        }
+    },
+
+    RETRY_ITEM_LOAD: getItemByQueryFromState(state, item => {
+        // try loading the source one more time
+        item.retryLoad();
+    }),
+
+    REQUEST_ITEM_PREPARE: getItemByQueryFromState(state, (item, success, failure) => {
+        dispatch(
+            'REQUEST_PREPARE_OUTPUT',
+            {
+                query: item.id,
+                item,
+                success: file => {
+                    dispatch('DID_PREPARE_OUTPUT', { id: item.id, file });
+                    success({
+                        file: item,
+                        output: file,
+                    });
+                },
+                failure,
+            },
+            true
+        );
+    }),
+
+    REQUEST_ITEM_PROCESSING: getItemByQueryFromState(state, (item, success, failure) => {
+        // cannot be queued (or is already queued)
+        const itemCanBeQueuedForProcessing =
+            // waiting for something
+            item.status === ItemStatus.IDLE ||
+            // processing went wrong earlier
+            item.status === ItemStatus.PROCESSING_ERROR;
+
+        // not ready to be processed
+        if (!itemCanBeQueuedForProcessing) {
+            const processNow = () =>
+                dispatch('REQUEST_ITEM_PROCESSING', { query: item, success, failure });
+
+            const process = () => (document.hidden ? processNow() : setTimeout(processNow, 32));
+
+            // if already done processing or tried to revert but didn't work, try again
+            if (
+                item.status === ItemStatus.PROCESSING_COMPLETE ||
+                item.status === ItemStatus.PROCESSING_REVERT_ERROR
+            ) {
+                item.revert(
+                    createRevertFunction(state.options.server.url, state.options.server.revert),
+                    query('GET_FORCE_REVERT')
+                )
+                    .then(process)
+                    .catch(() => {}); // don't continue with processing if something went wrong
+            } else if (item.status === ItemStatus.PROCESSING) {
+                item.abortProcessing().then(process);
+            }
+
+            return;
+        }
+
+        // already queued for processing
+        if (item.status === ItemStatus.PROCESSING_QUEUED) return;
+
+        item.requestProcessing();
+
+        dispatch('DID_REQUEST_ITEM_PROCESSING', { id: item.id });
+
+        dispatch('PROCESS_ITEM', { query: item, success, failure }, true);
+    }),
+
+    PROCESS_ITEM: getItemByQueryFromState(state, (item, success, failure) => {
+        const maxParallelUploads = query('GET_MAX_PARALLEL_UPLOADS');
+        const totalCurrentUploads = query('GET_ITEMS_BY_STATUS', ItemStatus.PROCESSING).length;
+
+        // queue and wait till queue is freed up
+        if (totalCurrentUploads === maxParallelUploads) {
+            // queue for later processing
+            state.processingQueue.push({
+                id: item.id,
+                success,
+                failure,
+            });
+
+            // stop it!
+            return;
+        }
+
+        // if was not queued or is already processing exit here
+        if (item.status === ItemStatus.PROCESSING) return;
+
+        const processNext = () => {
+            // process queueud items
+            const queueEntry = state.processingQueue.shift();
+
+            // no items left
+            if (!queueEntry) return;
+
+            // get item reference
+            const { id, success, failure } = queueEntry;
+            const itemReference = getItemByQuery(state.items, id);
+
+            // if item was archived while in queue, jump to next
+            if (!itemReference || itemReference.archived) {
+                processNext();
+                return;
+            }
+
+            // process queued item
+            dispatch('PROCESS_ITEM', { query: id, success, failure }, true);
+        };
+
+        // we done function
+        item.onOnce('process-complete', () => {
+            success(createItemAPI(item));
+            processNext();
+
+            // if origin is local, and we're instant uploading, trigger remove of original
+            // as revert will remove file from list
+            const server = state.options.server;
+            const instantUpload = state.options.instantUpload;
+            if (instantUpload && item.origin === FileOrigin.LOCAL && isFunction(server.remove)) {
+                const noop = () => {};
+                item.origin = FileOrigin.LIMBO;
+                state.options.server.remove(item.source, noop, noop);
+            }
+
+            // All items processed? No errors?
+            const allItemsProcessed =
+                query('GET_ITEMS_BY_STATUS', ItemStatus.PROCESSING_COMPLETE).length ===
+                state.items.length;
+            if (allItemsProcessed) {
+                dispatch('DID_COMPLETE_ITEM_PROCESSING_ALL');
+            }
+        });
+
+        // we error function
+        item.onOnce('process-error', error => {
+            failure({ error, file: createItemAPI(item) });
+            processNext();
+        });
+
+        // start file processing
+        const options = state.options;
+        item.process(
+            createFileProcessor(
+                createProcessorFunction(options.server.url, options.server.process, options.name, {
+                    chunkTransferId: item.transferId,
+                    chunkServer: options.server.patch,
+                    chunkUploads: options.chunkUploads,
+                    chunkForce: options.chunkForce,
+                    chunkSize: options.chunkSize,
+                    chunkRetryDelays: options.chunkRetryDelays,
+                }),
+                {
+                    allowMinimumUploadDuration: query('GET_ALLOW_MINIMUM_UPLOAD_DURATION'),
+                }
+            ),
+            // called when the file is about to be processed so it can be piped through the transform filters
+            (file, success, error) => {
+                // allow plugins to alter the file data
+                applyFilterChain('PREPARE_OUTPUT', file, { query, item })
+                    .then(file => {
+                        dispatch('DID_PREPARE_OUTPUT', { id: item.id, file });
+
+                        success(file);
+                    })
+                    .catch(error);
+            }
+        );
+    }),
+
+    RETRY_ITEM_PROCESSING: getItemByQueryFromState(state, item => {
+        dispatch('REQUEST_ITEM_PROCESSING', { query: item });
+    }),
+
+    REQUEST_REMOVE_ITEM: getItemByQueryFromState(state, item => {
+        optionalPromise(query('GET_BEFORE_REMOVE_FILE'), createItemAPI(item)).then(shouldRemove => {
+            if (!shouldRemove) {
+                return;
+            }
+            dispatch('REMOVE_ITEM', { query: item });
+        });
+    }),
+
+    RELEASE_ITEM: getItemByQueryFromState(state, item => {
+        item.release();
+    }),
+
+    REMOVE_ITEM: getItemByQueryFromState(state, (item, success, failure, options) => {
+        const removeFromView = () => {
+            // get id reference
+            const id = item.id;
+
+            // archive the item, this does not remove it from the list
+            getItemById(state.items, id).archive();
+
+            // tell the view the item has been removed
+            dispatch('DID_REMOVE_ITEM', { error: null, id, item });
+
+            // now the list has been modified
+            listUpdated(dispatch, state);
+
+            // correctly removed
+            success(createItemAPI(item));
+        };
+
+        // if this is a local file and the `server.remove` function has been configured,
+        // send source there so dev can remove file from server
+        const server = state.options.server;
+        if (
+            item.origin === FileOrigin.LOCAL &&
+            server &&
+            isFunction(server.remove) &&
+            options.remove !== false
+        ) {
+            dispatch('DID_START_ITEM_REMOVE', { id: item.id });
+
+            server.remove(
+                item.source,
+                () => removeFromView(),
+                status => {
+                    dispatch('DID_THROW_ITEM_REMOVE_ERROR', {
+                        id: item.id,
+                        error: createResponse('error', 0, status, null),
+                        status: {
+                            main: dynamicLabel(state.options.labelFileRemoveError)(status),
+                            sub: state.options.labelTapToRetry,
+                        },
+                    });
+                }
+            );
+        } else {
+            // if is requesting revert and can revert need to call revert handler (not calling request_ because that would also trigger beforeRemoveHook)
+            if (
+                (options.revert && item.origin !== FileOrigin.LOCAL && item.serverId !== null) ||
+                // if chunked uploads are enabled and we're uploading in chunks for this specific file
+                // or if the file isn't big enough for chunked uploads but chunkForce is set then call
+                // revert before removing from the view...
+                (state.options.chunkUploads && item.file.size > state.options.chunkSize) ||
+                (state.options.chunkUploads && state.options.chunkForce)
+            ) {
+                item.revert(
+                    createRevertFunction(state.options.server.url, state.options.server.revert),
+                    query('GET_FORCE_REVERT')
+                );
+            }
+
+            // can now safely remove from view
+            removeFromView();
+        }
+    }),
+
+    ABORT_ITEM_LOAD: getItemByQueryFromState(state, item => {
+        item.abortLoad();
+    }),
+
+    ABORT_ITEM_PROCESSING: getItemByQueryFromState(state, item => {
+        // test if is already processed
+        if (item.serverId) {
+            dispatch('REVERT_ITEM_PROCESSING', { id: item.id });
+            return;
+        }
+
+        // abort
+        item.abortProcessing().then(() => {
+            const shouldRemove = state.options.instantUpload;
+            if (shouldRemove) {
+                dispatch('REMOVE_ITEM', { query: item.id });
+            }
+        });
+    }),
+
+    REQUEST_REVERT_ITEM_PROCESSING: getItemByQueryFromState(state, item => {
+        // not instant uploading, revert immediately
+        if (!state.options.instantUpload) {
+            dispatch('REVERT_ITEM_PROCESSING', { query: item });
+            return;
+        }
+
+        // if we're instant uploading the file will also be removed if we revert,
+        // so if a before remove file hook is defined we need to run it now
+        const handleRevert = shouldRevert => {
+            if (!shouldRevert) return;
+            dispatch('REVERT_ITEM_PROCESSING', { query: item });
+        };
+
+        const fn = query('GET_BEFORE_REMOVE_FILE');
+        if (!fn) {
+            return handleRevert(true);
+        }
+
+        const requestRemoveResult = fn(createItemAPI(item));
+        if (requestRemoveResult == null) {
+            // undefined or null
+            return handleRevert(true);
+        }
+
+        if (typeof requestRemoveResult === 'boolean') {
+            return handleRevert(requestRemoveResult);
+        }
+
+        if (typeof requestRemoveResult.then === 'function') {
+            requestRemoveResult.then(handleRevert);
+        }
+    }),
+
+    REVERT_ITEM_PROCESSING: getItemByQueryFromState(state, item => {
+        item.revert(
+            createRevertFunction(state.options.server.url, state.options.server.revert),
+            query('GET_FORCE_REVERT')
+        )
+            .then(() => {
+                const shouldRemove = state.options.instantUpload || isMockItem(item);
+                if (shouldRemove) {
+                    dispatch('REMOVE_ITEM', { query: item.id });
+                }
+            })
+            .catch(() => {});
+    }),
+
+    SET_OPTIONS: ({ options }) => {
+        // get all keys passed
+        const optionKeys = Object.keys(options);
+
+        // get prioritized keyed to include (remove once not in options object)
+        const prioritizedOptionKeys = PrioritizedOptions.filter(key => optionKeys.includes(key));
+
+        // order the keys, prioritized first, then rest
+        const orderedOptionKeys = [
+            // add prioritized first if passed to options, else remove
+            ...prioritizedOptionKeys,
+
+            // prevent duplicate keys
+            ...Object.keys(options).filter(key => !prioritizedOptionKeys.includes(key)),
+        ];
+
+        // dispatch set event for each option
+        orderedOptionKeys.forEach(key => {
+            dispatch(`SET_${fromCamels(key, '_').toUpperCase()}`, {
+                value: options[key],
+            });
+        });
+    },
+});
+
+const PrioritizedOptions = [
+    'server', // must be processed before "files"
+];
+
+const formatFilename = name => name;
+
+const createElement$1 = tagName => {
+    return document.createElement(tagName);
+};
+
+const text = (node, value) => {
+    let textNode = node.childNodes[0];
+    if (!textNode) {
+        textNode = document.createTextNode(value);
+        node.appendChild(textNode);
+    } else if (value !== textNode.nodeValue) {
+        textNode.nodeValue = value;
+    }
+};
+
+const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
+    const angleInRadians = (((angleInDegrees % 360) - 90) * Math.PI) / 180.0;
+    return {
+        x: centerX + radius * Math.cos(angleInRadians),
+        y: centerY + radius * Math.sin(angleInRadians),
+    };
+};
+
+const describeArc = (x, y, radius, startAngle, endAngle, arcSweep) => {
+    const start = polarToCartesian(x, y, radius, endAngle);
+    const end = polarToCartesian(x, y, radius, startAngle);
+    return ['M', start.x, start.y, 'A', radius, radius, 0, arcSweep, 0, end.x, end.y].join(' ');
+};
+
+const percentageArc = (x, y, radius, from, to) => {
+    let arcSweep = 1;
+    if (to > from && to - from <= 0.5) {
+        arcSweep = 0;
+    }
+    if (from > to && from - to >= 0.5) {
+        arcSweep = 0;
+    }
+    return describeArc(
+        x,
+        y,
+        radius,
+        Math.min(0.9999, from) * 360,
+        Math.min(0.9999, to) * 360,
+        arcSweep
+    );
+};
+
+const create = ({ root, props }) => {
+    // start at 0
+    props.spin = false;
+    props.progress = 0;
+    props.opacity = 0;
+
+    // svg
+    const svg = createElement('svg');
+    root.ref.path = createElement('path', {
+        'stroke-width': 2,
+        'stroke-linecap': 'round',
+    });
+    svg.appendChild(root.ref.path);
+
+    root.ref.svg = svg;
+
+    root.appendChild(svg);
+};
+
+const write = ({ root, props }) => {
+    if (props.opacity === 0) {
+        return;
+    }
+
+    if (props.align) {
+        root.element.dataset.align = props.align;
+    }
+
+    // get width of stroke
+    const ringStrokeWidth = parseInt(attr(root.ref.path, 'stroke-width'), 10);
+
+    // calculate size of ring
+    const size = root.rect.element.width * 0.5;
+
+    // ring state
+    let ringFrom = 0;
+    let ringTo = 0;
+
+    // now in busy mode
+    if (props.spin) {
+        ringFrom = 0;
+        ringTo = 0.5;
+    } else {
+        ringFrom = 0;
+        ringTo = props.progress;
+    }
+
+    // get arc path
+    const coordinates = percentageArc(size, size, size - ringStrokeWidth, ringFrom, ringTo);
+
+    // update progress bar
+    attr(root.ref.path, 'd', coordinates);
+
+    // hide while contains 0 value
+    attr(root.ref.path, 'stroke-opacity', props.spin || props.progress > 0 ? 1 : 0);
+};
+
+const progressIndicator = createView({
+    tag: 'div',
+    name: 'progress-indicator',
+    ignoreRectUpdate: true,
+    ignoreRect: true,
+    create,
+    write,
+    mixins: {
+        apis: ['progress', 'spin', 'align'],
+        styles: ['opacity'],
+        animations: {
+            opacity: { type: 'tween', duration: 500 },
+            progress: {
+                type: 'spring',
+                stiffness: 0.95,
+                damping: 0.65,
+                mass: 10,
+            },
+        },
+    },
+});
+
+const create$1 = ({ root, props }) => {
+    root.element.innerHTML = (props.icon || '') + `<span>${props.label}</span>`;
+
+    props.isDisabled = false;
+};
+
+const write$1 = ({ root, props }) => {
+    const { isDisabled } = props;
+    const shouldDisable = root.query('GET_DISABLED') || props.opacity === 0;
+
+    if (shouldDisable && !isDisabled) {
+        props.isDisabled = true;
+        attr(root.element, 'disabled', 'disabled');
+    } else if (!shouldDisable && isDisabled) {
+        props.isDisabled = false;
+        root.element.removeAttribute('disabled');
+    }
+};
+
+const fileActionButton = createView({
+    tag: 'button',
+    attributes: {
+        type: 'button',
+    },
+    ignoreRect: true,
+    ignoreRectUpdate: true,
+    name: 'file-action-button',
+    mixins: {
+        apis: ['label'],
+        styles: ['translateX', 'translateY', 'scaleX', 'scaleY', 'opacity'],
+        animations: {
+            scaleX: 'spring',
+            scaleY: 'spring',
+            translateX: 'spring',
+            translateY: 'spring',
+            opacity: { type: 'tween', duration: 250 },
+        },
+        listeners: true,
+    },
+    create: create$1,
+    write: write$1,
+});
+
+const toNaturalFileSize = (bytes, decimalSeparator = '.', base = 1000, options = {}) => {
+    const {
+        labelBytes = 'bytes',
+        labelKilobytes = 'KB',
+        labelMegabytes = 'MB',
+        labelGigabytes = 'GB',
+    } = options;
+
+    // no negative byte sizes
+    bytes = Math.round(Math.abs(bytes));
+
+    const KB = base;
+    const MB = base * base;
+    const GB = base * base * base;
+
+    // just bytes
+    if (bytes < KB) {
+        return `${bytes} ${labelBytes}`;
+    }
+
+    // kilobytes
+    if (bytes < MB) {
+        return `${Math.floor(bytes / KB)} ${labelKilobytes}`;
+    }
+
+    // megabytes
+    if (bytes < GB) {
+        return `${removeDecimalsWhenZero(bytes / MB, 1, decimalSeparator)} ${labelMegabytes}`;
+    }
+
+    // gigabytes
+    return `${removeDecimalsWhenZero(bytes / GB, 2, decimalSeparator)} ${labelGigabytes}`;
+};
+
+const removeDecimalsWhenZero = (value, decimalCount, separator) => {
+    return value
+        .toFixed(decimalCount)
+        .split('.')
+        .filter(part => part !== '0')
+        .join(separator);
+};
+
+const create$2 = ({ root, props }) => {
+    // filename
+    const fileName = createElement$1('span');
+    fileName.className = 'filepond--file-info-main';
+    // hide for screenreaders
+    // the file is contained in a fieldset with legend that contains the filename
+    // no need to read it twice
+    attr(fileName, 'aria-hidden', 'true');
+    root.appendChild(fileName);
+    root.ref.fileName = fileName;
+
+    // filesize
+    const fileSize = createElement$1('span');
+    fileSize.className = 'filepond--file-info-sub';
+    root.appendChild(fileSize);
+    root.ref.fileSize = fileSize;
+
+    // set initial values
+    text(fileSize, root.query('GET_LABEL_FILE_WAITING_FOR_SIZE'));
+    text(fileName, formatFilename(root.query('GET_ITEM_NAME', props.id)));
+};
+
+const updateFile = ({ root, props }) => {
+    text(
+        root.ref.fileSize,
+        toNaturalFileSize(
+            root.query('GET_ITEM_SIZE', props.id),
+            '.',
+            root.query('GET_FILE_SIZE_BASE'),
+            root.query('GET_FILE_SIZE_LABELS', root.query)
+        )
+    );
+    text(root.ref.fileName, formatFilename(root.query('GET_ITEM_NAME', props.id)));
+};
+
+const updateFileSizeOnError = ({ root, props }) => {
+    // if size is available don't fallback to unknown size message
+    if (isInt(root.query('GET_ITEM_SIZE', props.id))) {
+        updateFile({ root, props });
+        return;
+    }
+
+    text(root.ref.fileSize, root.query('GET_LABEL_FILE_SIZE_NOT_AVAILABLE'));
+};
+
+const fileInfo = createView({
+    name: 'file-info',
+    ignoreRect: true,
+    ignoreRectUpdate: true,
+    write: createRoute({
+        DID_LOAD_ITEM: updateFile,
+        DID_UPDATE_ITEM_META: updateFile,
+        DID_THROW_ITEM_LOAD_ERROR: updateFileSizeOnError,
+        DID_THROW_ITEM_INVALID: updateFileSizeOnError,
+    }),
+    didCreateView: root => {
+        applyFilters('CREATE_VIEW', { ...root, view: root });
+    },
+    create: create$2,
+    mixins: {
+        styles: ['translateX', 'translateY'],
+        animations: {
+            translateX: 'spring',
+            translateY: 'spring',
+        },
+    },
+});
+
+const toPercentage = value => Math.round(value * 100);
+
+const create$3 = ({ root }) => {
+    // main status
+    const main = createElement$1('span');
+    main.className = 'filepond--file-status-main';
+    root.appendChild(main);
+    root.ref.main = main;
+
+    // sub status
+    const sub = createElement$1('span');
+    sub.className = 'filepond--file-status-sub';
+    root.appendChild(sub);
+    root.ref.sub = sub;
+
+    didSetItemLoadProgress({ root, action: { progress: null } });
+};
+
+const didSetItemLoadProgress = ({ root, action }) => {
+    const title =
+        action.progress === null
+            ? root.query('GET_LABEL_FILE_LOADING')
+            : `${root.query('GET_LABEL_FILE_LOADING')} ${toPercentage(action.progress)}%`;
+    text(root.ref.main, title);
+    text(root.ref.sub, root.query('GET_LABEL_TAP_TO_CANCEL'));
+};
+
+const didSetItemProcessProgress = ({ root, action }) => {
+    const title =
+        action.progress === null
+            ? root.query('GET_LABEL_FILE_PROCESSING')
+            : `${root.query('GET_LABEL_FILE_PROCESSING')} ${toPercentage(action.progress)}%`;
+    text(root.ref.main, title);
+    text(root.ref.sub, root.query('GET_LABEL_TAP_TO_CANCEL'));
+};
+
+const didRequestItemProcessing = ({ root }) => {
+    text(root.ref.main, root.query('GET_LABEL_FILE_PROCESSING'));
+    text(root.ref.sub, root.query('GET_LABEL_TAP_TO_CANCEL'));
+};
+
+const didAbortItemProcessing = ({ root }) => {
+    text(root.ref.main, root.query('GET_LABEL_FILE_PROCESSING_ABORTED'));
+    text(root.ref.sub, root.query('GET_LABEL_TAP_TO_RETRY'));
+};
+
+const didCompleteItemProcessing = ({ root }) => {
+    text(root.ref.main, root.query('GET_LABEL_FILE_PROCESSING_COMPLETE'));
+    text(root.ref.sub, root.query('GET_LABEL_TAP_TO_UNDO'));
+};
+
+const clear = ({ root }) => {
+    text(root.ref.main, '');
+    text(root.ref.sub, '');
+};
+
+const error = ({ root, action }) => {
+    text(root.ref.main, action.status.main);
+    text(root.ref.sub, action.status.sub);
+};
+
+const fileStatus = createView({
+    name: 'file-status',
+    ignoreRect: true,
+    ignoreRectUpdate: true,
+    write: createRoute({
+        DID_LOAD_ITEM: clear,
+        DID_REVERT_ITEM_PROCESSING: clear,
+        DID_REQUEST_ITEM_PROCESSING: didRequestItemProcessing,
+        DID_ABORT_ITEM_PROCESSING: didAbortItemProcessing,
+        DID_COMPLETE_ITEM_PROCESSING: didCompleteItemProcessing,
+        DID_UPDATE_ITEM_PROCESS_PROGRESS: didSetItemProcessProgress,
+        DID_UPDATE_ITEM_LOAD_PROGRESS: didSetItemLoadProgress,
+        DID_THROW_ITEM_LOAD_ERROR: error,
+        DID_THROW_ITEM_INVALID: error,
+        DID_THROW_ITEM_PROCESSING_ERROR: error,
+        DID_THROW_ITEM_PROCESSING_REVERT_ERROR: error,
+        DID_THROW_ITEM_REMOVE_ERROR: error,
+    }),
+    didCreateView: root => {
+        applyFilters('CREATE_VIEW', { ...root, view: root });
+    },
+    create: create$3,
+    mixins: {
+        styles: ['translateX', 'translateY', 'opacity'],
+        animations: {
+            opacity: { type: 'tween', duration: 250 },
+            translateX: 'spring',
+            translateY: 'spring',
+        },
+    },
+});
+
+/**
+ * Button definitions for the file view
+ */
+
+const Buttons = {
+    AbortItemLoad: {
+        label: 'GET_LABEL_BUTTON_ABORT_ITEM_LOAD',
+        action: 'ABORT_ITEM_LOAD',
+        className: 'filepond--action-abort-item-load',
+        align: 'LOAD_INDICATOR_POSITION', // right
+    },
+    RetryItemLoad: {
+        label: 'GET_LABEL_BUTTON_RETRY_ITEM_LOAD',
+        action: 'RETRY_ITEM_LOAD',
+        icon: 'GET_ICON_RETRY',
+        className: 'filepond--action-retry-item-load',
+        align: 'BUTTON_PROCESS_ITEM_POSITION', // right
+    },
+    RemoveItem: {
+        label: 'GET_LABEL_BUTTON_REMOVE_ITEM',
+        action: 'REQUEST_REMOVE_ITEM',
+        icon: 'GET_ICON_REMOVE',
+        className: 'filepond--action-remove-item',
+        align: 'BUTTON_REMOVE_ITEM_POSITION', // left
+    },
+    ProcessItem: {
+        label: 'GET_LABEL_BUTTON_PROCESS_ITEM',
+        action: 'REQUEST_ITEM_PROCESSING',
+        icon: 'GET_ICON_PROCESS',
+        className: 'filepond--action-process-item',
+        align: 'BUTTON_PROCESS_ITEM_POSITION', // right
+    },
+    AbortItemProcessing: {
+        label: 'GET_LABEL_BUTTON_ABORT_ITEM_PROCESSING',
+        action: 'ABORT_ITEM_PROCESSING',
+        className: 'filepond--action-abort-item-processing',
+        align: 'BUTTON_PROCESS_ITEM_POSITION', // right
+    },
+    RetryItemProcessing: {
+        label: 'GET_LABEL_BUTTON_RETRY_ITEM_PROCESSING',
+        action: 'RETRY_ITEM_PROCESSING',
+        icon: 'GET_ICON_RETRY',
+        className: 'filepond--action-retry-item-processing',
+        align: 'BUTTON_PROCESS_ITEM_POSITION', // right
+    },
+    RevertItemProcessing: {
+        label: 'GET_LABEL_BUTTON_UNDO_ITEM_PROCESSING',
+        action: 'REQUEST_REVERT_ITEM_PROCESSING',
+        icon: 'GET_ICON_UNDO',
+        className: 'filepond--action-revert-item-processing',
+        align: 'BUTTON_PROCESS_ITEM_POSITION', // right
+    },
+};
+
+// make a list of buttons, we can then remove buttons from this list if they're disabled
+const ButtonKeys = [];
+forin(Buttons, key => {
+    ButtonKeys.push(key);
+});
+
+const calculateFileInfoOffset = root => {
+    if (getRemoveIndicatorAligment(root) === 'right') return 0;
+    const buttonRect = root.ref.buttonRemoveItem.rect.element;
+    return buttonRect.hidden ? null : buttonRect.width + buttonRect.left;
+};
+
+const calculateButtonWidth = root => {
+    const buttonRect = root.ref.buttonAbortItemLoad.rect.element;
+    return buttonRect.width;
+};
+
+// Force on full pixels so text stays crips
+const calculateFileVerticalCenterOffset = root =>
+    Math.floor(root.ref.buttonRemoveItem.rect.element.height / 4);
+const calculateFileHorizontalCenterOffset = root =>
+    Math.floor(root.ref.buttonRemoveItem.rect.element.left / 2);
+
+const getLoadIndicatorAlignment = root => root.query('GET_STYLE_LOAD_INDICATOR_POSITION');
+const getProcessIndicatorAlignment = root => root.query('GET_STYLE_PROGRESS_INDICATOR_POSITION');
+const getRemoveIndicatorAligment = root => root.query('GET_STYLE_BUTTON_REMOVE_ITEM_POSITION');
+
+const DefaultStyle = {
+    buttonAbortItemLoad: { opacity: 0 },
+    buttonRetryItemLoad: { opacity: 0 },
+    buttonRemoveItem: { opacity: 0 },
+    buttonProcessItem: { opacity: 0 },
+    buttonAbortItemProcessing: { opacity: 0 },
+    buttonRetryItemProcessing: { opacity: 0 },
+    buttonRevertItemProcessing: { opacity: 0 },
+    loadProgressIndicator: { opacity: 0, align: getLoadIndicatorAlignment },
+    processProgressIndicator: { opacity: 0, align: getProcessIndicatorAlignment },
+    processingCompleteIndicator: { opacity: 0, scaleX: 0.75, scaleY: 0.75 },
+    info: { translateX: 0, translateY: 0, opacity: 0 },
+    status: { translateX: 0, translateY: 0, opacity: 0 },
+};
+
+const IdleStyle = {
+    buttonRemoveItem: { opacity: 1 },
+    buttonProcessItem: { opacity: 1 },
+    info: { translateX: calculateFileInfoOffset },
+    status: { translateX: calculateFileInfoOffset },
+};
+
+const ProcessingStyle = {
+    buttonAbortItemProcessing: { opacity: 1 },
+    processProgressIndicator: { opacity: 1 },
+    status: { opacity: 1 },
+};
+
+const StyleMap = {
+    DID_THROW_ITEM_INVALID: {
+        buttonRemoveItem: { opacity: 1 },
+        info: { translateX: calculateFileInfoOffset },
+        status: { translateX: calculateFileInfoOffset, opacity: 1 },
+    },
+    DID_START_ITEM_LOAD: {
+        buttonAbortItemLoad: { opacity: 1 },
+        loadProgressIndicator: { opacity: 1 },
+        status: { opacity: 1 },
+    },
+    DID_THROW_ITEM_LOAD_ERROR: {
+        buttonRetryItemLoad: { opacity: 1 },
+        buttonRemoveItem: { opacity: 1 },
+        info: { translateX: calculateFileInfoOffset },
+        status: { opacity: 1 },
+    },
+    DID_START_ITEM_REMOVE: {
+        processProgressIndicator: { opacity: 1, align: getRemoveIndicatorAligment },
+        info: { translateX: calculateFileInfoOffset },
+        status: { opacity: 0 },
+    },
+    DID_THROW_ITEM_REMOVE_ERROR: {
+        processProgressIndicator: { opacity: 0, align: getRemoveIndicatorAligment },
+        buttonRemoveItem: { opacity: 1 },
+        info: { translateX: calculateFileInfoOffset },
+        status: { opacity: 1, translateX: calculateFileInfoOffset },
+    },
+    DID_LOAD_ITEM: IdleStyle,
+    DID_LOAD_LOCAL_ITEM: {
+        buttonRemoveItem: { opacity: 1 },
+        info: { translateX: calculateFileInfoOffset },
+        status: { translateX: calculateFileInfoOffset },
+    },
+    DID_START_ITEM_PROCESSING: ProcessingStyle,
+    DID_REQUEST_ITEM_PROCESSING: ProcessingStyle,
+    DID_UPDATE_ITEM_PROCESS_PROGRESS: ProcessingStyle,
+    DID_COMPLETE_ITEM_PROCESSING: {
+        buttonRevertItemProcessing: { opacity: 1 },
+        info: { opacity: 1 },
+        status: { opacity: 1 },
+    },
+    DID_THROW_ITEM_PROCESSING_ERROR: {
+        buttonRemoveItem: { opacity: 1 },
+        buttonRetryItemProcessing: { opacity: 1 },
+        status: { opacity: 1 },
+        info: { translateX: calculateFileInfoOffset },
+    },
+    DID_THROW_ITEM_PROCESSING_REVERT_ERROR: {
+        buttonRevertItemProcessing: { opacity: 1 },
+        status: { opacity: 1 },
+        info: { opacity: 1 },
+    },
+    DID_ABORT_ITEM_PROCESSING: {
+        buttonRemoveItem: { opacity: 1 },
+        buttonProcessItem: { opacity: 1 },
+        info: { translateX: calculateFileInfoOffset },
+        status: { opacity: 1 },
+    },
+    DID_REVERT_ITEM_PROCESSING: IdleStyle,
+};
+
+// complete indicator view
+const processingCompleteIndicatorView = createView({
+    create: ({ root }) => {
+        root.element.innerHTML = root.query('GET_ICON_DONE');
+    },
+    name: 'processing-complete-indicator',
+    ignoreRect: true,
+    mixins: {
+        styles: ['scaleX', 'scaleY', 'opacity'],
+        animations: {
+            scaleX: 'spring',
+            scaleY: 'spring',
+            opacity: { type: 'tween', duration: 250 },
+        },
+    },
+});
+
+/**
+ * Creates the file view
+ */
+const create$4 = ({ root, props }) => {
+    // copy Buttons object
+    const LocalButtons = Object.keys(Buttons).reduce((prev, curr) => {
+        prev[curr] = { ...Buttons[curr] };
+        return prev;
+    }, {});
+
+    const { id } = props;
+
+    // allow reverting upload
+    const allowRevert = root.query('GET_ALLOW_REVERT');
+
+    // allow remove file
+    const allowRemove = root.query('GET_ALLOW_REMOVE');
+
+    // allow processing upload
+    const allowProcess = root.query('GET_ALLOW_PROCESS');
+
+    // is instant uploading, need this to determine the icon of the undo button
+    const instantUpload = root.query('GET_INSTANT_UPLOAD');
+
+    // is async set up
+    const isAsync = root.query('IS_ASYNC');
+
+    // should align remove item buttons
+    const alignRemoveItemButton = root.query('GET_STYLE_BUTTON_REMOVE_ITEM_ALIGN');
+
+    // enabled buttons array
+    let buttonFilter;
+    if (isAsync) {
+        if (allowProcess && !allowRevert) {
+            // only remove revert button
+            buttonFilter = key => !/RevertItemProcessing/.test(key);
+        } else if (!allowProcess && allowRevert) {
+            // only remove process button
+            buttonFilter = key => !/ProcessItem|RetryItemProcessing|AbortItemProcessing/.test(key);
+        } else if (!allowProcess && !allowRevert) {
+            // remove all process buttons
+            buttonFilter = key => !/Process/.test(key);
+        }
+    } else {
+        // no process controls available
+        buttonFilter = key => !/Process/.test(key);
+    }
+
+    const enabledButtons = buttonFilter ? ButtonKeys.filter(buttonFilter) : ButtonKeys.concat();
+
+    // update icon and label for revert button when instant uploading
+    if (instantUpload && allowRevert) {
+        LocalButtons['RevertItemProcessing'].label = 'GET_LABEL_BUTTON_REMOVE_ITEM';
+        LocalButtons['RevertItemProcessing'].icon = 'GET_ICON_REMOVE';
+    }
+
+    // remove last button (revert) if not allowed
+    if (isAsync && !allowRevert) {
+        const map = StyleMap['DID_COMPLETE_ITEM_PROCESSING'];
+        map.info.translateX = calculateFileHorizontalCenterOffset;
+        map.info.translateY = calculateFileVerticalCenterOffset;
+        map.status.translateY = calculateFileVerticalCenterOffset;
+        map.processingCompleteIndicator = { opacity: 1, scaleX: 1, scaleY: 1 };
+    }
+
+    // should align center
+    if (isAsync && !allowProcess) {
+        [
+            'DID_START_ITEM_PROCESSING',
+            'DID_REQUEST_ITEM_PROCESSING',
+            'DID_UPDATE_ITEM_PROCESS_PROGRESS',
+            'DID_THROW_ITEM_PROCESSING_ERROR',
+        ].forEach(key => {
+            StyleMap[key].status.translateY = calculateFileVerticalCenterOffset;
+        });
+        StyleMap['DID_THROW_ITEM_PROCESSING_ERROR'].status.translateX = calculateButtonWidth;
+    }
+
+    // move remove button to right
+    if (alignRemoveItemButton && allowRevert) {
+        LocalButtons['RevertItemProcessing'].align = 'BUTTON_REMOVE_ITEM_POSITION';
+        const map = StyleMap['DID_COMPLETE_ITEM_PROCESSING'];
+        map.info.translateX = calculateFileInfoOffset;
+        map.status.translateY = calculateFileVerticalCenterOffset;
+        map.processingCompleteIndicator = { opacity: 1, scaleX: 1, scaleY: 1 };
+    }
+
+    // show/hide RemoveItem button
+    if (!allowRemove) {
+        LocalButtons['RemoveItem'].disabled = true;
+    }
+
+    // create the button views
+    forin(LocalButtons, (key, definition) => {
+        // create button
+        const buttonView = root.createChildView(fileActionButton, {
+            label: root.query(definition.label),
+            icon: root.query(definition.icon),
+            opacity: 0,
+        });
+
+        // should be appended?
+        if (enabledButtons.includes(key)) {
+            root.appendChildView(buttonView);
+        }
+
+        // toggle
+        if (definition.disabled) {
+            buttonView.element.setAttribute('disabled', 'disabled');
+            buttonView.element.setAttribute('hidden', 'hidden');
+        }
+
+        // add position attribute
+        buttonView.element.dataset.align = root.query(`GET_STYLE_${definition.align}`);
+
+        // add class
+        buttonView.element.classList.add(definition.className);
+
+        // handle interactions
+        buttonView.on('click', e => {
+            e.stopPropagation();
+            if (definition.disabled) return;
+            root.dispatch(definition.action, { query: id });
+        });
+
+        // set reference
+        root.ref[`button${key}`] = buttonView;
+    });
+
+    // checkmark
+    root.ref.processingCompleteIndicator = root.appendChildView(
+        root.createChildView(processingCompleteIndicatorView)
+    );
+    root.ref.processingCompleteIndicator.element.dataset.align = root.query(
+        `GET_STYLE_BUTTON_PROCESS_ITEM_POSITION`
+    );
+
+    // create file info view
+    root.ref.info = root.appendChildView(root.createChildView(fileInfo, { id }));
+
+    // create file status view
+    root.ref.status = root.appendChildView(root.createChildView(fileStatus, { id }));
+
+    // add progress indicators
+    const loadIndicatorView = root.appendChildView(
+        root.createChildView(progressIndicator, {
+            opacity: 0,
+            align: root.query(`GET_STYLE_LOAD_INDICATOR_POSITION`),
+        })
+    );
+    loadIndicatorView.element.classList.add('filepond--load-indicator');
+    root.ref.loadProgressIndicator = loadIndicatorView;
+
+    const progressIndicatorView = root.appendChildView(
+        root.createChildView(progressIndicator, {
+            opacity: 0,
+            align: root.query(`GET_STYLE_PROGRESS_INDICATOR_POSITION`),
+        })
+    );
+    progressIndicatorView.element.classList.add('filepond--process-indicator');
+    root.ref.processProgressIndicator = progressIndicatorView;
+
+    // current active styles
+    root.ref.activeStyles = [];
+};
+
+const write$2 = ({ root, actions, props }) => {
+    // route actions
+    route({ root, actions, props });
+
+    // select last state change action
+    let action = actions
+        .concat()
+        .filter(action => /^DID_/.test(action.type))
+        .reverse()
+        .find(action => StyleMap[action.type]);
+
+    // a new action happened, let's get the matching styles
+    if (action) {
+        // define new active styles
+        root.ref.activeStyles = [];
+
+        const stylesToApply = StyleMap[action.type];
+        forin(DefaultStyle, (name, defaultStyles) => {
+            // get reference to control
+            const control = root.ref[name];
+
+            // loop over all styles for this control
+            forin(defaultStyles, (key, defaultValue) => {
+                const value =
+                    stylesToApply[name] && typeof stylesToApply[name][key] !== 'undefined'
+                        ? stylesToApply[name][key]
+                        : defaultValue;
+                root.ref.activeStyles.push({ control, key, value });
+            });
+        });
+    }
+
+    // apply active styles to element
+    root.ref.activeStyles.forEach(({ control, key, value }) => {
+        control[key] = typeof value === 'function' ? value(root) : value;
+    });
+};
+
+const route = createRoute({
+    DID_SET_LABEL_BUTTON_ABORT_ITEM_PROCESSING: ({ root, action }) => {
+        root.ref.buttonAbortItemProcessing.label = action.value;
+    },
+    DID_SET_LABEL_BUTTON_ABORT_ITEM_LOAD: ({ root, action }) => {
+        root.ref.buttonAbortItemLoad.label = action.value;
+    },
+    DID_SET_LABEL_BUTTON_ABORT_ITEM_REMOVAL: ({ root, action }) => {
+        root.ref.buttonAbortItemRemoval.label = action.value;
+    },
+    DID_REQUEST_ITEM_PROCESSING: ({ root }) => {
+        root.ref.processProgressIndicator.spin = true;
+        root.ref.processProgressIndicator.progress = 0;
+    },
+    DID_START_ITEM_LOAD: ({ root }) => {
+        root.ref.loadProgressIndicator.spin = true;
+        root.ref.loadProgressIndicator.progress = 0;
+    },
+    DID_START_ITEM_REMOVE: ({ root }) => {
+        root.ref.processProgressIndicator.spin = true;
+        root.ref.processProgressIndicator.progress = 0;
+    },
+    DID_UPDATE_ITEM_LOAD_PROGRESS: ({ root, action }) => {
+        root.ref.loadProgressIndicator.spin = false;
+        root.ref.loadProgressIndicator.progress = action.progress;
+    },
+    DID_UPDATE_ITEM_PROCESS_PROGRESS: ({ root, action }) => {
+        root.ref.processProgressIndicator.spin = false;
+        root.ref.processProgressIndicator.progress = action.progress;
+    },
+});
+
+const file = createView({
+    create: create$4,
+    write: write$2,
+    didCreateView: root => {
+        applyFilters('CREATE_VIEW', { ...root, view: root });
+    },
+    name: 'file',
+});
+
+/**
+ * Creates the file view
+ */
+const create$5 = ({ root, props }) => {
+    // filename
+    root.ref.fileName = createElement$1('legend');
+    root.appendChild(root.ref.fileName);
+
+    // file appended
+    root.ref.file = root.appendChildView(root.createChildView(file, { id: props.id }));
+
+    // data has moved to data.js
+    root.ref.data = false;
+};
+
+/**
+ * Data storage
+ */
+const didLoadItem = ({ root, props }) => {
+    // updates the legend of the fieldset so screenreaders can better group buttons
+    text(root.ref.fileName, formatFilename(root.query('GET_ITEM_NAME', props.id)));
+};
+
+const fileWrapper = createView({
+    create: create$5,
+    ignoreRect: true,
+    write: createRoute({
+        DID_LOAD_ITEM: didLoadItem,
+    }),
+    didCreateView: root => {
+        applyFilters('CREATE_VIEW', { ...root, view: root });
+    },
+    tag: 'fieldset',
+    name: 'file-wrapper',
+});
+
+const PANEL_SPRING_PROPS = { type: 'spring', damping: 0.6, mass: 7 };
+
+const create$6 = ({ root, props }) => {
+    [
+        {
+            name: 'top',
+        },
+        {
+            name: 'center',
+            props: {
+                translateY: null,
+                scaleY: null,
+            },
+            mixins: {
+                animations: {
+                    scaleY: PANEL_SPRING_PROPS,
+                },
+                styles: ['translateY', 'scaleY'],
+            },
+        },
+        {
+            name: 'bottom',
+            props: {
+                translateY: null,
+            },
+            mixins: {
+                animations: {
+                    translateY: PANEL_SPRING_PROPS,
+                },
+                styles: ['translateY'],
+            },
+        },
+    ].forEach(section => {
+        createSection(root, section, props.name);
+    });
+
+    root.element.classList.add(`filepond--${props.name}`);
+
+    root.ref.scalable = null;
+};
+
+const createSection = (root, section, className) => {
+    const viewConstructor = createView({
+        name: `panel-${section.name} filepond--${className}`,
+        mixins: section.mixins,
+        ignoreRectUpdate: true,
+    });
+
+    const view = root.createChildView(viewConstructor, section.props);
+
+    root.ref[section.name] = root.appendChildView(view);
+};
+
+const write$3 = ({ root, props }) => {
+    // update scalable state
+    if (root.ref.scalable === null || props.scalable !== root.ref.scalable) {
+        root.ref.scalable = isBoolean(props.scalable) ? props.scalable : true;
+        root.element.dataset.scalable = root.ref.scalable;
+    }
+
+    // no height, can't set
+    if (!props.height) return;
+
+    // get child rects
+    const topRect = root.ref.top.rect.element;
+    const bottomRect = root.ref.bottom.rect.element;
+
+    // make sure height never is smaller than bottom and top seciton heights combined (will probably never happen, but who knows)
+    const height = Math.max(topRect.height + bottomRect.height, props.height);
+
+    // offset center part
+    root.ref.center.translateY = topRect.height;
+
+    // scale center part
+    // use math ceil to prevent transparent lines because of rounding errors
+    root.ref.center.scaleY = (height - topRect.height - bottomRect.height) / 100;
+
+    // offset bottom part
+    root.ref.bottom.translateY = height - bottomRect.height;
+};
+
+const panel = createView({
+    name: 'panel',
+    read: ({ root, props }) => (props.heightCurrent = root.ref.bottom.translateY),
+    write: write$3,
+    create: create$6,
+    ignoreRect: true,
+    mixins: {
+        apis: ['height', 'heightCurrent', 'scalable'],
+    },
+});
+
+const createDragHelper = items => {
+    const itemIds = items.map(item => item.id);
+    let prevIndex = undefined;
+    return {
+        setIndex: index => {
+            prevIndex = index;
+        },
+        getIndex: () => prevIndex,
+        getItemIndex: item => itemIds.indexOf(item.id),
+    };
+};
+
+const ITEM_TRANSLATE_SPRING = {
+    type: 'spring',
+    stiffness: 0.75,
+    damping: 0.45,
+    mass: 10,
+};
+
+const ITEM_SCALE_SPRING = 'spring';
+
+const StateMap = {
+    DID_START_ITEM_LOAD: 'busy',
+    DID_UPDATE_ITEM_LOAD_PROGRESS: 'loading',
+    DID_THROW_ITEM_INVALID: 'load-invalid',
+    DID_THROW_ITEM_LOAD_ERROR: 'load-error',
+    DID_LOAD_ITEM: 'idle',
+    DID_THROW_ITEM_REMOVE_ERROR: 'remove-error',
+    DID_START_ITEM_REMOVE: 'busy',
+    DID_START_ITEM_PROCESSING: 'busy processing',
+    DID_REQUEST_ITEM_PROCESSING: 'busy processing',
+    DID_UPDATE_ITEM_PROCESS_PROGRESS: 'processing',
+    DID_COMPLETE_ITEM_PROCESSING: 'processing-complete',
+    DID_THROW_ITEM_PROCESSING_ERROR: 'processing-error',
+    DID_THROW_ITEM_PROCESSING_REVERT_ERROR: 'processing-revert-error',
+    DID_ABORT_ITEM_PROCESSING: 'cancelled',
+    DID_REVERT_ITEM_PROCESSING: 'idle',
+};
+
+/**
+ * Creates the file view
+ */
+const create$7 = ({ root, props }) => {
+    // select
+    root.ref.handleClick = e => root.dispatch('DID_ACTIVATE_ITEM', { id: props.id });
+
+    // set id
+    root.element.id = `filepond--item-${props.id}`;
+    root.element.addEventListener('click', root.ref.handleClick);
+
+    // file view
+    root.ref.container = root.appendChildView(root.createChildView(fileWrapper, { id: props.id }));
+
+    // file panel
+    root.ref.panel = root.appendChildView(root.createChildView(panel, { name: 'item-panel' }));
+
+    // default start height
+    root.ref.panel.height = null;
+
+    // by default not marked for removal
+    props.markedForRemoval = false;
+
+    // if not allowed to reorder file items, exit here
+    if (!root.query('GET_ALLOW_REORDER')) return;
+
+    // set to idle so shows grab cursor
+    root.element.dataset.dragState = 'idle';
+
+    const grab = e => {
+        if (!e.isPrimary) return;
+
+        let removedActivateListener = false;
+
+        const origin = {
+            x: e.pageX,
+            y: e.pageY,
+        };
+
+        props.dragOrigin = {
+            x: root.translateX,
+            y: root.translateY,
+        };
+
+        props.dragCenter = {
+            x: e.offsetX,
+            y: e.offsetY,
+        };
+
+        const dragState = createDragHelper(root.query('GET_ACTIVE_ITEMS'));
+
+        root.dispatch('DID_GRAB_ITEM', { id: props.id, dragState });
+
+        const drag = e => {
+            if (!e.isPrimary) return;
+
+            e.stopPropagation();
+            e.preventDefault();
+
+            props.dragOffset = {
+                x: e.pageX - origin.x,
+                y: e.pageY - origin.y,
+            };
+
+            // if dragged stop listening to clicks, will re-add when done dragging
+            const dist =
+                props.dragOffset.x * props.dragOffset.x + props.dragOffset.y * props.dragOffset.y;
+            if (dist > 16 && !removedActivateListener) {
+                removedActivateListener = true;
+                root.element.removeEventListener('click', root.ref.handleClick);
+            }
+
+            root.dispatch('DID_DRAG_ITEM', { id: props.id, dragState });
+        };
+
+        const drop = e => {
+            if (!e.isPrimary) return;
+
+            document.removeEventListener('pointermove', drag);
+            document.removeEventListener('pointerup', drop);
+
+            props.dragOffset = {
+                x: e.pageX - origin.x,
+                y: e.pageY - origin.y,
+            };
+
+            root.dispatch('DID_DROP_ITEM', { id: props.id, dragState });
+
+            // start listening to clicks again
+            if (removedActivateListener) {
+                setTimeout(() => root.element.addEventListener('click', root.ref.handleClick), 0);
+            }
+        };
+
+        document.addEventListener('pointermove', drag);
+        document.addEventListener('pointerup', drop);
+    };
+
+    root.element.addEventListener('pointerdown', grab);
+};
+
+const route$1 = createRoute({
+    DID_UPDATE_PANEL_HEIGHT: ({ root, action }) => {
+        root.height = action.height;
+    },
+});
+
+const write$4 = createRoute(
+    {
+        DID_GRAB_ITEM: ({ root, props }) => {
+            props.dragOrigin = {
+                x: root.translateX,
+                y: root.translateY,
+            };
+        },
+        DID_DRAG_ITEM: ({ root }) => {
+            root.element.dataset.dragState = 'drag';
+        },
+        DID_DROP_ITEM: ({ root, props }) => {
+            props.dragOffset = null;
+            props.dragOrigin = null;
+            root.element.dataset.dragState = 'drop';
+        },
+    },
+    ({ root, actions, props, shouldOptimize }) => {
+        if (root.element.dataset.dragState === 'drop') {
+            if (root.scaleX <= 1) {
+                root.element.dataset.dragState = 'idle';
+            }
+        }
+
+        // select last state change action
+        let action = actions
+            .concat()
+            .filter(action => /^DID_/.test(action.type))
+            .reverse()
+            .find(action => StateMap[action.type]);
+
+        // no need to set same state twice
+        if (action && action.type !== props.currentState) {
+            // set current state
+            props.currentState = action.type;
+
+            // set state
+            root.element.dataset.filepondItemState = StateMap[props.currentState] || '';
+        }
+
+        // route actions
+        const aspectRatio =
+            root.query('GET_ITEM_PANEL_ASPECT_RATIO') || root.query('GET_PANEL_ASPECT_RATIO');
+        if (!aspectRatio) {
+            route$1({ root, actions, props });
+            if (!root.height && root.ref.container.rect.element.height > 0) {
+                root.height = root.ref.container.rect.element.height;
+            }
+        } else if (!shouldOptimize) {
+            root.height = root.rect.element.width * aspectRatio;
+        }
+
+        // sync panel height with item height
+        if (shouldOptimize) {
+            root.ref.panel.height = null;
+        }
+
+        root.ref.panel.height = root.height;
+    }
+);
+
+const item = createView({
+    create: create$7,
+    write: write$4,
+    destroy: ({ root, props }) => {
+        root.element.removeEventListener('click', root.ref.handleClick);
+        root.dispatch('RELEASE_ITEM', { query: props.id });
+    },
+    tag: 'li',
+    name: 'item',
+    mixins: {
+        apis: [
+            'id',
+            'interactionMethod',
+            'markedForRemoval',
+            'spawnDate',
+            'dragCenter',
+            'dragOrigin',
+            'dragOffset',
+        ],
+        styles: ['translateX', 'translateY', 'scaleX', 'scaleY', 'opacity', 'height'],
+        animations: {
+            scaleX: ITEM_SCALE_SPRING,
+            scaleY: ITEM_SCALE_SPRING,
+            translateX: ITEM_TRANSLATE_SPRING,
+            translateY: ITEM_TRANSLATE_SPRING,
+            opacity: { type: 'tween', duration: 150 },
+        },
+    },
+});
+
+var getItemsPerRow = (horizontalSpace, itemWidth) => {
+    // add one pixel leeway, when using percentages for item width total items can be 1.99 per row
+
+    return Math.max(1, Math.floor((horizontalSpace + 1) / itemWidth));
+};
+
+const getItemIndexByPosition = (view, children, positionInView) => {
+    if (!positionInView) return;
+
+    const horizontalSpace = view.rect.element.width;
+    // const children = view.childViews;
+    const l = children.length;
+    let last = null;
+
+    // -1, don't move items to accomodate (either add to top or bottom)
+    if (l === 0 || positionInView.top < children[0].rect.element.top) return -1;
+
+    // let's get the item width
+    const item = children[0];
+    const itemRect = item.rect.element;
+    const itemHorizontalMargin = itemRect.marginLeft + itemRect.marginRight;
+    const itemWidth = itemRect.width + itemHorizontalMargin;
+    const itemsPerRow = getItemsPerRow(horizontalSpace, itemWidth);
+
+    // stack
+    if (itemsPerRow === 1) {
+        for (let index = 0; index < l; index++) {
+            const child = children[index];
+            const childMid = child.rect.outer.top + child.rect.element.height * 0.5;
+            if (positionInView.top < childMid) {
+                return index;
+            }
+        }
+        return l;
+    }
+
+    // grid
+    const itemVerticalMargin = itemRect.marginTop + itemRect.marginBottom;
+    const itemHeight = itemRect.height + itemVerticalMargin;
+    for (let index = 0; index < l; index++) {
+        const indexX = index % itemsPerRow;
+        const indexY = Math.floor(index / itemsPerRow);
+
+        const offsetX = indexX * itemWidth;
+        const offsetY = indexY * itemHeight;
+
+        const itemTop = offsetY - itemRect.marginTop;
+        const itemRight = offsetX + itemWidth;
+        const itemBottom = offsetY + itemHeight + itemRect.marginBottom;
+
+        if (positionInView.top < itemBottom && positionInView.top > itemTop) {
+            if (positionInView.left < itemRight) {
+                return index;
+            } else if (index !== l - 1) {
+                last = index;
+            } else {
+                last = null;
+            }
+        }
+    }
+
+    if (last !== null) {
+        return last;
+    }
+
+    return l;
+};
+
+const dropAreaDimensions = {
+    height: 0,
+    width: 0,
+    get getHeight() {
+        return this.height;
+    },
+    set setHeight(val) {
+        if (this.height === 0 || val === 0) this.height = val;
+    },
+    get getWidth() {
+        return this.width;
+    },
+    set setWidth(val) {
+        if (this.width === 0 || val === 0) this.width = val;
+    },
+    setDimensions: function(height, width) {
+        if (this.height === 0 || height === 0) this.height = height;
+        if (this.width === 0 || width === 0) this.width = width;
+    },
+};
+
+const create$8 = ({ root }) => {
+    // need to set role to list as otherwise it won't be read as a list by VoiceOver
+    attr(root.element, 'role', 'list');
+
+    root.ref.lastItemSpanwDate = Date.now();
+};
+
+/**
+ * Inserts a new item
+ * @param root
+ * @param action
+ */
+const addItemView = ({ root, action }) => {
+    const { id, index, interactionMethod } = action;
+
+    root.ref.addIndex = index;
+
+    const now = Date.now();
+    let spawnDate = now;
+    let opacity = 1;
+
+    if (interactionMethod !== InteractionMethod.NONE) {
+        opacity = 0;
+        const cooldown = root.query('GET_ITEM_INSERT_INTERVAL');
+        const dist = now - root.ref.lastItemSpanwDate;
+        spawnDate = dist < cooldown ? now + (cooldown - dist) : now;
+    }
+
+    root.ref.lastItemSpanwDate = spawnDate;
+
+    root.appendChildView(
+        root.createChildView(
+            // view type
+            item,
+
+            // props
+            {
+                spawnDate,
+                id,
+                opacity,
+                interactionMethod,
+            }
+        ),
+        index
+    );
+};
+
+const moveItem = (item, x, y, vx = 0, vy = 1) => {
+    // set to null to remove animation while dragging
+    if (item.dragOffset) {
+        item.translateX = null;
+        item.translateY = null;
+        item.translateX = item.dragOrigin.x + item.dragOffset.x;
+        item.translateY = item.dragOrigin.y + item.dragOffset.y;
+        item.scaleX = 1.025;
+        item.scaleY = 1.025;
+    } else {
+        item.translateX = x;
+        item.translateY = y;
+
+        if (Date.now() > item.spawnDate) {
+            // reveal element
+            if (item.opacity === 0) {
+                introItemView(item, x, y, vx, vy);
+            }
+
+            // make sure is default scale every frame
+            item.scaleX = 1;
+            item.scaleY = 1;
+            item.opacity = 1;
+        }
+    }
+};
+
+const introItemView = (item, x, y, vx, vy) => {
+    if (item.interactionMethod === InteractionMethod.NONE) {
+        item.translateX = null;
+        item.translateX = x;
+        item.translateY = null;
+        item.translateY = y;
+    } else if (item.interactionMethod === InteractionMethod.DROP) {
+        item.translateX = null;
+        item.translateX = x - vx * 20;
+
+        item.translateY = null;
+        item.translateY = y - vy * 10;
+
+        item.scaleX = 0.8;
+        item.scaleY = 0.8;
+    } else if (item.interactionMethod === InteractionMethod.BROWSE) {
+        item.translateY = null;
+        item.translateY = y - 30;
+    } else if (item.interactionMethod === InteractionMethod.API) {
+        item.translateX = null;
+        item.translateX = x - 30;
+        item.translateY = null;
+    }
+};
+
+/**
+ * Removes an existing item
+ * @param root
+ * @param action
+ */
+const removeItemView = ({ root, action }) => {
+    const { id } = action;
+
+    // get the view matching the given id
+    const view = root.childViews.find(child => child.id === id);
+
+    // if no view found, exit
+    if (!view) {
+        return;
+    }
+
+    // animate view out of view
+    view.scaleX = 0.9;
+    view.scaleY = 0.9;
+    view.opacity = 0;
+
+    // mark for removal
+    view.markedForRemoval = true;
+};
+
+const getItemHeight = child =>
+    child.rect.element.height +
+    child.rect.element.marginBottom * 0.5 +
+    child.rect.element.marginTop * 0.5;
+const getItemWidth = child =>
+    child.rect.element.width +
+    child.rect.element.marginLeft * 0.5 +
+    child.rect.element.marginRight * 0.5;
+
+const dragItem = ({ root, action }) => {
+    const { id, dragState } = action;
+
+    // reference to item
+    const item = root.query('GET_ITEM', { id });
+
+    // get the view matching the given id
+    const view = root.childViews.find(child => child.id === id);
+
+    const numItems = root.childViews.length;
+    const oldIndex = dragState.getItemIndex(item);
+
+    // if no view found, exit
+    if (!view) return;
+
+    const dragPosition = {
+        x: view.dragOrigin.x + view.dragOffset.x + view.dragCenter.x,
+        y: view.dragOrigin.y + view.dragOffset.y + view.dragCenter.y,
+    };
+
+    // get drag area dimensions
+    const dragHeight = getItemHeight(view);
+    const dragWidth = getItemWidth(view);
+
+    // get rows and columns (There will always be at least one row and one column if a file is present)
+    let cols = Math.floor(root.rect.outer.width / dragWidth);
+    if (cols > numItems) cols = numItems;
+
+    // rows are used to find when we have left the preview area bounding box
+    const rows = Math.floor(numItems / cols + 1);
+
+    dropAreaDimensions.setHeight = dragHeight * rows;
+    dropAreaDimensions.setWidth = dragWidth * cols;
+
+    // get new index of dragged item
+    var location = {
+        y: Math.floor(dragPosition.y / dragHeight),
+        x: Math.floor(dragPosition.x / dragWidth),
+        getGridIndex: function getGridIndex() {
+            if (
+                dragPosition.y > dropAreaDimensions.getHeight ||
+                dragPosition.y < 0 ||
+                dragPosition.x > dropAreaDimensions.getWidth ||
+                dragPosition.x < 0
+            )
+                return oldIndex;
+            return this.y * cols + this.x;
+        },
+        getColIndex: function getColIndex() {
+            const items = root.query('GET_ACTIVE_ITEMS');
+            const visibleChildren = root.childViews.filter(child => child.rect.element.height);
+            const children = items.map(item =>
+                visibleChildren.find(childView => childView.id === item.id)
+            );
+            const currentIndex = children.findIndex(child => child === view);
+            const dragHeight = getItemHeight(view);
+            const l = children.length;
+            let idx = l;
+            let childHeight = 0;
+            let childBottom = 0;
+            let childTop = 0;
+            for (let i = 0; i < l; i++) {
+                childHeight = getItemHeight(children[i]);
+                childTop = childBottom;
+                childBottom = childTop + childHeight;
+                if (dragPosition.y < childBottom) {
+                    if (currentIndex > i) {
+                        if (dragPosition.y < childTop + dragHeight) {
+                            idx = i;
+                            break;
+                        }
+                        continue;
+                    }
+                    idx = i;
+                    break;
+                }
+            }
+            return idx;
+        },
+    };
+
+    // get new index
+    const index = cols > 1 ? location.getGridIndex() : location.getColIndex();
+    root.dispatch('MOVE_ITEM', { query: view, index });
+
+    // if the index of the item changed, dispatch reorder action
+    const currentIndex = dragState.getIndex();
+
+    if (currentIndex === undefined || currentIndex !== index) {
+        dragState.setIndex(index);
+
+        if (currentIndex === undefined) return;
+
+        root.dispatch('DID_REORDER_ITEMS', {
+            items: root.query('GET_ACTIVE_ITEMS'),
+            origin: oldIndex,
+            target: index,
+        });
+    }
+};
+
+/**
+ * Setup action routes
+ */
+const route$2 = createRoute({
+    DID_ADD_ITEM: addItemView,
+    DID_REMOVE_ITEM: removeItemView,
+    DID_DRAG_ITEM: dragItem,
+});
+
+/**
+ * Write to view
+ * @param root
+ * @param actions
+ * @param props
+ */
+const write$5 = ({ root, props, actions, shouldOptimize }) => {
+    // route actions
+    route$2({ root, props, actions });
+
+    const { dragCoordinates } = props;
+
+    // available space on horizontal axis
+    const horizontalSpace = root.rect.element.width;
+
+    // only draw children that have dimensions
+    const visibleChildren = root.childViews.filter(child => child.rect.element.height);
+
+    // sort based on current active items
+    const children = root
+        .query('GET_ACTIVE_ITEMS')
+        .map(item => visibleChildren.find(child => child.id === item.id))
+        .filter(item => item);
+
+    // get index
+    const dragIndex = dragCoordinates
+        ? getItemIndexByPosition(root, children, dragCoordinates)
+        : null;
+
+    // add index is used to reserve the dropped/added item index till the actual item is rendered
+    const addIndex = root.ref.addIndex || null;
+
+    // add index no longer needed till possibly next draw
+    root.ref.addIndex = null;
+
+    let dragIndexOffset = 0;
+    let removeIndexOffset = 0;
+    let addIndexOffset = 0;
+
+    if (children.length === 0) return;
+
+    const childRect = children[0].rect.element;
+    const itemVerticalMargin = childRect.marginTop + childRect.marginBottom;
+    const itemHorizontalMargin = childRect.marginLeft + childRect.marginRight;
+    const itemWidth = childRect.width + itemHorizontalMargin;
+    const itemHeight = childRect.height + itemVerticalMargin;
+    const itemsPerRow = getItemsPerRow(horizontalSpace, itemWidth);
+
+    // stack
+    if (itemsPerRow === 1) {
+        let offsetY = 0;
+        let dragOffset = 0;
+
+        children.forEach((child, index) => {
+            if (dragIndex) {
+                let dist = index - dragIndex;
+                if (dist === -2) {
+                    dragOffset = -itemVerticalMargin * 0.25;
+                } else if (dist === -1) {
+                    dragOffset = -itemVerticalMargin * 0.75;
+                } else if (dist === 0) {
+                    dragOffset = itemVerticalMargin * 0.75;
+                } else if (dist === 1) {
+                    dragOffset = itemVerticalMargin * 0.25;
+                } else {
+                    dragOffset = 0;
+                }
+            }
+
+            if (shouldOptimize) {
+                child.translateX = null;
+                child.translateY = null;
+            }
+
+            if (!child.markedForRemoval) {
+                moveItem(child, 0, offsetY + dragOffset);
+            }
+
+            let itemHeight = child.rect.element.height + itemVerticalMargin;
+
+            let visualHeight = itemHeight * (child.markedForRemoval ? child.opacity : 1);
+
+            offsetY += visualHeight;
+        });
+    }
+    // grid
+    else {
+        let prevX = 0;
+        let prevY = 0;
+
+        children.forEach((child, index) => {
+            if (index === dragIndex) {
+                dragIndexOffset = 1;
+            }
+
+            if (index === addIndex) {
+                addIndexOffset += 1;
+            }
+
+            if (child.markedForRemoval && child.opacity < 0.5) {
+                removeIndexOffset -= 1;
+            }
+
+            const visualIndex = index + addIndexOffset + dragIndexOffset + removeIndexOffset;
+
+            const indexX = visualIndex % itemsPerRow;
+            const indexY = Math.floor(visualIndex / itemsPerRow);
+
+            const offsetX = indexX * itemWidth;
+            const offsetY = indexY * itemHeight;
+
+            const vectorX = Math.sign(offsetX - prevX);
+            const vectorY = Math.sign(offsetY - prevY);
+
+            prevX = offsetX;
+            prevY = offsetY;
+
+            if (child.markedForRemoval) return;
+
+            if (shouldOptimize) {
+                child.translateX = null;
+                child.translateY = null;
+            }
+
+            moveItem(child, offsetX, offsetY, vectorX, vectorY);
+        });
+    }
+};
+
+/**
+ * Filters actions that are meant specifically for a certain child of the list
+ * @param child
+ * @param actions
+ */
+const filterSetItemActions = (child, actions) =>
+    actions.filter(action => {
+        // if action has an id, filter out actions that don't have this child id
+        if (action.data && action.data.id) {
+            return child.id === action.data.id;
+        }
+
+        // allow all other actions
+        return true;
+    });
+
+const list = createView({
+    create: create$8,
+    write: write$5,
+    tag: 'ul',
+    name: 'list',
+    didWriteView: ({ root }) => {
+        root.childViews
+            .filter(view => view.markedForRemoval && view.opacity === 0 && view.resting)
+            .forEach(view => {
+                view._destroy();
+                root.removeChildView(view);
+            });
+    },
+    filterFrameActionsForChild: filterSetItemActions,
+    mixins: {
+        apis: ['dragCoordinates'],
+    },
+});
+
+const create$9 = ({ root, props }) => {
+    root.ref.list = root.appendChildView(root.createChildView(list));
+    props.dragCoordinates = null;
+    props.overflowing = false;
+};
+
+const storeDragCoordinates = ({ root, props, action }) => {
+    if (!root.query('GET_ITEM_INSERT_LOCATION_FREEDOM')) return;
+    props.dragCoordinates = {
+        left: action.position.scopeLeft - root.ref.list.rect.element.left,
+        top:
+            action.position.scopeTop -
+            (root.rect.outer.top + root.rect.element.marginTop + root.rect.element.scrollTop),
+    };
+};
+
+const clearDragCoordinates = ({ props }) => {
+    props.dragCoordinates = null;
+};
+
+const route$3 = createRoute({
+    DID_DRAG: storeDragCoordinates,
+    DID_END_DRAG: clearDragCoordinates,
+});
+
+const write$6 = ({ root, props, actions }) => {
+    // route actions
+    route$3({ root, props, actions });
+
+    // current drag position
+    root.ref.list.dragCoordinates = props.dragCoordinates;
+
+    // if currently overflowing but no longer received overflow
+    if (props.overflowing && !props.overflow) {
+        props.overflowing = false;
+
+        // reset overflow state
+        root.element.dataset.state = '';
+        root.height = null;
+    }
+
+    // if is not overflowing currently but does receive overflow value
+    if (props.overflow) {
+        const newHeight = Math.round(props.overflow);
+        if (newHeight !== root.height) {
+            props.overflowing = true;
+            root.element.dataset.state = 'overflow';
+            root.height = newHeight;
+        }
+    }
+};
+
+const listScroller = createView({
+    create: create$9,
+    write: write$6,
+    name: 'list-scroller',
+    mixins: {
+        apis: ['overflow', 'dragCoordinates'],
+        styles: ['height', 'translateY'],
+        animations: {
+            translateY: 'spring',
+        },
+    },
+});
+
+const attrToggle = (element, name, state, enabledValue = '') => {
+    if (state) {
+        attr(element, name, enabledValue);
+    } else {
+        element.removeAttribute(name);
+    }
+};
+
+const resetFileInput = input => {
+    // no value, no need to reset
+    if (!input || input.value === '') {
+        return;
+    }
+
+    try {
+        // for modern browsers
+        input.value = '';
+    } catch (err) {}
+
+    // for IE10
+    if (input.value) {
+        // quickly append input to temp form and reset form
+        const form = createElement$1('form');
+        const parentNode = input.parentNode;
+        const ref = input.nextSibling;
+        form.appendChild(input);
+        form.reset();
+
+        // re-inject input where it originally was
+        if (ref) {
+            parentNode.insertBefore(input, ref);
+        } else {
+            parentNode.appendChild(input);
+        }
+    }
+};
+
+const create$a = ({ root, props }) => {
+    // set id so can be referenced from outside labels
+    root.element.id = `filepond--browser-${props.id}`;
+
+    // set name of element (is removed when a value is set)
+    attr(root.element, 'name', root.query('GET_NAME'));
+
+    // we have to link this element to the status element
+    attr(root.element, 'aria-controls', `filepond--assistant-${props.id}`);
+
+    // set label, we use labelled by as otherwise the screenreader does not read the "browse" text in the label (as it has tabindex: 0)
+    attr(root.element, 'aria-labelledby', `filepond--drop-label-${props.id}`);
+
+    // set configurable props
+    setAcceptedFileTypes({ root, action: { value: root.query('GET_ACCEPTED_FILE_TYPES') } });
+    toggleAllowMultiple({ root, action: { value: root.query('GET_ALLOW_MULTIPLE') } });
+    toggleDirectoryFilter({ root, action: { value: root.query('GET_ALLOW_DIRECTORIES_ONLY') } });
+    toggleDisabled({ root });
+    toggleRequired({ root, action: { value: root.query('GET_REQUIRED') } });
+    setCaptureMethod({ root, action: { value: root.query('GET_CAPTURE_METHOD') } });
+
+    // handle changes to the input field
+    root.ref.handleChange = e => {
+        if (!root.element.value) {
+            return;
+        }
+
+        // extract files and move value of webkitRelativePath path to _relativePath
+        const files = Array.from(root.element.files).map(file => {
+            file._relativePath = file.webkitRelativePath;
+            return file;
+        });
+
+        // we add a little delay so the OS file select window can move out of the way before we add our file
+        setTimeout(() => {
+            // load files
+            props.onload(files);
+
+            // reset input, it's just for exposing a method to drop files, should not retain any state
+            resetFileInput(root.element);
+        }, 250);
+    };
+
+    root.element.addEventListener('change', root.ref.handleChange);
+};
+
+const setAcceptedFileTypes = ({ root, action }) => {
+    if (!root.query('GET_ALLOW_SYNC_ACCEPT_ATTRIBUTE')) return;
+    attrToggle(root.element, 'accept', !!action.value, action.value ? action.value.join(',') : '');
+};
+
+const toggleAllowMultiple = ({ root, action }) => {
+    attrToggle(root.element, 'multiple', action.value);
+};
+
+const toggleDirectoryFilter = ({ root, action }) => {
+    attrToggle(root.element, 'webkitdirectory', action.value);
+};
+
+const toggleDisabled = ({ root }) => {
+    const isDisabled = root.query('GET_DISABLED');
+    const doesAllowBrowse = root.query('GET_ALLOW_BROWSE');
+    const disableField = isDisabled || !doesAllowBrowse;
+    attrToggle(root.element, 'disabled', disableField);
+};
+
+const toggleRequired = ({ root, action }) => {
+    // want to remove required, always possible
+    if (!action.value) {
+        attrToggle(root.element, 'required', false);
+    }
+    // if want to make required, only possible when zero items
+    else if (root.query('GET_TOTAL_ITEMS') === 0) {
+        attrToggle(root.element, 'required', true);
+    }
+};
+
+const setCaptureMethod = ({ root, action }) => {
+    attrToggle(root.element, 'capture', !!action.value, action.value === true ? '' : action.value);
+};
+
+const updateRequiredStatus = ({ root }) => {
+    const { element } = root;
+    // always remove the required attribute when more than zero items
+    if (root.query('GET_TOTAL_ITEMS') > 0) {
+        attrToggle(element, 'required', false);
+        attrToggle(element, 'name', false);
+    } else {
+        // add name attribute
+        attrToggle(element, 'name', true, root.query('GET_NAME'));
+
+        // remove any validation messages
+        const shouldCheckValidity = root.query('GET_CHECK_VALIDITY');
+        if (shouldCheckValidity) {
+            element.setCustomValidity('');
+        }
+
+        // we only add required if the field has been deemed required
+        if (root.query('GET_REQUIRED')) {
+            attrToggle(element, 'required', true);
+        }
+    }
+};
+
+const updateFieldValidityStatus = ({ root }) => {
+    const shouldCheckValidity = root.query('GET_CHECK_VALIDITY');
+    if (!shouldCheckValidity) return;
+    root.element.setCustomValidity(root.query('GET_LABEL_INVALID_FIELD'));
+};
+
+const browser = createView({
+    tag: 'input',
+    name: 'browser',
+    ignoreRect: true,
+    ignoreRectUpdate: true,
+    attributes: {
+        type: 'file',
+    },
+    create: create$a,
+    destroy: ({ root }) => {
+        root.element.removeEventListener('change', root.ref.handleChange);
+    },
+    write: createRoute({
+        DID_LOAD_ITEM: updateRequiredStatus,
+        DID_REMOVE_ITEM: updateRequiredStatus,
+        DID_THROW_ITEM_INVALID: updateFieldValidityStatus,
+
+        DID_SET_DISABLED: toggleDisabled,
+        DID_SET_ALLOW_BROWSE: toggleDisabled,
+        DID_SET_ALLOW_DIRECTORIES_ONLY: toggleDirectoryFilter,
+        DID_SET_ALLOW_MULTIPLE: toggleAllowMultiple,
+        DID_SET_ACCEPTED_FILE_TYPES: setAcceptedFileTypes,
+        DID_SET_CAPTURE_METHOD: setCaptureMethod,
+        DID_SET_REQUIRED: toggleRequired,
+    }),
+});
+
+const Key = {
+    ENTER: 13,
+    SPACE: 32,
+};
+
+const create$b = ({ root, props }) => {
+    // create the label and link it to the file browser
+    const label = createElement$1('label');
+    attr(label, 'for', `filepond--browser-${props.id}`);
+
+    // use for labeling file input (aria-labelledby on file input)
+    attr(label, 'id', `filepond--drop-label-${props.id}`);
+
+    // hide the label for screenreaders, the input element will read the contents of the label when it's focussed. If we don't set aria-hidden the screenreader will also navigate the contents of the label separately from the input.
+    attr(label, 'aria-hidden', 'true');
+
+    // handle keys
+    root.ref.handleKeyDown = e => {
+        const isActivationKey = e.keyCode === Key.ENTER || e.keyCode === Key.SPACE;
+        if (!isActivationKey) return;
+        // stops from triggering the element a second time
+        e.preventDefault();
+
+        // click link (will then in turn activate file input)
+        root.ref.label.click();
+    };
+
+    root.ref.handleClick = e => {
+        const isLabelClick = e.target === label || label.contains(e.target);
+
+        // don't want to click twice
+        if (isLabelClick) return;
+
+        // click link (will then in turn activate file input)
+        root.ref.label.click();
+    };
+
+    // attach events
+    label.addEventListener('keydown', root.ref.handleKeyDown);
+    root.element.addEventListener('click', root.ref.handleClick);
+
+    // update
+    updateLabelValue(label, props.caption);
+
+    // add!
+    root.appendChild(label);
+    root.ref.label = label;
+};
+
+const updateLabelValue = (label, value) => {
+    label.innerHTML = value;
+    const clickable = label.querySelector('.filepond--label-action');
+    if (clickable) {
+        attr(clickable, 'tabindex', '0');
+    }
+    return value;
+};
+
+const dropLabel = createView({
+    name: 'drop-label',
+    ignoreRect: true,
+    create: create$b,
+    destroy: ({ root }) => {
+        root.ref.label.addEventListener('keydown', root.ref.handleKeyDown);
+        root.element.removeEventListener('click', root.ref.handleClick);
+    },
+    write: createRoute({
+        DID_SET_LABEL_IDLE: ({ root, action }) => {
+            updateLabelValue(root.ref.label, action.value);
+        },
+    }),
+    mixins: {
+        styles: ['opacity', 'translateX', 'translateY'],
+        animations: {
+            opacity: { type: 'tween', duration: 150 },
+            translateX: 'spring',
+            translateY: 'spring',
+        },
+    },
+});
+
+const blob = createView({
+    name: 'drip-blob',
+    ignoreRect: true,
+    mixins: {
+        styles: ['translateX', 'translateY', 'scaleX', 'scaleY', 'opacity'],
+        animations: {
+            scaleX: 'spring',
+            scaleY: 'spring',
+            translateX: 'spring',
+            translateY: 'spring',
+            opacity: { type: 'tween', duration: 250 },
+        },
+    },
+});
+
+const addBlob = ({ root }) => {
+    const centerX = root.rect.element.width * 0.5;
+    const centerY = root.rect.element.height * 0.5;
+
+    root.ref.blob = root.appendChildView(
+        root.createChildView(blob, {
+            opacity: 0,
+            scaleX: 2.5,
+            scaleY: 2.5,
+            translateX: centerX,
+            translateY: centerY,
+        })
+    );
+};
+
+const moveBlob = ({ root, action }) => {
+    if (!root.ref.blob) {
+        addBlob({ root });
+        return;
+    }
+
+    root.ref.blob.translateX = action.position.scopeLeft;
+    root.ref.blob.translateY = action.position.scopeTop;
+    root.ref.blob.scaleX = 1;
+    root.ref.blob.scaleY = 1;
+    root.ref.blob.opacity = 1;
+};
+
+const hideBlob = ({ root }) => {
+    if (!root.ref.blob) {
+        return;
+    }
+    root.ref.blob.opacity = 0;
+};
+
+const explodeBlob = ({ root }) => {
+    if (!root.ref.blob) {
+        return;
+    }
+    root.ref.blob.scaleX = 2.5;
+    root.ref.blob.scaleY = 2.5;
+    root.ref.blob.opacity = 0;
+};
+
+const write$7 = ({ root, props, actions }) => {
+    route$4({ root, props, actions });
+
+    const { blob } = root.ref;
+
+    if (actions.length === 0 && blob && blob.opacity === 0) {
+        root.removeChildView(blob);
+        root.ref.blob = null;
+    }
+};
+
+const route$4 = createRoute({
+    DID_DRAG: moveBlob,
+    DID_DROP: explodeBlob,
+    DID_END_DRAG: hideBlob,
+});
+
+const drip = createView({
+    ignoreRect: true,
+    ignoreRectUpdate: true,
+    name: 'drip',
+    write: write$7,
+});
+
+const setInputFiles = (element, files) => {
+    try {
+        // Create a DataTransfer instance and add a newly created file
+        const dataTransfer = new DataTransfer();
+        files.forEach(file => {
+            if (file instanceof File) {
+                dataTransfer.items.add(file);
+            } else {
+                dataTransfer.items.add(
+                    new File([file], file.name, {
+                        type: file.type,
+                    })
+                );
+            }
+        });
+
+        // Assign the DataTransfer files list to the file input
+        element.files = dataTransfer.files;
+    } catch (err) {
+        return false;
+    }
+    return true;
+};
+
+const create$c = ({ root }) => (root.ref.fields = {});
+
+const getField = (root, id) => root.ref.fields[id];
+
+const syncFieldPositionsWithItems = root => {
+    root.query('GET_ACTIVE_ITEMS').forEach(item => {
+        if (!root.ref.fields[item.id]) return;
+        root.element.appendChild(root.ref.fields[item.id]);
+    });
+};
+
+const didReorderItems = ({ root }) => syncFieldPositionsWithItems(root);
+
+const didAddItem = ({ root, action }) => {
+    const fileItem = root.query('GET_ITEM', action.id);
+    const isLocalFile = fileItem.origin === FileOrigin.LOCAL;
+    const shouldUseFileInput = !isLocalFile && root.query('SHOULD_UPDATE_FILE_INPUT');
+    const dataContainer = createElement$1('input');
+    dataContainer.type = shouldUseFileInput ? 'file' : 'hidden';
+    dataContainer.name = root.query('GET_NAME');
+    dataContainer.disabled = root.query('GET_DISABLED');
+    root.ref.fields[action.id] = dataContainer;
+    syncFieldPositionsWithItems(root);
+};
+
+const didLoadItem$1 = ({ root, action }) => {
+    const field = getField(root, action.id);
+    if (!field) return;
+
+    // store server ref in hidden input
+    if (action.serverFileReference !== null) field.value = action.serverFileReference;
+
+    // store file item in file input
+    if (!root.query('SHOULD_UPDATE_FILE_INPUT')) return;
+
+    const fileItem = root.query('GET_ITEM', action.id);
+    setInputFiles(field, [fileItem.file]);
+};
+
+const didPrepareOutput = ({ root, action }) => {
+    // this timeout pushes the handler after 'load'
+    if (!root.query('SHOULD_UPDATE_FILE_INPUT')) return;
+    setTimeout(() => {
+        const field = getField(root, action.id);
+        if (!field) return;
+        setInputFiles(field, [action.file]);
+    }, 0);
+};
+
+const didSetDisabled = ({ root }) => {
+    root.element.disabled = root.query('GET_DISABLED');
+};
+
+const didRemoveItem = ({ root, action }) => {
+    const field = getField(root, action.id);
+    if (!field) return;
+    if (field.parentNode) field.parentNode.removeChild(field);
+    delete root.ref.fields[action.id];
+};
+
+// only runs for server files (so doesn't deal with file input)
+const didDefineValue = ({ root, action }) => {
+    const field = getField(root, action.id);
+    if (!field) return;
+    if (action.value === null) {
+        // clear field value
+        field.removeAttribute('value');
+    } else {
+        // set field value
+        field.value = action.value;
+    }
+    syncFieldPositionsWithItems(root);
+};
+
+const write$8 = createRoute({
+    DID_SET_DISABLED: didSetDisabled,
+    DID_ADD_ITEM: didAddItem,
+    DID_LOAD_ITEM: didLoadItem$1,
+    DID_REMOVE_ITEM: didRemoveItem,
+    DID_DEFINE_VALUE: didDefineValue,
+    DID_PREPARE_OUTPUT: didPrepareOutput,
+    DID_REORDER_ITEMS: didReorderItems,
+    DID_SORT_ITEMS: didReorderItems,
+});
+
+const data = createView({
+    tag: 'fieldset',
+    name: 'data',
+    create: create$c,
+    write: write$8,
+    ignoreRect: true,
+});
+
+const getRootNode = element => ('getRootNode' in element ? element.getRootNode() : document);
+
+const images = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg', 'tiff'];
+const text$1 = ['css', 'csv', 'html', 'txt'];
+const map = {
+    zip: 'zip|compressed',
+    epub: 'application/epub+zip',
+};
+
+const guesstimateMimeType = (extension = '') => {
+    extension = extension.toLowerCase();
+    if (images.includes(extension)) {
+        return (
+            'image/' + (extension === 'jpg' ? 'jpeg' : extension === 'svg' ? 'svg+xml' : extension)
+        );
+    }
+    if (text$1.includes(extension)) {
+        return 'text/' + extension;
+    }
+
+    return map[extension] || '';
+};
+
+const requestDataTransferItems = dataTransfer =>
+    new Promise((resolve, reject) => {
+        // try to get links from transfer, if found we'll exit immediately (unless a file is in the dataTransfer as well, this is because Firefox could represent the file as a URL and a file object at the same time)
+        const links = getLinks(dataTransfer);
+        if (links.length && !hasFiles(dataTransfer)) {
+            return resolve(links);
+        }
+        // try to get files from the transfer
+        getFiles(dataTransfer).then(resolve);
+    });
+
+/**
+ * Test if datatransfer has files
+ */
+const hasFiles = dataTransfer => {
+    if (dataTransfer.files) return dataTransfer.files.length > 0;
+    return false;
+};
+
+/**
+ * Extracts files from a DataTransfer object
+ */
+const getFiles = dataTransfer =>
+    new Promise((resolve, reject) => {
+        // get the transfer items as promises
+        const promisedFiles = (dataTransfer.items ? Array.from(dataTransfer.items) : [])
+
+            // only keep file system items (files and directories)
+            .filter(item => isFileSystemItem(item))
+
+            // map each item to promise
+            .map(item => getFilesFromItem(item));
+
+        // if is empty, see if we can extract some info from the files property as a fallback
+        if (!promisedFiles.length) {
+            // TODO: test for directories (should not be allowed)
+            // Use FileReader, problem is that the files property gets lost in the process
+            resolve(dataTransfer.files ? Array.from(dataTransfer.files) : []);
+            return;
+        }
+
+        // done!
+        Promise.all(promisedFiles)
+            .then(returnedFileGroups => {
+                // flatten groups
+                const files = [];
+                returnedFileGroups.forEach(group => {
+                    files.push.apply(files, group);
+                });
+
+                // done (filter out empty files)!
+                resolve(
+                    files
+                        .filter(file => file)
+                        .map(file => {
+                            if (!file._relativePath) file._relativePath = file.webkitRelativePath;
+                            return file;
+                        })
+                );
+            })
+            .catch(console.error);
+    });
+
+const isFileSystemItem = item => {
+    if (isEntry(item)) {
+        const entry = getAsEntry(item);
+        if (entry) {
+            return entry.isFile || entry.isDirectory;
+        }
+    }
+    return item.kind === 'file';
+};
+
+const getFilesFromItem = item =>
+    new Promise((resolve, reject) => {
+        if (isDirectoryEntry(item)) {
+            getFilesInDirectory(getAsEntry(item))
+                .then(resolve)
+                .catch(reject);
+            return;
+        }
+
+        resolve([item.getAsFile()]);
+    });
+
+const getFilesInDirectory = entry =>
+    new Promise((resolve, reject) => {
+        const files = [];
+
+        // the total entries to read
+        let dirCounter = 0;
+        let fileCounter = 0;
+
+        const resolveIfDone = () => {
+            if (fileCounter === 0 && dirCounter === 0) {
+                resolve(files);
+            }
+        };
+
+        // the recursive function
+        const readEntries = dirEntry => {
+            dirCounter++;
+
+            const directoryReader = dirEntry.createReader();
+
+            // directories are returned in batches, we need to process all batches before we're done
+            const readBatch = () => {
+                directoryReader.readEntries(entries => {
+                    if (entries.length === 0) {
+                        dirCounter--;
+                        resolveIfDone();
+                        return;
+                    }
+
+                    entries.forEach(entry => {
+                        // recursively read more directories
+                        if (entry.isDirectory) {
+                            readEntries(entry);
+                        } else {
+                            // read as file
+                            fileCounter++;
+
+                            entry.file(file => {
+                                const correctedFile = correctMissingFileType(file);
+                                if (entry.fullPath) correctedFile._relativePath = entry.fullPath;
+                                files.push(correctedFile);
+                                fileCounter--;
+                                resolveIfDone();
+                            });
+                        }
+                    });
+
+                    // try to get next batch of files
+                    readBatch();
+                }, reject);
+            };
+
+            // read first batch of files
+            readBatch();
+        };
+
+        // go!
+        readEntries(entry);
+    });
+
+const correctMissingFileType = file => {
+    if (file.type.length) return file;
+    const date = file.lastModifiedDate;
+    const name = file.name;
+    const type = guesstimateMimeType(getExtensionFromFilename(file.name));
+    if (!type.length) return file;
+    file = file.slice(0, file.size, type);
+    file.name = name;
+    file.lastModifiedDate = date;
+    return file;
+};
+
+const isDirectoryEntry = item => isEntry(item) && (getAsEntry(item) || {}).isDirectory;
+
+const isEntry = item => 'webkitGetAsEntry' in item;
+
+const getAsEntry = item => item.webkitGetAsEntry();
+
+/**
+ * Extracts links from a DataTransfer object
+ */
+const getLinks = dataTransfer => {
+    let links = [];
+    try {
+        // look in meta data property
+        links = getLinksFromTransferMetaData(dataTransfer);
+        if (links.length) {
+            return links;
+        }
+        links = getLinksFromTransferURLData(dataTransfer);
+    } catch (e) {
+        // nope nope nope (probably IE trouble)
+    }
+    return links;
+};
+
+const getLinksFromTransferURLData = dataTransfer => {
+    let data = dataTransfer.getData('url');
+    if (typeof data === 'string' && data.length) {
+        return [data];
+    }
+    return [];
+};
+
+const getLinksFromTransferMetaData = dataTransfer => {
+    let data = dataTransfer.getData('text/html');
+    if (typeof data === 'string' && data.length) {
+        const matches = data.match(/src\s*=\s*"(.+?)"/);
+        if (matches) {
+            return [matches[1]];
+        }
+    }
+    return [];
+};
+
+const dragNDropObservers = [];
+
+const eventPosition = e => ({
+    pageLeft: e.pageX,
+    pageTop: e.pageY,
+    scopeLeft: e.offsetX || e.layerX,
+    scopeTop: e.offsetY || e.layerY,
+});
+
+const createDragNDropClient = (element, scopeToObserve, filterElement) => {
+    const observer = getDragNDropObserver(scopeToObserve);
+
+    const client = {
+        element,
+        filterElement,
+        state: null,
+        ondrop: () => {},
+        onenter: () => {},
+        ondrag: () => {},
+        onexit: () => {},
+        onload: () => {},
+        allowdrop: () => {},
+    };
+
+    client.destroy = observer.addListener(client);
+
+    return client;
+};
+
+const getDragNDropObserver = element => {
+    // see if already exists, if so, return
+    const observer = dragNDropObservers.find(item => item.element === element);
+    if (observer) {
+        return observer;
+    }
+
+    // create new observer, does not yet exist for this element
+    const newObserver = createDragNDropObserver(element);
+    dragNDropObservers.push(newObserver);
+    return newObserver;
+};
+
+const createDragNDropObserver = element => {
+    const clients = [];
+
+    const routes = {
+        dragenter,
+        dragover,
+        dragleave,
+        drop,
+    };
+
+    const handlers = {};
+
+    forin(routes, (event, createHandler) => {
+        handlers[event] = createHandler(element, clients);
+        element.addEventListener(event, handlers[event], false);
+    });
+
+    const observer = {
+        element,
+        addListener: client => {
+            // add as client
+            clients.push(client);
+
+            // return removeListener function
+            return () => {
+                // remove client
+                clients.splice(clients.indexOf(client), 1);
+
+                // if no more clients, clean up observer
+                if (clients.length === 0) {
+                    dragNDropObservers.splice(dragNDropObservers.indexOf(observer), 1);
+
+                    forin(routes, event => {
+                        element.removeEventListener(event, handlers[event], false);
+                    });
+                }
+            };
+        },
+    };
+
+    return observer;
+};
+
+const elementFromPoint = (root, point) => {
+    if (!('elementFromPoint' in root)) {
+        root = document;
+    }
+    return root.elementFromPoint(point.x, point.y);
+};
+
+const isEventTarget = (e, target) => {
+    // get root
+    const root = getRootNode(target);
+
+    // get element at position
+    // if root is not actual shadow DOM and does not have elementFromPoint method, use the one on document
+    const elementAtPosition = elementFromPoint(root, {
+        x: e.pageX - window.pageXOffset,
+        y: e.pageY - window.pageYOffset,
+    });
+
+    // test if target is the element or if one of its children is
+    return elementAtPosition === target || target.contains(elementAtPosition);
+};
+
+let initialTarget = null;
+
+const setDropEffect = (dataTransfer, effect) => {
+    // is in try catch as IE11 will throw error if not
+    try {
+        dataTransfer.dropEffect = effect;
+    } catch (e) {}
+};
+
+const dragenter = (root, clients) => e => {
+    e.preventDefault();
+
+    initialTarget = e.target;
+
+    clients.forEach(client => {
+        const { element, onenter } = client;
+
+        if (isEventTarget(e, element)) {
+            client.state = 'enter';
+
+            // fire enter event
+            onenter(eventPosition(e));
+        }
+    });
+};
+
+const dragover = (root, clients) => e => {
+    e.preventDefault();
+
+    const dataTransfer = e.dataTransfer;
+
+    requestDataTransferItems(dataTransfer).then(items => {
+        let overDropTarget = false;
+
+        clients.some(client => {
+            const { filterElement, element, onenter, onexit, ondrag, allowdrop } = client;
+
+            // by default we can drop
+            setDropEffect(dataTransfer, 'copy');
+
+            // allow transfer of these items
+            const allowsTransfer = allowdrop(items);
+
+            // only used when can be dropped on page
+            if (!allowsTransfer) {
+                setDropEffect(dataTransfer, 'none');
+                return;
+            }
+
+            // targetting this client
+            if (isEventTarget(e, element)) {
+                overDropTarget = true;
+
+                // had no previous state, means we are entering this client
+                if (client.state === null) {
+                    client.state = 'enter';
+                    onenter(eventPosition(e));
+                    return;
+                }
+
+                // now over element (no matter if it allows the drop or not)
+                client.state = 'over';
+
+                // needs to allow transfer
+                if (filterElement && !allowsTransfer) {
+                    setDropEffect(dataTransfer, 'none');
+                    return;
+                }
+
+                // dragging
+                ondrag(eventPosition(e));
+            } else {
+                // should be over an element to drop
+                if (filterElement && !overDropTarget) {
+                    setDropEffect(dataTransfer, 'none');
+                }
+
+                // might have just left this client?
+                if (client.state) {
+                    client.state = null;
+                    onexit(eventPosition(e));
+                }
+            }
+        });
+    });
+};
+
+const drop = (root, clients) => e => {
+    e.preventDefault();
+
+    const dataTransfer = e.dataTransfer;
+
+    requestDataTransferItems(dataTransfer).then(items => {
+        clients.forEach(client => {
+            const { filterElement, element, ondrop, onexit, allowdrop } = client;
+
+            client.state = null;
+
+            // if we're filtering on element we need to be over the element to drop
+            if (filterElement && !isEventTarget(e, element)) return;
+
+            // no transfer for this client
+            if (!allowdrop(items)) return onexit(eventPosition(e));
+
+            // we can drop these items on this client
+            ondrop(eventPosition(e), items);
+        });
+    });
+};
+
+const dragleave = (root, clients) => e => {
+    if (initialTarget !== e.target) {
+        return;
+    }
+
+    clients.forEach(client => {
+        const { onexit } = client;
+
+        client.state = null;
+
+        onexit(eventPosition(e));
+    });
+};
+
+const createHopper = (scope, validateItems, options) => {
+    // is now hopper scope
+    scope.classList.add('filepond--hopper');
+
+    // shortcuts
+    const { catchesDropsOnPage, requiresDropOnElement, filterItems = items => items } = options;
+
+    // create a dnd client
+    const client = createDragNDropClient(
+        scope,
+        catchesDropsOnPage ? document.documentElement : scope,
+        requiresDropOnElement
+    );
+
+    // current client state
+    let lastState = '';
+    let currentState = '';
+
+    // determines if a file may be dropped
+    client.allowdrop = items => {
+        // TODO: if we can, throw error to indicate the items cannot by dropped
+
+        return validateItems(filterItems(items));
+    };
+
+    client.ondrop = (position, items) => {
+        const filteredItems = filterItems(items);
+
+        if (!validateItems(filteredItems)) {
+            api.ondragend(position);
+            return;
+        }
+
+        currentState = 'drag-drop';
+
+        api.onload(filteredItems, position);
+    };
+
+    client.ondrag = position => {
+        api.ondrag(position);
+    };
+
+    client.onenter = position => {
+        currentState = 'drag-over';
+
+        api.ondragstart(position);
+    };
+
+    client.onexit = position => {
+        currentState = 'drag-exit';
+
+        api.ondragend(position);
+    };
+
+    const api = {
+        updateHopperState: () => {
+            if (lastState !== currentState) {
+                scope.dataset.hopperState = currentState;
+                lastState = currentState;
+            }
+        },
+        onload: () => {},
+        ondragstart: () => {},
+        ondrag: () => {},
+        ondragend: () => {},
+        destroy: () => {
+            // destroy client
+            client.destroy();
+        },
+    };
+
+    return api;
+};
+
+let listening = false;
+const listeners$1 = [];
+
+const handlePaste = e => {
+    // if is pasting in input or textarea and the target is outside of a filepond scope, ignore
+    const activeEl = document.activeElement;
+    if (activeEl && /textarea|input/i.test(activeEl.nodeName)) {
+        // test textarea or input is contained in filepond root
+        let inScope = false;
+        let element = activeEl;
+        while (element !== document.body) {
+            if (element.classList.contains('filepond--root')) {
+                inScope = true;
+                break;
+            }
+            element = element.parentNode;
+        }
+
+        if (!inScope) return;
+    }
+
+    requestDataTransferItems(e.clipboardData).then(files => {
+        // no files received
+        if (!files.length) {
+            return;
+        }
+
+        // notify listeners of received files
+        listeners$1.forEach(listener => listener(files));
+    });
+};
+
+const listen = cb => {
+    // can't add twice
+    if (listeners$1.includes(cb)) {
+        return;
+    }
+
+    // add initial listener
+    listeners$1.push(cb);
+
+    // setup paste listener for entire page
+    if (listening) {
+        return;
+    }
+
+    listening = true;
+    document.addEventListener('paste', handlePaste);
+};
+
+const unlisten = listener => {
+    arrayRemove(listeners$1, listeners$1.indexOf(listener));
+
+    // clean up
+    if (listeners$1.length === 0) {
+        document.removeEventListener('paste', handlePaste);
+        listening = false;
+    }
+};
+
+const createPaster = () => {
+    const cb = files => {
+        api.onload(files);
+    };
+
+    const api = {
+        destroy: () => {
+            unlisten(cb);
+        },
+        onload: () => {},
+    };
+
+    listen(cb);
+
+    return api;
+};
+
+/**
+ * Creates the file view
+ */
+const create$d = ({ root, props }) => {
+    root.element.id = `filepond--assistant-${props.id}`;
+    attr(root.element, 'role', 'status');
+    attr(root.element, 'aria-live', 'polite');
+    attr(root.element, 'aria-relevant', 'additions');
+};
+
+let addFilesNotificationTimeout = null;
+let notificationClearTimeout = null;
+
+const filenames = [];
+
+const assist = (root, message) => {
+    root.element.textContent = message;
+};
+
+const clear$1 = root => {
+    root.element.textContent = '';
+};
+
+const listModified = (root, filename, label) => {
+    const total = root.query('GET_TOTAL_ITEMS');
+    assist(
+        root,
+        `${label} ${filename}, ${total} ${
+            total === 1
+                ? root.query('GET_LABEL_FILE_COUNT_SINGULAR')
+                : root.query('GET_LABEL_FILE_COUNT_PLURAL')
+        }`
+    );
+
+    // clear group after set amount of time so the status is not read twice
+    clearTimeout(notificationClearTimeout);
+    notificationClearTimeout = setTimeout(() => {
+        clear$1(root);
+    }, 1500);
+};
+
+const isUsingFilePond = root => root.element.parentNode.contains(document.activeElement);
+
+const itemAdded = ({ root, action }) => {
+    if (!isUsingFilePond(root)) {
+        return;
+    }
+
+    root.element.textContent = '';
+    const item = root.query('GET_ITEM', action.id);
+    filenames.push(item.filename);
+
+    clearTimeout(addFilesNotificationTimeout);
+    addFilesNotificationTimeout = setTimeout(() => {
+        listModified(root, filenames.join(', '), root.query('GET_LABEL_FILE_ADDED'));
+        filenames.length = 0;
+    }, 750);
+};
+
+const itemRemoved = ({ root, action }) => {
+    if (!isUsingFilePond(root)) {
+        return;
+    }
+
+    const item = action.item;
+    listModified(root, item.filename, root.query('GET_LABEL_FILE_REMOVED'));
+};
+
+const itemProcessed = ({ root, action }) => {
+    // will also notify the user when FilePond is not being used, as the user might be occupied with other activities while uploading a file
+
+    const item = root.query('GET_ITEM', action.id);
+    const filename = item.filename;
+    const label = root.query('GET_LABEL_FILE_PROCESSING_COMPLETE');
+
+    assist(root, `${filename} ${label}`);
+};
+
+const itemProcessedUndo = ({ root, action }) => {
+    const item = root.query('GET_ITEM', action.id);
+    const filename = item.filename;
+    const label = root.query('GET_LABEL_FILE_PROCESSING_ABORTED');
+
+    assist(root, `${filename} ${label}`);
+};
+
+const itemError = ({ root, action }) => {
+    const item = root.query('GET_ITEM', action.id);
+    const filename = item.filename;
+
+    // will also notify the user when FilePond is not being used, as the user might be occupied with other activities while uploading a file
+
+    assist(root, `${action.status.main} ${filename} ${action.status.sub}`);
+};
+
+const assistant = createView({
+    create: create$d,
+    ignoreRect: true,
+    ignoreRectUpdate: true,
+    write: createRoute({
+        DID_LOAD_ITEM: itemAdded,
+        DID_REMOVE_ITEM: itemRemoved,
+        DID_COMPLETE_ITEM_PROCESSING: itemProcessed,
+
+        DID_ABORT_ITEM_PROCESSING: itemProcessedUndo,
+        DID_REVERT_ITEM_PROCESSING: itemProcessedUndo,
+
+        DID_THROW_ITEM_REMOVE_ERROR: itemError,
+        DID_THROW_ITEM_LOAD_ERROR: itemError,
+        DID_THROW_ITEM_INVALID: itemError,
+        DID_THROW_ITEM_PROCESSING_ERROR: itemError,
+    }),
+    tag: 'span',
+    name: 'assistant',
+});
+
+const toCamels = (string, separator = '-') =>
+    string.replace(new RegExp(`${separator}.`, 'g'), sub => sub.charAt(1).toUpperCase());
+
+const debounce = (func, interval = 16, immidiateOnly = true) => {
+    let last = Date.now();
+    let timeout = null;
+
+    return (...args) => {
+        clearTimeout(timeout);
+
+        const dist = Date.now() - last;
+
+        const fn = () => {
+            last = Date.now();
+            func(...args);
+        };
+
+        if (dist < interval) {
+            // we need to delay by the difference between interval and dist
+            // for example: if distance is 10 ms and interval is 16 ms,
+            // we need to wait an additional 6ms before calling the function)
+            if (!immidiateOnly) {
+                timeout = setTimeout(fn, interval - dist);
+            }
+        } else {
+            // go!
+            fn();
+        }
+    };
+};
+
+const MAX_FILES_LIMIT = 1000000;
+
+const prevent = e => e.preventDefault();
+
+const create$e = ({ root, props }) => {
+    // Add id
+    const id = root.query('GET_ID');
+    if (id) {
+        root.element.id = id;
+    }
+
+    // Add className
+    const className = root.query('GET_CLASS_NAME');
+    if (className) {
+        className
+            .split(' ')
+            .filter(name => name.length)
+            .forEach(name => {
+                root.element.classList.add(name);
+            });
+    }
+
+    // Field label
+    root.ref.label = root.appendChildView(
+        root.createChildView(dropLabel, {
+            ...props,
+            translateY: null,
+            caption: root.query('GET_LABEL_IDLE'),
+        })
+    );
+
+    // List of items
+    root.ref.list = root.appendChildView(root.createChildView(listScroller, { translateY: null }));
+
+    // Background panel
+    root.ref.panel = root.appendChildView(root.createChildView(panel, { name: 'panel-root' }));
+
+    // Assistant notifies assistive tech when content changes
+    root.ref.assistant = root.appendChildView(root.createChildView(assistant, { ...props }));
+
+    // Data
+    root.ref.data = root.appendChildView(root.createChildView(data, { ...props }));
+
+    // Measure (tests if fixed height was set)
+    // DOCTYPE needs to be set for this to work
+    root.ref.measure = createElement$1('div');
+    root.ref.measure.style.height = '100%';
+    root.element.appendChild(root.ref.measure);
+
+    // information on the root height or fixed height status
+    root.ref.bounds = null;
+
+    // apply initial style properties
+    root.query('GET_STYLES')
+        .filter(style => !isEmpty(style.value))
+        .map(({ name, value }) => {
+            root.element.dataset[name] = value;
+        });
+
+    // determine if width changed
+    root.ref.widthPrevious = null;
+    root.ref.widthUpdated = debounce(() => {
+        root.ref.updateHistory = [];
+        root.dispatch('DID_RESIZE_ROOT');
+    }, 250);
+
+    // history of updates
+    root.ref.previousAspectRatio = null;
+    root.ref.updateHistory = [];
+
+    // prevent scrolling and zooming on iOS (only if supports pointer events, for then we can enable reorder)
+    const canHover = window.matchMedia('(pointer: fine) and (hover: hover)').matches;
+    const hasPointerEvents = 'PointerEvent' in window;
+    if (root.query('GET_ALLOW_REORDER') && hasPointerEvents && !canHover) {
+        root.element.addEventListener('touchmove', prevent, { passive: false });
+        root.element.addEventListener('gesturestart', prevent);
+    }
+
+    // add credits
+    const credits = root.query('GET_CREDITS');
+    const hasCredits = credits.length === 2;
+    if (hasCredits) {
+        const frag = document.createElement('a');
+        frag.className = 'filepond--credits';
+        frag.setAttribute('aria-hidden', 'true');
+        frag.href = credits[0];
+        frag.tabindex = -1;
+        frag.target = '_blank';
+        frag.rel = 'noopener noreferrer';
+        frag.textContent = credits[1];
+        root.element.appendChild(frag);
+        root.ref.credits = frag;
+    }
+};
+
+const write$9 = ({ root, props, actions }) => {
+    // route actions
+    route$5({ root, props, actions });
+
+    // apply style properties
+    actions
+        .filter(action => /^DID_SET_STYLE_/.test(action.type))
+        .filter(action => !isEmpty(action.data.value))
+        .map(({ type, data }) => {
+            const name = toCamels(type.substring(8).toLowerCase(), '_');
+            root.element.dataset[name] = data.value;
+            root.invalidateLayout();
+        });
+
+    if (root.rect.element.hidden) return;
+
+    if (root.rect.element.width !== root.ref.widthPrevious) {
+        root.ref.widthPrevious = root.rect.element.width;
+        root.ref.widthUpdated();
+    }
+
+    // get box bounds, we do this only once
+    let bounds = root.ref.bounds;
+    if (!bounds) {
+        bounds = root.ref.bounds = calculateRootBoundingBoxHeight(root);
+
+        // destroy measure element
+        root.element.removeChild(root.ref.measure);
+        root.ref.measure = null;
+    }
+
+    // get quick references to various high level parts of the upload tool
+    const { hopper, label, list, panel } = root.ref;
+
+    // sets correct state to hopper scope
+    if (hopper) {
+        hopper.updateHopperState();
+    }
+
+    // bool to indicate if we're full or not
+    const aspectRatio = root.query('GET_PANEL_ASPECT_RATIO');
+    const isMultiItem = root.query('GET_ALLOW_MULTIPLE');
+    const totalItems = root.query('GET_TOTAL_ITEMS');
+    const maxItems = isMultiItem ? root.query('GET_MAX_FILES') || MAX_FILES_LIMIT : 1;
+    const atMaxCapacity = totalItems === maxItems;
+
+    // action used to add item
+    const addAction = actions.find(action => action.type === 'DID_ADD_ITEM');
+
+    // if reached max capacity and we've just reached it
+    if (atMaxCapacity && addAction) {
+        // get interaction type
+        const interactionMethod = addAction.data.interactionMethod;
+
+        // hide label
+        label.opacity = 0;
+
+        if (isMultiItem) {
+            label.translateY = -40;
+        } else {
+            if (interactionMethod === InteractionMethod.API) {
+                label.translateX = 40;
+            } else if (interactionMethod === InteractionMethod.BROWSE) {
+                label.translateY = 40;
+            } else {
+                label.translateY = 30;
+            }
+        }
+    } else if (!atMaxCapacity) {
+        label.opacity = 1;
+        label.translateX = 0;
+        label.translateY = 0;
+    }
+
+    const listItemMargin = calculateListItemMargin(root);
+
+    const listHeight = calculateListHeight(root);
+
+    const labelHeight = label.rect.element.height;
+    const currentLabelHeight = !isMultiItem || atMaxCapacity ? 0 : labelHeight;
+
+    const listMarginTop = atMaxCapacity ? list.rect.element.marginTop : 0;
+    const listMarginBottom = totalItems === 0 ? 0 : list.rect.element.marginBottom;
+
+    const visualHeight = currentLabelHeight + listMarginTop + listHeight.visual + listMarginBottom;
+    const boundsHeight = currentLabelHeight + listMarginTop + listHeight.bounds + listMarginBottom;
+
+    // link list to label bottom position
+    list.translateY =
+        Math.max(0, currentLabelHeight - list.rect.element.marginTop) - listItemMargin.top;
+
+    if (aspectRatio) {
+        // fixed aspect ratio
+
+        // calculate height based on width
+        const width = root.rect.element.width;
+        const height = width * aspectRatio;
+
+        // clear history if aspect ratio has changed
+        if (aspectRatio !== root.ref.previousAspectRatio) {
+            root.ref.previousAspectRatio = aspectRatio;
+            root.ref.updateHistory = [];
+        }
+
+        // remember this width
+        const history = root.ref.updateHistory;
+        history.push(width);
+
+        const MAX_BOUNCES = 2;
+        if (history.length > MAX_BOUNCES * 2) {
+            const l = history.length;
+            const bottom = l - 10;
+            let bounces = 0;
+            for (let i = l; i >= bottom; i--) {
+                if (history[i] === history[i - 2]) {
+                    bounces++;
+                }
+
+                if (bounces >= MAX_BOUNCES) {
+                    // dont adjust height
+                    return;
+                }
+            }
+        }
+
+        // fix height of panel so it adheres to aspect ratio
+        panel.scalable = false;
+        panel.height = height;
+
+        // available height for list
+        const listAvailableHeight =
+            // the height of the panel minus the label height
+            height -
+            currentLabelHeight -
+            // the room we leave open between the end of the list and the panel bottom
+            (listMarginBottom - listItemMargin.bottom) -
+            // if we're full we need to leave some room between the top of the panel and the list
+            (atMaxCapacity ? listMarginTop : 0);
+
+        if (listHeight.visual > listAvailableHeight) {
+            list.overflow = listAvailableHeight;
+        } else {
+            list.overflow = null;
+        }
+
+        // set container bounds (so pushes siblings downwards)
+        root.height = height;
+    } else if (bounds.fixedHeight) {
+        // fixed height
+
+        // fix height of panel
+        panel.scalable = false;
+
+        // available height for list
+        const listAvailableHeight =
+            // the height of the panel minus the label height
+            bounds.fixedHeight -
+            currentLabelHeight -
+            // the room we leave open between the end of the list and the panel bottom
+            (listMarginBottom - listItemMargin.bottom) -
+            // if we're full we need to leave some room between the top of the panel and the list
+            (atMaxCapacity ? listMarginTop : 0);
+
+        // set list height
+        if (listHeight.visual > listAvailableHeight) {
+            list.overflow = listAvailableHeight;
+        } else {
+            list.overflow = null;
+        }
+
+        // no need to set container bounds as these are handles by CSS fixed height
+    } else if (bounds.cappedHeight) {
+        // max-height
+
+        // not a fixed height panel
+        const isCappedHeight = visualHeight >= bounds.cappedHeight;
+        const panelHeight = Math.min(bounds.cappedHeight, visualHeight);
+        panel.scalable = true;
+        panel.height = isCappedHeight
+            ? panelHeight
+            : panelHeight - listItemMargin.top - listItemMargin.bottom;
+
+        // available height for list
+        const listAvailableHeight =
+            // the height of the panel minus the label height
+            panelHeight -
+            currentLabelHeight -
+            // the room we leave open between the end of the list and the panel bottom
+            (listMarginBottom - listItemMargin.bottom) -
+            // if we're full we need to leave some room between the top of the panel and the list
+            (atMaxCapacity ? listMarginTop : 0);
+
+        // set list height (if is overflowing)
+        if (visualHeight > bounds.cappedHeight && listHeight.visual > listAvailableHeight) {
+            list.overflow = listAvailableHeight;
+        } else {
+            list.overflow = null;
+        }
+
+        // set container bounds (so pushes siblings downwards)
+        root.height = Math.min(
+            bounds.cappedHeight,
+            boundsHeight - listItemMargin.top - listItemMargin.bottom
+        );
+    } else {
+        // flexible height
+
+        // not a fixed height panel
+        const itemMargin = totalItems > 0 ? listItemMargin.top + listItemMargin.bottom : 0;
+        panel.scalable = true;
+        panel.height = Math.max(labelHeight, visualHeight - itemMargin);
+
+        // set container bounds (so pushes siblings downwards)
+        root.height = Math.max(labelHeight, boundsHeight - itemMargin);
+    }
+
+    // move credits to bottom
+    if (root.ref.credits && panel.heightCurrent)
+        root.ref.credits.style.transform = `translateY(${panel.heightCurrent}px)`;
+};
+
+const calculateListItemMargin = root => {
+    const item = root.ref.list.childViews[0].childViews[0];
+    return item
+        ? {
+              top: item.rect.element.marginTop,
+              bottom: item.rect.element.marginBottom,
+          }
+        : {
+              top: 0,
+              bottom: 0,
+          };
+};
+
+const calculateListHeight = root => {
+    let visual = 0;
+    let bounds = 0;
+
+    // get file list reference
+    const scrollList = root.ref.list;
+    const itemList = scrollList.childViews[0];
+    const visibleChildren = itemList.childViews.filter(child => child.rect.element.height);
+    const children = root
+        .query('GET_ACTIVE_ITEMS')
+        .map(item => visibleChildren.find(child => child.id === item.id))
+        .filter(item => item);
+
+    // no children, done!
+    if (children.length === 0) return { visual, bounds };
+
+    const horizontalSpace = itemList.rect.element.width;
+    const dragIndex = getItemIndexByPosition(itemList, children, scrollList.dragCoordinates);
+
+    const childRect = children[0].rect.element;
+
+    const itemVerticalMargin = childRect.marginTop + childRect.marginBottom;
+    const itemHorizontalMargin = childRect.marginLeft + childRect.marginRight;
+
+    const itemWidth = childRect.width + itemHorizontalMargin;
+    const itemHeight = childRect.height + itemVerticalMargin;
+
+    const newItem = typeof dragIndex !== 'undefined' && dragIndex >= 0 ? 1 : 0;
+    const removedItem = children.find(child => child.markedForRemoval && child.opacity < 0.45)
+        ? -1
+        : 0;
+    const verticalItemCount = children.length + newItem + removedItem;
+    const itemsPerRow = getItemsPerRow(horizontalSpace, itemWidth);
+
+    // stack
+    if (itemsPerRow === 1) {
+        children.forEach(item => {
+            const height = item.rect.element.height + itemVerticalMargin;
+            bounds += height;
+            visual += height * item.opacity;
+        });
+    }
+    // grid
+    else {
+        bounds = Math.ceil(verticalItemCount / itemsPerRow) * itemHeight;
+        visual = bounds;
+    }
+
+    return { visual, bounds };
+};
+
+const calculateRootBoundingBoxHeight = root => {
+    const height = root.ref.measureHeight || null;
+    const cappedHeight = parseInt(root.style.maxHeight, 10) || null;
+    const fixedHeight = height === 0 ? null : height;
+
+    return {
+        cappedHeight,
+        fixedHeight,
+    };
+};
+
+const exceedsMaxFiles = (root, items) => {
+    const allowReplace = root.query('GET_ALLOW_REPLACE');
+    const allowMultiple = root.query('GET_ALLOW_MULTIPLE');
+    const totalItems = root.query('GET_TOTAL_ITEMS');
+    let maxItems = root.query('GET_MAX_FILES');
+
+    // total amount of items being dragged
+    const totalBrowseItems = items.length;
+
+    // if does not allow multiple items and dragging more than one item
+    if (!allowMultiple && totalBrowseItems > 1) {
+        root.dispatch('DID_THROW_MAX_FILES', {
+            source: items,
+            error: createResponse('warning', 0, 'Max files'),
+        });
+        return true;
+    }
+
+    // limit max items to one if not allowed to drop multiple items
+    maxItems = allowMultiple ? maxItems : 1;
+
+    if (!allowMultiple && allowReplace) {
+        // There is only one item, so there is room to replace or add an item
+        return false;
+    }
+
+    // no more room?
+    const hasMaxItems = isInt(maxItems);
+    if (hasMaxItems && totalItems + totalBrowseItems > maxItems) {
+        root.dispatch('DID_THROW_MAX_FILES', {
+            source: items,
+            error: createResponse('warning', 0, 'Max files'),
+        });
+        return true;
+    }
+
+    return false;
+};
+
+const getDragIndex = (list, children, position) => {
+    const itemList = list.childViews[0];
+    return getItemIndexByPosition(itemList, children, {
+        left: position.scopeLeft - itemList.rect.element.left,
+        top:
+            position.scopeTop -
+            (list.rect.outer.top + list.rect.element.marginTop + list.rect.element.scrollTop),
+    });
+};
+
+/**
+ * Enable or disable file drop functionality
+ */
+const toggleDrop = root => {
+    const isAllowed = root.query('GET_ALLOW_DROP');
+    const isDisabled = root.query('GET_DISABLED');
+    const enabled = isAllowed && !isDisabled;
+    if (enabled && !root.ref.hopper) {
+        const hopper = createHopper(
+            root.element,
+            items => {
+                // allow quick validation of dropped items
+                const beforeDropFile = root.query('GET_BEFORE_DROP_FILE') || (() => true);
+
+                // all items should be validated by all filters as valid
+                const dropValidation = root.query('GET_DROP_VALIDATION');
+                return dropValidation
+                    ? items.every(
+                          item =>
+                              applyFilters('ALLOW_HOPPER_ITEM', item, {
+                                  query: root.query,
+                              }).every(result => result === true) && beforeDropFile(item)
+                      )
+                    : true;
+            },
+            {
+                filterItems: items => {
+                    const ignoredFiles = root.query('GET_IGNORED_FILES');
+                    return items.filter(item => {
+                        if (isFile(item)) {
+                            return !ignoredFiles.includes(item.name.toLowerCase());
+                        }
+                        return true;
+                    });
+                },
+                catchesDropsOnPage: root.query('GET_DROP_ON_PAGE'),
+                requiresDropOnElement: root.query('GET_DROP_ON_ELEMENT'),
+            }
+        );
+
+        hopper.onload = (items, position) => {
+            // get item children elements and sort based on list sort
+            const list = root.ref.list.childViews[0];
+            const visibleChildren = list.childViews.filter(child => child.rect.element.height);
+            const children = root
+                .query('GET_ACTIVE_ITEMS')
+                .map(item => visibleChildren.find(child => child.id === item.id))
+                .filter(item => item);
+
+            applyFilterChain('ADD_ITEMS', items, { dispatch: root.dispatch }).then(queue => {
+                // these files don't fit so stop here
+                if (exceedsMaxFiles(root, queue)) return false;
+
+                // go
+                root.dispatch('ADD_ITEMS', {
+                    items: queue,
+                    index: getDragIndex(root.ref.list, children, position),
+                    interactionMethod: InteractionMethod.DROP,
+                });
+            });
+
+            root.dispatch('DID_DROP', { position });
+
+            root.dispatch('DID_END_DRAG', { position });
+        };
+
+        hopper.ondragstart = position => {
+            root.dispatch('DID_START_DRAG', { position });
+        };
+
+        hopper.ondrag = debounce(position => {
+            root.dispatch('DID_DRAG', { position });
+        });
+
+        hopper.ondragend = position => {
+            root.dispatch('DID_END_DRAG', { position });
+        };
+
+        root.ref.hopper = hopper;
+
+        root.ref.drip = root.appendChildView(root.createChildView(drip));
+    } else if (!enabled && root.ref.hopper) {
+        root.ref.hopper.destroy();
+        root.ref.hopper = null;
+        root.removeChildView(root.ref.drip);
+    }
+};
+
+/**
+ * Enable or disable browse functionality
+ */
+const toggleBrowse = (root, props) => {
+    const isAllowed = root.query('GET_ALLOW_BROWSE');
+    const isDisabled = root.query('GET_DISABLED');
+    const enabled = isAllowed && !isDisabled;
+    if (enabled && !root.ref.browser) {
+        root.ref.browser = root.appendChildView(
+            root.createChildView(browser, {
+                ...props,
+                onload: items => {
+                    applyFilterChain('ADD_ITEMS', items, {
+                        dispatch: root.dispatch,
+                    }).then(queue => {
+                        // these files don't fit so stop here
+                        if (exceedsMaxFiles(root, queue)) return false;
+
+                        // add items!
+                        root.dispatch('ADD_ITEMS', {
+                            items: queue,
+                            index: -1,
+                            interactionMethod: InteractionMethod.BROWSE,
+                        });
+                    });
+                },
+            }),
+            0
+        );
+    } else if (!enabled && root.ref.browser) {
+        root.removeChildView(root.ref.browser);
+        root.ref.browser = null;
+    }
+};
+
+/**
+ * Enable or disable paste functionality
+ */
+const togglePaste = root => {
+    const isAllowed = root.query('GET_ALLOW_PASTE');
+    const isDisabled = root.query('GET_DISABLED');
+    const enabled = isAllowed && !isDisabled;
+    if (enabled && !root.ref.paster) {
+        root.ref.paster = createPaster();
+        root.ref.paster.onload = items => {
+            applyFilterChain('ADD_ITEMS', items, { dispatch: root.dispatch }).then(queue => {
+                // these files don't fit so stop here
+                if (exceedsMaxFiles(root, queue)) return false;
+
+                // add items!
+                root.dispatch('ADD_ITEMS', {
+                    items: queue,
+                    index: -1,
+                    interactionMethod: InteractionMethod.PASTE,
+                });
+            });
+        };
+    } else if (!enabled && root.ref.paster) {
+        root.ref.paster.destroy();
+        root.ref.paster = null;
+    }
+};
+
+/**
+ * Route actions
+ */
+const route$5 = createRoute({
+    DID_SET_ALLOW_BROWSE: ({ root, props }) => {
+        toggleBrowse(root, props);
+    },
+    DID_SET_ALLOW_DROP: ({ root }) => {
+        toggleDrop(root);
+    },
+    DID_SET_ALLOW_PASTE: ({ root }) => {
+        togglePaste(root);
+    },
+    DID_SET_DISABLED: ({ root, props }) => {
+        toggleDrop(root);
+        togglePaste(root);
+        toggleBrowse(root, props);
+        const isDisabled = root.query('GET_DISABLED');
+        if (isDisabled) {
+            root.element.dataset.disabled = 'disabled';
+        } else {
+            // delete root.element.dataset.disabled; <= this does not work on iOS 10
+            root.element.removeAttribute('data-disabled');
+        }
+    },
+});
+
+const root = createView({
+    name: 'root',
+    read: ({ root }) => {
+        if (root.ref.measure) {
+            root.ref.measureHeight = root.ref.measure.offsetHeight;
+        }
+    },
+    create: create$e,
+    write: write$9,
+    destroy: ({ root }) => {
+        if (root.ref.paster) {
+            root.ref.paster.destroy();
+        }
+        if (root.ref.hopper) {
+            root.ref.hopper.destroy();
+        }
+        root.element.removeEventListener('touchmove', prevent);
+        root.element.removeEventListener('gesturestart', prevent);
+    },
+    mixins: {
+        styles: ['height'],
+    },
+});
+
+// creates the app
+const createApp = (initialOptions = {}) => {
+    // let element
+    let originalElement = null;
+
+    // get default options
+    const defaultOptions = getOptions();
+
+    // create the data store, this will contain all our app info
+    const store = createStore(
+        // initial state (should be serializable)
+        createInitialState(defaultOptions),
+
+        // queries
+        [queries, createOptionQueries(defaultOptions)],
+
+        // action handlers
+        [actions, createOptionActions(defaultOptions)]
+    );
+
+    // set initial options
+    store.dispatch('SET_OPTIONS', { options: initialOptions });
+
+    // kick thread if visibility changes
+    const visibilityHandler = () => {
+        if (document.hidden) return;
+        store.dispatch('KICK');
+    };
+    document.addEventListener('visibilitychange', visibilityHandler);
+
+    // re-render on window resize start and finish
+    let resizeDoneTimer = null;
+    let isResizing = false;
+    let isResizingHorizontally = false;
+    let initialWindowWidth = null;
+    let currentWindowWidth = null;
+    const resizeHandler = () => {
+        if (!isResizing) {
+            isResizing = true;
+        }
+        clearTimeout(resizeDoneTimer);
+        resizeDoneTimer = setTimeout(() => {
+            isResizing = false;
+            initialWindowWidth = null;
+            currentWindowWidth = null;
+            if (isResizingHorizontally) {
+                isResizingHorizontally = false;
+                store.dispatch('DID_STOP_RESIZE');
+            }
+        }, 500);
+    };
+    window.addEventListener('resize', resizeHandler);
+
+    // render initial view
+    const view = root(store, { id: getUniqueId() });
+
+    //
+    // PRIVATE API -------------------------------------------------------------------------------------
+    //
+    let isResting = false;
+    let isHidden = false;
+
+    const readWriteApi = {
+        // necessary for update loop
+
+        /**
+         * Reads from dom (never call manually)
+         * @private
+         */
+        _read: () => {
+            // test if we're resizing horizontally
+            // TODO: see if we can optimize this by measuring root rect
+            if (isResizing) {
+                currentWindowWidth = window.innerWidth;
+                if (!initialWindowWidth) {
+                    initialWindowWidth = currentWindowWidth;
+                }
+
+                if (!isResizingHorizontally && currentWindowWidth !== initialWindowWidth) {
+                    store.dispatch('DID_START_RESIZE');
+                    isResizingHorizontally = true;
+                }
+            }
+
+            if (isHidden && isResting) {
+                // test if is no longer hidden
+                isResting = view.element.offsetParent === null;
+            }
+
+            // if resting, no need to read as numbers will still all be correct
+            if (isResting) return;
+
+            // read view data
+            view._read();
+
+            // if is hidden we need to know so we exit rest mode when revealed
+            isHidden = view.rect.element.hidden;
+        },
+
+        /**
+         * Writes to dom (never call manually)
+         * @private
+         */
+        _write: ts => {
+            // get all actions from store
+            const actions = store
+                .processActionQueue()
+
+                // filter out set actions (these will automatically trigger DID_SET)
+                .filter(action => !/^SET_/.test(action.type));
+
+            // if was idling and no actions stop here
+            if (isResting && !actions.length) return;
+
+            // some actions might trigger events
+            routeActionsToEvents(actions);
+
+            // update the view
+            isResting = view._write(ts, actions, isResizingHorizontally);
+
+            // will clean up all archived items
+            removeReleasedItems(store.query('GET_ITEMS'));
+
+            // now idling
+            if (isResting) {
+                store.processDispatchQueue();
+            }
+        },
+    };
+
+    //
+    // EXPOSE EVENTS -------------------------------------------------------------------------------------
+    //
+    const createEvent = name => data => {
+        // create default event
+        const event = {
+            type: name,
+        };
+
+        // no data to add
+        if (!data) {
+            return event;
+        }
+
+        // copy relevant props
+        if (data.hasOwnProperty('error')) {
+            event.error = data.error ? { ...data.error } : null;
+        }
+
+        if (data.status) {
+            event.status = { ...data.status };
+        }
+
+        if (data.file) {
+            event.output = data.file;
+        }
+
+        // only source is available, else add item if possible
+        if (data.source) {
+            event.file = data.source;
+        } else if (data.item || data.id) {
+            const item = data.item ? data.item : store.query('GET_ITEM', data.id);
+            event.file = item ? createItemAPI(item) : null;
+        }
+
+        // map all items in a possible items array
+        if (data.items) {
+            event.items = data.items.map(createItemAPI);
+        }
+
+        // if this is a progress event add the progress amount
+        if (/progress/.test(name)) {
+            event.progress = data.progress;
+        }
+
+        // copy relevant props
+        if (data.hasOwnProperty('origin') && data.hasOwnProperty('target')) {
+            event.origin = data.origin;
+            event.target = data.target;
+        }
+
+        return event;
+    };
+
+    const eventRoutes = {
+        DID_DESTROY: createEvent('destroy'),
+
+        DID_INIT: createEvent('init'),
+
+        DID_THROW_MAX_FILES: createEvent('warning'),
+
+        DID_INIT_ITEM: createEvent('initfile'),
+        DID_START_ITEM_LOAD: createEvent('addfilestart'),
+        DID_UPDATE_ITEM_LOAD_PROGRESS: createEvent('addfileprogress'),
+        DID_LOAD_ITEM: createEvent('addfile'),
+
+        DID_THROW_ITEM_INVALID: [createEvent('error'), createEvent('addfile')],
+
+        DID_THROW_ITEM_LOAD_ERROR: [createEvent('error'), createEvent('addfile')],
+
+        DID_THROW_ITEM_REMOVE_ERROR: [createEvent('error'), createEvent('removefile')],
+
+        DID_PREPARE_OUTPUT: createEvent('preparefile'),
+
+        DID_START_ITEM_PROCESSING: createEvent('processfilestart'),
+        DID_UPDATE_ITEM_PROCESS_PROGRESS: createEvent('processfileprogress'),
+        DID_ABORT_ITEM_PROCESSING: createEvent('processfileabort'),
+        DID_COMPLETE_ITEM_PROCESSING: createEvent('processfile'),
+        DID_COMPLETE_ITEM_PROCESSING_ALL: createEvent('processfiles'),
+        DID_REVERT_ITEM_PROCESSING: createEvent('processfilerevert'),
+
+        DID_THROW_ITEM_PROCESSING_ERROR: [createEvent('error'), createEvent('processfile')],
+
+        DID_REMOVE_ITEM: createEvent('removefile'),
+
+        DID_UPDATE_ITEMS: createEvent('updatefiles'),
+
+        DID_ACTIVATE_ITEM: createEvent('activatefile'),
+
+        DID_REORDER_ITEMS: createEvent('reorderfiles'),
+    };
+
+    const exposeEvent = event => {
+        // create event object to be dispatched
+        const detail = { pond: exports, ...event };
+        delete detail.type;
+        view.element.dispatchEvent(
+            new CustomEvent(`FilePond:${event.type}`, {
+                // event info
+                detail,
+
+                // event behaviour
+                bubbles: true,
+                cancelable: true,
+                composed: true, // triggers listeners outside of shadow root
+            })
+        );
+
+        // event object to params used for `on()` event handlers and callbacks `oninit()`
+        const params = [];
+
+        // if is possible error event, make it the first param
+        if (event.hasOwnProperty('error')) {
+            params.push(event.error);
+        }
+
+        // file is always section
+        if (event.hasOwnProperty('file')) {
+            params.push(event.file);
+        }
+
+        // append other props
+        const filtered = ['type', 'error', 'file'];
+        Object.keys(event)
+            .filter(key => !filtered.includes(key))
+            .forEach(key => params.push(event[key]));
+
+        // on(type, () => { })
+        exports.fire(event.type, ...params);
+
+        // oninit = () => {}
+        const handler = store.query(`GET_ON${event.type.toUpperCase()}`);
+        if (handler) {
+            handler(...params);
+        }
+    };
+
+    const routeActionsToEvents = actions => {
+        if (!actions.length) return;
+        actions
+            .filter(action => eventRoutes[action.type])
+            .forEach(action => {
+                const routes = eventRoutes[action.type];
+                (Array.isArray(routes) ? routes : [routes]).forEach(route => {
+                    // this isn't fantastic, but because of the stacking of settimeouts plugins can handle the did_load before the did_init
+                    if (action.type === 'DID_INIT_ITEM') {
+                        exposeEvent(route(action.data));
+                    } else {
+                        setTimeout(() => {
+                            exposeEvent(route(action.data));
+                        }, 0);
+                    }
+                });
+            });
+    };
+
+    //
+    // PUBLIC API -------------------------------------------------------------------------------------
+    //
+    const setOptions = options => store.dispatch('SET_OPTIONS', { options });
+
+    const getFile = query => store.query('GET_ACTIVE_ITEM', query);
+
+    const prepareFile = query =>
+        new Promise((resolve, reject) => {
+            store.dispatch('REQUEST_ITEM_PREPARE', {
+                query,
+                success: item => {
+                    resolve(item);
+                },
+                failure: error => {
+                    reject(error);
+                },
+            });
+        });
+
+    const addFile = (source, options = {}) =>
+        new Promise((resolve, reject) => {
+            addFiles([{ source, options }], { index: options.index })
+                .then(items => resolve(items && items[0]))
+                .catch(reject);
+        });
+
+    const isFilePondFile = obj => obj.file && obj.id;
+
+    const removeFile = (query, options) => {
+        // if only passed options
+        if (typeof query === 'object' && !isFilePondFile(query) && !options) {
+            options = query;
+            query = undefined;
+        }
+
+        // request item removal
+        store.dispatch('REMOVE_ITEM', { ...options, query });
+
+        // see if item has been removed
+        return store.query('GET_ACTIVE_ITEM', query) === null;
+    };
+
+    const addFiles = (...args) =>
+        new Promise((resolve, reject) => {
+            const sources = [];
+            const options = {};
+
+            // user passed a sources array
+            if (isArray(args[0])) {
+                sources.push.apply(sources, args[0]);
+                Object.assign(options, args[1] || {});
+            } else {
+                // user passed sources as arguments, last one might be options object
+                const lastArgument = args[args.length - 1];
+                if (typeof lastArgument === 'object' && !(lastArgument instanceof Blob)) {
+                    Object.assign(options, args.pop());
+                }
+
+                // add rest to sources
+                sources.push(...args);
+            }
+
+            store.dispatch('ADD_ITEMS', {
+                items: sources,
+                index: options.index,
+                interactionMethod: InteractionMethod.API,
+                success: resolve,
+                failure: reject,
+            });
+        });
+
+    const getFiles = () => store.query('GET_ACTIVE_ITEMS');
+
+    const processFile = query =>
+        new Promise((resolve, reject) => {
+            store.dispatch('REQUEST_ITEM_PROCESSING', {
+                query,
+                success: item => {
+                    resolve(item);
+                },
+                failure: error => {
+                    reject(error);
+                },
+            });
+        });
+
+    const prepareFiles = (...args) => {
+        const queries = Array.isArray(args[0]) ? args[0] : args;
+        const items = queries.length ? queries : getFiles();
+        return Promise.all(items.map(prepareFile));
+    };
+
+    const processFiles = (...args) => {
+        const queries = Array.isArray(args[0]) ? args[0] : args;
+        if (!queries.length) {
+            const files = getFiles().filter(
+                item =>
+                    !(item.status === ItemStatus.IDLE && item.origin === FileOrigin.LOCAL) &&
+                    item.status !== ItemStatus.PROCESSING &&
+                    item.status !== ItemStatus.PROCESSING_COMPLETE &&
+                    item.status !== ItemStatus.PROCESSING_REVERT_ERROR
+            );
+            return Promise.all(files.map(processFile));
+        }
+        return Promise.all(queries.map(processFile));
+    };
+
+    const removeFiles = (...args) => {
+        const queries = Array.isArray(args[0]) ? args[0] : args;
+
+        let options;
+        if (typeof queries[queries.length - 1] === 'object') {
+            options = queries.pop();
+        } else if (Array.isArray(args[0])) {
+            options = args[1];
+        }
+
+        const files = getFiles();
+
+        if (!queries.length) return Promise.all(files.map(file => removeFile(file, options)));
+
+        // when removing by index the indexes shift after each file removal so we need to convert indexes to ids
+        const mappedQueries = queries
+            .map(query => (isNumber(query) ? (files[query] ? files[query].id : null) : query))
+            .filter(query => query);
+
+        return mappedQueries.map(q => removeFile(q, options));
+    };
+
+    const exports = {
+        // supports events
+        ...on(),
+
+        // inject private api methods
+        ...readWriteApi,
+
+        // inject all getters and setters
+        ...createOptionAPI(store, defaultOptions),
+
+        /**
+         * Override options defined in options object
+         * @param options
+         */
+        setOptions,
+
+        /**
+         * Load the given file
+         * @param source - the source of the file (either a File, base64 data uri or url)
+         * @param options - object, { index: 0 }
+         */
+        addFile,
+
+        /**
+         * Load the given files
+         * @param sources - the sources of the files to load
+         * @param options - object, { index: 0 }
+         */
+        addFiles,
+
+        /**
+         * Returns the file objects matching the given query
+         * @param query { string, number, null }
+         */
+        getFile,
+
+        /**
+         * Upload file with given name
+         * @param query { string, number, null  }
+         */
+        processFile,
+
+        /**
+         * Request prepare output for file with given name
+         * @param query { string, number, null  }
+         */
+        prepareFile,
+
+        /**
+         * Removes a file by its name
+         * @param query { string, number, null  }
+         */
+        removeFile,
+
+        /**
+         * Moves a file to a new location in the files list
+         */
+        moveFile: (query, index) => store.dispatch('MOVE_ITEM', { query, index }),
+
+        /**
+         * Returns all files (wrapped in public api)
+         */
+        getFiles,
+
+        /**
+         * Starts uploading all files
+         */
+        processFiles,
+
+        /**
+         * Clears all files from the files list
+         */
+        removeFiles,
+
+        /**
+         * Starts preparing output of all files
+         */
+        prepareFiles,
+
+        /**
+         * Sort list of files
+         */
+        sort: compare => store.dispatch('SORT', { compare }),
+
+        /**
+         * Browse the file system for a file
+         */
+        browse: () => {
+            // needs to be trigger directly as user action needs to be traceable (is not traceable in requestAnimationFrame)
+            var input = view.element.querySelector('input[type=file]');
+            if (input) {
+                input.click();
+            }
+        },
+
+        /**
+         * Destroys the app
+         */
+        destroy: () => {
+            // request destruction
+            exports.fire('destroy', view.element);
+
+            // stop active processes (file uploads, fetches, stuff like that)
+            // loop over items and depending on states call abort for ongoing processes
+            store.dispatch('ABORT_ALL');
+
+            // destroy view
+            view._destroy();
+
+            // stop listening to resize
+            window.removeEventListener('resize', resizeHandler);
+
+            // stop listening to the visiblitychange event
+            document.removeEventListener('visibilitychange', visibilityHandler);
+
+            // dispatch destroy
+            store.dispatch('DID_DESTROY');
+        },
+
+        /**
+         * Inserts the plugin before the target element
+         */
+        insertBefore: element => insertBefore(view.element, element),
+
+        /**
+         * Inserts the plugin after the target element
+         */
+        insertAfter: element => insertAfter(view.element, element),
+
+        /**
+         * Appends the plugin to the target element
+         */
+        appendTo: element => element.appendChild(view.element),
+
+        /**
+         * Replaces an element with the app
+         */
+        replaceElement: element => {
+            // insert the app before the element
+            insertBefore(view.element, element);
+
+            // remove the original element
+            element.parentNode.removeChild(element);
+
+            // remember original element
+            originalElement = element;
+        },
+
+        /**
+         * Restores the original element
+         */
+        restoreElement: () => {
+            if (!originalElement) {
+                return; // no element to restore
+            }
+
+            // restore original element
+            insertAfter(originalElement, view.element);
+
+            // remove our element
+            view.element.parentNode.removeChild(view.element);
+
+            // remove reference
+            originalElement = null;
+        },
+
+        /**
+         * Returns true if the app root is attached to given element
+         * @param element
+         */
+        isAttachedTo: element => view.element === element || originalElement === element,
+
+        /**
+         * Returns the root element
+         */
+        element: {
+            get: () => view.element,
+        },
+
+        /**
+         * Returns the current pond status
+         */
+        status: {
+            get: () => store.query('GET_STATUS'),
+        },
+    };
+
+    // Done!
+    store.dispatch('DID_INIT');
+
+    // create actual api object
+    return createObject(exports);
+};
+
+const createAppObject = (customOptions = {}) => {
+    // default options
+    const defaultOptions = {};
+    forin(getOptions(), (key, value) => {
+        defaultOptions[key] = value[0];
+    });
+
+    // set app options
+    const app = createApp({
+        // default options
+        ...defaultOptions,
+
+        // custom options
+        ...customOptions,
+    });
+
+    // return the plugin instance
+    return app;
+};
+
+const lowerCaseFirstLetter = string => string.charAt(0).toLowerCase() + string.slice(1);
+
+const attributeNameToPropertyName = attributeName => toCamels(attributeName.replace(/^data-/, ''));
+
+const mapObject = (object, propertyMap) => {
+    // remove unwanted
+    forin(propertyMap, (selector, mapping) => {
+        forin(object, (property, value) => {
+            // create regexp shortcut
+            const selectorRegExp = new RegExp(selector);
+
+            // tests if
+            const matches = selectorRegExp.test(property);
+
+            // no match, skip
+            if (!matches) {
+                return;
+            }
+
+            // if there's a mapping, the original property is always removed
+            delete object[property];
+
+            // should only remove, we done!
+            if (mapping === false) {
+                return;
+            }
+
+            // move value to new property
+            if (isString(mapping)) {
+                object[mapping] = value;
+                return;
+            }
+
+            // move to group
+            const group = mapping.group;
+            if (isObject(mapping) && !object[group]) {
+                object[group] = {};
+            }
+
+            object[group][lowerCaseFirstLetter(property.replace(selectorRegExp, ''))] = value;
+        });
+
+        // do submapping
+        if (mapping.mapping) {
+            mapObject(object[mapping.group], mapping.mapping);
+        }
+    });
+};
+
+const getAttributesAsObject = (node, attributeMapping = {}) => {
+    // turn attributes into object
+    const attributes = [];
+    forin(node.attributes, index => {
+        attributes.push(node.attributes[index]);
+    });
+
+    const output = attributes
+        .filter(attribute => attribute.name)
+        .reduce((obj, attribute) => {
+            const value = attr(node, attribute.name);
+
+            obj[attributeNameToPropertyName(attribute.name)] =
+                value === attribute.name ? true : value;
+            return obj;
+        }, {});
+
+    // do mapping of object properties
+    mapObject(output, attributeMapping);
+
+    return output;
+};
+
+const createAppAtElement = (element, options = {}) => {
+    // how attributes of the input element are mapped to the options for the plugin
+    const attributeMapping = {
+        // translate to other name
+        '^class$': 'className',
+        '^multiple$': 'allowMultiple',
+        '^capture$': 'captureMethod',
+        '^webkitdirectory$': 'allowDirectoriesOnly',
+
+        // group under single property
+        '^server': {
+            group: 'server',
+            mapping: {
+                '^process': {
+                    group: 'process',
+                },
+                '^revert': {
+                    group: 'revert',
+                },
+                '^fetch': {
+                    group: 'fetch',
+                },
+                '^restore': {
+                    group: 'restore',
+                },
+                '^load': {
+                    group: 'load',
+                },
+            },
+        },
+
+        // don't include in object
+        '^type$': false,
+        '^files$': false,
+    };
+
+    // add additional option translators
+    applyFilters('SET_ATTRIBUTE_TO_OPTION_MAP', attributeMapping);
+
+    // create final options object by setting options object and then overriding options supplied on element
+    const mergedOptions = {
+        ...options,
+    };
+
+    const attributeOptions = getAttributesAsObject(
+        element.nodeName === 'FIELDSET' ? element.querySelector('input[type=file]') : element,
+        attributeMapping
+    );
+
+    // merge with options object
+    Object.keys(attributeOptions).forEach(key => {
+        if (isObject(attributeOptions[key])) {
+            if (!isObject(mergedOptions[key])) {
+                mergedOptions[key] = {};
+            }
+            Object.assign(mergedOptions[key], attributeOptions[key]);
+        } else {
+            mergedOptions[key] = attributeOptions[key];
+        }
+    });
+
+    // if parent is a fieldset, get files from parent by selecting all input fields that are not file upload fields
+    // these will then be automatically set to the initial files
+    mergedOptions.files = (options.files || []).concat(
+        Array.from(element.querySelectorAll('input:not([type=file])')).map(input => ({
+            source: input.value,
+            options: {
+                type: input.dataset.type,
+            },
+        }))
+    );
+
+    // build plugin
+    const app = createAppObject(mergedOptions);
+
+    // add already selected files
+    if (element.files) {
+        Array.from(element.files).forEach(file => {
+            app.addFile(file);
+        });
+    }
+
+    // replace the target element
+    app.replaceElement(element);
+
+    // expose
+    return app;
+};
+
+// if an element is passed, we create the instance at that element, if not, we just create an up object
+const createApp$1 = (...args) =>
+    isNode(args[0]) ? createAppAtElement(...args) : createAppObject(...args);
+
+const PRIVATE_METHODS = ['fire', '_read', '_write'];
+
+const createAppAPI = app => {
+    const api = {};
+
+    copyObjectPropertiesToObject(app, api, PRIVATE_METHODS);
+
+    return api;
+};
+
+/**
+ * Replaces placeholders in given string with replacements
+ * @param string - "Foo {bar}""
+ * @param replacements - { "bar": 10 }
+ */
+const replaceInString = (string, replacements) =>
+    string.replace(/(?:{([a-zA-Z]+)})/g, (match, group) => replacements[group]);
+
+const createWorker = fn => {
+    const workerBlob = new Blob(['(', fn.toString(), ')()'], {
+        type: 'application/javascript',
+    });
+    const workerURL = URL.createObjectURL(workerBlob);
+    const worker = new Worker(workerURL);
+
+    return {
+        transfer: (message, cb) => {},
+        post: (message, cb, transferList) => {
+            const id = getUniqueId();
+
+            worker.onmessage = e => {
+                if (e.data.id === id) {
+                    cb(e.data.message);
+                }
+            };
+
+            worker.postMessage(
+                {
+                    id,
+                    message,
+                },
+                transferList
+            );
+        },
+        terminate: () => {
+            worker.terminate();
+            URL.revokeObjectURL(workerURL);
+        },
+    };
+};
+
+const loadImage = url =>
+    new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+            resolve(img);
+        };
+        img.onerror = e => {
+            reject(e);
+        };
+        img.src = url;
+    });
+
+const renameFile = (file, name) => {
+    const renamedFile = file.slice(0, file.size, file.type);
+    renamedFile.lastModifiedDate = file.lastModifiedDate;
+    renamedFile.name = name;
+    return renamedFile;
+};
+
+const copyFile = file => renameFile(file, file.name);
+
+// already registered plugins (can't register twice)
+const registeredPlugins = [];
+
+// pass utils to plugin
+const createAppPlugin = plugin => {
+    // already registered
+    if (registeredPlugins.includes(plugin)) {
+        return;
+    }
+
+    // remember this plugin
+    registeredPlugins.push(plugin);
+
+    // setup!
+    const pluginOutline = plugin({
+        addFilter,
+        utils: {
+            Type,
+            forin,
+            isString,
+            isFile,
+            toNaturalFileSize,
+            replaceInString,
+            getExtensionFromFilename,
+            getFilenameWithoutExtension,
+            guesstimateMimeType,
+            getFileFromBlob,
+            getFilenameFromURL,
+            createRoute,
+            createWorker,
+            createView,
+            createItemAPI,
+            loadImage,
+            copyFile,
+            renameFile,
+            createBlob,
+            applyFilterChain,
+            text,
+            getNumericAspectRatioFromString,
+        },
+        views: {
+            fileActionButton,
+        },
+    });
+
+    // add plugin options to default options
+    extendDefaultOptions(pluginOutline.options);
+};
+
+// feature detection used by supported() method
+const isOperaMini = () => Object.prototype.toString.call(window.operamini) === '[object OperaMini]';
+const hasPromises = () => 'Promise' in window;
+const hasBlobSlice = () => 'slice' in Blob.prototype;
+const hasCreateObjectURL = () => 'URL' in window && 'createObjectURL' in window.URL;
+const hasVisibility = () => 'visibilityState' in document;
+const hasTiming = () => 'performance' in window; // iOS 8.x
+const hasCSSSupports = () => 'supports' in (window.CSS || {}); // use to detect Safari 9+
+const isIE11 = () => /MSIE|Trident/.test(window.navigator.userAgent);
+
+const supported = (() => {
+    // Runs immediately and then remembers result for subsequent calls
+    const isSupported =
+        // Has to be a browser
+        isBrowser() &&
+        // Can't run on Opera Mini due to lack of everything
+        !isOperaMini() &&
+        // Require these APIs to feature detect a modern browser
+        hasVisibility() &&
+        hasPromises() &&
+        hasBlobSlice() &&
+        hasCreateObjectURL() &&
+        hasTiming() &&
+        // doesn't need CSSSupports but is a good way to detect Safari 9+ (we do want to support IE11 though)
+        (hasCSSSupports() || isIE11());
+
+    return () => isSupported;
+})();
+
+/**
+ * Plugin internal state (over all instances)
+ */
+const state = {
+    // active app instances, used to redraw the apps and to find the later
+    apps: [],
+};
+
+// plugin name
+const name = 'filepond';
+
+/**
+ * Public Plugin methods
+ */
+const fn = () => {};
+let Status$1 = {};
+let FileStatus = {};
+let FileOrigin$1 = {};
+let OptionTypes = {};
+let create$f = fn;
+let destroy = fn;
+let parse = fn;
+let find = fn;
+let registerPlugin = fn;
+let getOptions$1 = fn;
+let setOptions$1 = fn;
+
+// if not supported, no API
+if (supported()) {
+    // start painter and fire load event
+    createPainter(
+        () => {
+            state.apps.forEach(app => app._read());
+        },
+        ts => {
+            state.apps.forEach(app => app._write(ts));
+        }
+    );
+
+    // fire loaded event so we know when FilePond is available
+    const dispatch = () => {
+        // let others know we have area ready
+        document.dispatchEvent(
+            new CustomEvent('FilePond:loaded', {
+                detail: {
+                    supported,
+                    create: create$f,
+                    destroy,
+                    parse,
+                    find,
+                    registerPlugin,
+                    setOptions: setOptions$1,
+                },
+            })
+        );
+
+        // clean up event
+        document.removeEventListener('DOMContentLoaded', dispatch);
+    };
+
+    if (document.readyState !== 'loading') {
+        // move to back of execution queue, FilePond should have been exported by then
+        setTimeout(() => dispatch(), 0);
+    } else {
+        document.addEventListener('DOMContentLoaded', dispatch);
+    }
+
+    // updates the OptionTypes object based on the current options
+    const updateOptionTypes = () =>
+        forin(getOptions(), (key, value) => {
+            OptionTypes[key] = value[1];
+        });
+
+    Status$1 = { ...Status };
+    FileOrigin$1 = { ...FileOrigin };
+    FileStatus = { ...ItemStatus };
+
+    OptionTypes = {};
+    updateOptionTypes();
+
+    // create method, creates apps and adds them to the app array
+    create$f = (...args) => {
+        const app = createApp$1(...args);
+        app.on('destroy', destroy);
+        state.apps.push(app);
+        return createAppAPI(app);
+    };
+
+    // destroys apps and removes them from the app array
+    destroy = hook => {
+        // returns true if the app was destroyed successfully
+        const indexToRemove = state.apps.findIndex(app => app.isAttachedTo(hook));
+        if (indexToRemove >= 0) {
+            // remove from apps
+            const app = state.apps.splice(indexToRemove, 1)[0];
+
+            // restore original dom element
+            app.restoreElement();
+
+            return true;
+        }
+
+        return false;
+    };
+
+    // parses the given context for plugins (does not include the context element itself)
+    parse = context => {
+        // get all possible hooks
+        const matchedHooks = Array.from(context.querySelectorAll(`.${name}`));
+
+        // filter out already active hooks
+        const newHooks = matchedHooks.filter(
+            newHook => !state.apps.find(app => app.isAttachedTo(newHook))
+        );
+
+        // create new instance for each hook
+        return newHooks.map(hook => create$f(hook));
+    };
+
+    // returns an app based on the given element hook
+    find = hook => {
+        const app = state.apps.find(app => app.isAttachedTo(hook));
+        if (!app) {
+            return null;
+        }
+        return createAppAPI(app);
+    };
+
+    // adds a plugin extension
+    registerPlugin = (...plugins) => {
+        // register plugins
+        plugins.forEach(createAppPlugin);
+
+        // update OptionTypes, each plugin might have extended the default options
+        updateOptionTypes();
+    };
+
+    getOptions$1 = () => {
+        const opts = {};
+        forin(getOptions(), (key, value) => {
+            opts[key] = value[0];
+        });
+        return opts;
+    };
+
+    setOptions$1 = opts => {
+        if (isObject(opts)) {
+            // update existing plugins
+            state.apps.forEach(app => {
+                app.setOptions(opts);
+            });
+
+            // override defaults
+            setOptions(opts);
+        }
+
+        // return new options
+        return getOptions$1();
+    };
+}
+
+export {
+    FileOrigin$1 as FileOrigin,
+    FileStatus,
+    OptionTypes,
+    Status$1 as Status,
+    create$f as create,
+    destroy,
+    find,
+    getOptions$1 as getOptions,
+    parse,
+    registerPlugin,
+    setOptions$1 as setOptions,
+    supported,
+};

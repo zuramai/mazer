@@ -323,6 +323,7 @@ interface SchemaSettings {
     valid_styles?: string | Record<string, string>;
     verify_html?: boolean;
     whitespace_elements?: string;
+    padd_empty_block_inline_children?: boolean;
 }
 interface Attribute {
     required?: boolean;
@@ -351,6 +352,7 @@ interface ElementRule {
     paddEmpty?: boolean;
     removeEmpty?: boolean;
     removeEmptyAttrs?: boolean;
+    paddInEmptyBlock?: boolean;
 }
 interface SchemaElement extends ElementRule {
     outputName?: string;
@@ -1432,6 +1434,7 @@ interface BaseEditorSettings {
     forced_root_block?: boolean | string;
     forced_root_block_attrs?: Record<string, string>;
     formats?: Formats;
+    format_empty_lines?: boolean;
     gecko_spellcheck?: boolean;
     height?: number | string;
     hidden_input?: boolean;

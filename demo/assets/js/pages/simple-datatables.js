@@ -1,1 +1,46 @@
-let dataTable=new simpleDatatables.DataTable(document.getElementById("table1"));function adaptPageDropdown(){const a=dataTable.wrapper.querySelector(".dataTable-selector");a.parentNode.parentNode.insertBefore(a,a.parentNode),a.classList.add("form-select")}function adaptPagination(){const a=dataTable.wrapper.querySelectorAll("ul.dataTable-pagination-list");for(const t of a)t.classList.add("pagination","pagination-primary");const t=dataTable.wrapper.querySelectorAll("ul.dataTable-pagination-list li");for(const a of t)a.classList.add("page-item");const e=dataTable.wrapper.querySelectorAll("ul.dataTable-pagination-list li a");for(const a of e)a.classList.add("page-link")}dataTable.on("datatable.init",(function(){adaptPageDropdown(),adaptPagination()})),dataTable.on("datatable.page",adaptPagination);
+let dataTable = new simpleDatatables.DataTable(
+  document.getElementById("table1")
+)
+// Move "per page dropdown" selector element out of label
+// to make it work with bootstrap 5. Add bs5 classes.
+function adaptPageDropdown() {
+  const selector = dataTable.wrapper.querySelector(".dataTable-selector")
+  selector.parentNode.parentNode.insertBefore(selector, selector.parentNode)
+  selector.classList.add("form-select")
+}
+
+// Add bs5 classes to pagination elements
+function adaptPagination() {
+  const paginations = dataTable.wrapper.querySelectorAll(
+    "ul.dataTable-pagination-list"
+  )
+
+  for (const pagination of paginations) {
+    pagination.classList.add(...["pagination", "pagination-primary"])
+  }
+
+  const paginationLis = dataTable.wrapper.querySelectorAll(
+    "ul.dataTable-pagination-list li"
+  )
+
+  for (const paginationLi of paginationLis) {
+    paginationLi.classList.add("page-item")
+  }
+
+  const paginationLinks = dataTable.wrapper.querySelectorAll(
+    "ul.dataTable-pagination-list li a"
+  )
+
+  for (const paginationLink of paginationLinks) {
+    paginationLink.classList.add("page-link")
+  }
+}
+
+// Patch "per page dropdown" and pagination after table rendered
+dataTable.on("datatable.init", function () {
+  adaptPageDropdown()
+  adaptPagination()
+})
+
+// Re-patch pagination after the page was changed
+dataTable.on("datatable.page", adaptPagination)

@@ -1,1 +1,43 @@
-function slideToggle(e,t,o){0===e.clientHeight?j(e,t,o,!0):j(e,t,o)}function slideUp(e,t,o){j(e,t,o)}function slideDown(e,t,o){j(e,t,o,!0)}function j(e,t,o,n){void 0===t&&(t=400),void 0===n&&(n=!1),e.style.overflow="hidden",n&&(e.style.display="block");var i,l=window.getComputedStyle(e),r=parseFloat(l.getPropertyValue("height")),a=parseFloat(l.getPropertyValue("padding-top")),s=parseFloat(l.getPropertyValue("padding-bottom")),d=parseFloat(l.getPropertyValue("margin-top")),u=parseFloat(l.getPropertyValue("margin-bottom")),p=r/t,c=a/t,y=s/t,g=d/t,m=u/t;window.requestAnimationFrame((function l(w){void 0===i&&(i=w);var h=w-i;n?(e.style.height=p*h+"px",e.style.paddingTop=c*h+"px",e.style.paddingBottom=y*h+"px",e.style.marginTop=g*h+"px",e.style.marginBottom=m*h+"px"):(e.style.height=r-p*h+"px",e.style.paddingTop=a-c*h+"px",e.style.paddingBottom=s-y*h+"px",e.style.marginTop=d-g*h+"px",e.style.marginBottom=u-m*h+"px"),h>=t?(e.style.height="",e.style.paddingTop="",e.style.paddingBottom="",e.style.marginTop="",e.style.marginBottom="",e.style.overflow="",n||(e.style.display="none"),"function"==typeof o&&o()):window.requestAnimationFrame(l)}))}function checkWindowSize(){window.innerWidth<1200&&listener(),window.innerWidth>1200&&(document.querySelector(".main-navbar").style.display="")}function listener(){document.querySelectorAll(".menu-item.has-sub").forEach((e=>{e.querySelector(".menu-link").addEventListener("click",(t=>{t.preventDefault(),e.querySelector(".submenu").classList.toggle("active")}))})),document.querySelectorAll(".submenu-item.has-sub").forEach((e=>{e.querySelector(".submenu-link").addEventListener("click",(t=>{t.preventDefault(),e.querySelector(".subsubmenu").classList.toggle("active")}))}))}document.querySelector(".burger-btn").addEventListener("click",(e=>{e.preventDefault(),slideToggle(document.querySelector(".main-navbar"),300)})),window.onload=()=>checkWindowSize(),window.addEventListener("resize",(e=>{checkWindowSize()}));
+function slideToggle(a, b, c) { 0 === a.clientHeight ? j(a, b, c, !0) : j(a, b, c) } function slideUp(a, b, c) { j(a, b, c) } function slideDown(a, b, c) { j(a, b, c, !0) } function j(c, a, k, d) { void 0 === a && (a = 400), void 0 === d && (d = !1), c.style.overflow = "hidden", d && (c.style.display = "block"); var l, b = window.getComputedStyle(c), e = parseFloat(b.getPropertyValue("height")), f = parseFloat(b.getPropertyValue("padding-top")), g = parseFloat(b.getPropertyValue("padding-bottom")), h = parseFloat(b.getPropertyValue("margin-top")), i = parseFloat(b.getPropertyValue("margin-bottom")), m = e / a, n = f / a, o = g / a, p = h / a, q = i / a; window.requestAnimationFrame(function s(r) { void 0 === l && (l = r); var b = r - l; d ? (c.style.height = m * b + "px", c.style.paddingTop = n * b + "px", c.style.paddingBottom = o * b + "px", c.style.marginTop = p * b + "px", c.style.marginBottom = q * b + "px") : (c.style.height = e - m * b + "px", c.style.paddingTop = f - n * b + "px", c.style.paddingBottom = g - o * b + "px", c.style.marginTop = h - p * b + "px", c.style.marginBottom = i - q * b + "px"), b >= a ? (c.style.height = "", c.style.paddingTop = "", c.style.paddingBottom = "", c.style.marginTop = "", c.style.marginBottom = "", c.style.overflow = "", d || (c.style.display = "none"), "function" == typeof k && k()) : window.requestAnimationFrame(s) }) }
+
+// Responsive burger btn onclick
+document.querySelector(".burger-btn").addEventListener("click", (e) => {
+  e.preventDefault()
+  let navbar = document.querySelector(".main-navbar")
+
+  slideToggle(navbar, 300)
+})
+
+window.onload = () => checkWindowSize()
+window.addEventListener("resize", (event) => {
+  checkWindowSize()
+})
+
+function checkWindowSize() {
+  if (window.innerWidth < 1200) listener()
+  if (window.innerWidth > 1200)
+    document.querySelector(".main-navbar").style.display = ""
+}
+
+function listener() {
+  let menuItems = document.querySelectorAll(".menu-item.has-sub")
+  menuItems.forEach((menuItem) => {
+    menuItem.querySelector(".menu-link").addEventListener("click", (e) => {
+      e.preventDefault()
+      let submenu = menuItem.querySelector(".submenu")
+      submenu.classList.toggle("active")
+    })
+  })
+
+  // Three level menu event listener
+  let submenuItems = document.querySelectorAll(".submenu-item.has-sub")
+
+  submenuItems.forEach((submenuItem) => {
+    submenuItem
+      .querySelector(".submenu-link")
+      .addEventListener("click", (e) => {
+        e.preventDefault()
+        submenuItem.querySelector(".subsubmenu").classList.toggle("active")
+      })
+  })
+}

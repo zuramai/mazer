@@ -1,5 +1,5 @@
 /*!
- * Toastify js 1.11.2
+ * Toastify js 1.12.0
  * https://github.com/apvarun/toastify-js
  * @license MIT licensed
  *
@@ -26,6 +26,7 @@
  * @property {Function} onClick - Invoked when the toast is clicked
  * @property {Object} offset - Ability to add some offset to axis
  * @property {boolean} escapeMarkup - Toggle the default behavior of escaping HTML markup
+ * @property {string} ariaLive - Use the HTML DOM style property to add styles to toast
  * @property {Object} style - Use the HTML DOM style property to add styles to toast
  */
 
@@ -52,6 +53,7 @@ class Toastify {
       onClick: function() {},
       offset: { x: 0, y: 0 },
       escapeMarkup: true,
+      ariaLive: "polite",
       style: { background: "" },
     };
 
@@ -61,7 +63,7 @@ class Toastify {
        * @type {string}
        * @public
        */
-      this.version = "1.11.2";
+      this.version = "1.12.0";
 
       /**
        * The configuration object to configure Toastify
@@ -160,6 +162,7 @@ class Toastify {
      * @param {Function} [options.onClick] - Invoked when the toast is clicked
      * @param {Object} [options.offset] - Ability to add some offset to axis
      * @param {boolean} [options.escapeMarkup=true] - Toggle the default behavior of escaping HTML markup
+     * @param {string} [options.ariaLive] - Announce the toast to screen readers
      * @param {Object} [options.style] - Use the HTML DOM style property to add styles to toast
      * @private
      */
@@ -208,6 +211,11 @@ class Toastify {
         divElement.style[property] = this.options.style[property];
       }
 
+      // Announce the toast to screen readers
+      if (this.options.ariaLive) {
+        divElement.setAttribute('aria-live', this.options.ariaLive)
+      }
+
       // Adding the toast message/node
       if (this.options.node && this.options.node.nodeType === Node.ELEMENT_NODE) {
         // If we have a valid node, we insert it
@@ -238,10 +246,11 @@ class Toastify {
       // Adding a close icon to the toast
       if (this.options.close === true) {
         // Create a span for close element
-        let closeElement = document.createElement("span");
-        closeElement.innerHTML = "&#10006;";
-
+        let closeElement = document.createElement("button");
+        closeElement.type = "button";
+        closeElement.setAttribute("aria-label", "Close");
         closeElement.className = "toast-close";
+        closeElement.innerHTML = "&#10006;";
 
         // Triggering the removal of toast from DOM on close click
         closeElement.addEventListener(

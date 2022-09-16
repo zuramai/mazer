@@ -1,1 +1,3 @@
-ClassicEditor.create(document.querySelector("#editor")).catch((e=>{console.error(e)}));
+ClassicEditor.create(document.querySelector("#editor")).catch((error) => {
+  console.error(error)
+})

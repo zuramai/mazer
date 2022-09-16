@@ -3,7 +3,7 @@
 
 ![Built with JavaScript](https://img.shields.io/badge/Built%20with-JavaScript-red?style=for-the-badge&logo=javascript)
 
-[![toastify-js](https://img.shields.io/badge/toastify--js-1.11.2-brightgreen.svg)](https://www.npmjs.com/package/toastify-js)
+[![toastify-js](https://img.shields.io/badge/toastify--js-1.12.0-brightgreen.svg)](https://www.npmjs.com/package/toastify-js)
 ![MIT License](https://img.shields.io/npm/l/toastify-js)
 
 Toastify is a lightweight, vanilla JS toast notification library.
@@ -85,7 +85,7 @@ Toastify({
   stopOnFocus: true, // Prevents dismissing of toast on hover
   style: {
     background: "linear-gradient(to right, #00b09b, #96c93d)",
-  }
+  },
   onClick: function(){} // Callback after click
 }).showToast();
 ```
@@ -153,6 +153,7 @@ If `gravity` is equals to `bottom`, it will be pushed from bottom.
 | offset | Object | Ability to add some offset to axis | |
 | escapeMarkup | boolean | Toggle the default behavior of escaping HTML markup | true |
 | style | object | Use the HTML DOM Style properties to add any style directly to toast | |
+| ariaLive | string | Announce the toast to screen readers, see https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions for options | "polite" |
 | oldestFirst | boolean | Set the order in which toasts are stacked in page | true |
 
 > Deprecated properties: `backgroundColor` -  use `style.background` option instead
