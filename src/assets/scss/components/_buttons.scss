@@ -1,3 +1,4 @@
+@use 'sass:map';
 
 .btn {
     i,svg {
@@ -37,14 +38,9 @@
         }
     }
     
-    @each $key, $value in $theme-colors {
+    @each $key, $value in $btn-colors {
         &.btn-#{$key} {
-            @if $key == "light" {
-                color: $body-color;
-            }
-            @else{
-                color: #fff;
-            }
+            color: map.get($btn-colors, "key", "text-color");
         }
     }
 }

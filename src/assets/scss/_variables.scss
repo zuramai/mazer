@@ -57,6 +57,34 @@ $alert-colors: (
     ),
 ) !default;
 
+// $btn-colors uses $theme-colors background color by default
+$btn-colors: (
+  primary: (
+      text-color: #fff,
+  ),
+  secondary: (
+      text-color: #fff,
+  ),
+  success: (
+      text-color: #fff,
+  ),
+  warning: (
+      text-color: #fff,
+  ),
+  danger: (
+      text-color: #fff,
+  ),
+  dark: (
+      text-color: #fff,
+  ),
+  light: (
+      text-color: #818182,
+  ),
+  info: (
+      text-color: #fff,
+  ),
+);
+
 
 // Body
 //
@@ -176,7 +204,7 @@ $theme-colors: (
   "warning":    $warning,
   "danger":     $danger,
   "light":      $light,
-  "dark":       $dark
+  "dark":       #131313
 ) !default;
 // scss-docs-end theme-colors-map
 
