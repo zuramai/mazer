@@ -14,6 +14,7 @@
 </head>
 
 <body>
+    <script src="assets/js/initTheme.js"></script>
     <div id="app">
         <div id="sidebar" class="active">
             {% include "layouts/sidebar.html" %}
@@ -38,7 +39,7 @@
             </footer>
         </div>
     </div>
-    <script src="assets/js/bootstrap.js"></script>
+    <script src="assets/js/bootstrap.js" defer></script>
     <script src="assets/js/app.js"></script>
     {% block js %}{% endblock %}
 </body>
