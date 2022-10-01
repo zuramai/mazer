@@ -14,6 +14,7 @@ export function toggleDarkTheme() {
 /**
  * Set theme for mazer
  * @param {"theme-dark"|"theme-light"} theme
+ * @param {boolean} dontPersist 
  */
 export function setTheme(theme, dontPersist = false) {
   document.body.className = document.body.className.replace(THEME_REGEX, "")
@@ -31,7 +32,10 @@ if (toggler) {
   })
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+/**
+ * Init theme from setTheme()
+ */
+function initTheme() {
   //If the user manually set a theme, we'll load that
   let storedTheme
   if ((storedTheme = localStorage.getItem(THEME_KEY))) {
@@ -52,4 +56,12 @@ document.addEventListener("DOMContentLoaded", () => {
   )
 
   return setTheme(mediaQuery.matches ? "theme-dark" : "theme-light", true)
-})
+}
+
+if (document.readyState === 'loading') {
+    // Document not yet loaded, so wait for it.
+    window.addEventListener('DOMContentLoaded', initTheme);
+} else {
+    // Document is ready (interactive or complete), so call init immediately.
+    initTheme();
+}
