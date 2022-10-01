@@ -20,7 +20,6 @@ mix.options({
 
 // Modules and extensions
 const modulesToCopy = {
-  "simple-datatables": true, // With dist folder = true
   "@icon/dripicons": false,
   "@fortawesome/fontawesome-free": false,
   "rater-js": false,
@@ -42,6 +41,7 @@ const modulesToCopy = {
   tinymce: false,
   "toastify-js": false,
   "datatables.net-bs5": false,
+  "simple-datatables": true, // With dist folder = true
 }
 for (const mod in modulesToCopy) {
   let modulePath = `node_modules/${mod}`
