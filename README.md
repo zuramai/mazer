@@ -19,7 +19,7 @@
 
 ## Usage
 #### Using a ready-made built (recommended)
-Download the latest release from the [releases page](https://github.com/zuramai/mazer/releases "releases page")
+Download the latest release from the [releases page](https://github.com/zuramai/mazer/releases "releases page").
 Open the index HTML file and explore the source code.
 #### Building yourself
 - Clone the repository `git clone https://github.com/zuramai/mazer`
