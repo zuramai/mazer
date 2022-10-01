@@ -1,6 +1,7 @@
 {
     "/assets/js/app.js": "/assets/js/app.js",
     "/assets/js/bootstrap.js": "/assets/js/bootstrap.js",
+    "/assets/js/initTheme.js": "/assets/js/initTheme.js",
     "/assets/js/mazer.js": "/assets/js/mazer.js",
     "/assets/css/main/app.css": "/assets/css/main/app.css",
     "/assets/css/pages/datatables.css": "/assets/css/pages/datatables.css",
