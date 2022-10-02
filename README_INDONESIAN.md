@@ -54,7 +54,7 @@ Harap ikuti [Panduan Berkontribusi](./CONTRIBUTING.md) sebelum berkontribusi.
 
 ## License
 
-Mazer di naungi oleh [MIT License](./LICENSE).
+Mazer berada di bawah [Lisensi MIT](./LICENSE).
 
 ## Author
 
