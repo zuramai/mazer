@@ -2,7 +2,7 @@
 
 ![Mazer Screenshot](https://user-images.githubusercontent.com/45036724/167523601-9d20fb17-1989-488f-b619-cb53c0db8898.png)
 
-<p align="center">Mazer adalah Template Dasbor Admin yang dapat membantu Anda berkembang lebih cepat. Dibuat dengan Bootstrap 5. Tidak ada ketergantungan jQuery.
+<p align="center">Mazer adalah Template Dasbor Admin yang dapat membantu Anda mengembangkan aplikasi dengan dasbor dengan cepat. Berbasis Bootstrap 5 dan tanpa JQuery.
 </p>
 <div align="center">
 
@@ -18,39 +18,38 @@
 	<a href="http://zuramai.github.io/mazer/docs">Halaman Dokumentasi</a>&nbsp;&nbsp;&nbsp;
 </p>
 
-## Penggunaan
-#### Menggunakan built-in siap pakai (disarankan)
+## Pemasangan
+#### Paket Installasi siap-pakai (disarankan)
 
-Unduh rilis terbaru dari [halaman rilis](https://github.com/zuramai/mazer/releases "halaman rilis").
-Buka file HTML indeks dan jelajahi kode sumbernya.
-#### Membangun sendiri
+Unduh rilis terbaru dari [halaman rilis](https://github.com/zuramai/mazer/releases "halaman rilis") lalu ekstrak pada *folder* yang diinginkan.
+#### kembangkan sendiri. (Untuk pengembangan lanjut)
 - Kloning repositori `git clone https://github.com/zuramai/mazer`
 - Instal dependensi menggunakan manajer paket node pilihan Anda. Misalnya jalankan `npm install`
 - File dibundel oleh Laravel Mix ke folder dist.
-    - Jalankan `npm run hot` dan buka `http://localhost:8080` untuk melihat salinan hot-reload dari file yang dihasilkan.
-    - Atau jalankan `npm run watch` (rebuild pada perubahan file) atau `npm run production` dan buka `index.html` dari folder dist.
+    - Jalankan `npm run hot` dan buka `http://localhost:8080` untuk melihat salinan **hot-reload** dari file yang di-*Generate*.
+    - Atau jalankan `npm run watch` (*rebuild* pada file yang dirubah) atau `npm run production` dan buka `index.html` dari folder `./dist`.
 
-### Membangun dengan Docker
+### Kembangkan dengan Docker
 - Kloning repositori `git clone https://github.com/zuramai/mazer`
 - Pastikan Anda telah menginstal dan menjalankan Docker:
     - `docker build -t mazer-frontend .`
-    - `docker run -it -d -p 8080:80 --nama mazer mazer-frontend`
+    - `docker run -it -d -p 8080:80 --name mazer mazer-frontend`
     - Buka `http://localhost:8080`
 
-## Sumber terbuka berbasis komunitas Mazer
+## Proyek sumber-terbuka yang memngunakan **Mazer**
 
 - [CodeIgniter 4](https://github.com/irsyadulibad/mazer-codeigniter) oleh [@irsyadulibad](https://github.com/irsyadulibad)
-- [Laravel + Livewire (Unmaintained)](https://github.com/zuramai/laravel-mazer) (tidak terawat, mencari pemelihara)
-- [NuxtJS (Unmaintained)](https://github.com/fzn0x/mazer-nuxt) oleh [@fzn0x](https://github.com/fzn0x) (tidak terawat)
+- [Laravel + Livewire *(Unmaintained)*](https://github.com/zuramai/laravel-mazer) (Sedang tidak/belum dikembangkan, mencari *Maintainer*)
+- [NuxtJS *(Unmaintained)*](https://github.com/fzn0x/mazer-nuxt) oleh [@fzn0x](https://github.com/fzn0x) (Sedang tidak/belum dikembangkan)
 - [React JS Component Library](https://github.com/fachryansyah/react-mazer-ui) oleh [@fachryansyah](https://github.com/fachryansyah/)
 - [Adonisjs 5](https://github.com/afman42/mazer-adonisjs) oleh [@afman42](https://github.com/afman42/)
 - [Django](https://github.com/bimbims125/mazer-django) oleh [@bimbims125](https://github.com/bimbims125/)
 - [Flask](https://github.com/antheiz/mazer-flask) oleh [@antheiz](https://github.com/antheiz/)
-- Apakah Anda membuat kerangka kerja atau alat lain? Buka `pull request` dan letakkan milik Anda di sini! 😃
+- Apakah anda membuat proyek menggunakan *Dashboard* Kami? Anda dapat meletakannya disini dengan melakukan `Pull Request`.
 
 ## Kontribusi
 
-Harap ikuti [Panduan Berkontribusi](./CONTRIBUTING.md) sebelum berkontribusi.
+Harap ikuti [Panduan Berkontribusi](./CONTRIBUTING.md) sebelum anda memulai kontribusi pada proyek kami.
 
 ## License
 
