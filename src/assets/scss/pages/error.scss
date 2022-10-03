@@ -2,14 +2,15 @@
 
 #error {
     background-color: $page-error-bg;
-    padding: 5rem 0;
+    padding: 2rem 0;
     .img-error {
-        width: 63%;
+        height: 435px;
+        object-fit: contain;
         padding: 3rem 0 3rem 0;
     }
     .error-title {
-        font-size: 4rem;
-        margin-top: 3rem;
+        font-size: 3rem;
+        margin-top: 1rem;
     }
 }
 body.theme-dark {
