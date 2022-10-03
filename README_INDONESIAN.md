@@ -49,7 +49,7 @@ Unduh rilis terbaru dari [halaman rilis](https://github.com/zuramai/mazer/releas
 
 ## Kontribusi
 
-Harap ikuti [Panduan Berkontribusi](./CONTRIBUTING.md) sebelum anda memulai kontribusi pada proyek kami.
+Harap ikuti [Panduan Berkontribusi](./CONTRIBUTING_ID.md) sebelum anda memulai kontribusi pada proyek kami.
 
 ## License
 
