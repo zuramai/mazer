@@ -57,8 +57,7 @@
                             <li
                                 class="menu-item {{ 'active' if (menuItem.url == filename or filename|startsWith(menuItem.key)) }} {{'has-sub' if menuItem.submenu.length > 0 }}">
                                 <a href="{{menuItem.url if menuItem.url!==undefined else '#'}}" class='menu-link'>
-                                    <i class="bi bi-{{ menuItem.icon }}"></i>
-                                    <span>{{menuItem.name}}</span>
+                                    <span><i class="bi bi-{{ menuItem.icon }}"></i> {{menuItem.name}}</span>
                                 </a>{% if menuItem.submenu.length > 0 %}
                                 <div
                                     class="submenu {{ 'active' if (sub.url and sub.url == filename or filename|startsWith(sidebarItem.key)) }}">
