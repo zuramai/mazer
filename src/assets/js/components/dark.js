@@ -37,8 +37,8 @@ if (toggler) {
  */
 function initTheme() {
   //If the user manually set a theme, we'll load that
-  let storedTheme
-  if ((storedTheme = localStorage.getItem(THEME_KEY))) {
+  const storedTheme = localStorage.getItem(THEME_KEY)
+  if (storedTheme) {
     return setTheme(storedTheme)
   }
 
