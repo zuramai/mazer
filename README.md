@@ -15,13 +15,18 @@
 <p align="center">
 	<a href="http://zuramai.github.io/mazer/demo">Demo Page</a>&nbsp;&nbsp;&nbsp;
 	<a href="http://zuramai.github.io/mazer/docs">Documentation Page</a>&nbsp;&nbsp;&nbsp;
+	<a href="https://github.com/zuramai/mazer/blob/main/README_INDONESIAN.md">Indonesian README</a>&nbsp;&nbsp;&nbsp;
 </p>
 
 ## Usage
+
 #### Using a ready-made built (recommended)
+
 Download the latest release from the [releases page](https://github.com/zuramai/mazer/releases "releases page").
 Open the index HTML file and explore the source code.
+
 #### Building yourself
+
 - Clone the repository `git clone https://github.com/zuramai/mazer`
 - Install dependencies using the node package manager of your choice. For example run `npm install` 
 - Files are bundled by Laravel Mix to the dist folder.
@@ -29,6 +34,7 @@ Open the index HTML file and explore the source code.
     - Or run `npm run watch`  (rebuilds on file changes) or `npm run production` and open `index.html` in from the dist folder.
 
 ### Building with Docker
+
 - Clone the repository `git clone https://github.com/zuramai/mazer`
 - Make sure you have Docker installed and run:
     - `docker build -t mazer-frontend .`
@@ -38,8 +44,8 @@ Open the index HTML file and explore the source code.
 ## Community Mazer-based open sources
 
 - [CodeIgniter 4](https://github.com/irsyadulibad/mazer-codeigniter) by [@irsyadulibad](https://github.com/irsyadulibad)
-- [Laravel + Livewire (Unmaintained)](https://github.com/zuramai/laravel-mazer) (unmaintained, looking for maintainer)
-- [NuxtJS (Unmaintained)](https://github.com/fzn0x/mazer-nuxt) by [@fzn0x](https://github.com/fzn0x) (unmaintained)
+- [Laravel + Livewire](https://github.com/zuramai/laravel-mazer) (unmaintained, looking for maintainer)
+- [Nuxt](https://github.com/fzn0x/mazer-nuxt) by [@fzn0x](https://github.com/fzn0x)
 - [React JS Component Library](https://github.com/fachryansyah/react-mazer-ui) by [@fachryansyah](https://github.com/fachryansyah/)
 - [Adonisjs 5](https://github.com/afman42/mazer-adonisjs) by [@afman42](https://github.com/afman42/)
 - [Django](https://github.com/bimbims125/mazer-django) by [@bimbims125](https://github.com/bimbims125/)
@@ -60,6 +66,6 @@ Mazer is created by <a href="https://saugi.me">Saugi</a>.
 
 ## Donation
 
-You can support Ahmad Saugi at [Ko-fi](https://ko-fi.com/saugi) or [Trakteer](https://trakteer.id/saugi).
+You can support me at [Github Sponsors](https://github.com/zuramai), [Ko-fi](https://ko-fi.com/saugi) or [Trakteer](https://trakteer.id/saugi).
 
 <a href="https://buymeacoffee.com/saugi" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
