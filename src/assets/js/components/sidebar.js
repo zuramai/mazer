@@ -125,7 +125,7 @@ class Sidebar {
    * Create Sidebar Backdrop
    */
   createBackdrop() {
-    if (document.body.clientWidth < 1200) return
+    if (window.innerWidth > 1200) return
     this.deleteBackdrop()
     const backdrop = document.createElement("div")
     backdrop.classList.add("sidebar-backdrop")
