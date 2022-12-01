@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.10.5 (2022-05-25)
+ * Version: 5.10.6 (2022-10-19)
  */
 (function () {
     'use strict';
@@ -11440,7 +11440,7 @@
             updateResizeRect(e);
           }
         });
-        editor.on('nodechange ResizeEditor ResizeWindow ResizeContent drop FullscreenStateChanged', throttledUpdateResizeRect);
+        editor.on('NodeChange ResizeEditor ResizeWindow ResizeContent drop', throttledUpdateResizeRect);
         editor.on('keyup compositionend', function (e) {
           if (selectedElm && selectedElm.nodeName === 'TABLE') {
             throttledUpdateResizeRect(e);
@@ -13230,6 +13230,9 @@
     var isValidPrefixAttrName = function (name) {
       return name.indexOf('data-') === 0 || name.indexOf('aria-') === 0;
     };
+    var lazyTempDocument$1 = cached(function () {
+      return document.implementation.createHTMLDocument('parser');
+    });
     var findMatchingEndTagIndex = function (schema, html, startIndex) {
       var startTagRegExp = /<([!?\/])?([A-Za-z0-9\-_:.]+)/g;
       var endTagRegExp = /(?:\s(?:[^'">]+(?:"[^"]*"|'[^']*'))*[^"'>]*(?:"[^">]*|'[^'>]*)?|\s*|\/)>/g;
@@ -13300,12 +13303,11 @@
       }
     };
     var SaxParser = function (settings, schema) {
-      var _a;
       if (schema === void 0) {
         schema = Schema();
       }
       settings = settings || {};
-      var doc = (_a = settings.document) !== null && _a !== void 0 ? _a : document;
+      var doc = lazyTempDocument$1();
       var form = doc.createElement('form');
       if (settings.fix_self_closing !== false) {
         settings.fix_self_closing = true;
@@ -29026,8 +29028,8 @@
       suffix: null,
       $: DomQuery,
       majorVersion: '5',
-      minorVersion: '10.5',
-      releaseDate: '2022-05-25',
+      minorVersion: '10.6',
+      releaseDate: '2022-10-19',
       editors: legacyEditors,
       i18n: I18n,
       activeEditor: null,
