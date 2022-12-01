@@ -8,7 +8,7 @@ specifiers:
   '@popperjs/core': ^2.11.6
   apexcharts: ^3.36.3
   bestzip: ^2.2.1
-  bootstrap: 5.2.0
+  bootstrap: 5.2.3
   bootstrap-icons: ^1.10.2
   browser-sync: ^2.27.10
   browser-sync-webpack-plugin: ^2.3.0
@@ -60,7 +60,7 @@ dependencies:
   '@icon/dripicons': 2.0.0-alpha.3
   '@popperjs/core': 2.11.6
   apexcharts: 3.36.3
-  bootstrap: 5.2.0_@popperjs+core@2.11.6
+  bootstrap: 5.2.3_@popperjs+core@2.11.6
   bootstrap-icons: 1.10.2
   chart.js: 3.9.1
   choices.js: 9.1.0
@@ -2453,10 +2453,10 @@ packages:
     resolution: {integrity: sha512-PTPYadRn1AMGr+QTSxe4ZCc+Wzv9DGZxbi3lNse/dajqV31n2/wl/7NX78ZpkvFgRNmH4ogdIQPQmxAfhEV6nA==}
     dev: false
 
-  /bootstrap/5.2.0_@popperjs+core@2.11.6:
-    resolution: {integrity: sha512-qlnS9GL6YZE6Wnef46GxGv1UpGGzAwO0aPL1yOjzDIJpeApeMvqV24iL+pjr2kU4dduoBA9fINKWKgMToobx9A==}
+  /bootstrap/5.2.3_@popperjs+core@2.11.6:
+    resolution: {integrity: sha512-cEKPM+fwb3cT8NzQZYEu4HilJ3anCrWqh3CHAok1p9jXqMPsPTBhU25fBckEJHJ/p+tTxTFTsFQGM+gaHpi3QQ==}
     peerDependencies:
-      '@popperjs/core': ^2.11.5
+      '@popperjs/core': ^2.11.6
     dependencies:
       '@popperjs/core': 2.11.6
     dev: false

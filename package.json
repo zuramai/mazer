@@ -36,7 +36,7 @@
     "@icon/dripicons": "^2.0.0-alpha.3",
     "@popperjs/core": "^2.11.6",
     "apexcharts": "^3.36.3",
-    "bootstrap": "5.2.0",
+    "bootstrap": "5.2.3",
     "bootstrap-icons": "^1.10.2",
     "chart.js": "^3.9.1",
     "choices.js": "^9.1.0",
