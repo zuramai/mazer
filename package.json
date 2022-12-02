@@ -1,6 +1,6 @@
 {
   "name": "mazer",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Free and Open-source Bootstrap 5 Admin Dashboard Template and Landing Page",
   "scripts": {
     "dev": "mix",
