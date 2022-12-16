@@ -42,6 +42,23 @@ var locale = {
     MM: '%d 個月',
     y: '1 年',
     yy: '%d 年'
+  },
+  meridiem: function meridiem(hour, minute) {
+    var hm = hour * 100 + minute;
+
+    if (hm < 600) {
+      return '凌晨';
+    } else if (hm < 900) {
+      return '早上';
+    } else if (hm < 1100) {
+      return '上午';
+    } else if (hm < 1300) {
+      return '中午';
+    } else if (hm < 1800) {
+      return '下午';
+    }
+
+    return '晚上';
   }
 };
 dayjs.locale(locale, null, true);
