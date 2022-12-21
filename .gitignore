@@ -6,3 +6,4 @@
 package-lock.json
 
 dist.zip
+.yarn
