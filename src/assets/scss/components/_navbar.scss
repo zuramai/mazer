@@ -1,6 +1,8 @@
 
 .layout-navbar {
     --navbar-height: 90px;
+}
+.layout-navbar.navbar-fixed {
     display: block !important;
 }
 .navbar-fixed > header {
