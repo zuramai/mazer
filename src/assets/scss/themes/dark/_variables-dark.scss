@@ -78,7 +78,8 @@ $mark-bg:                     #fcf8e3;
 
 $table-color:                 $body-color;
 $table-border-color:          rgb(63, 63, 63);
-$table-striped-bg:            rgba($black, $table-striped-bg-factor);
+$table-striped-bg:            rgba(170, 168, 168, 0.05);
+$table-striped-color:            #c2c2d9;
 $table-active-bg:             rgba($black, $table-active-bg-factor);
 $table-hover-color:           $white;
 $table-hover-bg:              rgba($white, $table-hover-bg-factor);
@@ -141,13 +142,13 @@ $nav-tabs-link-active-border-color: $gray-300 $gray-300 $nav-tabs-link-active-bg
 
 
 $dropdown-color:                    #92929F;
-$dropdown-bg:                       #161b22;
+$dropdown-bg:                       #2d2d40;
 $dropdown-border-color:             rgba($black, .15);
 $dropdown-divider-bg:               rgb(189, 199, 209);
 $dropdown-box-shadow:               1px 4px 15px #f4f5f9;
 $dropdown-link-color:               $dropdown-color;
-$dropdown-link-hover-color:         $white;
-$dropdown-link-hover-bg:            tint-color($dropdown-bg, 5%);
+$dropdown-link-hover-color:         shade-color($dropdown-link-color, 10%);
+$dropdown-link-hover-bg:            tint-color($dropdown-bg, 7%);
 $dropdown-link-disabled-color:      $gray-600;
 $dropdown-header-color:             $gray-600;
 $dropdown-dark-color:               $gray-300;
@@ -187,12 +188,6 @@ $tooltip-bg:                        $black;
 
 $popover-bg:                        $white;
 $popover-border-color:              rgba($black, .2);
-
-$toast-background-color:            rgba($white, .85);
-$toast-border-color:                rgba(0, 0, 0, .1);
-$toast-header-color:                $gray-600;
-$toast-header-background-color:     rgba($white, .85);
-$toast-header-border-color:         rgba(0, 0, 0, .05);
 
 $badge-color:                       $white;
 $border-color:                      $gray-600;
@@ -234,8 +229,9 @@ $carousel-dark-caption-color:        $black;
 // Toasts
 $toast-color:                       $body-color ;
 $toast-background-color:            rgba(44, 46, 66, .85) ;
+$toast-border-color:                rgba(0, 0, 0, .1);
 $toast-header-color:                $white;
-$toast-header-background-color:     #12121e;
+$toast-header-background-color:     #35354d;
 
 
 
