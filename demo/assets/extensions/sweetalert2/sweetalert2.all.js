@@ -1,5 +1,5 @@
 /*!
-* sweetalert2 v11.6.15
+* sweetalert2 v11.6.16
 * Released under the MIT License.
 */
 (function (global, factory) {
@@ -1748,11 +1748,10 @@
   };
 
   /**
-   * @param {SweetAlertOptions} innerParams
    * @param {number} index
    * @param {number} increment
    */
-  const setFocus = (innerParams, index, increment) => {
+  const setFocus = (index, increment) => {
     const focusableElements = getFocusableElements();
     // search for visible elements and select the next possible match
     if (focusableElements.length) {
@@ -1777,10 +1776,10 @@
 
   /**
    * @param {SweetAlert2} instance
-   * @param {KeyboardEvent} e
+   * @param {KeyboardEvent} event
    * @param {Function} dismissWith
    */
-  const keydownHandler = (instance, e, dismissWith) => {
+  const keydownHandler = (instance, event, dismissWith) => {
     const innerParams = privateProps.innerParams.get(instance);
     if (!innerParams) {
       return; // This instance has already been destroyed
@@ -1790,60 +1789,59 @@
     // https://developer.mozilla.org/en-US/docs/Web/API/Document/keydown_event#ignoring_keydown_during_ime_composition
     // https://github.com/sweetalert2/sweetalert2/issues/720
     // https://github.com/sweetalert2/sweetalert2/issues/2406
-    if (e.isComposing || e.keyCode === 229) {
+    if (event.isComposing || event.keyCode === 229) {
       return;
     }
     if (innerParams.stopKeydownPropagation) {
-      e.stopPropagation();
+      event.stopPropagation();
     }
 
     // ENTER
-    if (e.key === 'Enter') {
-      handleEnter(instance, e, innerParams);
+    if (event.key === 'Enter') {
+      handleEnter(instance, event, innerParams);
     }
 
     // TAB
-    else if (e.key === 'Tab') {
-      handleTab(e, innerParams);
+    else if (event.key === 'Tab') {
+      handleTab(event);
     }
 
     // ARROWS - switch focus between buttons
-    else if ([...arrowKeysNextButton, ...arrowKeysPreviousButton].includes(e.key)) {
-      handleArrows(e.key);
+    else if ([...arrowKeysNextButton, ...arrowKeysPreviousButton].includes(event.key)) {
+      handleArrows(event.key);
     }
 
     // ESC
-    else if (e.key === 'Escape') {
-      handleEsc(e, innerParams, dismissWith);
+    else if (event.key === 'Escape') {
+      handleEsc(event, innerParams, dismissWith);
     }
   };
 
   /**
    * @param {SweetAlert2} instance
-   * @param {KeyboardEvent} e
+   * @param {KeyboardEvent} event
    * @param {SweetAlertOptions} innerParams
    */
-  const handleEnter = (instance, e, innerParams) => {
+  const handleEnter = (instance, event, innerParams) => {
     // https://github.com/sweetalert2/sweetalert2/issues/2386
     if (!callIfFunction(innerParams.allowEnterKey)) {
       return;
     }
-    if (e.target && instance.getInput() && e.target instanceof HTMLElement && e.target.outerHTML === instance.getInput().outerHTML) {
+    if (event.target && instance.getInput() && event.target instanceof HTMLElement && event.target.outerHTML === instance.getInput().outerHTML) {
       if (['textarea', 'file'].includes(innerParams.input)) {
         return; // do not submit
       }
 
       clickConfirm();
-      e.preventDefault();
+      event.preventDefault();
     }
   };
 
   /**
-   * @param {KeyboardEvent} e
-   * @param {SweetAlertOptions} innerParams
+   * @param {KeyboardEvent} event
    */
-  const handleTab = (e, innerParams) => {
-    const targetElement = e.target;
+  const handleTab = event => {
+    const targetElement = event.target;
     const focusableElements = getFocusableElements();
     let btnIndex = -1;
     for (let i = 0; i < focusableElements.length; i++) {
@@ -1854,16 +1852,16 @@
     }
 
     // Cycle to the next button
-    if (!e.shiftKey) {
-      setFocus(innerParams, btnIndex, 1);
+    if (!event.shiftKey) {
+      setFocus(btnIndex, 1);
     }
 
     // Cycle to the prev button
     else {
-      setFocus(innerParams, btnIndex, -1);
+      setFocus(btnIndex, -1);
     }
-    e.stopPropagation();
-    e.preventDefault();
+    event.stopPropagation();
+    event.preventDefault();
   };
 
   /**
@@ -1893,13 +1891,13 @@
   };
 
   /**
-   * @param {KeyboardEvent} e
+   * @param {KeyboardEvent} event
    * @param {SweetAlertOptions} innerParams
    * @param {Function} dismissWith
    */
-  const handleEsc = (e, innerParams, dismissWith) => {
+  const handleEsc = (event, innerParams, dismissWith) => {
     if (callIfFunction(innerParams.allowEscapeKey)) {
-      e.preventDefault();
+      event.preventDefault();
       dismissWith(DismissReason.esc);
     }
   };
@@ -1988,18 +1986,18 @@
     const container = getContainer();
     let preventTouchMove;
     /**
-     * @param {TouchEvent} e
+     * @param {TouchEvent} event
      */
-    container.ontouchstart = e => {
-      preventTouchMove = shouldPreventTouchMove(e);
+    container.ontouchstart = event => {
+      preventTouchMove = shouldPreventTouchMove(event);
     };
     /**
-     * @param {TouchEvent} e
+     * @param {TouchEvent} event
      */
-    container.ontouchmove = e => {
+    container.ontouchmove = event => {
       if (preventTouchMove) {
-        e.preventDefault();
-        e.stopPropagation();
+        event.preventDefault();
+        event.stopPropagation();
       }
     };
   };
@@ -3874,7 +3872,7 @@
       return;
     }
     if (!focusButton(domCache, innerParams)) {
-      setFocus(innerParams, -1, 1);
+      setFocus(-1, 1);
     }
   };
 
@@ -3945,7 +3943,7 @@
     };
   });
   SweetAlert.DismissReason = DismissReason;
-  SweetAlert.version = '11.6.15';
+  SweetAlert.version = '11.6.16';
 
   const Swal = SweetAlert;
   // @ts-ignore
