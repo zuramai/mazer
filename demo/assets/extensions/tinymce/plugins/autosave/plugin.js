@@ -1,22 +1,36 @@
 /**
- * Copyright (c) Tiny Technologies, Inc. All rights reserved.
- * Licensed under the LGPL or a commercial license.
- * For LGPL see License.txt in the project root for license information.
- * For commercial licenses see https://www.tiny.cloud/
- *
- * Version: 5.10.7 (2022-12-06)
+ * TinyMCE version 6.3.1 (2022-12-06)
  */
+
 (function () {
     'use strict';
 
     var global$4 = tinymce.util.Tools.resolve('tinymce.PluginManager');
 
-    var eq = function (t) {
-      return function (a) {
-        return t === a;
-      };
+    const hasProto = (v, constructor, predicate) => {
+      var _a;
+      if (predicate(v, constructor.prototype)) {
+        return true;
+      } else {
+        return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+      }
     };
-    var isUndefined = eq(undefined);
+    const typeOf = x => {
+      const t = typeof x;
+      if (x === null) {
+        return 'null';
+      } else if (t === 'object' && Array.isArray(x)) {
+        return 'array';
+      } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+        return 'string';
+      } else {
+        return t;
+      }
+    };
+    const isType = type => value => typeOf(value) === type;
+    const eq = t => a => t === a;
+    const isString = isType('string');
+    const isUndefined = eq(undefined);
 
     var global$3 = tinymce.util.Tools.resolve('tinymce.util.Delay');
 
@@ -24,74 +38,98 @@
 
     var global$1 = tinymce.util.Tools.resolve('tinymce.util.Tools');
 
-    var fireRestoreDraft = function (editor) {
-      return editor.fire('RestoreDraft');
-    };
-    var fireStoreDraft = function (editor) {
-      return editor.fire('StoreDraft');
-    };
-    var fireRemoveDraft = function (editor) {
-      return editor.fire('RemoveDraft');
-    };
+    const fireRestoreDraft = editor => editor.dispatch('RestoreDraft');
+    const fireStoreDraft = editor => editor.dispatch('StoreDraft');
+    const fireRemoveDraft = editor => editor.dispatch('RemoveDraft');
 
-    var parse = function (timeString, defaultTime) {
-      var multiples = {
+    const parse = timeString => {
+      const multiples = {
         s: 1000,
         m: 60000
       };
-      var toParse = timeString || defaultTime;
-      var parsedTime = /^(\d+)([ms]?)$/.exec('' + toParse);
-      return (parsedTime[2] ? multiples[parsedTime[2]] : 1) * parseInt(toParse, 10);
+      const parsedTime = /^(\d+)([ms]?)$/.exec(timeString);
+      return (parsedTime && parsedTime[2] ? multiples[parsedTime[2]] : 1) * parseInt(timeString, 10);
     };
 
-    var shouldAskBeforeUnload = function (editor) {
-      return editor.getParam('autosave_ask_before_unload', true);
+    const option = name => editor => editor.options.get(name);
+    const register$1 = editor => {
+      const registerOption = editor.options.register;
+      const timeProcessor = value => {
+        const valid = isString(value);
+        if (valid) {
+          return {
+            value: parse(value),
+            valid
+          };
+        } else {
+          return {
+            valid: false,
+            message: 'Must be a string.'
+          };
+        }
+      };
+      registerOption('autosave_ask_before_unload', {
+        processor: 'boolean',
+        default: true
+      });
+      registerOption('autosave_prefix', {
+        processor: 'string',
+        default: 'tinymce-autosave-{path}{query}{hash}-{id}-'
+      });
+      registerOption('autosave_restore_when_empty', {
+        processor: 'boolean',
+        default: false
+      });
+      registerOption('autosave_interval', {
+        processor: timeProcessor,
+        default: '30s'
+      });
+      registerOption('autosave_retention', {
+        processor: timeProcessor,
+        default: '20m'
+      });
     };
-    var getAutoSavePrefix = function (editor) {
-      var location = document.location;
-      return editor.getParam('autosave_prefix', 'tinymce-autosave-{path}{query}{hash}-{id}-').replace(/{path}/g, location.pathname).replace(/{query}/g, location.search).replace(/{hash}/g, location.hash).replace(/{id}/g, editor.id);
-    };
-    var shouldRestoreWhenEmpty = function (editor) {
-      return editor.getParam('autosave_restore_when_empty', false);
-    };
-    var getAutoSaveInterval = function (editor) {
-      return parse(editor.getParam('autosave_interval'), '30s');
-    };
-    var getAutoSaveRetention = function (editor) {
-      return parse(editor.getParam('autosave_retention'), '20m');
+    const shouldAskBeforeUnload = option('autosave_ask_before_unload');
+    const shouldRestoreWhenEmpty = option('autosave_restore_when_empty');
+    const getAutoSaveInterval = option('autosave_interval');
+    const getAutoSaveRetention = option('autosave_retention');
+    const getAutoSavePrefix = editor => {
+      const location = document.location;
+      return editor.options.get('autosave_prefix').replace(/{path}/g, location.pathname).replace(/{query}/g, location.search).replace(/{hash}/g, location.hash).replace(/{id}/g, editor.id);
     };
 
-    var isEmpty = function (editor, html) {
+    const isEmpty = (editor, html) => {
       if (isUndefined(html)) {
         return editor.dom.isEmpty(editor.getBody());
       } else {
-        var trimmedHtml = global$1.trim(html);
+        const trimmedHtml = global$1.trim(html);
         if (trimmedHtml === '') {
           return true;
         } else {
-          var fragment = new DOMParser().parseFromString(trimmedHtml, 'text/html');
+          const fragment = new DOMParser().parseFromString(trimmedHtml, 'text/html');
           return editor.dom.isEmpty(fragment);
         }
       }
     };
-    var hasDraft = function (editor) {
-      var time = parseInt(global$2.getItem(getAutoSavePrefix(editor) + 'time'), 10) || 0;
+    const hasDraft = editor => {
+      var _a;
+      const time = parseInt((_a = global$2.getItem(getAutoSavePrefix(editor) + 'time')) !== null && _a !== void 0 ? _a : '0', 10) || 0;
       if (new Date().getTime() - time > getAutoSaveRetention(editor)) {
         removeDraft(editor, false);
         return false;
       }
       return true;
     };
-    var removeDraft = function (editor, fire) {
-      var prefix = getAutoSavePrefix(editor);
+    const removeDraft = (editor, fire) => {
+      const prefix = getAutoSavePrefix(editor);
       global$2.removeItem(prefix + 'draft');
       global$2.removeItem(prefix + 'time');
       if (fire !== false) {
         fireRemoveDraft(editor);
       }
     };
-    var storeDraft = function (editor) {
-      var prefix = getAutoSavePrefix(editor);
+    const storeDraft = editor => {
+      const prefix = getAutoSavePrefix(editor);
       if (!isEmpty(editor) && editor.isDirty()) {
         global$2.setItem(prefix + 'draft', editor.getContent({
           format: 'raw',
@@ -101,53 +139,42 @@
         fireStoreDraft(editor);
       }
     };
-    var restoreDraft = function (editor) {
-      var prefix = getAutoSavePrefix(editor);
+    const restoreDraft = editor => {
+      var _a;
+      const prefix = getAutoSavePrefix(editor);
       if (hasDraft(editor)) {
-        editor.setContent(global$2.getItem(prefix + 'draft'), { format: 'raw' });
+        editor.setContent((_a = global$2.getItem(prefix + 'draft')) !== null && _a !== void 0 ? _a : '', { format: 'raw' });
         fireRestoreDraft(editor);
       }
     };
-    var startStoreDraft = function (editor) {
-      var interval = getAutoSaveInterval(editor);
-      global$3.setEditorInterval(editor, function () {
+    const startStoreDraft = editor => {
+      const interval = getAutoSaveInterval(editor);
+      global$3.setEditorInterval(editor, () => {
         storeDraft(editor);
       }, interval);
     };
-    var restoreLastDraft = function (editor) {
-      editor.undoManager.transact(function () {
+    const restoreLastDraft = editor => {
+      editor.undoManager.transact(() => {
         restoreDraft(editor);
         removeDraft(editor);
       });
       editor.focus();
     };
 
-    var get = function (editor) {
-      return {
-        hasDraft: function () {
-          return hasDraft(editor);
-        },
-        storeDraft: function () {
-          return storeDraft(editor);
-        },
-        restoreDraft: function () {
-          return restoreDraft(editor);
-        },
-        removeDraft: function (fire) {
-          return removeDraft(editor, fire);
-        },
-        isEmpty: function (html) {
-          return isEmpty(editor, html);
-        }
-      };
-    };
+    const get = editor => ({
+      hasDraft: () => hasDraft(editor),
+      storeDraft: () => storeDraft(editor),
+      restoreDraft: () => restoreDraft(editor),
+      removeDraft: fire => removeDraft(editor, fire),
+      isEmpty: html => isEmpty(editor, html)
+    });
 
     var global = tinymce.util.Tools.resolve('tinymce.EditorManager');
 
-    var setup = function (editor) {
-      editor.editorManager.on('BeforeUnload', function (e) {
-        var msg;
-        global$1.each(global.get(), function (editor) {
+    const setup = editor => {
+      editor.editorManager.on('BeforeUnload', e => {
+        let msg;
+        global$1.each(global.get(), editor => {
           if (editor.plugins.autosave) {
             editor.plugins.autosave.storeDraft();
           }
@@ -162,51 +189,45 @@
       });
     };
 
-    var makeSetupHandler = function (editor) {
-      return function (api) {
-        api.setDisabled(!hasDraft(editor));
-        var editorEventCallback = function () {
-          return api.setDisabled(!hasDraft(editor));
-        };
-        editor.on('StoreDraft RestoreDraft RemoveDraft', editorEventCallback);
-        return function () {
-          return editor.off('StoreDraft RestoreDraft RemoveDraft', editorEventCallback);
-        };
-      };
+    const makeSetupHandler = editor => api => {
+      api.setEnabled(hasDraft(editor));
+      const editorEventCallback = () => api.setEnabled(hasDraft(editor));
+      editor.on('StoreDraft RestoreDraft RemoveDraft', editorEventCallback);
+      return () => editor.off('StoreDraft RestoreDraft RemoveDraft', editorEventCallback);
     };
-    var register = function (editor) {
+    const register = editor => {
       startStoreDraft(editor);
+      const onAction = () => {
+        restoreLastDraft(editor);
+      };
       editor.ui.registry.addButton('restoredraft', {
         tooltip: 'Restore last draft',
         icon: 'restore-draft',
-        onAction: function () {
-          restoreLastDraft(editor);
-        },
+        onAction,
         onSetup: makeSetupHandler(editor)
       });
       editor.ui.registry.addMenuItem('restoredraft', {
         text: 'Restore last draft',
         icon: 'restore-draft',
-        onAction: function () {
-          restoreLastDraft(editor);
-        },
+        onAction,
         onSetup: makeSetupHandler(editor)
       });
     };
 
-    function Plugin () {
-      global$4.add('autosave', function (editor) {
+    var Plugin = () => {
+      global$4.add('autosave', editor => {
+        register$1(editor);
         setup(editor);
         register(editor);
-        editor.on('init', function () {
+        editor.on('init', () => {
           if (shouldRestoreWhenEmpty(editor) && editor.dom.isEmpty(editor.getBody())) {
             restoreDraft(editor);
           }
         });
         return get(editor);
       });
-    }
+    };
 
     Plugin();
 
-}());
+})();

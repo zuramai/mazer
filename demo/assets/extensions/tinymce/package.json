@@ -1,16 +1,16 @@
 {
 	"name": "tinymce",
-	"version": "5.10.7",
+	"version": "6.3.1",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/tinymce/tinymce.git",
 		"directory": "modules/tinymce"
 	},
 	"description": "Web based JavaScript HTML WYSIWYG editor control.",
-	"author": "Tiny Technologies, Inc",
+	"author": "Ephox Corporation DBA Tiny Technologies, Inc",
 	"main": "tinymce.js",
 	"types": "tinymce.d.ts",
-	"license": "LGPL-2.1",
+	"license": "MIT",
 	"keywords": [
 		"wysiwyg",
 		"tinymce",

@@ -1,11 +1,7 @@
 /**
- * Copyright (c) Tiny Technologies, Inc. All rights reserved.
- * Licensed under the LGPL or a commercial license.
- * For LGPL see License.txt in the project root for license information.
- * For commercial licenses see https://www.tiny.cloud/
- *
- * Version: 5.10.7 (2022-12-06)
+ * TinyMCE version 6.3.1 (2022-12-06)
  */
+
 (function () {
     'use strict';
 
@@ -13,38 +9,44 @@
 
     var global = tinymce.util.Tools.resolve('tinymce.Env');
 
-    var getSeparatorHtml = function (editor) {
-      return editor.getParam('pagebreak_separator', '<!-- pagebreak -->');
+    const option = name => editor => editor.options.get(name);
+    const register$2 = editor => {
+      const registerOption = editor.options.register;
+      registerOption('pagebreak_separator', {
+        processor: 'string',
+        default: '<!-- pagebreak -->'
+      });
+      registerOption('pagebreak_split_block', {
+        processor: 'boolean',
+        default: false
+      });
     };
-    var shouldSplitBlock = function (editor) {
-      return editor.getParam('pagebreak_split_block', false);
-    };
+    const getSeparatorHtml = option('pagebreak_separator');
+    const shouldSplitBlock = option('pagebreak_split_block');
 
-    var pageBreakClass = 'mce-pagebreak';
-    var getPlaceholderHtml = function (shouldSplitBlock) {
-      var html = '<img src="' + global.transparentSrc + '" class="' + pageBreakClass + '" data-mce-resize="false" data-mce-placeholder />';
-      return shouldSplitBlock ? '<p>' + html + '</p>' : html;
+    const pageBreakClass = 'mce-pagebreak';
+    const getPlaceholderHtml = shouldSplitBlock => {
+      const html = `<img src="${ global.transparentSrc }" class="${ pageBreakClass }" data-mce-resize="false" data-mce-placeholder />`;
+      return shouldSplitBlock ? `<p>${ html }</p>` : html;
     };
-    var setup$1 = function (editor) {
-      var separatorHtml = getSeparatorHtml(editor);
-      var shouldSplitBlock$1 = function () {
-        return shouldSplitBlock(editor);
-      };
-      var pageBreakSeparatorRegExp = new RegExp(separatorHtml.replace(/[\?\.\*\[\]\(\)\{\}\+\^\$\:]/g, function (a) {
+    const setup$1 = editor => {
+      const separatorHtml = getSeparatorHtml(editor);
+      const shouldSplitBlock$1 = () => shouldSplitBlock(editor);
+      const pageBreakSeparatorRegExp = new RegExp(separatorHtml.replace(/[\?\.\*\[\]\(\)\{\}\+\^\$\:]/g, a => {
         return '\\' + a;
       }), 'gi');
-      editor.on('BeforeSetContent', function (e) {
+      editor.on('BeforeSetContent', e => {
         e.content = e.content.replace(pageBreakSeparatorRegExp, getPlaceholderHtml(shouldSplitBlock$1()));
       });
-      editor.on('PreInit', function () {
-        editor.serializer.addNodeFilter('img', function (nodes) {
-          var i = nodes.length, node, className;
+      editor.on('PreInit', () => {
+        editor.serializer.addNodeFilter('img', nodes => {
+          let i = nodes.length, node, className;
           while (i--) {
             node = nodes[i];
             className = node.attr('class');
             if (className && className.indexOf(pageBreakClass) !== -1) {
-              var parentNode = node.parent;
-              if (editor.schema.getBlockElements()[parentNode.name] && shouldSplitBlock$1()) {
+              const parentNode = node.parent;
+              if (parentNode && editor.schema.getBlockElements()[parentNode.name] && shouldSplitBlock$1()) {
                 parentNode.type = 3;
                 parentNode.value = separatorHtml;
                 parentNode.raw = true;
@@ -60,45 +62,44 @@
       });
     };
 
-    var register$1 = function (editor) {
-      editor.addCommand('mcePageBreak', function () {
+    const register$1 = editor => {
+      editor.addCommand('mcePageBreak', () => {
         editor.insertContent(getPlaceholderHtml(shouldSplitBlock(editor)));
       });
     };
 
-    var setup = function (editor) {
-      editor.on('ResolveName', function (e) {
+    const setup = editor => {
+      editor.on('ResolveName', e => {
         if (e.target.nodeName === 'IMG' && editor.dom.hasClass(e.target, pageBreakClass)) {
           e.name = 'pagebreak';
         }
       });
     };
 
-    var register = function (editor) {
-      var onAction = function () {
-        return editor.execCommand('mcePageBreak');
-      };
+    const register = editor => {
+      const onAction = () => editor.execCommand('mcePageBreak');
       editor.ui.registry.addButton('pagebreak', {
         icon: 'page-break',
         tooltip: 'Page break',
-        onAction: onAction
+        onAction
       });
       editor.ui.registry.addMenuItem('pagebreak', {
         text: 'Page break',
         icon: 'page-break',
-        onAction: onAction
+        onAction
       });
     };
 
-    function Plugin () {
-      global$1.add('pagebreak', function (editor) {
+    var Plugin = () => {
+      global$1.add('pagebreak', editor => {
+        register$2(editor);
         register$1(editor);
         register(editor);
         setup$1(editor);
         setup(editor);
       });
-    }
+    };
 
     Plugin();
 
-}());
+})();

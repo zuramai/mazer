@@ -1,213 +1,228 @@
 /**
- * Copyright (c) Tiny Technologies, Inc. All rights reserved.
- * Licensed under the LGPL or a commercial license.
- * For LGPL see License.txt in the project root for license information.
- * For commercial licenses see https://www.tiny.cloud/
- *
- * Version: 5.10.7 (2022-12-06)
+ * TinyMCE version 6.3.1 (2022-12-06)
  */
+
 (function () {
-    'use strict';
+  'use strict';
 
-    var global$1 = tinymce.util.Tools.resolve('tinymce.PluginManager');
+  var global$1 = tinymce.util.Tools.resolve('tinymce.PluginManager');
 
-    var checkRange = function (str, substr, start) {
-      return substr === '' || str.length >= substr.length && str.substr(start, start + substr.length) === substr;
-    };
-    var contains = function (str, substr) {
-      return str.indexOf(substr) !== -1;
-    };
-    var startsWith = function (str, prefix) {
-      return checkRange(str, prefix, 0);
-    };
+  const link = () => /(?:[A-Za-z][A-Za-z\d.+-]{0,14}:\/\/(?:[-.~*+=!&;:'%@?^${}(),\w]+@)?|www\.|[-;:&=+$,.\w]+@)[A-Za-z\d-]+(?:\.[A-Za-z\d-]+)*(?::\d+)?(?:\/(?:[-.~*+=!;:'%@$(),\/\w]*[-~*+=%@$()\/\w])?)?(?:\?(?:[-.~*+=!&;:'%@?^${}(),\/\w]+))?(?:#(?:[-.~*+=!&;:'%@?^${}(),\/\w]+))?/g;
 
-    var global = tinymce.util.Tools.resolve('tinymce.Env');
+  const option = name => editor => editor.options.get(name);
+  const register = editor => {
+    const registerOption = editor.options.register;
+    registerOption('autolink_pattern', {
+      processor: 'regexp',
+      default: new RegExp('^' + link().source + '$', 'i')
+    });
+    registerOption('link_default_target', { processor: 'string' });
+    registerOption('link_default_protocol', {
+      processor: 'string',
+      default: 'https'
+    });
+  };
+  const getAutoLinkPattern = option('autolink_pattern');
+  const getDefaultLinkTarget = option('link_default_target');
+  const getDefaultLinkProtocol = option('link_default_protocol');
+  const allowUnsafeLinkTarget = option('allow_unsafe_link_target');
 
-    var link = function () {
-      return /(?:[A-Za-z][A-Za-z\d.+-]{0,14}:\/\/(?:[-.~*+=!&;:'%@?^${}(),\w]+@)?|www\.|[-;:&=+$,.\w]+@)[A-Za-z\d-]+(?:\.[A-Za-z\d-]+)*(?::\d+)?(?:\/(?:[-.~*+=!;:'%@$(),\/\w]*[-~*+=%@$()\/\w])?)?(?:\?(?:[-.~*+=!&;:'%@?^${}(),\/\w]+))?(?:#(?:[-.~*+=!&;:'%@?^${}(),\/\w]+))?/g;
-    };
-
-    var defaultLinkPattern = new RegExp('^' + link().source + '$', 'i');
-    var getAutoLinkPattern = function (editor) {
-      return editor.getParam('autolink_pattern', defaultLinkPattern);
-    };
-    var getDefaultLinkTarget = function (editor) {
-      return editor.getParam('default_link_target', false);
-    };
-    var getDefaultLinkProtocol = function (editor) {
-      return editor.getParam('link_default_protocol', 'http', 'string');
-    };
-
-    var rangeEqualsBracketOrSpace = function (rangeString) {
-      return /^[(\[{ \u00a0]$/.test(rangeString);
-    };
-    var isTextNode = function (node) {
-      return node.nodeType === 3;
-    };
-    var isElement = function (node) {
-      return node.nodeType === 1;
-    };
-    var handleBracket = function (editor) {
-      return parseCurrentLine(editor, -1);
-    };
-    var handleSpacebar = function (editor) {
-      return parseCurrentLine(editor, 0);
-    };
-    var handleEnter = function (editor) {
-      return parseCurrentLine(editor, -1);
-    };
-    var scopeIndex = function (container, index) {
-      if (index < 0) {
-        index = 0;
-      }
-      if (isTextNode(container)) {
-        var len = container.data.length;
-        if (index > len) {
-          index = len;
-        }
-      }
-      return index;
-    };
-    var setStart = function (rng, container, offset) {
-      if (!isElement(container) || container.hasChildNodes()) {
-        rng.setStart(container, scopeIndex(container, offset));
-      } else {
-        rng.setStartBefore(container);
-      }
-    };
-    var setEnd = function (rng, container, offset) {
-      if (!isElement(container) || container.hasChildNodes()) {
-        rng.setEnd(container, scopeIndex(container, offset));
-      } else {
-        rng.setEndAfter(container);
-      }
-    };
-    var hasProtocol = function (url) {
-      return /^([A-Za-z][A-Za-z\d.+-]*:\/\/)|mailto:/.test(url);
-    };
-    var isPunctuation = function (char) {
-      return /[?!,.;:]/.test(char);
-    };
-    var parseCurrentLine = function (editor, endOffset) {
-      var end, endContainer, bookmark, text, prev, len, rngText;
-      var autoLinkPattern = getAutoLinkPattern(editor);
-      var defaultLinkTarget = getDefaultLinkTarget(editor);
-      if (editor.dom.getParent(editor.selection.getNode(), 'a[href]') !== null) {
-        return;
-      }
-      var rng = editor.selection.getRng().cloneRange();
-      if (rng.startOffset < 5) {
-        prev = rng.endContainer.previousSibling;
-        if (!prev) {
-          if (!rng.endContainer.firstChild || !rng.endContainer.firstChild.nextSibling) {
-            return;
-          }
-          prev = rng.endContainer.firstChild.nextSibling;
-        }
-        len = prev.length;
-        setStart(rng, prev, len);
-        setEnd(rng, prev, len);
-        if (rng.endOffset < 5) {
-          return;
-        }
-        end = rng.endOffset;
-        endContainer = prev;
-      } else {
-        endContainer = rng.endContainer;
-        if (!isTextNode(endContainer) && endContainer.firstChild) {
-          while (!isTextNode(endContainer) && endContainer.firstChild) {
-            endContainer = endContainer.firstChild;
-          }
-          if (isTextNode(endContainer)) {
-            setStart(rng, endContainer, 0);
-            setEnd(rng, endContainer, endContainer.nodeValue.length);
-          }
-        }
-        if (rng.endOffset === 1) {
-          end = 2;
-        } else {
-          end = rng.endOffset - 1 - endOffset;
-        }
-      }
-      var start = end;
-      do {
-        setStart(rng, endContainer, end >= 2 ? end - 2 : 0);
-        setEnd(rng, endContainer, end >= 1 ? end - 1 : 0);
-        end -= 1;
-        rngText = rng.toString();
-      } while (!rangeEqualsBracketOrSpace(rngText) && end - 2 >= 0);
-      if (rangeEqualsBracketOrSpace(rng.toString())) {
-        setStart(rng, endContainer, end);
-        setEnd(rng, endContainer, start);
-        end += 1;
-      } else if (rng.startOffset === 0) {
-        setStart(rng, endContainer, 0);
-        setEnd(rng, endContainer, start);
-      } else {
-        setStart(rng, endContainer, end);
-        setEnd(rng, endContainer, start);
-      }
-      text = rng.toString();
-      if (isPunctuation(text.charAt(text.length - 1))) {
-        setEnd(rng, endContainer, start - 1);
-      }
-      text = rng.toString().trim();
-      var matches = text.match(autoLinkPattern);
-      var protocol = getDefaultLinkProtocol(editor);
-      if (matches) {
-        var url = matches[0];
-        if (startsWith(url, 'www.')) {
-          url = protocol + '://' + url;
-        } else if (contains(url, '@') && !hasProtocol(url)) {
-          url = 'mailto:' + url;
-        }
-        bookmark = editor.selection.getBookmark();
-        editor.selection.setRng(rng);
-        editor.execCommand('createlink', false, url);
-        if (defaultLinkTarget !== false) {
-          editor.dom.setAttrib(editor.selection.getNode(), 'target', defaultLinkTarget);
-        }
-        editor.selection.moveToBookmark(bookmark);
-        editor.nodeChanged();
-      }
-    };
-    var setup = function (editor) {
-      var autoUrlDetectState;
-      editor.on('keydown', function (e) {
-        if (e.keyCode === 13) {
-          return handleEnter(editor);
-        }
-      });
-      if (global.browser.isIE()) {
-        editor.on('focus', function () {
-          if (!autoUrlDetectState) {
-            autoUrlDetectState = true;
-            try {
-              editor.execCommand('AutoUrlDetect', false, true);
-            } catch (ex) {
-            }
-          }
-        });
-        return;
-      }
-      editor.on('keypress', function (e) {
-        if (e.keyCode === 41 || e.keyCode === 93 || e.keyCode === 125) {
-          return handleBracket(editor);
-        }
-      });
-      editor.on('keyup', function (e) {
-        if (e.keyCode === 32) {
-          return handleSpacebar(editor);
-        }
-      });
-    };
-
-    function Plugin () {
-      global$1.add('autolink', function (editor) {
-        setup(editor);
-      });
+  const hasProto = (v, constructor, predicate) => {
+    var _a;
+    if (predicate(v, constructor.prototype)) {
+      return true;
+    } else {
+      return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
     }
+  };
+  const typeOf = x => {
+    const t = typeof x;
+    if (x === null) {
+      return 'null';
+    } else if (t === 'object' && Array.isArray(x)) {
+      return 'array';
+    } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+      return 'string';
+    } else {
+      return t;
+    }
+  };
+  const isType = type => value => typeOf(value) === type;
+  const eq = t => a => t === a;
+  const isString = isType('string');
+  const isUndefined = eq(undefined);
+  const isNullable = a => a === null || a === undefined;
+  const isNonNullable = a => !isNullable(a);
 
-    Plugin();
+  const not = f => t => !f(t);
 
-}());
+  const hasOwnProperty = Object.hasOwnProperty;
+  const has = (obj, key) => hasOwnProperty.call(obj, key);
+
+  const checkRange = (str, substr, start) => substr === '' || str.length >= substr.length && str.substr(start, start + substr.length) === substr;
+  const contains = (str, substr, start = 0, end) => {
+    const idx = str.indexOf(substr, start);
+    if (idx !== -1) {
+      return isUndefined(end) ? true : idx + substr.length <= end;
+    } else {
+      return false;
+    }
+  };
+  const startsWith = (str, prefix) => {
+    return checkRange(str, prefix, 0);
+  };
+
+  const zeroWidth = '\uFEFF';
+  const isZwsp = char => char === zeroWidth;
+  const removeZwsp = s => s.replace(/\uFEFF/g, '');
+
+  var global = tinymce.util.Tools.resolve('tinymce.dom.TextSeeker');
+
+  const isTextNode = node => node.nodeType === 3;
+  const isElement = node => node.nodeType === 1;
+  const isBracketOrSpace = char => /^[(\[{ \u00a0]$/.test(char);
+  const hasProtocol = url => /^([A-Za-z][A-Za-z\d.+-]*:\/\/)|mailto:/.test(url);
+  const isPunctuation = char => /[?!,.;:]/.test(char);
+  const findChar = (text, index, predicate) => {
+    for (let i = index - 1; i >= 0; i--) {
+      const char = text.charAt(i);
+      if (!isZwsp(char) && predicate(char)) {
+        return i;
+      }
+    }
+    return -1;
+  };
+  const freefallRtl = (container, offset) => {
+    let tempNode = container;
+    let tempOffset = offset;
+    while (isElement(tempNode) && tempNode.childNodes[tempOffset]) {
+      tempNode = tempNode.childNodes[tempOffset];
+      tempOffset = isTextNode(tempNode) ? tempNode.data.length : tempNode.childNodes.length;
+    }
+    return {
+      container: tempNode,
+      offset: tempOffset
+    };
+  };
+
+  const parseCurrentLine = (editor, offset) => {
+    var _a;
+    const voidElements = editor.schema.getVoidElements();
+    const autoLinkPattern = getAutoLinkPattern(editor);
+    const {dom, selection} = editor;
+    if (dom.getParent(selection.getNode(), 'a[href]') !== null) {
+      return null;
+    }
+    const rng = selection.getRng();
+    const textSeeker = global(dom, node => {
+      return dom.isBlock(node) || has(voidElements, node.nodeName.toLowerCase()) || dom.getContentEditable(node) === 'false';
+    });
+    const {
+      container: endContainer,
+      offset: endOffset
+    } = freefallRtl(rng.endContainer, rng.endOffset);
+    const root = (_a = dom.getParent(endContainer, dom.isBlock)) !== null && _a !== void 0 ? _a : dom.getRoot();
+    const endSpot = textSeeker.backwards(endContainer, endOffset + offset, (node, offset) => {
+      const text = node.data;
+      const idx = findChar(text, offset, not(isBracketOrSpace));
+      return idx === -1 || isPunctuation(text[idx]) ? idx : idx + 1;
+    }, root);
+    if (!endSpot) {
+      return null;
+    }
+    let lastTextNode = endSpot.container;
+    const startSpot = textSeeker.backwards(endSpot.container, endSpot.offset, (node, offset) => {
+      lastTextNode = node;
+      const idx = findChar(node.data, offset, isBracketOrSpace);
+      return idx === -1 ? idx : idx + 1;
+    }, root);
+    const newRng = dom.createRng();
+    if (!startSpot) {
+      newRng.setStart(lastTextNode, 0);
+    } else {
+      newRng.setStart(startSpot.container, startSpot.offset);
+    }
+    newRng.setEnd(endSpot.container, endSpot.offset);
+    const rngText = removeZwsp(newRng.toString());
+    const matches = rngText.match(autoLinkPattern);
+    if (matches) {
+      let url = matches[0];
+      if (startsWith(url, 'www.')) {
+        const protocol = getDefaultLinkProtocol(editor);
+        url = protocol + '://' + url;
+      } else if (contains(url, '@') && !hasProtocol(url)) {
+        url = 'mailto:' + url;
+      }
+      return {
+        rng: newRng,
+        url
+      };
+    } else {
+      return null;
+    }
+  };
+  const convertToLink = (editor, result) => {
+    const {dom, selection} = editor;
+    const {rng, url} = result;
+    const bookmark = selection.getBookmark();
+    selection.setRng(rng);
+    const command = 'createlink';
+    const args = {
+      command,
+      ui: false,
+      value: url
+    };
+    const beforeExecEvent = editor.dispatch('BeforeExecCommand', args);
+    if (!beforeExecEvent.isDefaultPrevented()) {
+      editor.getDoc().execCommand(command, false, url);
+      editor.dispatch('ExecCommand', args);
+      const defaultLinkTarget = getDefaultLinkTarget(editor);
+      if (isString(defaultLinkTarget)) {
+        const anchor = selection.getNode();
+        dom.setAttrib(anchor, 'target', defaultLinkTarget);
+        if (defaultLinkTarget === '_blank' && !allowUnsafeLinkTarget(editor)) {
+          dom.setAttrib(anchor, 'rel', 'noopener');
+        }
+      }
+    }
+    selection.moveToBookmark(bookmark);
+    editor.nodeChanged();
+  };
+  const handleSpacebar = editor => {
+    const result = parseCurrentLine(editor, -1);
+    if (isNonNullable(result)) {
+      convertToLink(editor, result);
+    }
+  };
+  const handleBracket = handleSpacebar;
+  const handleEnter = editor => {
+    const result = parseCurrentLine(editor, 0);
+    if (isNonNullable(result)) {
+      convertToLink(editor, result);
+    }
+  };
+  const setup = editor => {
+    editor.on('keydown', e => {
+      if (e.keyCode === 13 && !e.isDefaultPrevented()) {
+        handleEnter(editor);
+      }
+    });
+    editor.on('keyup', e => {
+      if (e.keyCode === 32) {
+        handleSpacebar(editor);
+      } else if (e.keyCode === 48 && e.shiftKey || e.keyCode === 221) {
+        handleBracket(editor);
+      }
+    });
+  };
+
+  var Plugin = () => {
+    global$1.add('autolink', editor => {
+      register(editor);
+      setup(editor);
+    });
+  };
+
+  Plugin();
+
+})();

@@ -1,171 +1,170 @@
 /**
- * Copyright (c) Tiny Technologies, Inc. All rights reserved.
- * Licensed under the LGPL or a commercial license.
- * For LGPL see License.txt in the project root for license information.
- * For commercial licenses see https://www.tiny.cloud/
- *
- * Version: 5.10.7 (2022-12-06)
+ * TinyMCE version 6.3.1 (2022-12-06)
  */
+
 (function () {
     'use strict';
 
-    var global$2 = tinymce.util.Tools.resolve('tinymce.PluginManager');
+    var global$1 = tinymce.util.Tools.resolve('tinymce.PluginManager');
 
-    var fireInsertCustomChar = function (editor, chr) {
-      return editor.fire('insertCustomChar', { chr: chr });
+    const fireInsertCustomChar = (editor, chr) => {
+      return editor.dispatch('insertCustomChar', { chr });
     };
 
-    var insertChar = function (editor, chr) {
-      var evtChr = fireInsertCustomChar(editor, chr).chr;
+    const insertChar = (editor, chr) => {
+      const evtChr = fireInsertCustomChar(editor, chr).chr;
       editor.execCommand('mceInsertContent', false, evtChr);
     };
 
-    var typeOf = function (x) {
-      var t = typeof x;
+    const hasProto = (v, constructor, predicate) => {
+      var _a;
+      if (predicate(v, constructor.prototype)) {
+        return true;
+      } else {
+        return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+      }
+    };
+    const typeOf = x => {
+      const t = typeof x;
       if (x === null) {
         return 'null';
-      } else if (t === 'object' && (Array.prototype.isPrototypeOf(x) || x.constructor && x.constructor.name === 'Array')) {
+      } else if (t === 'object' && Array.isArray(x)) {
         return 'array';
-      } else if (t === 'object' && (String.prototype.isPrototypeOf(x) || x.constructor && x.constructor.name === 'String')) {
+      } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
         return 'string';
       } else {
         return t;
       }
     };
-    var isType = function (type) {
-      return function (value) {
-        return typeOf(value) === type;
-      };
-    };
-    var eq = function (t) {
-      return function (a) {
-        return t === a;
-      };
-    };
-    var isArray$1 = isType('array');
-    var isNull = eq(null);
+    const isType = type => value => typeOf(value) === type;
+    const isSimpleType = type => value => typeof value === type;
+    const eq = t => a => t === a;
+    const isArray$1 = isType('array');
+    const isNull = eq(null);
+    const isUndefined = eq(undefined);
+    const isNullable = a => a === null || a === undefined;
+    const isNonNullable = a => !isNullable(a);
+    const isFunction = isSimpleType('function');
 
-    var noop = function () {
-    };
-    var constant = function (value) {
-      return function () {
+    const constant = value => {
+      return () => {
         return value;
       };
     };
-    var identity = function (x) {
-      return x;
-    };
-    var never = constant(false);
-    var always = constant(true);
+    const never = constant(false);
 
-    var none = function () {
-      return NONE;
-    };
-    var NONE = function () {
-      var call = function (thunk) {
-        return thunk();
-      };
-      var id = identity;
-      var me = {
-        fold: function (n, _s) {
-          return n();
-        },
-        isSome: never,
-        isNone: always,
-        getOr: id,
-        getOrThunk: call,
-        getOrDie: function (msg) {
-          throw new Error(msg || 'error: getOrDie called on none.');
-        },
-        getOrNull: constant(null),
-        getOrUndefined: constant(undefined),
-        or: id,
-        orThunk: call,
-        map: none,
-        each: noop,
-        bind: none,
-        exists: never,
-        forall: always,
-        filter: function () {
-          return none();
-        },
-        toArray: function () {
-          return [];
-        },
-        toString: constant('none()')
-      };
-      return me;
-    }();
-    var some = function (a) {
-      var constant_a = constant(a);
-      var self = function () {
-        return me;
-      };
-      var bind = function (f) {
-        return f(a);
-      };
-      var me = {
-        fold: function (n, s) {
-          return s(a);
-        },
-        isSome: always,
-        isNone: never,
-        getOr: constant_a,
-        getOrThunk: constant_a,
-        getOrDie: constant_a,
-        getOrNull: constant_a,
-        getOrUndefined: constant_a,
-        or: self,
-        orThunk: self,
-        map: function (f) {
-          return some(f(a));
-        },
-        each: function (f) {
-          f(a);
-        },
-        bind: bind,
-        exists: bind,
-        forall: bind,
-        filter: function (f) {
-          return f(a) ? me : NONE;
-        },
-        toArray: function () {
-          return [a];
-        },
-        toString: function () {
-          return 'some(' + a + ')';
+    class Optional {
+      constructor(tag, value) {
+        this.tag = tag;
+        this.value = value;
+      }
+      static some(value) {
+        return new Optional(true, value);
+      }
+      static none() {
+        return Optional.singletonNone;
+      }
+      fold(onNone, onSome) {
+        if (this.tag) {
+          return onSome(this.value);
+        } else {
+          return onNone();
         }
-      };
-      return me;
-    };
-    var from = function (value) {
-      return value === null || value === undefined ? NONE : some(value);
-    };
-    var Optional = {
-      some: some,
-      none: none,
-      from: from
-    };
+      }
+      isSome() {
+        return this.tag;
+      }
+      isNone() {
+        return !this.tag;
+      }
+      map(mapper) {
+        if (this.tag) {
+          return Optional.some(mapper(this.value));
+        } else {
+          return Optional.none();
+        }
+      }
+      bind(binder) {
+        if (this.tag) {
+          return binder(this.value);
+        } else {
+          return Optional.none();
+        }
+      }
+      exists(predicate) {
+        return this.tag && predicate(this.value);
+      }
+      forall(predicate) {
+        return !this.tag || predicate(this.value);
+      }
+      filter(predicate) {
+        if (!this.tag || predicate(this.value)) {
+          return this;
+        } else {
+          return Optional.none();
+        }
+      }
+      getOr(replacement) {
+        return this.tag ? this.value : replacement;
+      }
+      or(replacement) {
+        return this.tag ? this : replacement;
+      }
+      getOrThunk(thunk) {
+        return this.tag ? this.value : thunk();
+      }
+      orThunk(thunk) {
+        return this.tag ? this : thunk();
+      }
+      getOrDie(message) {
+        if (!this.tag) {
+          throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+        } else {
+          return this.value;
+        }
+      }
+      static from(value) {
+        return isNonNullable(value) ? Optional.some(value) : Optional.none();
+      }
+      getOrNull() {
+        return this.tag ? this.value : null;
+      }
+      getOrUndefined() {
+        return this.value;
+      }
+      each(worker) {
+        if (this.tag) {
+          worker(this.value);
+        }
+      }
+      toArray() {
+        return this.tag ? [this.value] : [];
+      }
+      toString() {
+        return this.tag ? `some(${ this.value })` : 'none()';
+      }
+    }
+    Optional.singletonNone = new Optional(false);
 
-    var nativePush = Array.prototype.push;
-    var map = function (xs, f) {
-      var len = xs.length;
-      var r = new Array(len);
-      for (var i = 0; i < len; i++) {
-        var x = xs[i];
+    const nativePush = Array.prototype.push;
+    const map = (xs, f) => {
+      const len = xs.length;
+      const r = new Array(len);
+      for (let i = 0; i < len; i++) {
+        const x = xs[i];
         r[i] = f(x, i);
       }
       return r;
     };
-    var each = function (xs, f) {
-      for (var i = 0, len = xs.length; i < len; i++) {
-        var x = xs[i];
+    const each = (xs, f) => {
+      for (let i = 0, len = xs.length; i < len; i++) {
+        const x = xs[i];
         f(x, i);
       }
     };
-    var findUntil = function (xs, pred, until) {
-      for (var i = 0, len = xs.length; i < len; i++) {
-        var x = xs[i];
+    const findUntil = (xs, pred, until) => {
+      for (let i = 0, len = xs.length; i < len; i++) {
+        const x = xs[i];
         if (pred(x, i)) {
           return Optional.some(x);
         } else if (until(x, i)) {
@@ -174,12 +173,12 @@
       }
       return Optional.none();
     };
-    var find = function (xs, pred) {
+    const find = (xs, pred) => {
       return findUntil(xs, pred, never);
     };
-    var flatten = function (xs) {
-      var r = [];
-      for (var i = 0, len = xs.length; i < len; ++i) {
+    const flatten = xs => {
+      const r = [];
+      for (let i = 0, len = xs.length; i < len; ++i) {
         if (!isArray$1(xs[i])) {
           throw new Error('Arr.flatten item ' + i + ' was not an array, input: ' + xs);
         }
@@ -187,22 +186,23 @@
       }
       return r;
     };
-    var bind = function (xs, f) {
-      return flatten(map(xs, f));
-    };
+    const bind = (xs, f) => flatten(map(xs, f));
 
-    var global$1 = tinymce.util.Tools.resolve('tinymce.util.Tools');
+    var global = tinymce.util.Tools.resolve('tinymce.util.Tools');
 
-    var getCharMap$1 = function (editor) {
-      return editor.getParam('charmap');
+    const option = name => editor => editor.options.get(name);
+    const register$2 = editor => {
+      const registerOption = editor.options.register;
+      const charMapProcessor = value => isFunction(value) || isArray$1(value);
+      registerOption('charmap', { processor: charMapProcessor });
+      registerOption('charmap_append', { processor: charMapProcessor });
     };
-    var getCharMapAppend = function (editor) {
-      return editor.getParam('charmap_append');
-    };
+    const getCharMap$1 = option('charmap');
+    const getCharMapAppend = option('charmap_append');
 
-    var isArray = global$1.isArray;
-    var UserDefined = 'User Defined';
-    var getDefaultCharMap = function () {
+    const isArray = global.isArray;
+    const UserDefined = 'User Defined';
+    const getDefaultCharMap = () => {
       return [
         {
           name: 'Currency',
@@ -1393,59 +1393,58 @@
         }
       ];
     };
-    var charmapFilter = function (charmap) {
-      return global$1.grep(charmap, function (item) {
+    const charmapFilter = charmap => {
+      return global.grep(charmap, item => {
         return isArray(item) && item.length === 2;
       });
     };
-    var getCharsFromSetting = function (settingValue) {
-      if (isArray(settingValue)) {
-        return charmapFilter(settingValue);
+    const getCharsFromOption = optionValue => {
+      if (isArray(optionValue)) {
+        return charmapFilter(optionValue);
       }
-      if (typeof settingValue === 'function') {
-        return settingValue();
+      if (typeof optionValue === 'function') {
+        return optionValue();
       }
       return [];
     };
-    var extendCharMap = function (editor, charmap) {
-      var userCharMap = getCharMap$1(editor);
+    const extendCharMap = (editor, charmap) => {
+      const userCharMap = getCharMap$1(editor);
       if (userCharMap) {
         charmap = [{
             name: UserDefined,
-            characters: getCharsFromSetting(userCharMap)
+            characters: getCharsFromOption(userCharMap)
           }];
       }
-      var userCharMapAppend = getCharMapAppend(editor);
+      const userCharMapAppend = getCharMapAppend(editor);
       if (userCharMapAppend) {
-        var userDefinedGroup = global$1.grep(charmap, function (cg) {
-          return cg.name === UserDefined;
-        });
+        const userDefinedGroup = global.grep(charmap, cg => cg.name === UserDefined);
         if (userDefinedGroup.length) {
-          userDefinedGroup[0].characters = [].concat(userDefinedGroup[0].characters).concat(getCharsFromSetting(userCharMapAppend));
+          userDefinedGroup[0].characters = [
+            ...userDefinedGroup[0].characters,
+            ...getCharsFromOption(userCharMapAppend)
+          ];
           return charmap;
         }
         return charmap.concat({
           name: UserDefined,
-          characters: getCharsFromSetting(userCharMapAppend)
+          characters: getCharsFromOption(userCharMapAppend)
         });
       }
       return charmap;
     };
-    var getCharMap = function (editor) {
-      var groups = extendCharMap(editor, getDefaultCharMap());
+    const getCharMap = editor => {
+      const groups = extendCharMap(editor, getDefaultCharMap());
       return groups.length > 1 ? [{
           name: 'All',
-          characters: bind(groups, function (g) {
-            return g.characters;
-          })
+          characters: bind(groups, g => g.characters)
         }].concat(groups) : groups;
     };
 
-    var get = function (editor) {
-      var getCharMap$1 = function () {
+    const get = editor => {
+      const getCharMap$1 = () => {
         return getCharMap(editor);
       };
-      var insertChar$1 = function (chr) {
+      const insertChar$1 = chr => {
         insertChar(editor, chr);
       };
       return {
@@ -1454,209 +1453,162 @@
       };
     };
 
-    var Cell = function (initial) {
-      var value = initial;
-      var get = function () {
+    const Cell = initial => {
+      let value = initial;
+      const get = () => {
         return value;
       };
-      var set = function (v) {
+      const set = v => {
         value = v;
       };
       return {
-        get: get,
-        set: set
+        get,
+        set
       };
     };
 
-    var last = function (fn, rate) {
-      var timer = null;
-      var cancel = function () {
+    const last = (fn, rate) => {
+      let timer = null;
+      const cancel = () => {
         if (!isNull(timer)) {
           clearTimeout(timer);
           timer = null;
         }
       };
-      var throttle = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-          args[_i] = arguments[_i];
-        }
+      const throttle = (...args) => {
         cancel();
-        timer = setTimeout(function () {
+        timer = setTimeout(() => {
           timer = null;
           fn.apply(null, args);
         }, rate);
       };
       return {
-        cancel: cancel,
-        throttle: throttle
+        cancel,
+        throttle
       };
     };
 
-    var nativeFromCodePoint = String.fromCodePoint;
-    var contains = function (str, substr) {
-      return str.indexOf(substr) !== -1;
-    };
-    var fromCodePoint = function () {
-      var codePoints = [];
-      for (var _i = 0; _i < arguments.length; _i++) {
-        codePoints[_i] = arguments[_i];
-      }
-      if (nativeFromCodePoint) {
-        return nativeFromCodePoint.apply(void 0, codePoints);
+    const contains = (str, substr, start = 0, end) => {
+      const idx = str.indexOf(substr, start);
+      if (idx !== -1) {
+        return isUndefined(end) ? true : idx + substr.length <= end;
       } else {
-        var codeUnits = [];
-        var codeLen = 0;
-        var result = '';
-        for (var index = 0, len = codePoints.length; index !== len; ++index) {
-          var codePoint = +codePoints[index];
-          if (!(codePoint < 1114111 && codePoint >>> 0 === codePoint)) {
-            throw RangeError('Invalid code point: ' + codePoint);
-          }
-          if (codePoint <= 65535) {
-            codeLen = codeUnits.push(codePoint);
-          } else {
-            codePoint -= 65536;
-            codeLen = codeUnits.push((codePoint >> 10) + 55296, codePoint % 1024 + 56320);
-          }
-          if (codeLen >= 16383) {
-            result += String.fromCharCode.apply(null, codeUnits);
-            codeUnits.length = 0;
-          }
-        }
-        return result + String.fromCharCode.apply(null, codeUnits);
+        return false;
       }
     };
+    const fromCodePoint = String.fromCodePoint;
 
-    var charMatches = function (charCode, name, lowerCasePattern) {
+    const charMatches = (charCode, name, lowerCasePattern) => {
       if (contains(fromCodePoint(charCode).toLowerCase(), lowerCasePattern)) {
         return true;
       } else {
         return contains(name.toLowerCase(), lowerCasePattern) || contains(name.toLowerCase().replace(/\s+/g, ''), lowerCasePattern);
       }
     };
-    var scan = function (group, pattern) {
-      var matches = [];
-      var lowerCasePattern = pattern.toLowerCase();
-      each(group.characters, function (g) {
+    const scan = (group, pattern) => {
+      const matches = [];
+      const lowerCasePattern = pattern.toLowerCase();
+      each(group.characters, g => {
         if (charMatches(g[0], g[1], lowerCasePattern)) {
           matches.push(g);
         }
       });
-      return map(matches, function (m) {
-        return {
-          text: m[1],
-          value: fromCodePoint(m[0]),
-          icon: fromCodePoint(m[0])
-        };
-      });
+      return map(matches, m => ({
+        text: m[1],
+        value: fromCodePoint(m[0]),
+        icon: fromCodePoint(m[0])
+      }));
     };
 
-    var patternName = 'pattern';
-    var open = function (editor, charMap) {
-      var makeGroupItems = function () {
-        return [
-          {
-            label: 'Search',
-            type: 'input',
-            name: patternName
-          },
-          {
-            type: 'collection',
-            name: 'results'
-          }
-        ];
-      };
-      var makeTabs = function () {
-        return map(charMap, function (charGroup) {
-          return {
-            title: charGroup.name,
-            name: charGroup.name,
-            items: makeGroupItems()
-          };
-        });
-      };
-      var makePanel = function () {
-        return {
-          type: 'panel',
-          items: makeGroupItems()
-        };
-      };
-      var makeTabPanel = function () {
-        return {
-          type: 'tabpanel',
-          tabs: makeTabs()
-        };
-      };
-      var currentTab = charMap.length === 1 ? Cell(UserDefined) : Cell('All');
-      var scanAndSet = function (dialogApi, pattern) {
-        find(charMap, function (group) {
-          return group.name === currentTab.get();
-        }).each(function (f) {
-          var items = scan(f, pattern);
+    const patternName = 'pattern';
+    const open = (editor, charMap) => {
+      const makeGroupItems = () => [
+        {
+          label: 'Search',
+          type: 'input',
+          name: patternName
+        },
+        {
+          type: 'collection',
+          name: 'results'
+        }
+      ];
+      const makeTabs = () => map(charMap, charGroup => ({
+        title: charGroup.name,
+        name: charGroup.name,
+        items: makeGroupItems()
+      }));
+      const makePanel = () => ({
+        type: 'panel',
+        items: makeGroupItems()
+      });
+      const makeTabPanel = () => ({
+        type: 'tabpanel',
+        tabs: makeTabs()
+      });
+      const currentTab = charMap.length === 1 ? Cell(UserDefined) : Cell('All');
+      const scanAndSet = (dialogApi, pattern) => {
+        find(charMap, group => group.name === currentTab.get()).each(f => {
+          const items = scan(f, pattern);
           dialogApi.setData({ results: items });
         });
       };
-      var SEARCH_DELAY = 40;
-      var updateFilter = last(function (dialogApi) {
-        var pattern = dialogApi.getData().pattern;
+      const SEARCH_DELAY = 40;
+      const updateFilter = last(dialogApi => {
+        const pattern = dialogApi.getData().pattern;
         scanAndSet(dialogApi, pattern);
       }, SEARCH_DELAY);
-      var body = charMap.length === 1 ? makePanel() : makeTabPanel();
-      var initialData = {
+      const body = charMap.length === 1 ? makePanel() : makeTabPanel();
+      const initialData = {
         pattern: '',
         results: scan(charMap[0], '')
       };
-      var bridgeSpec = {
+      const bridgeSpec = {
         title: 'Special Character',
         size: 'normal',
-        body: body,
+        body,
         buttons: [{
             type: 'cancel',
             name: 'close',
             text: 'Close',
             primary: true
           }],
-        initialData: initialData,
-        onAction: function (api, details) {
+        initialData,
+        onAction: (api, details) => {
           if (details.name === 'results') {
             insertChar(editor, details.value);
             api.close();
           }
         },
-        onTabChange: function (dialogApi, details) {
+        onTabChange: (dialogApi, details) => {
           currentTab.set(details.newTabName);
           updateFilter.throttle(dialogApi);
         },
-        onChange: function (dialogApi, changeData) {
+        onChange: (dialogApi, changeData) => {
           if (changeData.name === patternName) {
             updateFilter.throttle(dialogApi);
           }
         }
       };
-      var dialogApi = editor.windowManager.open(bridgeSpec);
+      const dialogApi = editor.windowManager.open(bridgeSpec);
       dialogApi.focus(patternName);
     };
 
-    var register$1 = function (editor, charMap) {
-      editor.addCommand('mceShowCharmap', function () {
+    const register$1 = (editor, charMap) => {
+      editor.addCommand('mceShowCharmap', () => {
         open(editor, charMap);
       });
     };
 
-    var global = tinymce.util.Tools.resolve('tinymce.util.Promise');
-
-    var init = function (editor, all) {
+    const init = (editor, all) => {
       editor.ui.registry.addAutocompleter('charmap', {
-        ch: ':',
+        trigger: ':',
         columns: 'auto',
         minChars: 2,
-        fetch: function (pattern, _maxResults) {
-          return new global(function (resolve, _reject) {
-            resolve(scan(all, pattern));
-          });
-        },
-        onAction: function (autocompleteApi, rng, value) {
+        fetch: (pattern, _maxResults) => new Promise((resolve, _reject) => {
+          resolve(scan(all, pattern));
+        }),
+        onAction: (autocompleteApi, rng, value) => {
           editor.selection.setRng(rng);
           editor.insertContent(value);
           autocompleteApi.hide();
@@ -1664,33 +1616,31 @@
       });
     };
 
-    var register = function (editor) {
+    const register = editor => {
+      const onAction = () => editor.execCommand('mceShowCharmap');
       editor.ui.registry.addButton('charmap', {
         icon: 'insert-character',
         tooltip: 'Special character',
-        onAction: function () {
-          return editor.execCommand('mceShowCharmap');
-        }
+        onAction
       });
       editor.ui.registry.addMenuItem('charmap', {
         icon: 'insert-character',
         text: 'Special character...',
-        onAction: function () {
-          return editor.execCommand('mceShowCharmap');
-        }
+        onAction
       });
     };
 
-    function Plugin () {
-      global$2.add('charmap', function (editor) {
-        var charMap = getCharMap(editor);
+    var Plugin = () => {
+      global$1.add('charmap', editor => {
+        register$2(editor);
+        const charMap = getCharMap(editor);
         register$1(editor, charMap);
         register(editor);
         init(editor, charMap[0]);
         return get(editor);
       });
-    }
+    };
 
     Plugin();
 
-}());
+})();

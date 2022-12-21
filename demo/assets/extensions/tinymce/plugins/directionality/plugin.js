@@ -1,175 +1,161 @@
 /**
- * Copyright (c) Tiny Technologies, Inc. All rights reserved.
- * Licensed under the LGPL or a commercial license.
- * For LGPL see License.txt in the project root for license information.
- * For commercial licenses see https://www.tiny.cloud/
- *
- * Version: 5.10.7 (2022-12-06)
+ * TinyMCE version 6.3.1 (2022-12-06)
  */
+
 (function () {
     'use strict';
 
     var global = tinymce.util.Tools.resolve('tinymce.PluginManager');
 
-    var typeOf = function (x) {
-      var t = typeof x;
+    const hasProto = (v, constructor, predicate) => {
+      var _a;
+      if (predicate(v, constructor.prototype)) {
+        return true;
+      } else {
+        return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+      }
+    };
+    const typeOf = x => {
+      const t = typeof x;
       if (x === null) {
         return 'null';
-      } else if (t === 'object' && (Array.prototype.isPrototypeOf(x) || x.constructor && x.constructor.name === 'Array')) {
+      } else if (t === 'object' && Array.isArray(x)) {
         return 'array';
-      } else if (t === 'object' && (String.prototype.isPrototypeOf(x) || x.constructor && x.constructor.name === 'String')) {
+      } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
         return 'string';
       } else {
         return t;
       }
     };
-    var isType$1 = function (type) {
-      return function (value) {
-        return typeOf(value) === type;
-      };
-    };
-    var isSimpleType = function (type) {
-      return function (value) {
-        return typeof value === type;
-      };
-    };
-    var isString = isType$1('string');
-    var isBoolean = isSimpleType('boolean');
-    var isNullable = function (a) {
-      return a === null || a === undefined;
-    };
-    var isNonNullable = function (a) {
-      return !isNullable(a);
-    };
-    var isFunction = isSimpleType('function');
-    var isNumber = isSimpleType('number');
+    const isType$1 = type => value => typeOf(value) === type;
+    const isSimpleType = type => value => typeof value === type;
+    const isString = isType$1('string');
+    const isBoolean = isSimpleType('boolean');
+    const isNullable = a => a === null || a === undefined;
+    const isNonNullable = a => !isNullable(a);
+    const isFunction = isSimpleType('function');
+    const isNumber = isSimpleType('number');
 
-    var noop = function () {
-    };
-    var compose1 = function (fbc, fab) {
-      return function (a) {
-        return fbc(fab(a));
-      };
-    };
-    var constant = function (value) {
-      return function () {
+    const compose1 = (fbc, fab) => a => fbc(fab(a));
+    const constant = value => {
+      return () => {
         return value;
       };
     };
-    var identity = function (x) {
-      return x;
-    };
-    var never = constant(false);
-    var always = constant(true);
+    const never = constant(false);
 
-    var none = function () {
-      return NONE;
-    };
-    var NONE = function () {
-      var call = function (thunk) {
-        return thunk();
-      };
-      var id = identity;
-      var me = {
-        fold: function (n, _s) {
-          return n();
-        },
-        isSome: never,
-        isNone: always,
-        getOr: id,
-        getOrThunk: call,
-        getOrDie: function (msg) {
-          throw new Error(msg || 'error: getOrDie called on none.');
-        },
-        getOrNull: constant(null),
-        getOrUndefined: constant(undefined),
-        or: id,
-        orThunk: call,
-        map: none,
-        each: noop,
-        bind: none,
-        exists: never,
-        forall: always,
-        filter: function () {
-          return none();
-        },
-        toArray: function () {
-          return [];
-        },
-        toString: constant('none()')
-      };
-      return me;
-    }();
-    var some = function (a) {
-      var constant_a = constant(a);
-      var self = function () {
-        return me;
-      };
-      var bind = function (f) {
-        return f(a);
-      };
-      var me = {
-        fold: function (n, s) {
-          return s(a);
-        },
-        isSome: always,
-        isNone: never,
-        getOr: constant_a,
-        getOrThunk: constant_a,
-        getOrDie: constant_a,
-        getOrNull: constant_a,
-        getOrUndefined: constant_a,
-        or: self,
-        orThunk: self,
-        map: function (f) {
-          return some(f(a));
-        },
-        each: function (f) {
-          f(a);
-        },
-        bind: bind,
-        exists: bind,
-        forall: bind,
-        filter: function (f) {
-          return f(a) ? me : NONE;
-        },
-        toArray: function () {
-          return [a];
-        },
-        toString: function () {
-          return 'some(' + a + ')';
+    class Optional {
+      constructor(tag, value) {
+        this.tag = tag;
+        this.value = value;
+      }
+      static some(value) {
+        return new Optional(true, value);
+      }
+      static none() {
+        return Optional.singletonNone;
+      }
+      fold(onNone, onSome) {
+        if (this.tag) {
+          return onSome(this.value);
+        } else {
+          return onNone();
         }
-      };
-      return me;
-    };
-    var from = function (value) {
-      return value === null || value === undefined ? NONE : some(value);
-    };
-    var Optional = {
-      some: some,
-      none: none,
-      from: from
-    };
+      }
+      isSome() {
+        return this.tag;
+      }
+      isNone() {
+        return !this.tag;
+      }
+      map(mapper) {
+        if (this.tag) {
+          return Optional.some(mapper(this.value));
+        } else {
+          return Optional.none();
+        }
+      }
+      bind(binder) {
+        if (this.tag) {
+          return binder(this.value);
+        } else {
+          return Optional.none();
+        }
+      }
+      exists(predicate) {
+        return this.tag && predicate(this.value);
+      }
+      forall(predicate) {
+        return !this.tag || predicate(this.value);
+      }
+      filter(predicate) {
+        if (!this.tag || predicate(this.value)) {
+          return this;
+        } else {
+          return Optional.none();
+        }
+      }
+      getOr(replacement) {
+        return this.tag ? this.value : replacement;
+      }
+      or(replacement) {
+        return this.tag ? this : replacement;
+      }
+      getOrThunk(thunk) {
+        return this.tag ? this.value : thunk();
+      }
+      orThunk(thunk) {
+        return this.tag ? this : thunk();
+      }
+      getOrDie(message) {
+        if (!this.tag) {
+          throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+        } else {
+          return this.value;
+        }
+      }
+      static from(value) {
+        return isNonNullable(value) ? Optional.some(value) : Optional.none();
+      }
+      getOrNull() {
+        return this.tag ? this.value : null;
+      }
+      getOrUndefined() {
+        return this.value;
+      }
+      each(worker) {
+        if (this.tag) {
+          worker(this.value);
+        }
+      }
+      toArray() {
+        return this.tag ? [this.value] : [];
+      }
+      toString() {
+        return this.tag ? `some(${ this.value })` : 'none()';
+      }
+    }
+    Optional.singletonNone = new Optional(false);
 
-    var map = function (xs, f) {
-      var len = xs.length;
-      var r = new Array(len);
-      for (var i = 0; i < len; i++) {
-        var x = xs[i];
+    const map = (xs, f) => {
+      const len = xs.length;
+      const r = new Array(len);
+      for (let i = 0; i < len; i++) {
+        const x = xs[i];
         r[i] = f(x, i);
       }
       return r;
     };
-    var each = function (xs, f) {
-      for (var i = 0, len = xs.length; i < len; i++) {
-        var x = xs[i];
+    const each = (xs, f) => {
+      for (let i = 0, len = xs.length; i < len; i++) {
+        const x = xs[i];
         f(x, i);
       }
     };
-    var filter = function (xs, pred) {
-      var r = [];
-      for (var i = 0, len = xs.length; i < len; i++) {
-        var x = xs[i];
+    const filter = (xs, pred) => {
+      const r = [];
+      for (let i = 0, len = xs.length; i < len; i++) {
+        const x = xs[i];
         if (pred(x, i)) {
           r.push(x);
         }
@@ -177,54 +163,53 @@
       return r;
     };
 
-    var DOCUMENT = 9;
-    var DOCUMENT_FRAGMENT = 11;
-    var ELEMENT = 1;
-    var TEXT = 3;
+    const DOCUMENT = 9;
+    const DOCUMENT_FRAGMENT = 11;
+    const ELEMENT = 1;
+    const TEXT = 3;
 
-    var fromHtml = function (html, scope) {
-      var doc = scope || document;
-      var div = doc.createElement('div');
+    const fromHtml = (html, scope) => {
+      const doc = scope || document;
+      const div = doc.createElement('div');
       div.innerHTML = html;
       if (!div.hasChildNodes() || div.childNodes.length > 1) {
-        console.error('HTML does not have a single root node', html);
-        throw new Error('HTML must have a single root node');
+        const message = 'HTML does not have a single root node';
+        console.error(message, html);
+        throw new Error(message);
       }
       return fromDom(div.childNodes[0]);
     };
-    var fromTag = function (tag, scope) {
-      var doc = scope || document;
-      var node = doc.createElement(tag);
+    const fromTag = (tag, scope) => {
+      const doc = scope || document;
+      const node = doc.createElement(tag);
       return fromDom(node);
     };
-    var fromText = function (text, scope) {
-      var doc = scope || document;
-      var node = doc.createTextNode(text);
+    const fromText = (text, scope) => {
+      const doc = scope || document;
+      const node = doc.createTextNode(text);
       return fromDom(node);
     };
-    var fromDom = function (node) {
+    const fromDom = node => {
       if (node === null || node === undefined) {
         throw new Error('Node cannot be null or undefined');
       }
       return { dom: node };
     };
-    var fromPoint = function (docElm, x, y) {
-      return Optional.from(docElm.dom.elementFromPoint(x, y)).map(fromDom);
-    };
-    var SugarElement = {
-      fromHtml: fromHtml,
-      fromTag: fromTag,
-      fromText: fromText,
-      fromDom: fromDom,
-      fromPoint: fromPoint
+    const fromPoint = (docElm, x, y) => Optional.from(docElm.dom.elementFromPoint(x, y)).map(fromDom);
+    const SugarElement = {
+      fromHtml,
+      fromTag,
+      fromText,
+      fromDom,
+      fromPoint
     };
 
-    var is = function (element, selector) {
-      var dom = element.dom;
+    const is = (element, selector) => {
+      const dom = element.dom;
       if (dom.nodeType !== ELEMENT) {
         return false;
       } else {
-        var elem = dom;
+        const elem = dom;
         if (elem.matches !== undefined) {
           return elem.matches(selector);
         } else if (elem.msMatchesSelector !== undefined) {
@@ -241,42 +226,24 @@
 
     typeof window !== 'undefined' ? window : Function('return this;')();
 
-    var name = function (element) {
-      var r = element.dom.nodeName;
+    const name = element => {
+      const r = element.dom.nodeName;
       return r.toLowerCase();
     };
-    var type = function (element) {
-      return element.dom.nodeType;
-    };
-    var isType = function (t) {
-      return function (element) {
-        return type(element) === t;
-      };
-    };
-    var isElement = isType(ELEMENT);
-    var isText = isType(TEXT);
-    var isDocument = isType(DOCUMENT);
-    var isDocumentFragment = isType(DOCUMENT_FRAGMENT);
-    var isTag = function (tag) {
-      return function (e) {
-        return isElement(e) && name(e) === tag;
-      };
-    };
+    const type = element => element.dom.nodeType;
+    const isType = t => element => type(element) === t;
+    const isElement = isType(ELEMENT);
+    const isText = isType(TEXT);
+    const isDocument = isType(DOCUMENT);
+    const isDocumentFragment = isType(DOCUMENT_FRAGMENT);
+    const isTag = tag => e => isElement(e) && name(e) === tag;
 
-    var owner = function (element) {
-      return SugarElement.fromDom(element.dom.ownerDocument);
-    };
-    var documentOrOwner = function (dos) {
-      return isDocument(dos) ? dos : owner(dos);
-    };
-    var parent = function (element) {
-      return Optional.from(element.dom.parentNode).map(SugarElement.fromDom);
-    };
-    var children$2 = function (element) {
-      return map(element.dom.childNodes, SugarElement.fromDom);
-    };
+    const owner = element => SugarElement.fromDom(element.dom.ownerDocument);
+    const documentOrOwner = dos => isDocument(dos) ? dos : owner(dos);
+    const parent = element => Optional.from(element.dom.parentNode).map(SugarElement.fromDom);
+    const children$2 = element => map(element.dom.childNodes, SugarElement.fromDom);
 
-    var rawSet = function (dom, key, value) {
+    const rawSet = (dom, key, value) => {
       if (isString(value) || isBoolean(value) || isNumber(value)) {
         dom.setAttribute(key, value + '');
       } else {
@@ -284,45 +251,37 @@
         throw new Error('Attribute value was not simple');
       }
     };
-    var set = function (element, key, value) {
+    const set = (element, key, value) => {
       rawSet(element.dom, key, value);
     };
-    var remove = function (element, key) {
+    const remove = (element, key) => {
       element.dom.removeAttribute(key);
     };
 
-    var isShadowRoot = function (dos) {
-      return isDocumentFragment(dos) && isNonNullable(dos.dom.host);
-    };
-    var supported = isFunction(Element.prototype.attachShadow) && isFunction(Node.prototype.getRootNode);
-    var getRootNode = supported ? function (e) {
-      return SugarElement.fromDom(e.dom.getRootNode());
-    } : documentOrOwner;
-    var getShadowRoot = function (e) {
-      var r = getRootNode(e);
+    const isShadowRoot = dos => isDocumentFragment(dos) && isNonNullable(dos.dom.host);
+    const supported = isFunction(Element.prototype.attachShadow) && isFunction(Node.prototype.getRootNode);
+    const getRootNode = supported ? e => SugarElement.fromDom(e.dom.getRootNode()) : documentOrOwner;
+    const getShadowRoot = e => {
+      const r = getRootNode(e);
       return isShadowRoot(r) ? Optional.some(r) : Optional.none();
     };
-    var getShadowHost = function (e) {
-      return SugarElement.fromDom(e.dom.host);
-    };
+    const getShadowHost = e => SugarElement.fromDom(e.dom.host);
 
-    var inBody = function (element) {
-      var dom = isText(element) ? element.dom.parentNode : element.dom;
+    const inBody = element => {
+      const dom = isText(element) ? element.dom.parentNode : element.dom;
       if (dom === undefined || dom === null || dom.ownerDocument === null) {
         return false;
       }
-      var doc = dom.ownerDocument;
-      return getShadowRoot(SugarElement.fromDom(dom)).fold(function () {
-        return doc.body.contains(dom);
-      }, compose1(inBody, getShadowHost));
+      const doc = dom.ownerDocument;
+      return getShadowRoot(SugarElement.fromDom(dom)).fold(() => doc.body.contains(dom), compose1(inBody, getShadowHost));
     };
 
-    var ancestor$1 = function (scope, predicate, isRoot) {
-      var element = scope.dom;
-      var stop = isFunction(isRoot) ? isRoot : never;
+    const ancestor$1 = (scope, predicate, isRoot) => {
+      let element = scope.dom;
+      const stop = isFunction(isRoot) ? isRoot : never;
       while (element.parentNode) {
         element = element.parentNode;
-        var el = SugarElement.fromDom(element);
+        const el = SugarElement.fromDom(element);
         if (predicate(el)) {
           return Optional.some(el);
         } else if (stop(el)) {
@@ -332,68 +291,48 @@
       return Optional.none();
     };
 
-    var ancestor = function (scope, selector, isRoot) {
-      return ancestor$1(scope, function (e) {
-        return is(e, selector);
-      }, isRoot);
-    };
+    const ancestor = (scope, selector, isRoot) => ancestor$1(scope, e => is(e, selector), isRoot);
 
-    var isSupported = function (dom) {
-      return dom.style !== undefined && isFunction(dom.style.getPropertyValue);
-    };
+    const isSupported = dom => dom.style !== undefined && isFunction(dom.style.getPropertyValue);
 
-    var get = function (element, property) {
-      var dom = element.dom;
-      var styles = window.getComputedStyle(dom);
-      var r = styles.getPropertyValue(property);
+    const get = (element, property) => {
+      const dom = element.dom;
+      const styles = window.getComputedStyle(dom);
+      const r = styles.getPropertyValue(property);
       return r === '' && !inBody(element) ? getUnsafeProperty(dom, property) : r;
     };
-    var getUnsafeProperty = function (dom, property) {
-      return isSupported(dom) ? dom.style.getPropertyValue(property) : '';
-    };
+    const getUnsafeProperty = (dom, property) => isSupported(dom) ? dom.style.getPropertyValue(property) : '';
 
-    var getDirection = function (element) {
-      return get(element, 'direction') === 'rtl' ? 'rtl' : 'ltr';
-    };
+    const getDirection = element => get(element, 'direction') === 'rtl' ? 'rtl' : 'ltr';
 
-    var children$1 = function (scope, predicate) {
-      return filter(children$2(scope), predicate);
-    };
+    const children$1 = (scope, predicate) => filter(children$2(scope), predicate);
 
-    var children = function (scope, selector) {
-      return children$1(scope, function (e) {
-        return is(e, selector);
-      });
-    };
+    const children = (scope, selector) => children$1(scope, e => is(e, selector));
 
-    var getParentElement = function (element) {
-      return parent(element).filter(isElement);
-    };
-    var getNormalizedBlock = function (element, isListItem) {
-      var normalizedElement = isListItem ? ancestor(element, 'ol,ul') : Optional.some(element);
+    const getParentElement = element => parent(element).filter(isElement);
+    const getNormalizedBlock = (element, isListItem) => {
+      const normalizedElement = isListItem ? ancestor(element, 'ol,ul') : Optional.some(element);
       return normalizedElement.getOr(element);
     };
-    var isListItem = isTag('li');
-    var setDir = function (editor, dir) {
-      var selectedBlocks = editor.selection.getSelectedBlocks();
+    const isListItem = isTag('li');
+    const setDir = (editor, dir) => {
+      const selectedBlocks = editor.selection.getSelectedBlocks();
       if (selectedBlocks.length > 0) {
-        each(selectedBlocks, function (block) {
-          var blockElement = SugarElement.fromDom(block);
-          var isBlockElementListItem = isListItem(blockElement);
-          var normalizedBlock = getNormalizedBlock(blockElement, isBlockElementListItem);
-          var normalizedBlockParent = getParentElement(normalizedBlock);
-          normalizedBlockParent.each(function (parent) {
-            var parentDirection = getDirection(parent);
+        each(selectedBlocks, block => {
+          const blockElement = SugarElement.fromDom(block);
+          const isBlockElementListItem = isListItem(blockElement);
+          const normalizedBlock = getNormalizedBlock(blockElement, isBlockElementListItem);
+          const normalizedBlockParent = getParentElement(normalizedBlock);
+          normalizedBlockParent.each(parent => {
+            const parentDirection = getDirection(parent);
             if (parentDirection !== dir) {
               set(normalizedBlock, 'dir', dir);
             } else if (getDirection(normalizedBlock) !== dir) {
               remove(normalizedBlock, 'dir');
             }
             if (isBlockElementListItem) {
-              var listItems = children(normalizedBlock, 'li[dir]');
-              each(listItems, function (listItem) {
-                return remove(listItem, 'dir');
-              });
+              const listItems = children(normalizedBlock, 'li[dir]');
+              each(listItems, listItem => remove(listItem, 'dir'));
             }
           });
         });
@@ -401,53 +340,45 @@
       }
     };
 
-    var register$1 = function (editor) {
-      editor.addCommand('mceDirectionLTR', function () {
+    const register$1 = editor => {
+      editor.addCommand('mceDirectionLTR', () => {
         setDir(editor, 'ltr');
       });
-      editor.addCommand('mceDirectionRTL', function () {
+      editor.addCommand('mceDirectionRTL', () => {
         setDir(editor, 'rtl');
       });
     };
 
-    var getNodeChangeHandler = function (editor, dir) {
-      return function (api) {
-        var nodeChangeHandler = function (e) {
-          var element = SugarElement.fromDom(e.element);
-          api.setActive(getDirection(element) === dir);
-        };
-        editor.on('NodeChange', nodeChangeHandler);
-        return function () {
-          return editor.off('NodeChange', nodeChangeHandler);
-        };
+    const getNodeChangeHandler = (editor, dir) => api => {
+      const nodeChangeHandler = e => {
+        const element = SugarElement.fromDom(e.element);
+        api.setActive(getDirection(element) === dir);
       };
+      editor.on('NodeChange', nodeChangeHandler);
+      return () => editor.off('NodeChange', nodeChangeHandler);
     };
-    var register = function (editor) {
+    const register = editor => {
       editor.ui.registry.addToggleButton('ltr', {
         tooltip: 'Left to right',
         icon: 'ltr',
-        onAction: function () {
-          return editor.execCommand('mceDirectionLTR');
-        },
+        onAction: () => editor.execCommand('mceDirectionLTR'),
         onSetup: getNodeChangeHandler(editor, 'ltr')
       });
       editor.ui.registry.addToggleButton('rtl', {
         tooltip: 'Right to left',
         icon: 'rtl',
-        onAction: function () {
-          return editor.execCommand('mceDirectionRTL');
-        },
+        onAction: () => editor.execCommand('mceDirectionRTL'),
         onSetup: getNodeChangeHandler(editor, 'rtl')
       });
     };
 
-    function Plugin () {
-      global.add('directionality', function (editor) {
+    var Plugin = () => {
+      global.add('directionality', editor => {
         register$1(editor);
         register(editor);
       });
-    }
+    };
 
     Plugin();
 
-}());
+})();

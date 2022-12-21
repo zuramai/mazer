@@ -1,52 +1,36 @@
 /**
- * Copyright (c) Tiny Technologies, Inc. All rights reserved.
- * Licensed under the LGPL or a commercial license.
- * For LGPL see License.txt in the project root for license information.
- * For commercial licenses see https://www.tiny.cloud/
- *
- * Version: 5.10.7 (2022-12-06)
+ * TinyMCE version 6.3.1 (2022-12-06)
  */
+
 (function () {
     'use strict';
 
     var global$2 = tinymce.util.Tools.resolve('tinymce.PluginManager');
 
-    var identity = function (x) {
+    const eq = t => a => t === a;
+    const isNull = eq(null);
+
+    const identity = x => {
       return x;
     };
 
-    var __assign = function () {
-      __assign = Object.assign || function __assign(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-          s = arguments[i];
-          for (var p in s)
-            if (Object.prototype.hasOwnProperty.call(s, p))
-              t[p] = s[p];
-        }
-        return t;
-      };
-      return __assign.apply(this, arguments);
-    };
+    const zeroWidth = '\uFEFF';
+    const removeZwsp$1 = s => s.replace(/\uFEFF/g, '');
 
-    var zeroWidth = '\uFEFF';
-    var removeZwsp$1 = function (s) {
-      return s.replace(/\uFEFF/g, '');
-    };
-
-    var map = function (xs, f) {
-      var len = xs.length;
-      var r = new Array(len);
-      for (var i = 0; i < len; i++) {
-        var x = xs[i];
+    const map = (xs, f) => {
+      const len = xs.length;
+      const r = new Array(len);
+      for (let i = 0; i < len; i++) {
+        const x = xs[i];
         r[i] = f(x, i);
       }
       return r;
     };
 
-    var punctuationStr = '[!-#%-*,-\\/:;?@\\[-\\]_{}\xA1\xAB\xB7\xBB\xBF;\xB7\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061E\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1361-\u1368\u1400\u166D\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u3008\u3009\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30\u2E31\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uff3f\uFF5B\uFF5D\uFF5F-\uFF65]';
-    var regExps = {
+    const punctuationStr = '[!-#%-*,-\\/:;?@\\[-\\]_{}\xA1\xAB\xB7\xBB\xBF;\xB7\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061E\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1361-\u1368\u1400\u166D\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u3008\u3009\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30\u2E31\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uff3f\uFF5B\uFF5D\uFF5F-\uFF65]';
+    const regExps = {
       aletter: '[A-Za-z\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374\u0376\u0377\u037a-\u037d\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05d0-\u05ea\u05f0-\u05F3\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5\u06e5\u06e6\u06ee\u06ef\u06fa-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07ca-\u07ea\u07f4\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u0904-\u0939\u093d\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097f\u0985-\u098c\u098f\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc\u09dd\u09df-\u09e1\u09f0\u09f1\u0a05-\u0a0a\u0a0f\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32\u0a33\u0a35\u0a36\u0a38\u0a39\u0a59-\u0a5c\u0a5e\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0\u0ae1\u0b05-\u0b0c\u0b0f\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32\u0b33\u0b35-\u0b39\u0b3d\u0b5c\u0b5d\u0b5f-\u0b61\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99\u0b9a\u0b9c\u0b9e\u0b9f\u0ba3\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c33\u0c35-\u0c39\u0c3d\u0c58\u0c59\u0c60\u0c61\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cde\u0ce0\u0ce1\u0cf1\u0cf2\u0d05-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d60\u0d61\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0f00\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u10a0-\u10c5\u10d0-\u10fa\u10fc\u1100-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f4\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16ee-\u16f0\u1700-\u170c\u170e-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1820-\u1877\u1880-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191c\u1a00-\u1a16\u1b05-\u1b33\u1b45-\u1b4b\u1b83-\u1ba0\u1bae\u1baf\u1bc0-\u1be5\u1c00-\u1c23\u1c4d-\u1c4f\u1c5a-\u1c7d\u1ce9-\u1cec\u1cee-\u1cf1\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2119-\u211d\u2124\u2126\u2128\u212a-\u212d\u212f-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2160-\u2188\u24B6-\u24E9\u2c00-\u2c2e\u2c30-\u2c5e\u2c60-\u2ce4\u2ceb-\u2cee\u2d00-\u2d25\u2d30-\u2d65\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u2e2f\u3005\u303b\u303c\u3105-\u312d\u3131-\u318e\u31a0-\u31ba\ua000-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua61f\ua62a\ua62b\ua640-\ua66e\ua67f-\ua697\ua6a0-\ua6ef\ua717-\ua71f\ua722-\ua788\ua78b-\ua78e\ua790\ua791\ua7a0-\ua7a9\ua7fa-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8f2-\ua8f7\ua8fb\ua90a-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uabc0-\uabe2\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40\ufb41\ufb43\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff21-\uff3a\uff41-\uff5a\uffa0-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc]',
-      midnumlet: '[-\'\\.\u2018\u2019\u2024\uFE52\uFF07\uFF0E]',
+      midnumlet: `[-'\\.\u2018\u2019\u2024\uFE52\uFF07\uFF0E]`,
       midletter: '[:\xB7\xB7\u05F4\u2027\uFE13\uFE55\uFF1A]',
       midnum: '[\xB1+*/,;;\u0589\u060C\u060D\u066C\u07F8\u2044\uFE10\uFE14\uFE50\uFE54\uFF0C\uFF1B]',
       numeric: '[0-9\u0660-\u0669\u066B\u06f0-\u06f9\u07c0-\u07c9\u0966-\u096f\u09e6-\u09ef\u0a66-\u0a6f\u0ae6-\u0aef\u0b66-\u0b6f\u0be6-\u0bef\u0c66-\u0c6f\u0ce6-\u0cef\u0d66-\u0d6f\u0e50-\u0e59\u0ed0-\u0ed9\u0f20-\u0f29\u1040-\u1049\u1090-\u1099\u17e0-\u17e9\u1810-\u1819\u1946-\u194f\u19d0-\u19d9\u1a80-\u1a89\u1a90-\u1a99\u1b50-\u1b59\u1bb0-\u1bb9\u1c40-\u1c49\u1c50-\u1c59\ua620-\ua629\ua8d0-\ua8d9\ua900-\ua909\ua9d0-\ua9d9\uaa50-\uaa59\uabf0-\uabf9]',
@@ -59,7 +43,7 @@
       extendnumlet: '[=_\u203f\u2040\u2054\ufe33\ufe34\ufe4d-\ufe4f\uff3f\u2200-\u22FF<>]',
       punctuation: punctuationStr
     };
-    var characterIndices = {
+    const characterIndices = {
       ALETTER: 0,
       MIDNUMLET: 1,
       MIDLETTER: 2,
@@ -75,7 +59,7 @@
       AT: 12,
       OTHER: 13
     };
-    var SETS$1 = [
+    const SETS$1 = [
       new RegExp(regExps.aletter),
       new RegExp(regExps.midnumlet),
       new RegExp(regExps.midletter),
@@ -90,17 +74,17 @@
       new RegExp(regExps.extendnumlet),
       new RegExp('@')
     ];
-    var EMPTY_STRING$1 = '';
-    var PUNCTUATION$1 = new RegExp('^' + regExps.punctuation + '$');
-    var WHITESPACE$1 = /^\s+$/;
+    const EMPTY_STRING$1 = '';
+    const PUNCTUATION$1 = new RegExp('^' + regExps.punctuation + '$');
+    const WHITESPACE$1 = /^\s+$/;
 
-    var SETS = SETS$1;
-    var OTHER = characterIndices.OTHER;
-    var getType = function (char) {
-      var type = OTHER;
-      var setsLength = SETS.length;
-      for (var j = 0; j < setsLength; ++j) {
-        var set = SETS[j];
+    const SETS = SETS$1;
+    const OTHER = characterIndices.OTHER;
+    const getType = char => {
+      let type = OTHER;
+      const setsLength = SETS.length;
+      for (let j = 0; j < setsLength; ++j) {
+        const set = SETS[j];
         if (set && set.test(char)) {
           type = j;
           break;
@@ -108,37 +92,37 @@
       }
       return type;
     };
-    var memoize = function (func) {
-      var cache = {};
-      return function (char) {
+    const memoize = func => {
+      const cache = {};
+      return char => {
         if (cache[char]) {
           return cache[char];
         } else {
-          var result = func(char);
+          const result = func(char);
           cache[char] = result;
           return result;
         }
       };
     };
-    var classify = function (characters) {
-      var memoized = memoize(getType);
+    const classify = characters => {
+      const memoized = memoize(getType);
       return map(characters, memoized);
     };
 
-    var isWordBoundary = function (map, index) {
-      var type = map[index];
-      var nextType = map[index + 1];
+    const isWordBoundary = (map, index) => {
+      const type = map[index];
+      const nextType = map[index + 1];
       if (index < 0 || index > map.length - 1 && index !== 0) {
         return false;
       }
       if (type === characterIndices.ALETTER && nextType === characterIndices.ALETTER) {
         return false;
       }
-      var nextNextType = map[index + 2];
+      const nextNextType = map[index + 2];
       if (type === characterIndices.ALETTER && (nextType === characterIndices.MIDLETTER || nextType === characterIndices.MIDNUMLET || nextType === characterIndices.AT) && nextNextType === characterIndices.ALETTER) {
         return false;
       }
-      var prevType = map[index - 1];
+      const prevType = map[index - 1];
       if ((type === characterIndices.MIDLETTER || type === characterIndices.MIDNUMLET || nextType === characterIndices.AT) && nextType === characterIndices.ALETTER && prevType === characterIndices.ALETTER) {
         return false;
       }
@@ -178,14 +162,12 @@
       return true;
     };
 
-    var EMPTY_STRING = EMPTY_STRING$1;
-    var WHITESPACE = WHITESPACE$1;
-    var PUNCTUATION = PUNCTUATION$1;
-    var isProtocol = function (str) {
-      return str === 'http' || str === 'https';
-    };
-    var findWordEnd = function (characters, startIndex) {
-      var i;
+    const EMPTY_STRING = EMPTY_STRING$1;
+    const WHITESPACE = WHITESPACE$1;
+    const PUNCTUATION = PUNCTUATION$1;
+    const isProtocol = str => str === 'http' || str === 'https';
+    const findWordEnd = (characters, startIndex) => {
+      let i;
       for (i = startIndex; i < characters.length; i++) {
         if (WHITESPACE.test(characters[i])) {
           break;
@@ -193,25 +175,25 @@
       }
       return i;
     };
-    var findUrlEnd = function (characters, startIndex) {
-      var endIndex = findWordEnd(characters, startIndex + 1);
-      var peakedWord = characters.slice(startIndex + 1, endIndex).join(EMPTY_STRING);
+    const findUrlEnd = (characters, startIndex) => {
+      const endIndex = findWordEnd(characters, startIndex + 1);
+      const peakedWord = characters.slice(startIndex + 1, endIndex).join(EMPTY_STRING);
       return peakedWord.substr(0, 3) === '://' ? endIndex : startIndex;
     };
-    var findWords = function (chars, sChars, characterMap, options) {
-      var words = [];
-      var word = [];
-      for (var i = 0; i < characterMap.length; ++i) {
+    const findWords = (chars, sChars, characterMap, options) => {
+      const words = [];
+      let word = [];
+      for (let i = 0; i < characterMap.length; ++i) {
         word.push(chars[i]);
         if (isWordBoundary(characterMap, i)) {
-          var ch = sChars[i];
+          const ch = sChars[i];
           if ((options.includeWhitespace || !WHITESPACE.test(ch)) && (options.includePunctuation || !PUNCTUATION.test(ch))) {
-            var startOfWord = i - word.length + 1;
-            var endOfWord = i + 1;
-            var str = sChars.slice(startOfWord, endOfWord).join(EMPTY_STRING);
+            const startOfWord = i - word.length + 1;
+            const endOfWord = i + 1;
+            const str = sChars.slice(startOfWord, endOfWord).join(EMPTY_STRING);
             if (isProtocol(str)) {
-              var endOfUrl = findUrlEnd(sChars, i);
-              var url = chars.slice(endOfWord, endOfUrl);
+              const endOfUrl = findUrlEnd(sChars, i);
+              const url = chars.slice(endOfWord, endOfUrl);
               Array.prototype.push.apply(word, url);
               i = endOfUrl;
             }
@@ -222,44 +204,44 @@
       }
       return words;
     };
-    var getDefaultOptions = function () {
-      return {
-        includeWhitespace: false,
-        includePunctuation: false
+    const getDefaultOptions = () => ({
+      includeWhitespace: false,
+      includePunctuation: false
+    });
+    const getWords$1 = (chars, extract, options) => {
+      options = {
+        ...getDefaultOptions(),
+        ...options
       };
-    };
-    var getWords$1 = function (chars, extract, options) {
-      options = __assign(__assign({}, getDefaultOptions()), options);
-      var filteredChars = [];
-      var extractedChars = [];
-      for (var i = 0; i < chars.length; i++) {
-        var ch = extract(chars[i]);
+      const filteredChars = [];
+      const extractedChars = [];
+      for (let i = 0; i < chars.length; i++) {
+        const ch = extract(chars[i]);
         if (ch !== zeroWidth) {
           filteredChars.push(chars[i]);
           extractedChars.push(ch);
         }
       }
-      var characterMap = classify(extractedChars);
+      const characterMap = classify(extractedChars);
       return findWords(filteredChars, extractedChars, characterMap, options);
     };
 
-    var getWords = getWords$1;
+    const getWords = getWords$1;
 
     var global$1 = tinymce.util.Tools.resolve('tinymce.dom.TreeWalker');
 
-    var getText = function (node, schema) {
-      var blockElements = schema.getBlockElements();
-      var shortEndedElements = schema.getShortEndedElements();
-      var isNewline = function (node) {
-        return blockElements[node.nodeName] || shortEndedElements[node.nodeName];
-      };
-      var textBlocks = [];
-      var txt = '';
-      var treeWalker = new global$1(node, node);
-      while (node = treeWalker.next()) {
-        if (node.nodeType === 3) {
-          txt += removeZwsp$1(node.data);
-        } else if (isNewline(node) && txt.length) {
+    const getText = (node, schema) => {
+      const blockElements = schema.getBlockElements();
+      const voidElements = schema.getVoidElements();
+      const isNewline = node => blockElements[node.nodeName] || voidElements[node.nodeName];
+      const textBlocks = [];
+      let txt = '';
+      const treeWalker = new global$1(node, node);
+      let tempNode;
+      while (tempNode = treeWalker.next()) {
+        if (tempNode.nodeType === 3) {
+          txt += removeZwsp$1(tempNode.data);
+        } else if (isNewline(tempNode) && txt.length) {
           textBlocks.push(txt);
           txt = '';
         }
@@ -270,55 +252,39 @@
       return textBlocks;
     };
 
-    var removeZwsp = function (text) {
-      return text.replace(/\u200B/g, '');
-    };
-    var strLen = function (str) {
-      return str.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '_').length;
-    };
-    var countWords = function (node, schema) {
-      var text = removeZwsp(getText(node, schema).join('\n'));
+    const removeZwsp = text => text.replace(/\u200B/g, '');
+    const strLen = str => str.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '_').length;
+    const countWords = (node, schema) => {
+      const text = removeZwsp(getText(node, schema).join('\n'));
       return getWords(text.split(''), identity).length;
     };
-    var countCharacters = function (node, schema) {
-      var text = getText(node, schema).join('');
+    const countCharacters = (node, schema) => {
+      const text = getText(node, schema).join('');
       return strLen(text);
     };
-    var countCharactersWithoutSpaces = function (node, schema) {
-      var text = getText(node, schema).join('').replace(/\s/g, '');
+    const countCharactersWithoutSpaces = (node, schema) => {
+      const text = getText(node, schema).join('').replace(/\s/g, '');
       return strLen(text);
     };
 
-    var createBodyCounter = function (editor, count) {
-      return function () {
-        return count(editor.getBody(), editor.schema);
-      };
-    };
-    var createSelectionCounter = function (editor, count) {
-      return function () {
-        return count(editor.selection.getRng().cloneContents(), editor.schema);
-      };
-    };
-    var createBodyWordCounter = function (editor) {
-      return createBodyCounter(editor, countWords);
-    };
-    var get = function (editor) {
-      return {
-        body: {
-          getWordCount: createBodyWordCounter(editor),
-          getCharacterCount: createBodyCounter(editor, countCharacters),
-          getCharacterCountWithoutSpaces: createBodyCounter(editor, countCharactersWithoutSpaces)
-        },
-        selection: {
-          getWordCount: createSelectionCounter(editor, countWords),
-          getCharacterCount: createSelectionCounter(editor, countCharacters),
-          getCharacterCountWithoutSpaces: createSelectionCounter(editor, countCharactersWithoutSpaces)
-        },
-        getCount: createBodyWordCounter(editor)
-      };
-    };
+    const createBodyCounter = (editor, count) => () => count(editor.getBody(), editor.schema);
+    const createSelectionCounter = (editor, count) => () => count(editor.selection.getRng().cloneContents(), editor.schema);
+    const createBodyWordCounter = editor => createBodyCounter(editor, countWords);
+    const get = editor => ({
+      body: {
+        getWordCount: createBodyWordCounter(editor),
+        getCharacterCount: createBodyCounter(editor, countCharacters),
+        getCharacterCountWithoutSpaces: createBodyCounter(editor, countCharactersWithoutSpaces)
+      },
+      selection: {
+        getWordCount: createSelectionCounter(editor, countWords),
+        getCharacterCount: createSelectionCounter(editor, countCharacters),
+        getCharacterCountWithoutSpaces: createSelectionCounter(editor, countCharactersWithoutSpaces)
+      },
+      getCount: createBodyWordCounter(editor)
+    });
 
-    var open = function (editor, api) {
+    const open = (editor, api) => {
       editor.windowManager.open({
         title: 'Word Count',
         body: {
@@ -358,16 +324,36 @@
       });
     };
 
-    var register$1 = function (editor, api) {
-      editor.addCommand('mceWordCount', function () {
-        return open(editor, api);
-      });
+    const register$1 = (editor, api) => {
+      editor.addCommand('mceWordCount', () => open(editor, api));
+    };
+
+    const first = (fn, rate) => {
+      let timer = null;
+      const cancel = () => {
+        if (!isNull(timer)) {
+          clearTimeout(timer);
+          timer = null;
+        }
+      };
+      const throttle = (...args) => {
+        if (isNull(timer)) {
+          timer = setTimeout(() => {
+            timer = null;
+            fn.apply(null, args);
+          }, rate);
+        }
+      };
+      return {
+        cancel,
+        throttle
+      };
     };
 
     var global = tinymce.util.Tools.resolve('tinymce.util.Delay');
 
-    var fireWordCountUpdate = function (editor, api) {
-      editor.fire('wordCountUpdate', {
+    const fireWordCountUpdate = (editor, api) => {
+      editor.dispatch('wordCountUpdate', {
         wordCount: {
           words: api.body.getWordCount(),
           characters: api.body.getCharacterCount(),
@@ -376,50 +362,44 @@
       });
     };
 
-    var updateCount = function (editor, api) {
+    const updateCount = (editor, api) => {
       fireWordCountUpdate(editor, api);
     };
-    var setup = function (editor, api, delay) {
-      var debouncedUpdate = global.debounce(function () {
-        return updateCount(editor, api);
-      }, delay);
-      editor.on('init', function () {
+    const setup = (editor, api, delay) => {
+      const debouncedUpdate = first(() => updateCount(editor, api), delay);
+      editor.on('init', () => {
         updateCount(editor, api);
-        global.setEditorTimeout(editor, function () {
-          editor.on('SetContent BeforeAddUndo Undo Redo ViewUpdate keyup', debouncedUpdate);
+        global.setEditorTimeout(editor, () => {
+          editor.on('SetContent BeforeAddUndo Undo Redo ViewUpdate keyup', debouncedUpdate.throttle);
         }, 0);
+        editor.on('remove', debouncedUpdate.cancel);
       });
     };
 
-    var register = function (editor) {
-      var onAction = function () {
-        return editor.execCommand('mceWordCount');
-      };
+    const register = editor => {
+      const onAction = () => editor.execCommand('mceWordCount');
       editor.ui.registry.addButton('wordcount', {
         tooltip: 'Word count',
         icon: 'character-count',
-        onAction: onAction
+        onAction
       });
       editor.ui.registry.addMenuItem('wordcount', {
         text: 'Word count',
         icon: 'character-count',
-        onAction: onAction
+        onAction
       });
     };
 
-    function Plugin (delay) {
-      if (delay === void 0) {
-        delay = 300;
-      }
-      global$2.add('wordcount', function (editor) {
-        var api = get(editor);
+    var Plugin = (delay = 300) => {
+      global$2.add('wordcount', editor => {
+        const api = get(editor);
         register$1(editor, api);
         register(editor);
         setup(editor, api, delay);
         return api;
       });
-    }
+    };
 
     Plugin();
 
-}());
+})();
