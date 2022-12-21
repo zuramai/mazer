@@ -2,6 +2,7 @@ const mix = require("laravel-mix")
 const MixGlob = require("laravel-mix-glob")
 const sidebarItems = require("./src/sidebar-items.json")
 const horizontalMenuItems = require("./src/horizontal-menu-items.json")
+const fs = require('fs')
 require("laravel-mix-nunjucks")
 
 // String constants
@@ -46,8 +47,9 @@ const modulesToCopy = {
 for (const mod in modulesToCopy) {
   let modulePath = `node_modules/${mod}`
   if (modulesToCopy[mod]) modulePath += "/dist"
-
-  mix.copy(modulePath, `dist/assets/extensions/${mod}`)
+  
+  fs.mkdir(`dist/assets/extensions/${mod}`, {recursive:true}, (err) => console.log('Copying module '+mod))
+  mix.copyDirectory(modulePath+'/', `dist/assets/extensions/${mod}`)
 }
 
 mixGlob
