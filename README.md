@@ -50,6 +50,7 @@ Open the index HTML file and explore the source code.
 - [Adonisjs 5](https://github.com/afman42/mazer-adonisjs) by [@afman42](https://github.com/afman42/)
 - [Django](https://github.com/bimbims125/mazer-django) by [@bimbims125](https://github.com/bimbims125/)
 - [Flask](https://github.com/antheiz/mazer-flask) by [@antheiz](https://github.com/antheiz/)
+- [Symfony](https://github.com/jvl1v5/symfony-mazer) by [@jvl1v5](https://github.com/jvl1v5/)
 - Did you make in another framework or tools? Open up Pull Requests and put yours here! 😃
 
 ## Contributing
