@@ -6,4 +6,5 @@
 package-lock.json
 
 dist.zip
-.yarn
+.pnp.cjs
+.pnp.loader.mjs
