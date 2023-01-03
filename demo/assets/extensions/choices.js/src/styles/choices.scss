@@ -23,7 +23,7 @@ $choices-button-dimension: 8px !default;
 $choices-button-offset: 8px !default;
 $choices-icon-cross: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHZpZXdCb3g9IjAgMCAyMSAyMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjRkZGIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0yLjU5Mi4wNDRsMTguMzY0IDE4LjM2NC0yLjU0OCAyLjU0OEwuMDQ0IDIuNTkyeiIvPjxwYXRoIGQ9Ik0wIDE4LjM2NEwxOC4zNjQgMGwyLjU0OCAyLjU0OEwyLjU0OCAyMC45MTJ6Ii8+PC9nPjwvc3ZnPg==") !default;
 $choices-icon-cross-inverse: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHZpZXdCb3g9IjAgMCAyMSAyMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjMDAwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0yLjU5Mi4wNDRsMTguMzY0IDE4LjM2NC0yLjU0OCAyLjU0OEwuMDQ0IDIuNTkyeiIvPjxwYXRoIGQ9Ik0wIDE4LjM2NEwxOC4zNjQgMGwyLjU0OCAyLjU0OEwyLjU0OCAyMC45MTJ6Ii8+PC9nPjwvc3ZnPg==") !default;
-$choices-z-index: 1;
+$choices-z-index: 1 !default;
 
 .#{$choices-selector} {
   position: relative;
@@ -40,7 +40,7 @@ $choices-z-index: 1;
   }
 
   &.is-open {
-    overflow: initial;
+    overflow: visible;
   }
 
   &.is-disabled {
@@ -191,6 +191,10 @@ $choices-z-index: 1;
   margin: 0;
   padding-left: 0;
   list-style: none;
+
+  &[aria-expanded] {
+    @extend %choices-dropdown;
+  }
 }
 
 .#{$choices-selector}__list--single {
@@ -245,7 +249,7 @@ $choices-z-index: 1;
   }
 }
 
-.#{$choices-selector}__list--dropdown {
+%choices-dropdown {
   visibility: hidden;
   z-index: $choices-z-index;
   position: absolute;
@@ -327,6 +331,10 @@ $choices-z-index: 1;
   }
 }
 
+.#{$choices-selector}__list--dropdown {
+  @extend %choices-dropdown;
+}
+
 .#{$choices-selector}__item {
   cursor: default;
 }
@@ -376,6 +384,20 @@ $choices-z-index: 1;
 
   &:focus {
     outline: 0;
+  }
+
+  &::-webkit-search-decoration,
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-results-button,
+  &::-webkit-search-results-decoration {
+    display: none;
+  }
+
+  &::-ms-clear,
+  &::-ms-reveal {
+    display: none;
+    width: 0;
+    height: 0;
   }
 
   [dir="rtl"] & {

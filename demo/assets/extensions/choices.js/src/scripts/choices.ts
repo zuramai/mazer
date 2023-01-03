@@ -46,6 +46,7 @@ import {
   isType,
   sortByScore,
   strToEl,
+  parseCustomProperties,
 } from './lib/utils';
 import { defaultState } from './reducers';
 import Store from './store/store';
@@ -151,6 +152,12 @@ class Choices implements Choices {
       | HTMLSelectElement = '[data-choice]',
     userConfig: Partial<Options> = {},
   ) {
+    if (userConfig.allowHTML === undefined) {
+      console.warn(
+        'Deprecation warning: allowHTML will default to false in a future release. To render HTML in Choices, you will need to set it to true. Setting allowHTML will suppress this message.',
+      );
+    }
+
     this.config = merge.all<Options>(
       [DEFAULT_CONFIG, Choices.defaults.options, userConfig],
       // When merging array configs, replace with a copy of the userConfig array,
@@ -284,7 +291,9 @@ class Choices implements Choices {
           disabled: option.disabled || option.parentNode.disabled,
           placeholder:
             option.value === '' || option.hasAttribute('placeholder'),
-          customProperties: option.dataset['custom-properties'],
+          customProperties: parseCustomProperties(
+            option.dataset.customProperties,
+          ),
         });
       });
     }
@@ -547,7 +556,7 @@ class Choices implements Choices {
     return this;
   }
 
-  setChoiceByValue(value: string): this {
+  setChoiceByValue(value: string | string[]): this {
     if (!this.initialised || this._isTextElement) {
       return this;
     }
@@ -1224,7 +1233,7 @@ class Choices implements Choices {
   }
 
   _handleSearch(value: string): void {
-    if (!value || !this.input.isFocussed) {
+    if (!this.input.isFocussed) {
       return;
     }
 
@@ -1233,7 +1242,11 @@ class Choices implements Choices {
     const hasUnactiveChoices = choices.some((option) => !option.active);
 
     // Check that we have a value to search and the input was an alphanumeric character
-    if (value && value.length >= searchFloor) {
+    if (
+      value !== null &&
+      typeof value !== 'undefined' &&
+      value.length >= searchFloor
+    ) {
       const resultCount = searchChoices ? this._searchChoices(value) : 0;
       // Trigger search event
       this.passedElement.triggerEvent(EVENTS.search, {
@@ -1317,11 +1330,10 @@ class Choices implements Choices {
     // If new value matches the desired length and is not the same as the current value with a space
     const haystack = this._store.searchableChoices;
     const needle = newValue;
-    const keys = [...this.config.searchFields];
     const options = Object.assign(this.config.fuseOptions, {
-      keys,
+      keys: [...this.config.searchFields],
       includeMatches: true,
-    });
+    }) as Fuse.IFuseOptions<Choice>;
     const fuse = new Fuse(haystack, options);
     const results: Result<Choice>[] = fuse.search(needle) as any[]; // see https://github.com/krisk/Fuse/issues/303
 
@@ -1429,7 +1441,8 @@ class Choices implements Choices {
     const hasActiveDropdown = this.dropdown.isActive;
     const hasItems = this.itemList.hasChildren();
     const keyString = String.fromCharCode(keyCode);
-    const wasAlphaNumericChar = /[a-zA-Z0-9-_ ]/.test(keyString);
+    // eslint-disable-next-line no-control-regex
+    const wasPrintableChar = /[^\x00-\x1F]/.test(keyString);
 
     const {
       BACK_KEY,
@@ -1443,7 +1456,7 @@ class Choices implements Choices {
       PAGE_DOWN_KEY,
     } = KEY_CODES;
 
-    if (!this._isTextElement && !hasActiveDropdown && wasAlphaNumericChar) {
+    if (!this._isTextElement && !hasActiveDropdown && wasPrintableChar) {
       this.showDropdown();
 
       if (!this.input.isFocussed) {
@@ -1452,7 +1465,7 @@ class Choices implements Choices {
           the input was not focussed at the time of key press
           therefore does not have the value of the key.
         */
-        this.input.value += keyString.toLowerCase();
+        this.input.value += event.key.toLowerCase();
       }
     }
 
@@ -1507,7 +1520,7 @@ class Choices implements Choices {
         this._isSearching = false;
         this._store.dispatch(activateChoices(true));
       } else if (canSearch) {
-        this._handleSearch(this.input.value);
+        this._handleSearch(this.input.rawValue);
       }
     }
 
@@ -2105,9 +2118,7 @@ class Choices implements Choices {
   }
 
   _getTemplate(template: string, ...args: any): any {
-    const { classNames } = this.config;
-
-    return this._templates[template].call(this, classNames, ...args);
+    return this._templates[template].call(this, this.config, ...args);
   }
 
   _createTemplates(): void {
@@ -2133,6 +2144,7 @@ class Choices implements Choices {
         this._isSelectOneElement,
         this.config.searchEnabled,
         this.passedElement.element.type,
+        this.config.labelId,
       ),
       classNames: this.config.classNames,
       type: this.passedElement.element.type as PassedElement['type'],

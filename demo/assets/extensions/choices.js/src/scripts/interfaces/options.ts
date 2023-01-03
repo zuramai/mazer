@@ -1,4 +1,4 @@
-import { FuseOptions } from 'fuse.js';
+import Fuse from 'fuse.js';
 import { Choices } from './choices';
 import { Choice } from './choice';
 import { ClassNames } from './class-names';
@@ -158,6 +158,19 @@ export interface Options {
    * @default false
    */
   editItems: boolean;
+
+  /**
+   * Whether HTML should be rendered in all Choices elements.
+   * If `false`, all elements (placeholder, items, etc.) will be treated as plain text.
+   * If `true`, this can be used to perform XSS scripting attacks if you load choices from a remote source.
+   *
+   * **Deprecation Warning:** This will default to `false` in a future release.
+   *
+   * **Input types affected:** text, select-one, select-multiple
+   *
+   * @default true
+   */
+  allowHTML: boolean;
 
   /**
    * Whether each inputted/chosen item should be unique.
@@ -436,9 +449,14 @@ export interface Options {
   classNames: ClassNames;
 
   /**
-   * Choices uses the great Fuse library for searching. You can find more options here: https://github.com/krisk/Fuse#options
+   * Choices uses the great Fuse library for searching. You can find more options here: https://fusejs.io/api/options.html
    */
-  fuseOptions: FuseOptions<Choice>;
+  fuseOptions: Fuse.IFuseOptions<Choices>;
+
+  /**
+   * ID of the connected label to improve a11y. If set, aria-labelledby will be added.
+   */
+  labelId: string;
 
   /**
    * Function to run once Choices initialises.

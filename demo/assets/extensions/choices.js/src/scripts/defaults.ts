@@ -42,6 +42,7 @@ export const DEFAULT_CONFIG: Options = {
   removeItems: true,
   removeItemButton: false,
   editItems: false,
+  allowHTML: true,
   duplicateItemsAllowed: true,
   delimiter: ',',
   paste: true,
@@ -73,6 +74,7 @@ export const DEFAULT_CONFIG: Options = {
   fuseOptions: {
     includeScore: true,
   },
+  labelId: '',
   callbackOnInit: null,
   callbackOnCreateTemplates: null,
   classNames: DEFAULT_CLASSNAMES,
