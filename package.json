@@ -38,8 +38,8 @@
     "apexcharts": "^3.36.3",
     "bootstrap": "5.2.3",
     "bootstrap-icons": "^1.10.2",
-    "chart.js": "^3.9.1",
-    "choices.js": "^9.1.0",
+    "chart.js": "^4.1.1",
+    "choices.js": "^10.2.0",
     "cross-env": "^7.0.3",
     "datatables.net": "^1.13.1",
     "datatables.net-bs5": "^1.13.1",
@@ -80,7 +80,7 @@
     "release-it": "^15.5.1",
     "resolve-url-loader": "^5.0.0",
     "sass": "^1.57.1",
-    "sass-loader": "^12.6.0"
+    "sass-loader": "^13.2.0"
   },
   "release-it": {
     "hooks": {
@@ -97,6 +97,5 @@
         "dist.zip"
       ]
     }
-  },
-  "packageManager": "yarn@3.3.1"
+  }
 }
