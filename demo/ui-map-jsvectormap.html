@@ -17,6 +17,11 @@
       href="assets/images/logo/favicon.png"
       type="image/png"
     />
+
+    <link
+      rel="stylesheet"
+      href="assets/extensions/jsvectormap/css/jsvectormap.min.css"
+    />
   </head>
 
   <body>
@@ -495,7 +500,13 @@
               <div class="col-12 col-md-6 order-md-1 order-last">
                 <h3>JS Vector Map</h3>
                 <p class="text-subtitle text-muted">
-                  A google maps alternative.
+                  We use the
+                  <a
+                    href="https://github.com/themustafaomar/jsvectormap"
+                    target="_blank"
+                    >Jsvectormap</a
+                  >
+                  plugin to create vector maps.
                 </p>
               </div>
               <div class="col-12 col-md-6 order-md-2 order-first">
@@ -520,13 +531,14 @@
               <div class="col-12">
                 <div class="card">
                   <div class="card-header">
-                    <h5 class="card-title">Coming Soon!</h5>
+                    <h5 class="card-title">World Map</h5>
                   </div>
                   <div class="card-body">
-                    If you want to contribute, check out our
-                    <a href="https://github.com/zuramai/mazer" target="_blank"
-                      >template repository</a
-                    >.
+                    <div
+                      id="world-map"
+                      class="w-100"
+                      style="height: 450px"
+                    ></div>
                   </div>
                 </div>
               </div>
@@ -552,5 +564,9 @@
     </div>
     <script src="assets/js/bootstrap.js"></script>
     <script src="assets/js/app.js"></script>
+
+    <script src="assets/extensions/jsvectormap/js/jsvectormap.min.js"></script>
+    <script src="assets/extensions/jsvectormap/maps/world.js"></script>
+    <script src="assets/js/pages/jsvectormap.js"></script>
   </body>
 </html>
