@@ -55,6 +55,7 @@
     "filepond-plugin-image-preview": "^4.6.11",
     "filepond-plugin-image-resize": "^2.0.10",
     "jquery": "^3.6.3",
+    "jsvectormap": "^1.5.1",
     "laravel-mix": "^6.0.49",
     "nunjucks": "^3.2.3",
     "parsleyjs": "^2.9.2",

@@ -43,6 +43,7 @@ const modulesToCopy = {
   "toastify-js": false,
   "datatables.net-bs5": false,
   "simple-datatables": true, // With dist folder = true
+  jsvectormap: true,
 }
 for (const mod in modulesToCopy) {
   let modulePath = `node_modules/${mod}`
