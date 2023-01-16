@@ -1,7 +1,7 @@
 @import "../variables";
 
 body {
-    background-color: $page-auth-bg;
+    background-color: var(--bs-body-bg);
 }
 #auth {
     height: 100vh;
@@ -28,6 +28,9 @@ body {
             img {
                 height: 2rem;
             }
+        }
+        @media screen and (max-width: 1399.9px) {
+            padding: 3rem ;
         }
         @media screen and (max-width: 767px) {
             padding: 5rem ;
