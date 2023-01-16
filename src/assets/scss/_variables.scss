@@ -322,6 +322,35 @@ $cyan-800: shade-color($cyan, 60%) !default;
 $cyan-900: shade-color($cyan, 80%) !default;
 // fusv-enable
 
+
+$primary-text:            $blue-600 !default;
+$secondary-text:          $gray-600 !default;
+$success-text:            $green-600 !default;
+$info-text:               $cyan-700 !default;
+$warning-text:            $yellow-700 !default;
+$danger-text:             $red-600 !default;
+$light-text:              $gray-600 !default;
+$dark-text:               $gray-700 !default;
+
+$primary-bg-subtle:       $blue-100 !default;
+$secondary-bg-subtle:     $gray-100 !default;
+$success-bg-subtle:       $green-100 !default;
+$info-bg-subtle:          $cyan-100 !default;
+$warning-bg-subtle:       $yellow-100 !default;
+$danger-bg-subtle:        $red-100 !default;
+$light-bg-subtle:         mix($gray-100, $white) !default;
+$dark-bg-subtle:          $gray-400 !default;
+
+$primary-border-subtle:   $blue-200 !default;
+$secondary-border-subtle: $gray-200 !default;
+$success-border-subtle:   $green-200 !default;
+$info-border-subtle:      $cyan-200 !default;
+$warning-border-subtle:   $yellow-200 !default;
+$danger-border-subtle:    $red-200 !default;
+$light-border-subtle:     $gray-200 !default;
+$dark-border-subtle:      $gray-500 !default;
+
+
 // Characters which are escaped by the escape-svg function
 $escaped-characters: (
   ("<", "%3c"),
@@ -351,6 +380,9 @@ $enable-validation-icons:     true !default;
 $enable-negative-margins:     false !default;
 $enable-deprecation-messages: true !default;
 $enable-important-utilities:  true !default;
+
+$enable-dark-mode:            true !default;
+$color-mode-type:             data; // `data` or `media-query`
 
 // Prefix for :root CSS variables
 
@@ -576,7 +608,7 @@ $font-weight-normal:          400 !default;
 $font-weight-semibold:        600 !default;
 $font-weight-bold:            700 !default;
 $font-weight-bolder:          bolder !default;
-
+$font-weight-medium:          500 !default;
 $font-weight-base:            $font-weight-normal !default;
 
 $line-height-base:            1.5 !default;
@@ -991,9 +1023,11 @@ $form-floating-line-height:       1.25 !default;
 $form-floating-padding-x:         $input-padding-x !default;
 $form-floating-padding-y:         1rem !default;
 $form-floating-input-padding-t:   1.625rem !default;
+$form-floating-label-height:            1.875em !default;
 $form-floating-input-padding-b:   .625rem !default;
 $form-floating-label-opacity:     .65 !default;
 $form-floating-label-transform:   scale(.85) translateY(-.5rem) translateX(.15rem) !default;
+$form-floating-label-disabled-color:    $gray-600 !default;
 $form-floating-transition:        opacity .1s ease-in-out, transform .1s ease-in-out !default;
 
 // Form validation
@@ -1039,6 +1073,16 @@ $zindex-offcanvas:                  1045 !default;
 $zindex-tooltip:                    1070 !default;
 $zindex-toast:                      1090 !default;
 // scss-docs-end zindex-stack
+
+// scss-docs-start zindex-levels-map
+$zindex-levels: (
+  n1: -1,
+  0: 0,
+  1: 1,
+  2: 2,
+  3: 3
+) !default;
+// scss-docs-end zindex-levels-map
 
 
 // Navs
@@ -1210,6 +1254,8 @@ $placeholder-opacity-min:           .2 !default;
 $card-spacer-y:                     $spacer !default;
 $card-spacer-x:                     $spacer !default;
 $card-title-spacer-y:               math.div($spacer, 2) !default;
+$card-title-color:                  null !default;
+$card-subtitle-color:               null !default;
 $card-border-width:                 $border-width !default;
 $card-border-radius:                .7rem !default;
 $card-border-color:                 rgba($black, .125) !default;

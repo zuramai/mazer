@@ -88,7 +88,6 @@ mix.njk("src/*.html", "dist/", {
   block: "content",
   envOptions: {
     watch: true,
-    noCache: true,
   },
   manageEnv: (nunjucks) => {
     nunjucks.addFilter("containString", (str, containStr) => {

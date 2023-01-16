@@ -1,35 +1,26 @@
 
 const THEME_KEY = "theme"
-const THEME_REGEX = /\btheme-[a-z0-9]+\b/g
-const toggler = document.getElementById("toggle-dark")
 
 export function toggleDarkTheme() {
   setTheme(
-    document.body.classList.contains("theme-dark")
-      ? "theme-light"
-      : "theme-dark"
+    document.documentElement.getAttribute("data-bs-theme") === 'dark'
+      ? "light"
+      : "dark"
   )
 }
 
 /**
  * Set theme for mazer
- * @param {"theme-dark"|"theme-light"} theme
- * @param {boolean} dontPersist 
+ * @param {"dark"|"light"} theme
+ * @param {boolean} persist 
  */
-export function setTheme(theme, dontPersist = false) {
-  document.body.className = document.body.className.replace(THEME_REGEX, "")
+export function setTheme(theme, persist = false) {
   document.body.classList.add(theme)
-  if (toggler) toggler.checked = theme == "theme-dark"
-
-  if (!dontPersist) {
+  document.documentElement.setAttribute('data-bs-theme', theme)
+  
+  if (persist) {
     localStorage.setItem(THEME_KEY, theme)
   }
-}
-
-if (toggler) {
-  toggler.addEventListener("input", (e) => {
-    setTheme(e.target.checked ? "theme-dark" : "theme-light")
-  })
 }
 
 /**
@@ -41,7 +32,6 @@ function initTheme() {
   if (storedTheme) {
     return setTheme(storedTheme)
   }
-
   //Detect if the user set his preferred color scheme to dark
   if (!window.matchMedia) {
     return
@@ -52,16 +42,24 @@ function initTheme() {
 
   //Register change listener
   mediaQuery.addEventListener("change", (e) =>
-    setTheme(e.matches ? "theme-dark" : "theme-light", true)
+    setTheme(e.matches ? "dark" : "light", true)
   )
-
-  return setTheme(mediaQuery.matches ? "theme-dark" : "theme-light", true)
+  return setTheme(mediaQuery.matches ? "dark" : "light", true)
 }
 
-if (document.readyState === 'loading') {
-    // Document not yet loaded, so wait for it.
-    window.addEventListener('DOMContentLoaded', initTheme);
-} else {
-    // Document is ready (interactive or complete), so call init immediately.
-    initTheme();
-}
+window.addEventListener('DOMContentLoaded', () => {
+  const toggler = document.getElementById("toggle-dark")
+  const theme = localStorage.getItem(THEME_KEY)
+
+  if(toggler) {
+    toggler.checked = theme === "dark"
+    
+    toggler.addEventListener("input", (e) => {
+      setTheme(e.target.checked ? "dark" : "light", true)
+    })
+  }
+
+});
+
+initTheme()
+

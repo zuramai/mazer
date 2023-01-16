@@ -6,7 +6,7 @@
 @import "~bootstrap/scss/mixins";
 @import "./root";
 
-body.theme-dark {
+html[data-bs-theme="dark"] {
     // Bootstrap 
     @import "~bootstrap/scss/maps";
     @import "~bootstrap/scss/utilities";

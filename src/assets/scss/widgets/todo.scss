@@ -9,7 +9,7 @@
     padding: 0;
 }
 
-.theme-dark .widget-todo-item:hover {
+[data-bs-theme="dark"] .widget-todo-item:hover {
     background-color: $gray-900;
 }
 

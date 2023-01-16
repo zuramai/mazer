@@ -1,7 +1,5 @@
 const body = document.body;
+const theme = localStorage.getItem('theme')
 
-if (localStorage.getItem('theme') == 'theme-dark') {
-    body.classList.add("theme-dark");
-} else {
-    body.classList.add("theme-light");
-};
+if (theme) 
+  document.documentElement.setAttribute('data-bs-theme', theme)

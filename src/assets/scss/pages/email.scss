@@ -555,7 +555,7 @@
     }
 }
 
-body.theme-dark {
+html[data-bs-theme="dark"] {
     .email-application {
         .content-area-wrapper {
             border: 1px solid #2a2f3e;
@@ -610,7 +610,7 @@ body.theme-dark {
         }
     }
 
-    body.theme-dark .form-check-input {
+    html[data-bs-theme="dark"] .form-check-input {
         background-color: #151521;
         border: 2px solid $primary;
     }
