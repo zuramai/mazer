@@ -52,6 +52,7 @@ Open the index HTML file and explore the source code.
 - [Flask](https://github.com/antheiz/mazer-flask) by [@antheiz](https://github.com/antheiz/)
 - [Symfony](https://github.com/jvl1v5/symfony-mazer) by [@jvl1v5](https://github.com/jvl1v5/)
 - [Spring-Thymeleaf](https://github.com/deyhay-enterprise/spring-project-mazer-template) by [@hi-rullah](https://github.com/hi-rullah)
+- [Ruby on Rails](https://github.com/noesya/mazer-rails) by [@noesya](https://github.com/noesya)
 - Did you make in another framework or tools? Open up Pull Requests and put yours here! 😃
 
 ## Contributing
