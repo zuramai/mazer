@@ -53,6 +53,7 @@ Open the index HTML file and explore the source code.
 - [Symfony](https://github.com/jvl1v5/symfony-mazer) by [@jvl1v5](https://github.com/jvl1v5/)
 - [Spring-Thymeleaf](https://github.com/deyhay-enterprise/spring-project-mazer-template) by [@hi-rullah](https://github.com/hi-rullah)
 - [Ruby on Rails](https://github.com/noesya/mazer-rails) by [@noesya](https://github.com/noesya)
+- [Yii2](https://github.com/anovsiradj/yii2-theme-mazer) by [@anovsiradj](https://github.com/anovsiradj)
 - Did you make in another framework or tools? Open up Pull Requests and put yours here! 😃
 
 ## Contributing
