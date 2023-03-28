@@ -2,7 +2,7 @@
 {% set filename = 'layout-horizontal.html' %}
 
 {% block styles %}
-<link rel="stylesheet" href="assets/css/shared/iconly.css">
+<link rel="stylesheet" href="@/assets/scss/iconly.scss">
 {% endblock %}
 
 {% extends 'src/layouts/horizontal.html' %}
@@ -276,5 +276,5 @@
 {% endblock %}
 {% block js %}
 <script src="assets/extensions/apexcharts/apexcharts.min.js"></script>
-<script src="assets/js/pages/dashboard.js"></script>
+<script src="assets/static/js/pages/dashboard.js"></script>
 {% endblock %}
