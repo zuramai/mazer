@@ -21,12 +21,12 @@ const getFiles = () => {
 }
 const files = getFiles()
 export default defineConfig({
-    publicDir: 'src/assets',
+    publicDir: 'static',
     root,
     plugins: [
         viteStaticCopy({
             targets: [
-                { src: resolve(__dirname, './src/assets/static'), dest: 'dist/assets' }
+                { src: resolve(__dirname, './src/static'), dest: 'assets' }
             ]
         }),
         nunjucks.default({
@@ -44,9 +44,9 @@ export default defineConfig({
     },
     build: {
         emptyOutDir: true,
-        sourcemap: true,
         manifest: true,
         outDir: resolve(__dirname, 'dist'),
+        assetsDir:  'assets/compiled',
         rollupOptions: {
           input: files,
         },
