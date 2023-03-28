@@ -59,11 +59,9 @@ class Sidebar {
     }
 
     // Scroll into active sidebar
-    setTimeout(
-      () =>
-        document.querySelector(".sidebar-item.active")?.scrollIntoView(false),
-      100
-    )
+    setTimeout(() => {
+      this.forceElementVisibility(document.querySelector(".sidebar-item.active"))
+    }, 300)
 
     // check responsive
     this.onFirstLoad()
