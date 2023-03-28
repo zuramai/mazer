@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && npm run prettify",
+    "watch": "vite build --watch",
     "prod-rtl": "npm run build && rtl",
     "rtl": "rtlcss -d \"dist/assets/css\" -e \".rtl.css\" && find . -type f -name '*.rtl.rtl.css' -delete",
     "prettify": "prettier --write 'dist/*.html'",

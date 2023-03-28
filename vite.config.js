@@ -124,7 +124,6 @@ export default defineConfig({
         rollupOptions: {
           input: files,
         },
-        watch: true
     }
     // build: {
     //     outDir: 'dist',
