@@ -18,20 +18,32 @@
 	<a href="https://github.com/zuramai/mazer/blob/main/README_INDONESIAN.md">Indonesian README</a>&nbsp;&nbsp;&nbsp;
 </p>
 
-## Usage
+## Installation
 
-#### Using a ready-made built (recommended)
+### Using a ready-made built (recommended)
 
 Download the latest release from the [releases page](https://github.com/zuramai/mazer/releases "releases page").
 Open the index HTML file and explore the source code.
 
-#### Building yourself
+### Building yourself
 
-- Clone the repository `git clone https://github.com/zuramai/mazer`
-- Install dependencies using the node package manager of your choice. For example run `npm install` 
-- Files are bundled by Laravel Mix to the dist folder.
-    - Either run `npm run hot` and open `http://localhost:8080` to see a hot-reloading copy of the generated files.
-    - Or run `npm run watch`  (rebuilds on file changes) or `npm run production` and open `index.html` in from the dist folder.
+1. Clone the repository 
+```sh
+git clone https://github.com/zuramai/mazer
+```
+
+2. Install dependencies
+```sh
+yarn install
+# OR
+npm install
+```
+
+3. Run it locally
+```sh
+npm run build
+```
+4. Open another terminal to run `npm run preview`. And then you can open the page at `http://localhost:4173`
 
 ### Building with Docker
 
