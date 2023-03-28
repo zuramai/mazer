@@ -5,5 +5,4 @@ featherIcons.replace()
 
 // Mazer internal JS. Include this in your project to get
 // the sidebar running.
-require("./components/dark")
-require("./mazer")
+import "./mazer"
