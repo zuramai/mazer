@@ -73,7 +73,7 @@ const copyModules = Object.keys(modulesToCopy).map(moduleName => {
         rename: moduleName
     }
 })
-console.log(copyModules)
+console.log(files)
 
 
 
@@ -86,12 +86,16 @@ export default defineConfig({
                 { src: normalizePath(resolve(__dirname, './src/assets/static')), dest: 'assets' },
                 { src: normalizePath(resolve(__dirname, "./node_modules/bootstrap-icons/bootstrap-icons.svg")), dest: 'assets/static/images' },
                 ...copyModules
-            ]
+            ],
+            watch: {
+                reloadPageOnChange: true
+            }
         }),
         nunjucks.default({
             templatesDir: root,
             variables: getVariables(),
             nunjucksEnvironment: {
+                
                 filters: {
                     containString: (str, containStr) => {
                         if (!str.length) return false
