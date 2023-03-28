@@ -73,12 +73,10 @@ const copyModules = Object.keys(modulesToCopy).map(moduleName => {
         rename: moduleName
     }
 })
-console.log(files)
-
-
 
 export default defineConfig({
     publicDir: 'static',
+    base: '/mazer',
     root,
     plugins: [
         viteStaticCopy({
