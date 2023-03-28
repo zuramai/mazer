@@ -93,6 +93,14 @@
         "url": "extra-component-avatar.html"
       },
       {
+        "name": "Divider",
+        "url": "extra-component-divider.html"
+      },
+      {
+        "name": "Date Picker",
+        "url": "extra-component-date-picker.html"
+      },
+      {
         "name": "Sweet Alert",
         "url": "extra-component-sweetalert.html"
       },
@@ -103,10 +111,6 @@
       {
         "name": "Rating",
         "url": "extra-component-rating.html"
-      },
-      {
-        "name": "Divider",
-        "url": "extra-component-divider.html"
       }
     ]
   },
