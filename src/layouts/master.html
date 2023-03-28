@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }} - {{ web_title }}</title>
     {% block stylesfirst %}{% endblock %}
-    <link rel="stylesheet" href="assets/css/main/app.css">
-    <link rel="stylesheet" href="assets/css/main/app-dark.css">
-    <link rel="shortcut icon" href="assets/images/logo/favicon.svg" type="image/x-icon">
-    <link rel="shortcut icon" href="assets/images/logo/favicon.png" type="image/png">
+    <link rel="stylesheet" href="@/assets/scss/app.scss">
+    <link rel="stylesheet" href="@/assets/scss/themes/dark/app-dark.scss">
+    <link rel="shortcut icon" href="@/assets/images/logo/favicon.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="@/assets/images/logo/favicon.png" type="image/png">
     {% block styles %}{% endblock %}
 </head>
 
@@ -17,7 +17,7 @@
     <script src="assets/js/initTheme.js"></script>
     <div id="app">
         <div id="sidebar" class="active">
-            {% include "layouts/sidebar.html" %}
+            {% include "src/layouts/sidebar.html" %}
         </div>
         <div id="main">
             <header class="mb-3">
