@@ -2,6 +2,7 @@
 @import "./variables";
 
 // Bootstrap + Icons
+$bootstrap-icons-font-src: url('~bootstrap-icons/font/fonts/bootstrap-icons.woff2') format("woff") !default;
 @import "~bootstrap/scss/bootstrap";
 @import "~bootstrap-icons/font/bootstrap-icons";
 
