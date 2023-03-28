@@ -6,6 +6,7 @@ import nunjucks from 'vite-plugin-nunjucks'
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import sidebarItems from "./src/sidebar-items.json"
 import horizontalMenuItems from "./src/horizontal-menu-items.json"
+import { normalizePath } from 'vite'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -44,6 +45,7 @@ const modulesToCopy = {
     "bootstrap-icons": false,
     apexcharts: true,
     "perfect-scrollbar": true,
+    flatpickr: true,
     filepond: true,
     "filepond-plugin-image-preview": true,
     "feather-icons": true,
@@ -66,7 +68,7 @@ const modulesToCopy = {
 const copyModules = Object.keys(modulesToCopy).map(moduleName => {
     const withDist = modulesToCopy[moduleName]
     return {
-        src: resolve(__dirname, `./node_modules/${moduleName}${withDist ? '/dist' : ''}`),
+        src: normalizePath(resolve(__dirname, `./node_modules/${moduleName}${withDist ? '/dist' : ''}`)),
         dest: 'assets/extensions',
         rename: moduleName
     }
@@ -81,8 +83,8 @@ export default defineConfig({
     plugins: [
         viteStaticCopy({
             targets: [
-                { src: resolve(__dirname, './src/assets/static'), dest: 'assets' },
-                { src: resolve(__dirname, "./node_modules/bootstrap-icons/bootstrap-icons.svg"), dest: 'assets/static/images' },
+                { src: normalizePath(resolve(__dirname, './src/assets/static')), dest: 'assets' },
+                { src: normalizePath(resolve(__dirname, "./node_modules/bootstrap-icons/bootstrap-icons.svg")), dest: 'assets/static/images' },
                 ...copyModules
             ]
         }),
