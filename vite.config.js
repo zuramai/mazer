@@ -82,6 +82,7 @@ export default defineConfig({
         viteStaticCopy({
             targets: [
                 { src: resolve(__dirname, './src/assets/static'), dest: 'assets' },
+                { src: resolve(__dirname, "./node_modules/bootstrap-icons/bootstrap-icons.svg"), dest: 'assets/static/images' },
                 ...copyModules
             ]
         }),
