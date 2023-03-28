@@ -11,10 +11,14 @@
     "rtl": "rtlcss -d \"dist/assets/css\" -e \".rtl.css\" && find . -type f -name '*.rtl.rtl.css' -delete",
     "prod-rtl": "mix --production && rtl",
     "prettify": "prettier --write 'dist/*.html'",
-    "zip": "bestzip dist.zip dist/*"
+    "zip": "bestzip dist.zip dist/*",
+    "vite": "vite",
+    "vite-build": "vite build",
+    "preview": "vite build && vite preview"
   },
   "author": "zuramai",
   "license": "MIT",
+  "type": "module",
   "keywords": [
     "bootstrap",
     "template",
@@ -81,7 +85,10 @@
     "release-it": "^15.5.1",
     "resolve-url-loader": "^5.0.0",
     "sass": "^1.57.1",
-    "sass-loader": "^13.2.0"
+    "sass-loader": "^13.2.0",
+    "vite": "^4.2.1",
+    "vite-plugin-nunjucks": "^0.1.10",
+    "vite-plugin-static-copy": "^0.13.1"
   },
   "release-it": {
     "hooks": {
