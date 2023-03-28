@@ -4,6 +4,8 @@ import path, { resolve } from 'path'
 import { fileURLToPath } from 'url';
 import nunjucks from 'vite-plugin-nunjucks'
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+import sidebarItems from "./src/sidebar-items.json"
+import horizontalMenuItems from "./src/horizontal-menu-items.json"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,7 +21,22 @@ const getFiles = () => {
         })
     return files
 }
+
 const files = getFiles()
+
+const getVariables = () => {
+    const variables = {}
+    Object.keys(files).forEach((filename) => {
+        variables[filename + '.html'] = {
+            web_title: "Mazer Admin Dashboard",
+            sidebarItems,
+            horizontalMenuItems,
+        }
+    })
+    console.log(variables)
+    return variables
+}
+
 export default defineConfig({
     publicDir: 'static',
     root,
@@ -30,7 +47,20 @@ export default defineConfig({
             ]
         }),
         nunjucks.default({
-            templatesDir: root
+            templatesDir: root,
+            variables: getVariables(),
+            nunjucksEnvironment: {
+                filters: {
+                    containString: (str, containStr) => {
+                        if (!str.length) return false
+                        return str.indexOf(containStr) >= 0
+                    },
+                    startsWith: (str, targetStr) => {
+                        if (!str.length) return false
+                        return str.startsWith(targetStr)
+                    }
+                }
+            }
         })
     ],
     resolve: {
