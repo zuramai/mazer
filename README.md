@@ -41,7 +41,7 @@ npm install
 
 3. Run it locally
 ```sh
-npm run build
+npm run build --watch
 ```
 4. Open another terminal to run `npm run preview`. And then you can open the page at `http://localhost:4173`
 
