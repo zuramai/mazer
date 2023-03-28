@@ -14,7 +14,7 @@
     "zip": "bestzip dist.zip dist/*",
     "vite": "vite",
     "vite-build": "vite build",
-    "preview": "vite build && vite preview"
+    "preview": "vite preview"
   },
   "author": "zuramai",
   "license": "MIT",
