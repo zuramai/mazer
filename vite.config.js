@@ -33,9 +33,47 @@ const getVariables = () => {
             horizontalMenuItems,
         }
     })
-    console.log(variables)
     return variables
 }
+
+// Modules and extensions
+const modulesToCopy = {
+    "@icon/dripicons": false,
+    "@fortawesome/fontawesome-free": false,
+    "rater-js": false,
+    "bootstrap-icons": false,
+    apexcharts: true,
+    "perfect-scrollbar": true,
+    filepond: true,
+    "filepond-plugin-image-preview": true,
+    "feather-icons": true,
+    dragula: true,
+    dayjs: false,
+    "chart.js": true,
+    "choices.js": false,
+    parsleyjs: true,
+    sweetalert2: true,
+    summernote: true,
+    jquery: true,
+    quill: true,
+    tinymce: false,
+    "toastify-js": false,
+    "datatables.net-bs5": false,
+    "simple-datatables": true, // With dist folder = true
+    jsvectormap: true,
+}
+
+const copyModules = Object.keys(modulesToCopy).map(moduleName => {
+    const withDist = modulesToCopy[moduleName]
+    return {
+        src: resolve(__dirname, `./node_modules/${moduleName}${withDist ? '/dist' : ''}`),
+        dest: 'assets/extensions',
+        rename: moduleName
+    }
+})
+console.log(copyModules)
+
+
 
 export default defineConfig({
     publicDir: 'static',
@@ -43,7 +81,8 @@ export default defineConfig({
     plugins: [
         viteStaticCopy({
             targets: [
-                { src: resolve(__dirname, './src/static'), dest: 'assets' }
+                { src: resolve(__dirname, './src/assets/static'), dest: 'assets' },
+                ...copyModules
             ]
         }),
         nunjucks.default({
