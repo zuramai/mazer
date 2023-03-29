@@ -139,6 +139,10 @@
                 .menu-link {
                     color: $gray-300;
                 }
+                &.active a {
+                    color: white;
+                    font-weight: bold;
+                }
                 &.has-sub .menu-link {
                     padding-right: 1.3rem;
                     &:after {
@@ -179,6 +183,9 @@
     
                 .submenu-item { 
                     position: relative;
+                    &.active .submenu-link {
+                        color: var(--bs-primary)
+                    }
                     &.has-sub .submenu-link {
                         position: relative;
                         &:after {
