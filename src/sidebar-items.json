@@ -314,6 +314,27 @@
     ]
   },
   {
+    "name": "Multi-level Menu",
+    "key": "multi-level-menu",
+    "icon": "three-dots",
+    "submenu": [
+      {
+        "name": "First Level",
+        "url": "#",
+        "submenu": [
+          {
+            "name": "Second Level",
+            "url": "#"
+          },
+          {
+            "name": "Another Second Level",
+            "url": "#"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "Pages",
     "isTitle": true
   },

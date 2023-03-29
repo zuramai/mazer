@@ -46,13 +46,28 @@
                 <a href="{{sidebarItem.url if sidebarItem.url!==undefined else '#'}}" class='sidebar-link'>
                     <i class="bi bi-{{ sidebarItem.icon }}"></i>
                     <span>{{sidebarItem.name}}</span>
-                </a>{% if sidebarItem.submenu.length > 0 %}
-                <ul class="submenu {{ 'active' if (sub.url == filename or filename|startsWith(sidebarItem.key)) }}">{%
-                    for sub in sidebarItem.submenu %}
-                    <li class="submenu-item {{ 'active' if sub.url == filename }}">
-                        <a href="{{ sub.url }}">{{ sub.name }}</a>
-                    </li>{% endfor %}
-                </ul>{% endif %}
+                </a>
+                {% if sidebarItem.submenu.length > 0 %}
+                <ul class="submenu {{ 'active' if (sub.url == filename or filename|startsWith(sidebarItem.key)) }}">
+                    {% for sub in sidebarItem.submenu %}
+                    <li class="submenu-item {{ 'active' if sub.url == filename }} {{'has-sub' if sidebarItem.submenu.length > 0 }}">
+                        <a href="{{ sub.url }}" class="sidebar-link">{{ sub.name }}</a>
+                        {% if sub.submenu.length > 0 %}
+                        <ul class="submenu submenu-level-2 ">
+
+                            {% for subsub in sub.submenu %}
+                            <li class="submenu-item">
+                                <a href="{{ subsub.url }}">{{ subsub.name }}</a>
+                            </li>
+                            {% endfor %}
+
+                        </ul>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
             </li>
             {% endif %}{% endfor %}
         </ul>
