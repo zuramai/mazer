@@ -76,7 +76,6 @@ const copyModules = Object.keys(modulesToCopy).map(moduleName => {
 
 export default defineConfig({
     publicDir: 'static',
-    base: '/mazer',
     root,
     plugins: [
         viteStaticCopy({
@@ -120,9 +119,17 @@ export default defineConfig({
         emptyOutDir: true,
         manifest: true,
         outDir: resolve(__dirname, 'dist'),
-        assetsDir:  'assets/compiled',
         rollupOptions: {
           input: files,
+          output: {
+            entryFileNames: `assets/compiled/js/[name].js`,
+            chunkFileNames: `assets/compiled/js/[name].js`,
+            assetFileNames: (a) => {
+                const extname = a.name.split('.')[1]
+                const folder = extname ? `${extname}/` : ''
+                return `assets/compiled/${folder}[name][extname]`
+            }
+          }
         },
     }
     // build: {
