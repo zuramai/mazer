@@ -173,11 +173,11 @@
 // Vendor: Datatable
 .dataTable-input {
     min-height: calc(1.5em + 0.934rem + 2px);
-    padding: 0.467rem 0.6rem;
+    padding: 0.467rem 0.6rem !important;
     font-size: 0.9025rem;
     font-weight: 400;
     line-height: 1.5;
-    color: #555252;
+    color: #7e7a7a;
     background-color: white;
     background-clip: padding-box;
     border: 1px solid #DFE3E7;
@@ -194,6 +194,9 @@
         outline: 0;
         box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.1);
     }
+}
+.dataTable-selector {
+    padding:0.375rem 1.75rem 0.375rem 0.75rem
 }
 
 // Vendor: Choices
