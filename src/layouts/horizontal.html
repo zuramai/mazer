@@ -122,7 +122,11 @@
     </div>
     <script src="assets/static/js/components/dark.js"></script>
     <script src="assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    {% if isDev %}
     <script src="assets/js/app.js" type="module"></script>
+    {% else %}
+    <script src="assets/compiled/js/app.js"></script>
+    {% endif %}
     {% block js %}{% endblock %}
 </body>
 
