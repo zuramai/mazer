@@ -9,7 +9,7 @@
     "prod-rtl": "npm run build && rtl",
     "rtl": "rtlcss -d \"dist/assets/css\" -e \".rtl.css\" && find . -type f -name '*.rtl.rtl.css' -delete",
     "prettify": "prettier --write 'dist/*.html'",
-    "zip": "bestzip dist.zip dist/*",
+    "zip": "bestzip template.zip dist/*",
     "preview": "vite preview"
   },
   "author": "zuramai",

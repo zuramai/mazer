@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig, normalizePath, build } from 'vite'
 import fs from 'fs'
 import path, { resolve } from 'path'
 import { fileURLToPath } from 'url';
@@ -6,7 +6,6 @@ import nunjucks from 'vite-plugin-nunjucks'
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import sidebarItems from "./src/sidebar-items.json"
 import horizontalMenuItems from "./src/horizontal-menu-items.json"
-import { normalizePath } from 'vite'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,7 +25,7 @@ const getFiles = () => {
 
 const files = getFiles()
 
-const getVariables = () => {
+const getVariables = (mode) => {
     const variables = {}
     Object.keys(files).forEach((filename) => {
         if(filename.includes('layouts')) filename = `layouts/${filename}`
@@ -34,6 +33,7 @@ const getVariables = () => {
             web_title: "Mazer Admin Dashboard",
             sidebarItems,
             horizontalMenuItems,
+            isDev: mode === 'development'
         }
     })
     return variables
@@ -76,13 +76,36 @@ const copyModules = Object.keys(modulesToCopy).map(moduleName => {
     }
 })
 
-export default defineConfig({
+build({
+    configFile: false,
+    build: {
+        emptyOutDir: false,
+        outDir: resolve(__dirname, 'dist/assets/compiled/js'),
+        lib: {
+            name: 'app',
+            formats: ['umd'],
+            fileName: 'app',
+            entry: './src/assets/js/app.js',
+        },
+        rollupOptions: {
+            output: {
+                entryFileNames: '[name].js'
+            }
+        }
+    },
+})
+
+
+
+export default defineConfig((env) => ({
     publicDir: 'static',
+    base: './',
     root,
     plugins: [
         viteStaticCopy({
             targets: [
                 { src: normalizePath(resolve(__dirname, './src/assets/static')), dest: 'assets' },
+                { src: normalizePath(resolve(__dirname, './dist/assets/compiled/fonts')), dest: 'assets/compiled/css' },
                 { src: normalizePath(resolve(__dirname, "./node_modules/bootstrap-icons/bootstrap-icons.svg")), dest: 'assets/static/images' },
                 ...copyModules
             ],
@@ -92,7 +115,7 @@ export default defineConfig({
         }),
         nunjucks.default({
             templatesDir: root,
-            variables: getVariables(),
+            variables: getVariables(env.mode),
             nunjucksEnvironment: {
                 
                 filters: {
@@ -118,20 +141,27 @@ export default defineConfig({
         }
     },
     build: {
-        emptyOutDir: true,
+        emptyOutDir: false,
         manifest: true,
+        target: "chrome58",
         outDir: resolve(__dirname, 'dist'),
         rollupOptions: {
           input: files,
           output: {
             entryFileNames: `assets/compiled/js/[name].js`,
             chunkFileNames: `assets/compiled/js/[name].js`,
+
             assetFileNames: (a) => {
                 const extname = a.name.split('.')[1]
-                const folder = extname ? `${extname}/` : ''
+                let folder = extname ? `${extname}/` : ''
+                
+                // Put fonts into css folder
+                if(['woff', 'woff2', 'ttf'].includes(extname))
+                    folder = 'fonts/'
+
                 return `assets/compiled/${folder}[name][extname]`
             }
           }
         },
     }
-})
+}))
