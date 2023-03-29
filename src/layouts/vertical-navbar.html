@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }} - {{ web_title }}</title>
     {% block stylesfirst %}{% endblock %}
-    <link rel="stylesheet" href="@/assets/scss/app.scss">
-    <link rel="stylesheet" href="@/assets/scss/themes/dark/app-dark.scss">
+    <link rel="stylesheet" href="assets/scss/app.scss">
+    <link rel="stylesheet" href="assets/scss/themes/dark/app-dark.scss">
     {% block styles %}{% endblock %}
     <link rel="shortcut icon" href="assets/static/images/logo/favicon.svg" type="image/x-icon">
     <link rel="shortcut icon" href="assets/static/images/logo/favicon.png" type="image/png">
@@ -134,9 +134,9 @@
             </footer>
         </div>
     </div>
-    <script src="assets/static/js/components/dark.js" type="module"></script>
+    <script src="assets/static/js/components/dark.js"></script>
     <script src="assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="@/assets/js/app.js" type="module"></script>
+    <script src="assets/js/app.js" type="module"></script>
     {% block js %}{% endblock %}
 </body>
 

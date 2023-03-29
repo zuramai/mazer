@@ -41,9 +41,10 @@ npm install
 
 3. Run it locally
 ```sh
-npm run build --watch
+npm run dev
 ```
-4. Open another terminal to run `npm run preview`. And then you can open the page at `http://localhost:4173`
+
+4. Open `http://localhost:5173` in your browser
 
 ### Building with Docker
 
