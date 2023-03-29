@@ -80,16 +80,7 @@
             list-style: none;
             margin-top: .5rem;
             position: relative;
-            &.has-sub {
-                .sidebar-link:after {
-                    content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9" style="fill:none;stroke:gray;stroke-width:1"></polyline></svg>');
-                    position: absolute;
-                    color: #ccc;
-                    right: 15px;
-                    top: 12px;
-                    display:block;
-                }
-            }
+            
             &.active {
                 &.has-sub {
                     .sidebar-link:after {
@@ -152,6 +143,18 @@
         }
     }
 }
+
+.sidebar-item.has-sub, .submenu-item.has-sub {
+    position: relative;
+    .sidebar-link:after {
+        content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9" style="fill:none;stroke:gray;stroke-width:1"></polyline></svg>');
+        position: absolute;
+        color: #ccc;
+        right: 15px;
+        top: 12px;
+        display:block;
+    }
+}
 .sidebar-backdrop {
     position: fixed;
     top: 0;
@@ -172,17 +175,17 @@
 }
 @keyframes slideUp {
     from {
-        height: 0;
+        max-height: 0;
     }
     to {
-        height: var(--submenu-height)
+        max-height: var(--submenu-height)
     }
 }
 @keyframes slideDown {
     from {
-        height: var(--submenu-height)
+        max-height: var(--submenu-height)
     }
     to {
-        height: 0;
+        max-height: 0;
     }
 }
