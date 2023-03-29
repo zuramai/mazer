@@ -1,7 +1,7 @@
 
 const THEME_KEY = "theme"
 
-export function toggleDarkTheme() {
+function toggleDarkTheme() {
   setTheme(
     document.documentElement.getAttribute("data-bs-theme") === 'dark'
       ? "light"
@@ -14,7 +14,7 @@ export function toggleDarkTheme() {
  * @param {"dark"|"light"} theme
  * @param {boolean} persist 
  */
-export function setTheme(theme, persist = false) {
+function setTheme(theme, persist = false) {
   document.body.classList.add(theme)
   document.documentElement.setAttribute('data-bs-theme', theme)
   

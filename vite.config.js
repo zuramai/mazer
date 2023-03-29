@@ -14,7 +14,8 @@ const __dirname = path.dirname(__filename);
 const root = resolve(__dirname, 'src')
 
 const getFiles = () => {
-    const files = {}
+    let files = {}
+    
     fs.readdirSync(root)
         .filter(filename => filename.endsWith('.html'))
         .forEach(filename => {
@@ -28,6 +29,7 @@ const files = getFiles()
 const getVariables = () => {
     const variables = {}
     Object.keys(files).forEach((filename) => {
+        if(filename.includes('layouts')) filename = `layouts/${filename}`
         variables[filename + '.html'] = {
             web_title: "Mazer Admin Dashboard",
             sidebarItems,
@@ -108,7 +110,7 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-          '@': resolve(__dirname, 'src'),
+          '@': normalizePath(resolve(__dirname, 'src')),
           '~bootstrap': resolve(__dirname, 'node_modules/bootstrap'),
           '~bootstrap-icons': resolve(__dirname, 'node_modules/bootstrap-icons'),
           '~perfect-scrollbar': resolve(__dirname, 'node_modules/perfect-scrollbar'),
@@ -132,11 +134,4 @@ export default defineConfig({
           }
         },
     }
-    // build: {
-    //     outDir: 'dist',
-    //     emptyOutDir: true,
-    //     rollupOptions: {
-    //         input: files
-    //     }
-    // }
 })
