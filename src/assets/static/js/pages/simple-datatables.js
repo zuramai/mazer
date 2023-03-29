@@ -36,11 +36,17 @@ function adaptPagination() {
   }
 }
 
-// Patch "per page dropdown" and pagination after table rendered
-dataTable.on("datatable.init", function () {
-  adaptPageDropdown()
+const refreshPagination = () => {
   adaptPagination()
+}
+
+// Patch "per page dropdown" and pagination after table rendered
+dataTable.on("datatable.init", () => {
+  adaptPageDropdown()
+  refreshPagination()
 })
+dataTable.on("datatable.update", refreshPagination)
+dataTable.on("datatable.sort", refreshPagination)
 
 // Re-patch pagination after the page was changed
 dataTable.on("datatable.page", adaptPagination)
