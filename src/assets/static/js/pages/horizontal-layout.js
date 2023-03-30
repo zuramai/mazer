@@ -3,7 +3,7 @@ document.querySelector(".burger-btn").addEventListener("click", (e) => {
   e.preventDefault()
   let navbar = document.querySelector(".main-navbar")
 
-  slideToggle(navbar, 300)
+  navbar.classList.toggle('active')
 })
 
 window.onload = () => checkWindowSize()

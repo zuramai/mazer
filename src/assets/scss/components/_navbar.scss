@@ -87,9 +87,12 @@
 }
 
 .layout-horizontal {
+    .container {
+        --bs-gutter-x: 1.5rem;
+    }
     .header-top {
         background-color: $horizontal-header-bg;
-        padding:1.1rem;
+        padding: 1.1rem .4rem;
 
         .container {
             display: flex;
@@ -235,6 +238,7 @@
 
             &.active {
                 max-height: initial;
+                display: block;
             }
             ul {
                 flex-direction: column;
