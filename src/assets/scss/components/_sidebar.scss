@@ -42,7 +42,7 @@
     overflow-y: auto;
     background-color: $sidebar-bg;
     bottom: 0;
-    transition: left .5s ease-out;
+    transition: left .7s cubic-bezier(0.22, 1, 0.36, 1);
     .sidebar-header {
         padding: 2rem 2rem 1rem;
         font-size: 2rem;
@@ -128,7 +128,7 @@
             max-height: 0;
             overflow: hidden;
             transition: all .5s;
-            // animation: max-height 2s cubic-bezier(0, 0.55, 0.45, 1);
+            // animation: max-height 2s cubic-bezier(0.22, 1, 0.36, 1);
             &.active {
                 height: var(--submenu-height);
                 display: block;
