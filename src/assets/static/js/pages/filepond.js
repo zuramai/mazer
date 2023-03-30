@@ -83,8 +83,6 @@ FilePond.create(document.querySelector(".imgbb-filepond"), {
               position: "right",
               backgroundColor: "#ff0000",
             }).showToast()
-
-            console.log("Error", this.statusText)
           }
         }
       }
