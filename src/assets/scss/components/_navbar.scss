@@ -113,6 +113,9 @@
         gap: 1rem;
         align-items: center;
     }
+    .submenu-item.active a {
+        font-weight: bold;
+    }
     .main-navbar  {
         background-color: $horizontal-navbar-bg;
         padding: 1rem;
@@ -144,7 +147,6 @@
                 }
                 &.active a {
                     color: white;
-                    font-weight: bold;
                 }
                 &.has-sub .menu-link {
                     padding-right: 1.3rem;
