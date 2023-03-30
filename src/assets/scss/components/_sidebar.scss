@@ -105,17 +105,19 @@
         }
         .submenu {
             list-style: none;
-            animation: max-height 2s cubic-bezier(0, 0.55, 0.45, 1);
+            max-height: 0;
             overflow: hidden;
+            transition: all .5s;
+            // animation: max-height 2s cubic-bezier(0, 0.55, 0.45, 1);
             &.active {
                 height: var(--submenu-height);
                 display: block;
             }
             &.submenu-closed {
-                animation: slideDown .5s forwards;
+                max-height: 0;
             }
             &.submenu-open {
-                animation: slideUp .5s forwards;
+                max-height: var(--submenu-height);
             }
             .submenu-item {
                 &.active {
@@ -143,17 +145,23 @@
         }
     }
 }
-
+@mixin caret {
+    content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9" style="fill:none;stroke:gray;stroke-width:1"></polyline></svg>');
+    position: absolute;
+    color: #ccc;
+    right: 15px;
+    top: 12px;
+    display:block;
+}
 .sidebar-item.has-sub, .submenu-item.has-sub {
+    overflow: hidden;
     position: relative;
-    .sidebar-link:after {
-        content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9" style="fill:none;stroke:gray;stroke-width:1"></polyline></svg>');
-        position: absolute;
-        color: #ccc;
-        right: 15px;
-        top: 12px;
-        display:block;
-    }
+}
+.sidebar-item.has-sub > .sidebar-link:after {
+    @include caret()
+}
+.submenu-item.has-sub > .submenu-link:after {
+    @include caret()
 }
 .sidebar-backdrop {
     position: fixed;
@@ -173,7 +181,7 @@
         }
     }
 }
-@keyframes slideUp {
+@keyframes slideDown {
     from {
         max-height: 0;
     }
@@ -181,7 +189,7 @@
         max-height: var(--submenu-height)
     }
 }
-@keyframes slideDown {
+@keyframes slideUp {
     from {
         max-height: var(--submenu-height)
     }

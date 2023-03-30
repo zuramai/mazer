@@ -315,19 +315,30 @@
   },
   {
     "name": "Multi-level Menu",
-    "key": "multi-level-menu",
+    "key": "ui-multi-level-menu",
     "icon": "three-dots",
     "submenu": [
       {
         "name": "First Level",
+        "key": "ui-multi-level-menu",
         "url": "#",
         "submenu": [
           {
             "name": "Second Level",
-            "url": "#"
+            "url": "ui-multi-level-menu.html"
           },
           {
-            "name": "Another Second Level",
+            "name": "Second Level Menu",
+            "url": "#"
+          }
+        ]
+      },
+      {
+        "name": "Another Menu",
+        "url": "#",
+        "submenu": [
+          {
+            "name": "Second Level Menu",
             "url": "#"
           }
         ]

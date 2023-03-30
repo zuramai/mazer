@@ -36,28 +36,34 @@ class Sidebar {
       } 
     }
 
+    
+
 
     let sidebarItems = document.querySelectorAll(".sidebar-item.has-sub")
     for (var i = 0; i < sidebarItems.length; i++) {
       let sidebarItem = sidebarItems[i]
+      
       sidebarItems[i]
         .querySelector(".sidebar-link")
         .addEventListener("click", (e) => {
           e.preventDefault()
-
           let submenu = sidebarItem.querySelector(".submenu")
           toggleSubmenu(submenu)
-
-          // If submenu has submenu
-          const submenuItems = submenu.querySelectorAll('.submenu-item.has-sub') 
-          submenuItems.forEach(item => {
-            item.addEventListener('click', () => {
-              const submenuLevelTwo = item.querySelector('.submenu')
-              toggleSubmenu(submenuLevelTwo)
-            })
-          })
-          
         })
+      
+      
+      // If submenu has submenu
+      const submenuItems = sidebarItem.querySelectorAll('.submenu-item.has-sub') 
+      submenuItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const submenuLevelTwo = item.querySelector('.submenu')
+          toggleSubmenu(submenuLevelTwo)
+          
+          // Pass second .submenu
+          const height = this.calculateChildrenHeight(item.parentElement, true)
+
+        })
+      })
     }
 
     // Perfect Scrollbar Init
@@ -78,6 +84,32 @@ class Sidebar {
   }
 
   /**
+   * @param {HTMLElement} el 
+   */
+  calculateChildrenHeight = (el, deep = false) => {
+    const children = el.children
+    
+    let height = 0
+    for(let i = 0; i < el.childElementCount; i++) {
+      const child = children[i]
+      height += child.querySelector('.submenu-link').clientHeight
+
+      // 2-level menu
+      if(deep && child.classList.contains('has-sub')) {
+        const subsubmenu = child.querySelector('.submenu')
+
+        if(subsubmenu.classList.contains('submenu-open')) {
+          const childrenHeight =  ~~[...subsubmenu.querySelectorAll('.submenu-link')].reduce((acc,curr) => acc + curr.clientHeight,0)
+          height += childrenHeight
+        }
+      }
+      
+    }
+    el.style.setProperty('--submenu-height', height + 'px')
+    return height
+  }
+
+  /**
    * On First Load
    */
   onFirstLoad() {
@@ -91,11 +123,13 @@ class Sidebar {
       let submenu = submenus[i]
       const sidebarItem = submenu.parentElement
       const height = submenu.clientHeight
-      submenu.style.setProperty('--submenu-height', height + 'px')
-      submenu.style.maxHeight = 0
-
-      // if(!sidebarItem.classList.contains('active')) submenu.classList.add('submenu-closed')
-      // else submenu.classList.add('submenu-open')
+      
+      if(sidebarItem.classList.contains('active')) submenu.classList.add('submenu-open')
+      else submenu.classList.add('submenu-closed')
+      setTimeout(() => {
+        const height = this.calculateChildrenHeight(submenu, true)
+        console.log(height)
+      }, 50);
     }
   }
 
