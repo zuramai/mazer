@@ -50,14 +50,14 @@
                 {% if sidebarItem.submenu.length > 0 %}
                 <ul class="submenu {{ 'active' if (sub.url == filename or filename|startsWith(sidebarItem.key)) }}">
                     {% for sub in sidebarItem.submenu %}
-                    <li class="submenu-item {{ 'active' if sub.url == filename }} {{'has-sub' if sidebarItem.submenu.length > 0 }}">
-                        <a href="{{ sub.url }}" class="sidebar-link">{{ sub.name }}</a>
+                    <li class="submenu-item {{ 'active' if sub.url == filename or filename|startsWith(sub.key) }} {{'has-sub' if sub.submenu.length > 0 }}">
+                        <a href="{{ sub.url }}" class="submenu-link">{{ sub.name }}</a>
                         {% if sub.submenu.length > 0 %}
                         <ul class="submenu submenu-level-2 ">
 
                             {% for subsub in sub.submenu %}
-                            <li class="submenu-item">
-                                <a href="{{ subsub.url }}">{{ subsub.name }}</a>
+                            <li class="submenu-item {{ 'active' if subsub.url == filename }}">
+                                <a href="{{ subsub.url }}" class="submenu-link">{{ subsub.name }}</a>
                             </li>
                             {% endfor %}
 
