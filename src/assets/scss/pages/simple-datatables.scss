@@ -1,4 +1,3 @@
-
 @import "../variables";
 
 .dataTable-wrapper.no-footer .dataTable-container {
@@ -17,4 +16,8 @@
 .dataTable-dropdown label {
 	white-space: nowrap;
 	margin-left: 15px;
+}
+
+.page-item.active .page-link {
+	color: white !important;
 }
