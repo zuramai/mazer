@@ -74,8 +74,6 @@ FilePond.create(document.querySelector(".imgbb-filepond"), {
               position: "right",
               backgroundColor: "#4fbe87",
             }).showToast()
-
-            console.log(response)
           } else {
             Toastify({
               text: "Failed uploading to imgbb! see console f12",

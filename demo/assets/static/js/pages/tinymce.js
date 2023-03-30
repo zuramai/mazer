@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("initing", document.body.classList.contains("theme-dark"))
 
   const themeOptions = document.body.classList.contains("theme-dark")
     ? {

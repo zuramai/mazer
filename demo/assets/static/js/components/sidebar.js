@@ -223,7 +223,6 @@ class Sidebar {
    */
 const onFirstLoad = (sidebarEL) => {
   if (isDesktop(window)) {
-    console.log('desktop')
     sidebarEL.classList.add("active")
     sidebarEL.classList.add('sidebar-desktop')
   }
