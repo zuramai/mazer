@@ -1,17 +1,37 @@
+@mixin sidebar-active {
+    .sidebar-wrapper {
+        left: 0;
+    }
+    & ~ #main {
+        margin-left: 300px;
+    }
+}
+@mixin sidebar-inactive {
+    .sidebar-wrapper {
+        left: -300px;
+    }
+    & ~ #main {
+        margin-left: 0;
+    }
+}
+
 #sidebar {
+    @include sidebar-inactive();
+    
+    @media screen and (min-width: 992px) {
+        @include sidebar-active();
+    }
+
+    &.inactive {
+        @include sidebar-inactive();
+    }
+
     &.active {
         .sidebar-wrapper {
             left: 0;
         }
     }
-    &:not(.active) {
-        .sidebar-wrapper {
-            left: -300px;
-        }
-        & ~ #main {
-            margin-left: 0;
-        }
-    }
+    
 }
 .sidebar-wrapper {
     width: 300px;

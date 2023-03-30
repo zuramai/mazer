@@ -1,5 +1,33 @@
 import isDesktop from '../helper/isDesktop'
 
+
+/**
+ * Calculate nested children height in sidebar menu
+* @param {HTMLElement} el 
+*/
+const calculateChildrenHeight = (el, deep = false) => {
+  const children = el.children
+  
+  let height = 0
+  for(let i = 0; i < el.childElementCount; i++) {
+    const child = children[i]
+    height += child.querySelector('.submenu-link').clientHeight
+
+    // 2-level menu
+    if(deep && child.classList.contains('has-sub')) {
+      const subsubmenu = child.querySelector('.submenu')
+
+      if(subsubmenu.classList.contains('submenu-open')) {
+        const childrenHeight =  ~~[...subsubmenu.querySelectorAll('.submenu-link')].reduce((acc,curr) => acc + curr.clientHeight,0)
+        height += childrenHeight
+      }
+    }
+    
+  }
+  el.style.setProperty('--submenu-height', height + 'px')
+  return height
+}
+
 /**
  * a Sidebar component
  * @param  {HTMLElement} el - sidebar element
@@ -60,7 +88,7 @@ class Sidebar {
           toggleSubmenu(submenuLevelTwo)
           
           // Pass second .submenu
-          const height = this.calculateChildrenHeight(item.parentElement, true)
+          const height = calculateChildrenHeight(item.parentElement, true)
 
         })
       })
@@ -79,59 +107,11 @@ class Sidebar {
       this.forceElementVisibility(document.querySelector(".sidebar-item.active"))
     }, 300)
 
-    // check responsive
-    this.onFirstLoad()
   }
 
-  /**
-   * @param {HTMLElement} el 
-   */
-  calculateChildrenHeight = (el, deep = false) => {
-    const children = el.children
-    
-    let height = 0
-    for(let i = 0; i < el.childElementCount; i++) {
-      const child = children[i]
-      height += child.querySelector('.submenu-link').clientHeight
+  
 
-      // 2-level menu
-      if(deep && child.classList.contains('has-sub')) {
-        const subsubmenu = child.querySelector('.submenu')
-
-        if(subsubmenu.classList.contains('submenu-open')) {
-          const childrenHeight =  ~~[...subsubmenu.querySelectorAll('.submenu-link')].reduce((acc,curr) => acc + curr.clientHeight,0)
-          height += childrenHeight
-        }
-      }
-      
-    }
-    el.style.setProperty('--submenu-height', height + 'px')
-    return height
-  }
-
-  /**
-   * On First Load
-   */
-  onFirstLoad() {
-    if (!isDesktop(window)) {
-      this.sidebarEL.classList.remove("active")
-    }
-
-    // Get submenus size
-    let submenus = document.querySelectorAll(".sidebar-item.has-sub .submenu")
-    for (var i = 0; i < submenus.length; i++) {
-      let submenu = submenus[i]
-      const sidebarItem = submenu.parentElement
-      const height = submenu.clientHeight
-      
-      if(sidebarItem.classList.contains('active')) submenu.classList.add('submenu-open')
-      else submenu.classList.add('submenu-closed')
-      setTimeout(() => {
-        const height = this.calculateChildrenHeight(submenu, true)
-        console.log(height)
-      }, 50);
-    }
-  }
+  
 
   /**
    * On Sidebar Rezise Event
@@ -165,6 +145,7 @@ class Sidebar {
    */
   show() {
     this.sidebarEL.classList.add("active")
+    this.sidebarEL.classList.remove("inactive")
     this.createBackdrop()
     this.toggleOverflowBody()
   }
@@ -174,6 +155,7 @@ class Sidebar {
    */
   hide() {
     this.sidebarEL.classList.remove("active")
+    this.sidebarEL.classList.add("inactive")
     this.deleteBackdrop()
     this.toggleOverflowBody()
   }
@@ -233,10 +215,44 @@ class Sidebar {
   }
 }
 
+
+
+
+/**
+   * On First Load
+   */
+const onFirstLoad = (sidebarEL) => {
+  if (isDesktop(window)) {
+    console.log('desktop')
+    sidebarEL.classList.add("active")
+    sidebarEL.classList.add('sidebar-desktop')
+  }
+
+  // Get submenus size
+  let submenus = document.querySelectorAll(".sidebar-item.has-sub .submenu")
+  for (var i = 0; i < submenus.length; i++) {
+    let submenu = submenus[i]
+    const sidebarItem = submenu.parentElement
+    const height = submenu.clientHeight
+    
+    if(sidebarItem.classList.contains('active')) submenu.classList.add('submenu-open')
+    else submenu.classList.add('submenu-closed')
+    setTimeout(() => {
+      const height = calculateChildrenHeight(submenu, true)
+    }, 50);
+  }
+}
+
+let sidebarEl = document.getElementById("sidebar")
+if(document.readyState !== 'loading') {
+  onFirstLoad(sidebarEl)
+}
+else {
+  window.addEventListener('DOMContentLoaded', () => onFirstLoad(sidebarEl))
+}
 /**
  * Create Sidebar Wrapper
  */
-let sidebarEl = document.getElementById("sidebar")
 if (sidebarEl) {
   window.sidebar = new Sidebar(sidebarEl)
 }
