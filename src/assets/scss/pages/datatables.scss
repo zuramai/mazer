@@ -1,7 +1,9 @@
-
-table.dataTable td{
-    padding: 15px 8px !important;
+table.dataTable td {
+	padding: 15px 8px !important;
 }
 .fontawesome-icons .the-icon svg {
-    font-size: 24px;
+	font-size: 24px;
+}
+.page-item.active .page-link {
+	color: white !important;
 }
