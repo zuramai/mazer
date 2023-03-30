@@ -7,12 +7,21 @@
 }
 #widget-todo-list {
     padding: 0;
+    min-width: 400px;
 }
 
 [data-bs-theme="dark"] .widget-todo-item:hover {
     background-color: $gray-900;
 }
-
+.widget-todo-title-wrapper {
+    gap: 1rem;
+}
+.widget-todo-title {
+    min-width: 150px;
+}
+.widget-todo-title-area svg {
+    width: 24px
+}
 // Moved outside .widget-todo-list-wrapper because dragula
 // renders a shadow element outside of the widget-todo-list-wrapper
 .widget-todo-item {
