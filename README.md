@@ -51,8 +51,8 @@ npm run dev
 - Clone the repository `git clone https://github.com/zuramai/mazer`
 - Make sure you have Docker installed and run:
     - `docker build -t mazer-frontend .`
-    - `docker run -it -d -p 8080:80 --name mazer mazer-frontend`
-    - Open `http://localhost:8080`
+    - `docker run -it -d -p 5173:80 --name mazer mazer-frontend`
+    - Open `http://localhost:5173`
 
 ## Community Mazer-based open sources
 
