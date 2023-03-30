@@ -47,7 +47,7 @@ export default class Scale extends Element<import("../types/basic.js").AnyObject
     min: any;
     max: any;
     _range: {
-        min: number;
+        min: number; /** @type {object[]|null} */
         max: number;
     };
     /** @type {Tick[]} */

@@ -12,6 +12,7 @@ import {ChartArea, Padding, Point} from './geometric.js';
 import {LayoutItem, LayoutPosition} from './layout.js';
 import {RenderTextOpts} from './helpers/helpers.canvas.js';
 import {CanvasFontSpec} from '../helpers/helpers.options.js';
+import type {ColorsPluginOptions} from '../plugins/plugin.colors.js';
 
 export {EasingFunction} from '../helpers/helpers.easing.js';
 export {default as ArcElement, ArcProps} from '../elements/element.arc.js';
@@ -260,7 +261,7 @@ export interface DoughnutControllerDatasetOptions
   /**
    * Arc offset (in pixels).
    */
-  offset: number;
+  offset: number | number[];
 
   /**
    * Starting angle to draw this dataset from.
@@ -313,7 +314,7 @@ export interface DoughnutControllerChartOptions {
   /**
    * Arc offset (in pixels).
    */
-  offset: number;
+  offset: number | number[];
 
   /**
    * The outer radius of the chart. String ending with '%' means percentage of maximum radius, number means pixels.
@@ -491,7 +492,7 @@ export declare class Chart<
   readonly id: string;
   readonly canvas: HTMLCanvasElement;
   readonly ctx: CanvasRenderingContext2D;
-  readonly config: ChartConfigurationInstance;
+  readonly config: ChartConfiguration<TType, TData, TLabel> | ChartConfigurationCustomTypesPerDataset<TType, TData, TLabel>;
   readonly width: number;
   readonly height: number;
   readonly aspectRatio: number;
@@ -501,11 +502,11 @@ export declare class Chart<
   readonly scales: { [key: string]: Scale };
   readonly attached: boolean;
 
-  readonly legend?: LegendElement; // Only available if legend plugin is registered and enabled
-  readonly tooltip?: TooltipModel; // Only available if tooltip plugin is registered and enabled
+  readonly legend?: LegendElement<TType>; // Only available if legend plugin is registered and enabled
+  readonly tooltip?: TooltipModel<TType>; // Only available if tooltip plugin is registered and enabled
 
-  data: ChartData;
-  options: ChartOptions;
+  data: ChartData<TType, TData, TLabel>;
+  options: ChartOptions<TType>;
 
   constructor(item: ChartItem, config: ChartConfiguration<TType, TData, TLabel> | ChartConfigurationCustomTypesPerDataset<TType, TData, TLabel>);
 
@@ -566,13 +567,13 @@ export declare type ChartItem =
   | { canvas: HTMLCanvasElement }
   | ArrayLike<CanvasRenderingContext2D | HTMLCanvasElement>;
 
-export declare const enum UpdateModeEnum {
+export declare enum UpdateModeEnum {
   resize = 'resize',
   reset = 'reset',
   none = 'none',
   hide = 'hide',
   show = 'show',
-  normal = 'normal',
+  default = 'default',
   active = 'active'
 }
 
@@ -2196,7 +2197,7 @@ export interface LegendItem {
   textAlign?: TextAlign;
 }
 
-export interface LegendElement<TType extends ChartType = ChartType> extends Element<AnyObject, LegendOptions<TType>>, LayoutItem {
+export interface LegendElement<TType extends ChartType> extends Element<AnyObject, LegendOptions<TType>>, LayoutItem {
   chart: Chart<TType>;
   ctx: CanvasRenderingContext2D;
   legendItems?: LegendItem[];
@@ -2430,7 +2431,7 @@ export interface TooltipLabelStyle {
    */
   borderRadius?: number | BorderRadius;
 }
-export interface TooltipModel<TType extends ChartType = ChartType> extends Element<AnyObject, TooltipOptions<TType>> {
+export interface TooltipModel<TType extends ChartType> extends Element<AnyObject, TooltipOptions<TType>> {
   readonly chart: Chart<TType>;
 
   // The items that we are rendering in the tooltip. See Tooltip Item Interface section
@@ -2791,6 +2792,7 @@ export interface TooltipItem<TType extends ChartType> {
 }
 
 export interface PluginOptionsByType<TType extends ChartType> {
+  colors: ColorsPluginOptions;
   decimation: DecimationOptions;
   filler: FillerOptions;
   legend: LegendOptions<TType>;
@@ -2817,6 +2819,7 @@ export interface BorderOptions {
   dashOffset: Scriptable<number, ScriptableScaleContext>;
   color: Color;
   width: number;
+  z: number;
 }
 
 export interface GridLineOptions {
@@ -3269,6 +3272,7 @@ export type TimeScaleOptions = Omit<CartesianScaleOptions, 'min' | 'max'> & {
 };
 
 export interface TimeScale<O extends TimeScaleOptions = TimeScaleOptions> extends Scale<O> {
+  format(value: number, format?: string): string;
   getDataTimestamps(): number[];
   getLabelTimestamps(): string[];
   normalize(values: number[]): number[];
@@ -3314,6 +3318,8 @@ export type RadialTickOptions = TickOptions & {
 }
 
 export type RadialLinearScaleOptions = CoreScaleOptions & {
+  backgroundColor: Color;
+
   animate: boolean;
 
   startAngle: number;
@@ -3670,5 +3676,3 @@ export interface ChartConfigurationCustomTypesPerDataset<
   options?: ChartOptions<TType>;
   plugins?: Plugin<TType>[];
 }
-
-export type ChartConfigurationInstance = ChartConfiguration | ChartConfigurationCustomTypesPerDataset & { type?: undefined }

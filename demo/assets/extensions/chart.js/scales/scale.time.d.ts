@@ -60,6 +60,12 @@ export default class TimeScale extends Scale {
        */
     getLabelForValue(value: number): string;
     /**
+       * @param {number} value
+       * @param {string|undefined} format
+       * @return {string}
+       */
+    format(value: number, format: string | undefined): string;
+    /**
        * Function to format an individual tick mark
        * @param {number} time
        * @param {number} index

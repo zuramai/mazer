@@ -1,7 +1,7 @@
 /*!
- * Chart.js v4.1.1
+ * Chart.js v4.2.1
  * https://www.chartjs.org
- * (c) 2022 Chart.js Contributors
+ * (c) 2023 Chart.js Contributors
  * Released under the MIT License
  */
 'use strict';
@@ -3596,6 +3596,7 @@ function determineMaxTicks(scale) {
 
 const reverseAlign = (align)=>align === 'left' ? 'right' : align === 'right' ? 'left' : align;
 const offsetFromEdge = (scale, edge, offset)=>edge === 'top' || edge === 'left' ? scale[edge] + offset : scale[edge] - offset;
+const getTicksLimit = (ticksLength, maxTicksLimit)=>Math.min(maxTicksLimit || ticksLength, ticksLength);
  function sample(arr, numItems) {
     const result = [];
     const increment = arr.length / numItems;
@@ -3990,7 +3991,7 @@ class Scale extends Element {
     calculateLabelRotation() {
         const options = this.options;
         const tickOpts = options.ticks;
-        const numTicks = this.ticks.length;
+        const numTicks = getTicksLimit(this.ticks.length, options.ticks.maxTicksLimit);
         const minRotation = tickOpts.minRotation || 0;
         const maxRotation = tickOpts.maxRotation;
         let labelRotation = minRotation;
@@ -4148,18 +4149,19 @@ class Scale extends Element {
             if (sampleSize < ticks.length) {
                 ticks = sample(ticks, sampleSize);
             }
-            this._labelSizes = labelSizes = this._computeLabelSizes(ticks, ticks.length);
+            this._labelSizes = labelSizes = this._computeLabelSizes(ticks, ticks.length, this.options.ticks.maxTicksLimit);
         }
         return labelSizes;
     }
- _computeLabelSizes(ticks, length) {
+ _computeLabelSizes(ticks, length, maxTicksLimit) {
         const { ctx , _longestTextCache: caches  } = this;
         const widths = [];
         const heights = [];
+        const increment = Math.floor(length / getTicksLimit(length, maxTicksLimit));
         let widestLabelSize = 0;
         let highestLabelSize = 0;
         let i, j, jlen, label, tickFont, fontString, cache, lineHeight, width, height, nestedLabel;
-        for(i = 0; i < length; ++i){
+        for(i = 0; i < length; i += increment){
             label = ticks[i].label;
             tickFont = this._resolveTickFontOptions(i);
             ctx.font = fontString = tickFont.string;
@@ -5465,7 +5467,7 @@ function needContext(proxy, names) {
     return false;
 }
 
-var version = "4.1.1";
+var version = "4.2.1";
 
 const KNOWN_POSITIONS = [
     'top',
@@ -6629,8 +6631,7 @@ class ArcElement extends Element {
             'startAngle',
             'endAngle',
             'innerRadius',
-            'outerRadius',
-            'circumference'
+            'outerRadius'
         ], useFinalPosition);
         const { offset , spacing  } = this.options;
         const halfAngle = (startAngle + endAngle) / 2;
@@ -7279,6 +7280,9 @@ function containsColorsDefinitions(descriptors) {
     }
     return false;
 }
+function containsColorsDefinition(descriptor) {
+    return descriptor && (descriptor.borderColor || descriptor.backgroundColor);
+}
 var plugin_colors = {
     id: 'colors',
     defaults: {
@@ -7289,8 +7293,9 @@ var plugin_colors = {
         if (!options.enabled) {
             return;
         }
-        const { options: { elements  } , data: { datasets  }  } = chart.config;
-        if (!options.forceOverride && (containsColorsDefinitions(datasets) || elements && containsColorsDefinitions(elements))) {
+        const { data: { datasets  } , options: chartOptions  } = chart.config;
+        const { elements  } = chartOptions;
+        if (!options.forceOverride && (containsColorsDefinitions(datasets) || containsColorsDefinition(chartOptions) || elements && containsColorsDefinitions(elements))) {
             return;
         }
         const colorizer = getColorizer(chart);
@@ -7400,6 +7405,9 @@ function cleanDecimatedDataset(dataset) {
         delete dataset._decimated;
         delete dataset._data;
         Object.defineProperty(dataset, 'data', {
+            configurable: true,
+            enumerable: true,
+            writable: true,
             value: data
         });
     }
@@ -11103,6 +11111,13 @@ class TimeScale extends Scale {
             return adapter.format(value, timeOpts.tooltipFormat);
         }
         return adapter.format(value, timeOpts.displayFormats.datetime);
+    }
+ format(value, format) {
+        const options = this.options;
+        const formats = options.time.displayFormats;
+        const unit = this._unit;
+        const fmt = format || formats[unit];
+        return this._adapter.format(value, fmt);
     }
  _tickFormatFunction(time, index, ticks, format) {
         const options = this.options;
