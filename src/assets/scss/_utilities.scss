@@ -24,9 +24,23 @@
 .bg-gradient-ltr { background: linear-gradient(to right, #095CDE, #53C3F3); }
 @each $key, $value in $theme-colors-light {
     .bg-light-#{$key} {
-        background-color: $value;
-        color: darken($value,80%);
+        @if($dark-mode) {
+            @if($key == "dark") {
+                background-color: #545864;
+                color: white;
+            }@else {
+                background-color: saturate(lighten($value, 20%), 15%);
+                color: saturate(darken($value,30%), 5%);
+            }
+        }
+        @else {
+            background-color: $value;
+            color: darken($value,80%);
+        }
     }
+}
+.bg-light {
+    color: $gray-800;
 }
 
 .font-semibold { font-weight: 600; }

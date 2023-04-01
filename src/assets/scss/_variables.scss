@@ -7,7 +7,7 @@
 
 @use 'sass:math';
 
-$dark-mode: false;
+$dark-mode: false !default;
 
 
 // Mazer Variables
@@ -20,6 +20,7 @@ $theme-colors-light: (
   'danger': #FFDEDE,
   'warning': #fffdd8,
   'info': #e6fdff,
+  'dark': #e3e3e3
 ) !default;
 
 $alert-colors: (

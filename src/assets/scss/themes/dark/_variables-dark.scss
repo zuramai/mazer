@@ -9,6 +9,7 @@ $theme-colors-light: (
   'danger': tint-color($danger, 35%),
   'warning': tint-color($warning, 25%),
   'info': tint-color($info, 25%),
+  'dark': #666
 );
 
 $alert-colors: (
