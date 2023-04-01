@@ -18,7 +18,7 @@
 #sidebar {
     @include sidebar-inactive();
     
-    @media screen and (min-width: 992px) {
+    @media screen and (min-width: 1200px) {
         @include sidebar-active();
     }
 
@@ -194,7 +194,7 @@
 }
 @media screen and (max-width: 1199px) {
     .sidebar-wrapper {
-        position:absolute;
+        position: fixed;
         left: -300px;
         .sidebar-toggler.x  {
             display:block;
