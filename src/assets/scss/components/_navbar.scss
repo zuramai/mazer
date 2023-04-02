@@ -191,14 +191,17 @@
                     &.active .submenu-link {
                         color: var(--bs-primary)
                     }
-                    &.has-sub .submenu-link {
-                        position: relative;
-                        &:after {
-                            position: absolute;
-                            right: 10px;
-                            top: 50%;
-                            transform: translateY(-40%);
-                            content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23888' class='bi bi-chevron-right' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+                    &.has-sub {
+                        overflow: visible;
+                        .submenu-link {
+                            position: relative;
+                            &:after {
+                                position: absolute;
+                                right: 10px;
+                                top: 50%;
+                                transform: translateY(-40%);
+                                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23888' class='bi bi-chevron-right' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+                            }
                         }
                     }
                     a {

@@ -217,11 +217,13 @@ class Sidebar {
 
 
 
+let sidebarEl = document.getElementById("sidebar")
 
 /**
    * On First Load
    */
 const onFirstLoad = (sidebarEL) => {
+  if(!sidebarEl) return
   if (isDesktop(window)) {
     sidebarEL.classList.add("active")
     sidebarEL.classList.add('sidebar-desktop')
@@ -242,7 +244,6 @@ const onFirstLoad = (sidebarEL) => {
   }
 }
 
-let sidebarEl = document.getElementById("sidebar")
 if(document.readyState !== 'loading') {
   onFirstLoad(sidebarEl)
 }
