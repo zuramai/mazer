@@ -14,7 +14,7 @@ const root = resolve(__dirname, 'src')
 
 const getFiles = () => {
     let files = {}
-    
+
     fs.readdirSync(root)
         .filter(filename => filename.endsWith('.html'))
         .forEach(filename => {
@@ -28,7 +28,7 @@ const files = getFiles()
 const getVariables = (mode) => {
     const variables = {}
     Object.keys(files).forEach((filename) => {
-        if(filename.includes('layouts')) filename = `layouts/${filename}`
+        if (filename.includes('layouts')) filename = `layouts/${filename}`
         variables[filename + '.html'] = {
             web_title: "Mazer Admin Dashboard",
             sidebarItems,
@@ -50,6 +50,13 @@ const modulesToCopy = {
     flatpickr: true,
     filepond: true,
     "filepond-plugin-image-preview": true,
+    "filepond-plugin-file-validate-size": true,
+    "filepond-plugin-file-validate-type": true, 
+    "filepond-plugin-image-crop": true,
+    "filepond-plugin-image-exif-orientation": true, 
+    "filepond-plugin-image-filter": true,
+    "filepond-plugin-image-preview": true,
+    "filepond-plugin-image-resize": true,
     "feather-icons": true,
     dragula: true,
     dayjs: false,
@@ -117,7 +124,7 @@ export default defineConfig((env) => ({
             templatesDir: root,
             variables: getVariables(env.mode),
             nunjucksEnvironment: {
-                
+
                 filters: {
                     containString: (str, containStr) => {
                         if (!str.length) return false
@@ -133,11 +140,11 @@ export default defineConfig((env) => ({
     ],
     resolve: {
         alias: {
-          '@': normalizePath(resolve(__dirname, 'src')),
-          '~bootstrap': resolve(__dirname, 'node_modules/bootstrap'),
-          '~bootstrap-icons': resolve(__dirname, 'node_modules/bootstrap-icons'),
-          '~perfect-scrollbar': resolve(__dirname, 'node_modules/perfect-scrollbar'),
-          '~@fontsource': resolve(__dirname, 'node_modules/@fontsource'),
+            '@': normalizePath(resolve(__dirname, 'src')),
+            '~bootstrap': resolve(__dirname, 'node_modules/bootstrap'),
+            '~bootstrap-icons': resolve(__dirname, 'node_modules/bootstrap-icons'),
+            '~perfect-scrollbar': resolve(__dirname, 'node_modules/perfect-scrollbar'),
+            '~@fontsource': resolve(__dirname, 'node_modules/@fontsource'),
         }
     },
     build: {
@@ -146,22 +153,22 @@ export default defineConfig((env) => ({
         target: "chrome58",
         outDir: resolve(__dirname, 'dist'),
         rollupOptions: {
-          input: files,
-          output: {
-            entryFileNames: `assets/compiled/js/[name].js`,
-            chunkFileNames: `assets/compiled/js/[name].js`,
+            input: files,
+            output: {
+                entryFileNames: `assets/compiled/js/[name].js`,
+                chunkFileNames: `assets/compiled/js/[name].js`,
 
-            assetFileNames: (a) => {
-                const extname = a.name.split('.')[1]
-                let folder = extname ? `${extname}/` : ''
-                
-                // Put fonts into css folder
-                if(['woff', 'woff2', 'ttf'].includes(extname))
-                    folder = 'fonts/'
+                assetFileNames: (a) => {
+                    const extname = a.name.split('.')[1]
+                    let folder = extname ? `${extname}/` : ''
 
-                return `assets/compiled/${folder}[name][extname]`
+                    // Put fonts into css folder
+                    if (['woff', 'woff2', 'ttf'].includes(extname))
+                        folder = 'fonts/'
+
+                    return `assets/compiled/${folder}[name][extname]`
+                }
             }
-          }
         },
     }
 }))
