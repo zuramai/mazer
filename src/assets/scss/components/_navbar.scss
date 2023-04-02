@@ -1,6 +1,11 @@
 
 .layout-navbar {
     --navbar-height: 90px;
+
+    footer {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
 }
 .layout-navbar.navbar-fixed {
     display: block !important;
