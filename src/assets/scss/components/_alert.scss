@@ -38,6 +38,7 @@
         @else {
             background-color: saturate($value,10%);
             color: saturate(shade-color($value, 60%), 40%);
+            border: 1px solid darken($value, 3%);
         }
     }
 }
