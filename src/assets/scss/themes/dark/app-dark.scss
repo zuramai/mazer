@@ -7,6 +7,8 @@
 @import "./root";
 
 html[data-bs-theme="dark"] {
+    @import '@sweetalert2/theme-dark/dark.scss';
+    
     // Bootstrap 
     @import "~bootstrap/scss/maps";
     @import "~bootstrap/scss/utilities";

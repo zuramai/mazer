@@ -16,6 +16,9 @@
 .swal2-styled.swal2-confirm:hover {
     background-color: $swal-confirm-button-bg-hover !important;
 }
+.swal2-popup .form-control {
+        width: initial
+}
 
 // Apexcharts
 .apexcharts-text tspan {

@@ -593,6 +593,11 @@
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz#96116f2a912e0c02817345b3c10751069920d553"
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
 
+"@sweetalert2/theme-dark@^5.0.15":
+  version "5.0.15"
+  resolved "https://registry.yarnpkg.com/@sweetalert2/theme-dark/-/theme-dark-5.0.15.tgz#2b8f072b4efe98db1f7dbe95d14bbede936a8d47"
+  integrity sha512-g1QCwQVOkiAz5hIEBOIvvu0580lubu4KuQlod+48QetYzGIEXNlHEH36QihCDnGVgE6vx48iO48w9q0WrZWyHQ==
+
 "@szmarczak/http-timer@^5.0.1":
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/@szmarczak/http-timer/-/http-timer-5.0.1.tgz#c7c1bf1141cdd4751b0399c8fc7b8b664cd5be3a"
