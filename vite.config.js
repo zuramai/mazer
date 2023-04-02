@@ -49,7 +49,6 @@ const modulesToCopy = {
     "perfect-scrollbar": true,
     flatpickr: true,
     filepond: true,
-    "filepond-plugin-image-preview": true,
     "filepond-plugin-file-validate-size": true,
     "filepond-plugin-file-validate-type": true, 
     "filepond-plugin-image-crop": true,
