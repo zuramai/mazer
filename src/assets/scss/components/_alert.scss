@@ -31,9 +31,9 @@
 @each $key, $value in $theme-colors-light {
     .alert-light-#{$key} {
         @if($dark-mode == true) {
-            background-color: lighten(saturate($value,30%),10%);
+            background-color: lighten(saturate($value,2%),20%);
             color: saturate(shade-color($value, 60%), 40%);
-            border: 1px solid tint-color($value, 10%);
+            border: 1px solid tint-color($value, 30%);
         }
         @else {
             background-color: saturate($value,10%);
