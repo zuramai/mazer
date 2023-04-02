@@ -1,3 +1,14 @@
+
+FilePond.registerPlugin(
+  FilePondPluginImagePreview,
+  FilePondPluginImageCrop,
+  FilePondPluginImageExifOrientation,
+  FilePondPluginImageFilter,
+  FilePondPluginImageResize,
+  FilePondPluginFileValidateSize,
+  FilePondPluginFileValidateType,
+)
+
 // Filepond: Basic
 FilePond.create(document.querySelector(".basic-filepond"), {
   credits: null,
