@@ -71,6 +71,10 @@
     "file": "assets/compiled/fonts/nunito-latin-800-normal.woff2",
     "src": "assets/static/fonts/nunito-latin-800-normal.woff2"
   },
+  "assets/static/images/bg/4853433.png": {
+    "file": "assets/compiled/png/4853433.png",
+    "src": "assets/static/images/bg/4853433.png"
+  },
   "assets/static/images/faces/1.jpg": {
     "file": "assets/compiled/jpg/1.jpg",
     "src": "assets/static/images/faces/1.jpg"
