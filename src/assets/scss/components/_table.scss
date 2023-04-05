@@ -1,5 +1,5 @@
 .table td, .table thead th {
-    vertical-align: middle;
+    vertical-align: middle !important;
 }
 
 .table:not(.table-borderless) thead th {
@@ -25,7 +25,38 @@
 }
 
 .dataTable-table {
-    @extend .table
+    @extend .table;
+
+    thead {
+        tr {
+            th {
+                padding: 0.5rem !important;
+            }
+            td {
+                padding: 0.5rem !important;
+            }
+        }
+    }
+    tbody {
+        tr {
+            th {
+                padding: 0.5rem !important;
+            }
+            td {
+                padding: 0.5rem !important;
+            }
+        }
+    }
+    tfoot {
+        tr {
+            th {
+                padding: 0.5rem !important;
+            }
+            td {
+                padding: 0.5rem !important;
+            }
+        }
+    }
 }
 
 .dataTable-container {
