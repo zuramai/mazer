@@ -9,14 +9,11 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     versioning-strategy: "increase"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]
-    open-pull-requests-limit: 50
+    open-pull-requests-limit: 15
