@@ -63,7 +63,6 @@ npm run dev
 - [Adonisjs 5](https://github.com/afman42/mazer-adonisjs) by [@afman42](https://github.com/afman42/)
 - [Django](https://github.com/bimbims125/mazer-django) by [@bimbims125](https://github.com/bimbims125/)
 - [Flask](https://github.com/antheiz/mazer-flask) by [@antheiz](https://github.com/antheiz/)
-- [Symfony](https://github.com/jvl1v5/symfony-mazer) by [@jvl1v5](https://github.com/jvl1v5/)
 - [Symfony 6.3 (Mazer 2.1.0)](https://github.com/TheoD02/mazer-symfony-6.3/tree/mazer-2.1.0) by [@theod02](ttps://github.com/TheoD02)
 - [Spring-Thymeleaf](https://github.com/deyhay-enterprise/spring-project-mazer-template) by [@hi-rullah](https://github.com/hi-rullah)
 - [Ruby on Rails](https://github.com/noesya/mazer-rails) by [@noesya](https://github.com/noesya)
