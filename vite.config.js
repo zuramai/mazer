@@ -40,8 +40,10 @@ const getVariables = (mode) => {
 }
 
 // Modules and extensions
+// If the value is true, then it will copy the files inside the `dist` folders
+// But if the value is false, it will copy the entire module files and folders
 const modulesToCopy = {
-    "@icon/dripicons": false,
+    "@icon/dripicons": false, // With dist folder = false
     "@fortawesome/fontawesome-free": false,
     "rater-js": false,
     "bootstrap-icons": false,
@@ -68,8 +70,9 @@ const modulesToCopy = {
     quill: true,
     tinymce: false,
     "toastify-js": false,
+    "datatables.net": false,
     "datatables.net-bs5": false,
-    "simple-datatables": true, // With dist folder = true
+    "simple-datatables": true, 
     jsvectormap: true,
 }
 
