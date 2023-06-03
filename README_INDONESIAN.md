@@ -49,6 +49,11 @@ Unduh rilis terbaru dari [halaman rilis](https://github.com/zuramai/mazer/releas
 - [Adonisjs 5](https://github.com/afman42/mazer-adonisjs) oleh [@afman42](https://github.com/afman42/)
 - [Django](https://github.com/bimbims125/mazer-django) oleh [@bimbims125](https://github.com/bimbims125/)
 - [Flask](https://github.com/antheiz/mazer-flask) oleh [@antheiz](https://github.com/antheiz/)
+- [Symfony 6.3 (Mazer 2.1.0)](https://github.com/TheoD02/mazer-symfony-6.3/tree/mazer-2.1.0) oleh [@theod02](ttps://github.com/TheoD02)
+- [Spring-Thymeleaf](https://github.com/deyhay-enterprise/spring-project-mazer-template) oleh [@hi-rullah](https://github.com/hi-rullah)
+- [Ruby on Rails](https://github.com/noesya/mazer-rails) oleh [@noesya](https://github.com/noesya)
+- [Yii2](https://github.com/anovsiradj/yii2-theme-mazer) oleh [@anovsiradj](https://github.com/anovsiradj)
+- [Next JS](https://github.com/dipras/next-mazer) oleh [@dipras](https://github.com/dipras)
 - Apakah anda membuat proyek menggunakan *Dashboard* Kami? Anda dapat meletakannya disini dengan melakukan `Pull Request`.
 
 ## Kontribusi
