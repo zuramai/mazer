@@ -36,5 +36,5 @@ declare const effects: {
     readonly easeOutBounce: (t: number) => number;
     readonly easeInOutBounce: (t: number) => number;
 };
-export declare type EasingFunction = keyof typeof effects;
+export type EasingFunction = keyof typeof effects;
 export default effects;

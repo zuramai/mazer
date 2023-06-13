@@ -12,6 +12,8 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
     static defaults: {
         borderAlign: string;
         borderColor: string;
+        borderDash: any[];
+        borderDashOffset: number;
         borderJoinStyle: any;
         borderRadius: number;
         borderWidth: number;
@@ -22,6 +24,10 @@ export default class ArcElement extends Element<ArcProps, ArcOptions> {
     };
     static defaultRoutes: {
         backgroundColor: string;
+    };
+    static descriptors: {
+        _scriptable: boolean;
+        _indexable: (name: any) => boolean;
     };
     circumference: number;
     endAngle: number;

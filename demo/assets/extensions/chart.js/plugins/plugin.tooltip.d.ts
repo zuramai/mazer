@@ -150,14 +150,9 @@ declare namespace _default {
     export { Tooltip as _element };
     export { positioners };
     export function afterInit(chart: any, _args: any, options: any): void;
-    export function afterInit(chart: any, _args: any, options: any): void;
-    export function beforeUpdate(chart: any, _args: any, options: any): void;
     export function beforeUpdate(chart: any, _args: any, options: any): void;
     export function reset(chart: any, _args: any, options: any): void;
-    export function reset(chart: any, _args: any, options: any): void;
     export function afterDraw(chart: any): void;
-    export function afterDraw(chart: any): void;
-    export function afterEvent(chart: any, args: any): void;
     export function afterEvent(chart: any, args: any): void;
     export namespace defaults {
         export const enabled: boolean;
@@ -257,20 +252,6 @@ declare namespace positioners {
         y: number;
     };
     /**
-       * Average mode places the tooltip at the average position of the elements shown
-       */
-    function average(items: any): false | {
-        x: number;
-        y: number;
-    };
-    /**
-       * Gets the tooltip position nearest of the item nearest to the event position
-       */
-    function nearest(items: any, eventPosition: any): false | {
-        x: any;
-        y: any;
-    };
-    /**
        * Gets the tooltip position nearest of the item nearest to the event position
        */
     function nearest(items: any, eventPosition: any): false | {
@@ -281,20 +262,10 @@ declare namespace positioners {
 declare namespace defaultCallbacks {
     export { noop as beforeTitle };
     export function title(tooltipItems: any): any;
-    export function title(tooltipItems: any): any;
     export { noop as afterTitle };
     export { noop as beforeBody };
     export { noop as beforeLabel };
     export function label(tooltipItem: any): any;
-    export function label(tooltipItem: any): any;
-    export function labelColor(tooltipItem: any): {
-        borderColor: any;
-        backgroundColor: any;
-        borderWidth: any;
-        borderDash: any;
-        borderDashOffset: any;
-        borderRadius: number;
-    };
     export function labelColor(tooltipItem: any): {
         borderColor: any;
         backgroundColor: any;
@@ -304,11 +275,6 @@ declare namespace defaultCallbacks {
         borderRadius: number;
     };
     export function labelTextColor(): any;
-    export function labelTextColor(): any;
-    export function labelPointStyle(tooltipItem: any): {
-        pointStyle: any;
-        rotation: any;
-    };
     export function labelPointStyle(tooltipItem: any): {
         pointStyle: any;
         rotation: any;

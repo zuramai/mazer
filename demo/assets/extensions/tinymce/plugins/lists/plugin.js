@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.4.1 (2023-03-29)
+ * TinyMCE version 6.5.0 (2023-06-12)
  */
 
 (function () {
@@ -745,7 +745,6 @@
       const parentList = editor.dom.getParent(element, 'ol,ul,dl');
       return isWithinNonEditable(editor, parentList);
     };
-    const hasNonEditableBlocksSelected = editor => exists(editor.selection.getSelectedBlocks(), not(editor.dom.isEditable));
     const setNodeChangeHandler = (editor, nodeChangeHandler) => {
       const initialNode = editor.selection.getNode();
       nodeChangeHandler({
@@ -1258,7 +1257,7 @@
         listItemName = 'DT';
       }
       const bookmark = createBookmark(rng);
-      const selectedTextBlocks = getSelectedTextBlocks(editor, rng, root);
+      const selectedTextBlocks = filter$1(getSelectedTextBlocks(editor, rng, root), editor.dom.isEditable);
       global$2.each(selectedTextBlocks, block => {
         let listBlock;
         const sibling = block.previousSibling;
@@ -1378,7 +1377,7 @@
     };
     const toggleList = (editor, listName, _detail) => {
       const parentList = getParentList(editor);
-      if (isWithinNonEditableList(editor, parentList) || hasNonEditableBlocksSelected(editor)) {
+      if (isWithinNonEditableList(editor, parentList) || !editor.hasEditableRoot()) {
         return;
       }
       const selectedSubLists = getSelectedSubLists(editor);
@@ -1883,8 +1882,9 @@
     const setupToggleButtonHandler = (editor, listName) => api => {
       const toggleButtonHandler = e => {
         api.setActive(inList(e.parents, listName));
-        api.setEnabled(!isWithinNonEditableList(editor, e.element));
+        api.setEnabled(!isWithinNonEditableList(editor, e.element) && editor.selection.isEditable());
       };
+      api.setEnabled(editor.selection.isEditable());
       return setNodeChangeHandler(editor, toggleButtonHandler);
     };
     const register$1 = editor => {

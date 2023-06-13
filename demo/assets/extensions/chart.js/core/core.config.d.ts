@@ -1,5 +1,5 @@
 export function getIndexAxis(type: any, options: any): any;
-export function determineAxis(id: any, scaleOptions: any): any;
+export function determineAxis(id: any, ...scaleOptions: any[]): any;
 export default class Config {
     constructor(config: any);
     _config: any;

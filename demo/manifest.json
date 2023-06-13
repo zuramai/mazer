@@ -207,21 +207,21 @@
     "file": "assets/compiled/svg/rings.svg",
     "src": "assets/static/images/svg-loaders/rings.svg"
   },
-  "auth.css": {
-    "file": "assets/compiled/css/auth.css",
-    "src": "auth.css"
+  "auth-forgot-password.css": {
+    "file": "assets/compiled/css/auth-forgot-password.css",
+    "src": "auth-forgot-password.css"
   },
-  "error.css": {
-    "file": "assets/compiled/css/error.css",
-    "src": "error.css"
+  "error-403.css": {
+    "file": "assets/compiled/css/error-403.css",
+    "src": "error-403.css"
   },
   "form-editor-summernote.css": {
     "file": "assets/compiled/css/form-editor-summernote.css",
     "src": "form-editor-summernote.css"
   },
-  "iconly.css": {
-    "file": "assets/compiled/css/iconly.css",
-    "src": "iconly.css"
+  "layout-rtl-backup.css": {
+    "file": "assets/compiled/css/layout-rtl-backup.css",
+    "src": "layout-rtl-backup.css"
   },
   "table-datatable-jquery.css": {
     "file": "assets/compiled/css/table-datatable-jquery.css",

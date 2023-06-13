@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.4.1 (2023-03-29)
+ * TinyMCE version 6.5.0 (2023-06-12)
  */
 
 (function () {
@@ -785,7 +785,7 @@
       }
       return css;
     };
-    const isValidValue = (tag, property, value) => {
+    const isValidValue$1 = (tag, property, value) => {
       const element = SugarElement.fromTag(tag);
       set$8(element, property, value);
       const style = getRaw(element, property);
@@ -4689,28 +4689,52 @@
     };
 
     const descendOnce = (element, offset) => isText(element) ? point(element, offset) : descendOnce$1(element, offset);
+    const isSimRange = detail => detail.foffset !== undefined;
     const getAnchorSelection = (win, anchorInfo) => {
       const getSelection = anchorInfo.getSelection.getOrThunk(() => () => getExact(win));
       return getSelection().map(sel => {
-        const modStart = descendOnce(sel.start, sel.soffset);
-        const modFinish = descendOnce(sel.finish, sel.foffset);
-        return SimSelection.range(modStart.element, modStart.offset, modFinish.element, modFinish.offset);
+        if (isSimRange(sel)) {
+          const modStart = descendOnce(sel.start, sel.soffset);
+          const modFinish = descendOnce(sel.finish, sel.foffset);
+          return SimSelection.range(modStart.element, modStart.offset, modFinish.element, modFinish.offset);
+        } else {
+          return sel;
+        }
       });
     };
     const placement$1 = (component, anchorInfo, origin) => {
       const win = defaultView(anchorInfo.root).dom;
       const rootPoint = getRootPoint(component, origin, anchorInfo);
       const selectionBox = getAnchorSelection(win, anchorInfo).bind(sel => {
-        const optRect = getBounds$1(win, SimSelection.exactFromRange(sel)).orThunk(() => {
-          const x = SugarElement.fromText(zeroWidth);
-          before$1(sel.start, x);
-          const rect = getFirstRect(win, SimSelection.exact(x, 0, x, 1));
-          remove$5(x);
-          return rect;
-        });
-        return optRect.bind(rawRect => getBox(rawRect.left, rawRect.top, rawRect.width, rawRect.height));
+        if (isSimRange(sel)) {
+          const optRect = getBounds$1(win, SimSelection.exactFromRange(sel)).orThunk(() => {
+            const zeroWidth$1 = SugarElement.fromText(zeroWidth);
+            before$1(sel.start, zeroWidth$1);
+            const rect = getFirstRect(win, SimSelection.exact(zeroWidth$1, 0, zeroWidth$1, 1));
+            remove$5(zeroWidth$1);
+            return rect;
+          });
+          return optRect.bind(rawRect => {
+            return getBox(rawRect.left, rawRect.top, rawRect.width, rawRect.height);
+          });
+        } else {
+          const selectionRect = map$1(sel, cell => cell.dom.getBoundingClientRect());
+          const bounds = {
+            left: Math.min(selectionRect.firstCell.left, selectionRect.lastCell.left),
+            right: Math.max(selectionRect.firstCell.right, selectionRect.lastCell.right),
+            top: Math.min(selectionRect.firstCell.top, selectionRect.lastCell.top),
+            bottom: Math.max(selectionRect.firstCell.bottom, selectionRect.lastCell.bottom)
+          };
+          return getBox(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top);
+        }
       });
-      const targetElement = getAnchorSelection(win, anchorInfo).bind(sel => isElement$1(sel.start) ? Optional.some(sel.start) : parentElement(sel.start));
+      const targetElement = getAnchorSelection(win, anchorInfo).bind(sel => {
+        if (isSimRange(sel)) {
+          return isElement$1(sel.start) ? Optional.some(sel.start) : parentElement(sel.start);
+        } else {
+          return Optional.some(sel.firstCell);
+        }
+      });
       const elem = targetElement.getOr(component.element);
       return calcNewAnchor(selectionBox, rootPoint, anchorInfo, origin, elem);
     };
@@ -8179,7 +8203,7 @@
           ]
         },
         components: [render$3('close', {
-            tag: 'div',
+            tag: 'span',
             classes: ['tox-icon'],
             attributes: { 'aria-label': detail.translationProvider('Close') }
           }, detail.iconProvider)],
@@ -9909,7 +9933,12 @@
       };
     };
     const renderItemDomStructure = ariaLabel => {
-      const domTitle = ariaLabel.map(label => ({ attributes: { title: global$8.translate(label) } })).getOr({});
+      const domTitle = ariaLabel.map(label => ({
+        attributes: {
+          title: global$8.translate(label),
+          id: generate$6('menu-item')
+        }
+      })).getOr({});
       return {
         tag: 'div',
         classes: [
@@ -10258,6 +10287,54 @@
     const fireToggleToolbarDrawer = (editor, state) => {
       editor.dispatch('ToggleToolbarDrawer', { state });
     };
+
+    const composeUnbinders = (f, g) => () => {
+      f();
+      g();
+    };
+    const onSetupEditableToggle = editor => onSetupEvent(editor, 'NodeChange', api => {
+      api.setEnabled(editor.selection.isEditable());
+    });
+    const onSetupFormatToggle = (editor, name) => api => {
+      const boundFormatChangeCallback = unbindable();
+      const init = () => {
+        api.setActive(editor.formatter.match(name));
+        const binding = editor.formatter.formatChanged(name, api.setActive);
+        boundFormatChangeCallback.set(binding);
+      };
+      editor.initialized ? init() : editor.once('init', init);
+      return () => {
+        editor.off('init', init);
+        boundFormatChangeCallback.clear();
+      };
+    };
+    const onSetupStateToggle = (editor, name) => api => {
+      const unbindEditableToogle = onSetupEditableToggle(editor)(api);
+      const unbindFormatToggle = onSetupFormatToggle(editor, name)(api);
+      return () => {
+        unbindEditableToogle();
+        unbindFormatToggle();
+      };
+    };
+    const onSetupEvent = (editor, event, f) => api => {
+      const handleEvent = () => f(api);
+      const init = () => {
+        f(api);
+        editor.on(event, handleEvent);
+      };
+      editor.initialized ? init() : editor.once('init', init);
+      return () => {
+        editor.off('init', init);
+        editor.off(event, handleEvent);
+      };
+    };
+    const onActionToggleFormat$1 = editor => rawItem => () => {
+      editor.undoManager.transact(() => {
+        editor.focus();
+        editor.execCommand('mceToggleFormat', false, rawItem.format);
+      });
+    };
+    const onActionExecCommand = (editor, command) => () => editor.execCommand(command);
 
     var global$4 = tinymce.util.Tools.resolve('tinymce.util.LocalStorage');
 
@@ -10609,9 +10686,9 @@
             }
           };
           editor.on('TextColorChange', handler);
-          return () => {
+          return composeUnbinders(onSetupEditableToggle(editor)(splitButtonApi), () => {
             editor.off('TextColorChange', handler);
-          };
+          });
         }
       });
     };
@@ -10621,7 +10698,7 @@
         icon: name === 'forecolor' ? 'text-color' : 'highlight-bg-color',
         onSetup: api => {
           setIconColor(api, name, lastColor.get());
-          return noop;
+          return onSetupEditableToggle(editor)(api);
         },
         getSubmenuItems: () => [{
             type: 'fancymenuitem',
@@ -10934,7 +11011,7 @@
         isEnabled: () => !Disabling.isDisabled(component),
         setEnabled: state => Disabling.set(component, !state),
         setIconFill: (id, value) => {
-          descendant(component.element, `svg path[id="${ id }"], rect[id="${ id }"]`).each(underlinePath => {
+          descendant(component.element, `svg path[class="${ id }"], rect[class="${ id }"]`).each(underlinePath => {
             set$9(underlinePath, 'fill', value);
           });
         }
@@ -11806,8 +11883,9 @@
         return false;
       }
     };
-    const detect = poupSinkElem => {
-      const scrollers = ancestors(poupSinkElem, isScroller);
+    const detect = popupSinkElem => {
+      const ancestorsScrollers = ancestors(popupSinkElem, isScroller);
+      const scrollers = ancestorsScrollers.length === 0 ? getShadowRoot(popupSinkElem).map(getShadowHost).map(x => ancestors(x, isScroller)).getOr([]) : ancestorsScrollers;
       return head(scrollers).map(element => ({
         element,
         others: scrollers.slice(1)
@@ -15122,9 +15200,12 @@
                 return get$6(select.element);
               },
               setValue: (select, newValue) => {
+                const firstOption = head(detail.options);
                 const found = find$5(detail.options, opt => opt.value === newValue);
                 if (found.isSome()) {
                   set$5(select.element, newValue);
+                } else if (select.element.dom.selectedIndex === -1 && newValue === '') {
+                  firstOption.each(value => set$5(select.element, value.value));
                 }
               },
               ...initialValues
@@ -16001,7 +16082,7 @@
       components: [text$2(text)]
     });
     const leafLabelEventsId = generate$6('leaf-label-event-id');
-    const renderLeafLabel = ({leaf, onLeafAction, visible, treeId, backstage}) => {
+    const renderLeafLabel = ({leaf, onLeafAction, visible, treeId, selectedId, backstage}) => {
       const internalMenuButton = leaf.menu.map(btn => renderMenuButton(btn, 'tox-mbtn', backstage, Optional.none(), visible));
       const components = [renderLabel(leaf.title)];
       internalMenuButton.each(btn => components.push(btn));
@@ -16041,7 +16122,14 @@
               }
             }
           }),
-          config(leafLabelEventsId, [run$1(keydown(), (comp, se) => {
+          config(leafLabelEventsId, [
+            runOnAttached((comp, _se) => {
+              selectedId.each(id => {
+                const toggle = id === leaf.id ? Toggling.on : Toggling.off;
+                toggle(comp);
+              });
+            }),
+            run$1(keydown(), (comp, se) => {
               const isLeftArrowKey = se.event.raw.code === 'ArrowLeft';
               const isRightArrowKey = se.event.raw.code === 'ArrowRight';
               if (isLeftArrowKey) {
@@ -16056,7 +16144,8 @@
               } else if (isRightArrowKey) {
                 se.stop();
               }
-            })])
+            })
+          ])
         ])
       });
     };
@@ -16085,9 +16174,16 @@
       internalMenuButton.each(btn => {
         components.push(btn);
       });
-      const expandChildren = button => {
+      const toggleExpandChildren = button => {
         ancestor(button.element, '.tox-tree--directory').each(directoryEle => {
-          button.getSystem().getByDom(directoryEle).each(directoryComp => Toggling.toggle(directoryComp));
+          button.getSystem().getByDom(directoryEle).each(directoryComp => {
+            const willExpand = !Toggling.isOn(directoryComp);
+            Toggling.toggle(directoryComp);
+            emitWith(button, 'expand-tree-node', {
+              expanded: willExpand,
+              node: directory.id
+            });
+          });
         });
       };
       return Button.sketch({
@@ -16099,7 +16195,7 @@
           ].concat(visible ? ['tox-tree--directory__label--visible'] : [])
         },
         components,
-        action: expandChildren,
+        action: toggleExpandChildren,
         eventOrder: {
           [keydown()]: [
             directoryLabelEventsId,
@@ -16118,7 +16214,7 @@
                 ancestor(comp.element, '.tox-tree--directory').each(directoryEle => {
                   comp.getSystem().getByDom(directoryEle).each(directoryComp => {
                     if (!Toggling.isOn(directoryComp) && isRightArrowKey || Toggling.isOn(directoryComp) && isLeftArrowKey) {
-                      expandChildren(comp);
+                      toggleExpandChildren(comp);
                       se.stop();
                     } else if (isLeftArrowKey && !Toggling.isOn(directoryComp)) {
                       ancestor(directoryComp.element, '.tox-tree--directory').each(parentDirElement => {
@@ -16135,7 +16231,7 @@
         ])
       });
     };
-    const renderDirectoryChildren = ({children, onLeafAction, visible, treeId, backstage}) => {
+    const renderDirectoryChildren = ({children, onLeafAction, visible, treeId, expandedIds, selectedId, backstage}) => {
       return {
         dom: {
           tag: 'div',
@@ -16144,12 +16240,15 @@
         components: children.map(item => {
           return item.type === 'leaf' ? renderLeafLabel({
             leaf: item,
+            selectedId,
             onLeafAction,
             visible,
             treeId,
             backstage
           }) : renderDirectory({
             directory: item,
+            expandedIds,
+            selectedId,
             onLeafAction,
             labelTabstopping: visible,
             treeId,
@@ -16162,29 +16261,36 @@
             closedClass: 'tox-tree--directory__children--closed',
             openClass: 'tox-tree--directory__children--open',
             growingClass: 'tox-tree--directory__children--growing',
-            shrinkingClass: 'tox-tree--directory__children--shrinking'
+            shrinkingClass: 'tox-tree--directory__children--shrinking',
+            expanded: visible
           }),
           Replacing.config({})
         ])
       };
     };
-    const renderDirectory = ({directory, onLeafAction, labelTabstopping, treeId, backstage}) => {
+    const directoryEventsId = generate$6('directory-event-id');
+    const renderDirectory = ({directory, onLeafAction, labelTabstopping, treeId, backstage, expandedIds, selectedId}) => {
       const {children} = directory;
+      const expandedIdsCell = Cell(expandedIds);
       const computedChildrenComponents = visible => children.map(item => {
         return item.type === 'leaf' ? renderLeafLabel({
           leaf: item,
+          selectedId,
           onLeafAction,
           visible,
           treeId,
           backstage
         }) : renderDirectory({
           directory: item,
+          expandedIds: expandedIdsCell.get(),
+          selectedId,
           onLeafAction,
           labelTabstopping: visible,
           treeId,
           backstage
         });
       });
+      const childrenVisible = expandedIds.includes(directory.id);
       return {
         dom: {
           tag: 'div',
@@ -16200,13 +16306,28 @@
           }),
           renderDirectoryChildren({
             children,
+            expandedIds,
+            selectedId,
             onLeafAction,
-            visible: false,
+            visible: childrenVisible,
             treeId,
             backstage
           })
         ],
-        behaviours: derive$1([Toggling.config({
+        behaviours: derive$1([
+          config(directoryEventsId, [
+            runOnAttached((comp, _se) => {
+              Toggling.set(comp, childrenVisible);
+            }),
+            run$1('expand-tree-node', (_cmp, se) => {
+              const {expanded, node} = se.event;
+              expandedIdsCell.set(expanded ? [
+                ...expandedIdsCell.get(),
+                node
+              ] : expandedIdsCell.get().filter(id => id !== node));
+            })
+          ]),
+          Toggling.config({
             ...directory.children.length > 0 ? { aria: { mode: 'expanded' } } : {},
             toggleClass: 'tox-tree--directory--expanded',
             onToggled: (comp, childrenVisible) => {
@@ -16219,22 +16340,31 @@
               }
               Replacing.set(childrenComp, newChildren);
             }
-          })])
+          })
+        ])
       };
     };
+    const treeEventsId = generate$6('tree-event-id');
     const renderTree = (spec, backstage) => {
       const onLeafAction = spec.onLeafAction.getOr(noop);
+      const onToggleExpand = spec.onToggleExpand.getOr(noop);
+      const defaultExpandedIds = spec.defaultExpandedIds;
+      const expandedIds = Cell(defaultExpandedIds);
+      const selectedIdCell = Cell(spec.defaultSelectedId);
       const treeId = generate$6('tree-id');
-      const children = spec.items.map(item => {
+      const children = (selectedId, expandedIds) => spec.items.map(item => {
         return item.type === 'leaf' ? renderLeafLabel({
           leaf: item,
+          selectedId,
           onLeafAction,
           visible: true,
           treeId,
           backstage
         }) : renderDirectory({
           directory: item,
+          selectedId,
           onLeafAction,
+          expandedIds,
           labelTabstopping: true,
           treeId,
           backstage
@@ -16246,12 +16376,36 @@
           classes: ['tox-tree'],
           attributes: { role: 'tree' }
         },
-        components: children,
-        behaviours: derive$1([Keying.config({
+        components: children(selectedIdCell.get(), expandedIds.get()),
+        behaviours: derive$1([
+          Keying.config({
             mode: 'flow',
             selector: '.tox-tree--leaf__label--visible, .tox-tree--directory__label--visible',
             cycles: false
-          })])
+          }),
+          config(treeEventsId, [run$1('expand-tree-node', (_cmp, se) => {
+              const {expanded, node} = se.event;
+              expandedIds.set(expanded ? [
+                ...expandedIds.get(),
+                node
+              ] : expandedIds.get().filter(id => id !== node));
+              onToggleExpand(expandedIds.get(), {
+                expanded,
+                node
+              });
+            })]),
+          Receiving.config({
+            channels: {
+              [`update-active-item-${ treeId }`]: {
+                onReceive: (comp, message) => {
+                  selectedIdCell.set(Optional.some(message.value));
+                  Replacing.set(comp, children(Optional.some(message.value), expandedIds.get()));
+                }
+              }
+            }
+          }),
+          Replacing.config({})
+        ])
       };
     };
 
@@ -16536,7 +16690,10 @@
             sandbox: hotspot => {
               return makeSandbox$1(detail, hotspot, {
                 onOpen: () => Toggling.on(hotspot),
-                onClose: () => Toggling.off(hotspot)
+                onClose: () => {
+                  detail.lazyTypeaheadComp.get().each(input => remove$7(input.element, 'aria-activedescendant'));
+                  Toggling.off(hotspot);
+                }
               });
             }
           }
@@ -16641,6 +16798,7 @@
                   if (detail.model.populateFromBrowse) {
                     setValueFromItem(detail.model, input, item);
                   }
+                  getOpt(item.element, 'id').each(id => set$9(input.element, 'aria-activedescendant', id));
                 });
               } else {
                 detail.lazyTypeaheadComp.get().each(input => {
@@ -16859,8 +17017,8 @@
     const isNormalFooterButtonSpec = (spec, buttonType) => buttonType === 'custom' || buttonType === 'cancel' || buttonType === 'submit';
     const isToggleButtonSpec = (spec, buttonType) => buttonType === 'togglebutton';
     const renderToggleButton = (spec, providers) => {
-      var _a, _b, _c;
-      const optMemIcon = Optional.from(spec.icon).map(memIcon => renderReplaceableIconFromPack(memIcon, providers.icons)).map(record);
+      var _a, _b;
+      const optMemIcon = spec.icon.map(memIcon => renderReplaceableIconFromPack(memIcon, providers.icons)).map(record);
       const action = comp => {
         emitWith(comp, formActionEvent, {
           name: spec.name,
@@ -16873,13 +17031,12 @@
           }
         });
       };
+      const buttonType = spec.buttonType.getOr(!spec.primary ? 'secondary' : 'primary');
       const buttonSpec = {
         ...spec,
         name: (_a = spec.name) !== null && _a !== void 0 ? _a : '',
-        primary: spec.buttonType === 'primary',
-        buttonType: Optional.from(spec.buttonType),
+        primary: buttonType === 'primary',
         tooltip: Optional.from(spec.tooltip),
-        icon: Optional.from(spec.name),
         enabled: (_b = spec.enabled) !== null && _b !== void 0 ? _b : false,
         borderless: false
       };
@@ -16887,24 +17044,24 @@
         'aria-label': providers.translate(tooltip),
         'title': providers.translate(tooltip)
       })).getOr({});
-      const buttonTypeClasses = calculateClassesFromButtonType((_c = spec.buttonType) !== null && _c !== void 0 ? _c : 'secondary');
-      const showIconAndText = !!spec.icon && !!spec.text;
+      const buttonTypeClasses = calculateClassesFromButtonType(buttonType !== null && buttonType !== void 0 ? buttonType : 'secondary');
+      const showIconAndText = spec.icon.isSome() && spec.text.isSome();
       const dom = {
         tag: 'button',
         classes: [
-          ...buttonTypeClasses.concat(['tox-button--icon']),
+          ...buttonTypeClasses.concat(spec.icon.isSome() ? ['tox-button--icon'] : []),
           ...spec.active ? ['tox-button--enabled'] : [],
           ...showIconAndText ? ['tox-button--icon-and-text'] : []
         ],
         attributes: tooltipAttributes
       };
       const extraBehaviours = [];
-      const translatedText = providers.translate(spec.text);
+      const translatedText = providers.translate(spec.text.getOr(''));
       const translatedTextComponed = text$2(translatedText);
       const iconComp = componentRenderPipeline([optMemIcon.map(memIcon => memIcon.asSpec())]);
       const components = [
         ...iconComp,
-        ...showIconAndText ? [translatedTextComponed] : []
+        ...spec.text.isSome() ? [translatedTextComponed] : []
       ];
       const iconButtonSpec = renderCommonSpec(buttonSpec, Optional.some(action), extraBehaviours, dom, components, providers);
       return Button.sketch(iconButtonSpec);
@@ -16933,13 +17090,7 @@
         };
         return renderButton$1(buttonSpec, action, backstage.shared.providers, []);
       } else if (isToggleButtonSpec(spec, buttonType)) {
-        const buttonSpec = {
-          ...spec,
-          tooltip: spec.tooltip,
-          text: spec.text.getOrUndefined(),
-          buttonType: spec.buttonType.getOrUndefined()
-        };
-        return renderToggleButton(buttonSpec, backstage.shared.providers);
+        return renderToggleButton(spec, backstage.shared.providers);
       } else {
         console.error('Unknown footer button type: ', buttonType);
         throw new Error('Unknown footer button type');
@@ -16996,8 +17147,9 @@
     };
 
     const getItems = (fileType, input, urlBackstage) => {
+      var _a, _b;
       const urlInputValue = Representing.getValue(input);
-      const term = urlInputValue.meta.text !== undefined ? urlInputValue.meta.text : urlInputValue.value;
+      const term = (_b = (_a = urlInputValue === null || urlInputValue === void 0 ? void 0 : urlInputValue.meta) === null || _a === void 0 ? void 0 : _a.text) !== null && _b !== void 0 ? _b : urlInputValue.value;
       const info = urlBackstage.getLinkInformation();
       return info.fold(() => [], linkInfo => {
         const history = filterByQuery(term, historyTargets(urlBackstage.getHistory(fileType)));
@@ -17280,7 +17432,15 @@
         },
         behaviours: derive$1([
           ComposingConfigs.self(),
-          Disabling.config({ disabled: () => !spec.enabled || providerBackstage.isDisabled() }),
+          Disabling.config({
+            disabled: () => !spec.enabled || providerBackstage.isDisabled(),
+            onDisabled: component => {
+              parentElement(component.element).each(element => add$2(element, 'tox-checkbox--disabled'));
+            },
+            onEnabled: component => {
+              parentElement(component.element).each(element => remove$2(element, 'tox-checkbox--disabled'));
+            }
+          }),
           Tabstopping.config({}),
           Focusing.config({}),
           RepresentingConfigs.withElement(initialData, get$1, set$1),
@@ -17334,16 +17494,7 @@
           pLabel
         ],
         fieldBehaviours: derive$1([
-          Disabling.config({
-            disabled: () => !spec.enabled || providerBackstage.isDisabled(),
-            disableClass: 'tox-checkbox--disabled',
-            onDisabled: comp => {
-              FormField.getField(comp).each(Disabling.disable);
-            },
-            onEnabled: comp => {
-              FormField.getField(comp).each(Disabling.enable);
-            }
-          }),
+          Disabling.config({ disabled: () => !spec.enabled || providerBackstage.isDisabled() }),
           receivingConfig()
         ])
       });
@@ -17566,6 +17717,16 @@
       root: bodyElement(),
       getSelection: () => {
         const rng = editor.selection.getRng();
+        const selectedCells = editor.model.table.getSelectedCells();
+        if (selectedCells.length > 1) {
+          const firstCell = selectedCells[0];
+          const lastCell = selectedCells[selectedCells.length - 1];
+          const selectionTableCellRange = {
+            firstCell: SugarElement.fromDom(firstCell),
+            lastCell: SugarElement.fromDom(lastCell)
+          };
+          return Optional.some(selectionTableCellRange);
+        }
         return Optional.some(SimSelection.range(SugarElement.fromDom(rng.startContainer), rng.startOffset, SugarElement.fromDom(rng.endContainer), rng.endOffset));
       }
     });
@@ -18881,7 +19042,8 @@
                   return bounds(box.x, topBound, box.width, boxHeight);
                 }, scrollEnv => {
                   const constrainedBounds = constrain(box, getBoundsFrom(scrollEnv));
-                  return bounds(constrainedBounds.x, constrainedBounds.y, constrainedBounds.width, constrainedBounds.height - headerHeight);
+                  const constrainedBoundsY = isDockedMode(comp, 'top') ? constrainedBounds.y : constrainedBounds.y + headerHeight;
+                  return bounds(constrainedBounds.x, constrainedBoundsY, constrainedBounds.width, constrainedBounds.height - headerHeight);
                 });
               });
             },
@@ -20789,7 +20951,6 @@
             remove$6(element, 'display');
             remove$7(element, 'aria-hidden');
           });
-          apis.refreshToolbar(comp);
         }
       };
       return {
@@ -21017,7 +21178,7 @@
       },
       insert: {
         title: 'Insert',
-        items: 'image link media addcomment pageembed template inserttemplate codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor tableofcontents footnotes | mergetags | insertdatetime'
+        items: 'image link media addcomment pageembed template inserttemplate codesample inserttable accordion | charmap emoticons hr | pagebreak nonbreaking anchor tableofcontents footnotes | mergetags | insertdatetime'
       },
       format: {
         title: 'Format',
@@ -21136,39 +21297,6 @@
     const iframe = curry(loadSkin, false);
     const inline = curry(loadSkin, true);
 
-    const onSetupFormatToggle = (editor, name) => api => {
-      const boundCallback = unbindable();
-      const init = () => {
-        api.setActive(editor.formatter.match(name));
-        const binding = editor.formatter.formatChanged(name, api.setActive);
-        boundCallback.set(binding);
-      };
-      editor.initialized ? init() : editor.once('init', init);
-      return () => {
-        editor.off('init', init);
-        boundCallback.clear();
-      };
-    };
-    const onSetupEvent = (editor, event, f) => api => {
-      const handleEvent = () => f(api);
-      const init = () => {
-        f(api);
-        editor.on(event, handleEvent);
-      };
-      editor.initialized ? init() : editor.once('init', init);
-      return () => {
-        editor.off('init', init);
-        editor.off(event, handleEvent);
-      };
-    };
-    const onActionToggleFormat$1 = editor => rawItem => () => {
-      editor.undoManager.transact(() => {
-        editor.focus();
-        editor.execCommand('mceToggleFormat', false, rawItem.format);
-      });
-    };
-    const onActionExecCommand = (editor, command) => () => editor.execCommand(command);
-
     const generateSelectItems = (_editor, backstage, spec) => {
       const generateItem = (rawItem, response, invalid, value) => {
         const translatedText = backstage.shared.providers.translate(rawItem.title);
@@ -21242,6 +21370,7 @@
       const onSetup = onSetupEvent(editor, 'NodeChange', api => {
         const comp = api.getComponent();
         spec.updateText(comp);
+        Disabling.set(api.getComponent(), !editor.selection.isEditable());
       });
       return renderCommonDropdown({
         text: spec.icon.isSome() ? Optional.none() : spec.text,
@@ -21351,6 +21480,7 @@
       const menuItems = createMenuItems(editor, backstage, getSpec$4(editor));
       editor.ui.registry.addNestedMenuItem('align', {
         text: backstage.shared.providers.translate('Align'),
+        onSetup: onSetupEditableToggle(editor),
         getSubmenuItems: () => menuItems.items.validateItems(menuItems.getStyleItems())
       });
     };
@@ -21403,6 +21533,7 @@
       const menuItems = createMenuItems(editor, backstage, getSpec$3(editor));
       editor.ui.registry.addNestedMenuItem('blocks', {
         text: 'Blocks',
+        onSetup: onSetupEditableToggle(editor),
         getSubmenuItems: () => menuItems.items.validateItems(menuItems.getStyleItems())
       });
     };
@@ -21486,25 +21617,9 @@
       const menuItems = createMenuItems(editor, backstage, getSpec$2(editor));
       editor.ui.registry.addNestedMenuItem('fontfamily', {
         text: backstage.shared.providers.translate('Fonts'),
+        onSetup: onSetupEditableToggle(editor),
         getSubmenuItems: () => menuItems.items.validateItems(menuItems.getStyleItems())
       });
-    };
-
-    const Keys = {
-      tab: constant$1(9),
-      escape: constant$1(27),
-      enter: constant$1(13),
-      backspace: constant$1(8),
-      delete: constant$1(46),
-      left: constant$1(37),
-      up: constant$1(38),
-      right: constant$1(39),
-      down: constant$1(40),
-      space: constant$1(32),
-      home: constant$1(36),
-      end: constant$1(35),
-      pageUp: constant$1(33),
-      pageDown: constant$1(34)
     };
 
     const units = {
@@ -21571,6 +21686,23 @@
     };
     const normalise = (input, accepted) => parse(input, accepted).map(({value, unit}) => value + unit);
 
+    const Keys = {
+      tab: constant$1(9),
+      escape: constant$1(27),
+      enter: constant$1(13),
+      backspace: constant$1(8),
+      delete: constant$1(46),
+      left: constant$1(37),
+      up: constant$1(38),
+      right: constant$1(39),
+      down: constant$1(40),
+      space: constant$1(32),
+      home: constant$1(36),
+      end: constant$1(35),
+      pageUp: constant$1(33),
+      pageDown: constant$1(34)
+    };
+
     const createBespokeNumberInput = (editor, backstage, spec) => {
       let currentComp = Optional.none();
       const getValueFromCurrentComp = comp => comp.map(alloyComp => Representing.getValue(alloyComp)).getOr('');
@@ -21578,28 +21710,20 @@
         const comp = api.getComponent();
         currentComp = Optional.some(comp);
         spec.updateInputValue(comp);
+        Disabling.set(comp, !editor.selection.isEditable());
       });
       const getApi = comp => ({ getComponent: constant$1(comp) });
       const editorOffCell = Cell(noop);
       const customEvents = generate$6('custom-number-input-events');
-      const isValidValue = value => value >= 0;
       const changeValue = (f, fromInput, focusBack) => {
         const text = getValueFromCurrentComp(currentComp);
-        const parsedText = parse(text, [
-          'unsupportedLength',
-          'empty'
-        ]);
-        const value = parsedText.map(res => res.value).getOr(0);
-        const defaultUnit = getFontSizeInputDefaultUnit(editor);
-        const unit = parsedText.map(res => res.unit).filter(u => u !== '').getOr(defaultUnit);
-        const newValue = f(value, spec.getConfigFromUnit(unit).step);
-        const newValueWithUnit = `${ isValidValue(newValue) ? newValue : value }${ unit }`;
-        const lenghtDelta = `${ value }${ unit }`.length - `${ newValueWithUnit }`.length;
+        const newValue = spec.getNewValue(text, f);
+        const lenghtDelta = text.length - `${ newValue }`.length;
         const oldStart = currentComp.map(comp => comp.element.dom.selectionStart - lenghtDelta);
         const oldEnd = currentComp.map(comp => comp.element.dom.selectionEnd - lenghtDelta);
-        spec.onAction(newValueWithUnit, focusBack);
+        spec.onAction(newValue, focusBack);
         currentComp.each(comp => {
-          Representing.setValue(comp, newValueWithUnit);
+          Representing.setValue(comp, newValue);
           if (fromInput) {
             oldStart.each(oldStart => comp.element.dom.selectionStart = oldStart);
             oldEnd.each(oldEnd => comp.element.dom.selectionEnd = oldEnd);
@@ -21623,7 +21747,14 @@
       const makeStepperButton = (action, title, tooltip, classes) => {
         const translatedTooltip = backstage.shared.providers.translate(tooltip);
         const altExecuting = generate$6('altExecuting');
-        const onClick = () => action(true);
+        const onSetup = onSetupEvent(editor, 'NodeChange', api => {
+          Disabling.set(api.getComponent(), !editor.selection.isEditable());
+        });
+        const onClick = comp => {
+          if (!Disabling.isDisabled(comp)) {
+            action(true);
+          }
+        };
         return Button.sketch({
           dom: {
             tag: 'button',
@@ -21634,15 +21765,25 @@
             classes: classes.concat(title)
           },
           components: [renderIconFromPack$1(title, backstage.shared.providers.icons)],
-          buttonBehaviours: derive$1([config(altExecuting, [
-              run$1(keydown(), (_comp, se) => {
+          buttonBehaviours: derive$1([
+            Disabling.config({}),
+            config(altExecuting, [
+              onControlAttached({
+                onSetup,
+                getApi
+              }, editorOffCell),
+              onControlDetached({ getApi }, editorOffCell),
+              run$1(keydown(), (comp, se) => {
                 if (se.event.raw.keyCode === Keys.space() || se.event.raw.keyCode === Keys.enter()) {
-                  action(false);
+                  if (!Disabling.isDisabled(comp)) {
+                    action(false);
+                  }
                 }
               }),
               run$1(click(), onClick),
               run$1(touchend(), onClick)
-            ])]),
+            ])
+          ]),
           eventOrder: {
             [keydown()]: [
               altExecuting,
@@ -21671,6 +21812,7 @@
         },
         components: [Input.sketch({
             inputBehaviours: derive$1([
+              Disabling.config({}),
               config(customEvents, [
                 onControlAttached({
                   onSetup,
@@ -21859,12 +22001,32 @@
       };
       return (_a = configs[unit]) !== null && _a !== void 0 ? _a : baseConfig;
     };
+    const defaultValue = 16;
+    const isValidValue = value => value >= 0;
     const getNumberInputSpec = editor => {
-      const updateInputValue = comp => emitWith(comp, updateMenuText, { text: editor.queryCommandValue('FontSize') });
+      const getCurrentValue = () => editor.queryCommandValue('FontSize');
+      const updateInputValue = comp => emitWith(comp, updateMenuText, { text: getCurrentValue() });
       return {
         updateInputValue,
-        getConfigFromUnit,
-        onAction: (format, focusBack) => editor.execCommand('FontSize', false, format, { skip_focus: !focusBack })
+        onAction: (format, focusBack) => editor.execCommand('FontSize', false, format, { skip_focus: !focusBack }),
+        getNewValue: (text, updateFunction) => {
+          parse(text, [
+            'unsupportedLength',
+            'empty'
+          ]);
+          const parsedText = parse(text, [
+            'unsupportedLength',
+            'empty'
+          ]).or(parse(getCurrentValue(), [
+            'unsupportedLength',
+            'empty'
+          ]));
+          const value = parsedText.map(res => res.value).getOr(defaultValue);
+          const defaultUnit = getFontSizeInputDefaultUnit(editor);
+          const unit = parsedText.map(res => res.unit).filter(u => u !== '').getOr(defaultUnit);
+          const newValue = updateFunction(value, getConfigFromUnit(unit).step);
+          return `${ isValidValue(newValue) ? newValue : value }${ unit }`;
+        }
       };
     };
     const createFontSizeInputButton = (editor, backstage) => createBespokeNumberInput(editor, backstage, getNumberInputSpec(editor));
@@ -21872,6 +22034,7 @@
       const menuItems = createMenuItems(editor, backstage, getSpec$1(editor));
       editor.ui.registry.addNestedMenuItem('fontsize', {
         text: 'Font sizes',
+        onSetup: onSetupEditableToggle(editor),
         getSubmenuItems: () => menuItems.items.validateItems(menuItems.getStyleItems())
       });
     };
@@ -21933,6 +22096,7 @@
       const menuItems = createMenuItems(editor, backstage, getSpec(editor, dataset));
       editor.ui.registry.addNestedMenuItem('styles', {
         text: 'Formats',
+        onSetup: onSetupEditableToggle(editor),
         getSubmenuItems: () => menuItems.items.validateItems(menuItems.getStyleItems())
       });
     };
@@ -22294,7 +22458,7 @@
         isEnabled: () => !Disabling.isDisabled(comp),
         setEnabled: state => Disabling.set(comp, !state),
         setIconFill: (id, value) => {
-          descendant(comp.element, `svg path[id="${ id }"], rect[id="${ id }"]`).each(underlinePath => {
+          descendant(comp.element, `svg path[class="${ id }"], rect[class="${ id }"]`).each(underlinePath => {
             set$9(underlinePath, 'fill', value);
           });
         },
@@ -22427,7 +22591,7 @@
     const types = {
       button: renderFromBridge(createToolbarButton, (s, backstage) => renderToolbarButton(s, backstage.shared.providers)),
       togglebutton: renderFromBridge(createToggleButton, (s, backstage) => renderToolbarToggleButton(s, backstage.shared.providers)),
-      menubutton: renderFromBridge(createMenuButton, (s, backstage) => renderMenuButton(s, 'tox-tbtn', backstage, Optional.none())),
+      menubutton: renderFromBridge(createMenuButton, (s, backstage) => renderMenuButton(s, 'tox-tbtn', backstage, Optional.none(), false)),
       splitbutton: renderFromBridge(createSplitButton, (s, backstage) => renderSplitButton(s, backstage.shared)),
       grouptoolbarbutton: renderFromBridge(createGroupToolbarButton, (s, backstage, editor) => {
         const buttons = editor.ui.registry.getAll().buttons;
@@ -22631,6 +22795,7 @@
           if (isNull(OuterContainer.whichView(outerContainer))) {
             editor.focus();
             editor.nodeChanged();
+            OuterContainer.refreshToolbar(outerContainer);
           }
         }
       });
@@ -23790,12 +23955,13 @@
           tooltip: item.text,
           icon: item.icon,
           onAction: onActionExecCommand(editor, item.cmd),
-          onSetup: onSetupFormatToggle(editor, item.name)
+          onSetup: onSetupStateToggle(editor, item.name)
         });
       });
       editor.ui.registry.addButton('alignnone', {
         tooltip: 'No alignment',
         icon: 'align-none',
+        onSetup: onSetupEditableToggle(editor),
         onAction: onActionExecCommand(editor, 'JustifyNone')
       });
     };
@@ -23839,7 +24005,7 @@
         onSetup: spec.onMenuSetup
       });
     };
-    const lineHeightSpec = {
+    const lineHeightSpec = editor => ({
       name: 'lineheight',
       text: 'Line height',
       icon: 'line-height',
@@ -23852,8 +24018,10 @@
       display: identity,
       watcher: (editor, value, callback) => editor.formatter.formatChanged('lineheight', callback, false, { value }).unbind,
       getCurrent: editor => Optional.from(editor.queryCommandValue('LineHeight')),
-      setCurrent: (editor, value) => editor.execCommand('LineHeight', false, value)
-    };
+      setCurrent: (editor, value) => editor.execCommand('LineHeight', false, value),
+      onToolbarSetup: onSetupEditableToggle(editor),
+      onMenuSetup: onSetupEditableToggle(editor)
+    });
     const languageSpec = editor => {
       const settingsOpt = Optional.from(getContentLanguages(editor));
       return settingsOpt.map(settings => ({
@@ -23889,12 +24057,13 @@
           const unbinder = unbindable();
           api.setActive(editor.formatter.match('lang', {}, undefined, true));
           unbinder.set(editor.formatter.formatChanged('lang', api.setActive, true));
-          return unbinder.clear;
-        }
+          return composeUnbinders(unbinder.clear, onSetupEditableToggle(editor)(api));
+        },
+        onMenuSetup: onSetupEditableToggle(editor)
       }));
     };
     const register$7 = editor => {
-      registerController(editor, lineHeightSpec);
+      registerController(editor, lineHeightSpec(editor));
       languageSpec(editor).each(spec => registerController(editor, spec));
     };
 
@@ -23907,7 +24076,7 @@
     };
 
     const onSetupOutdentState = editor => onSetupEvent(editor, 'NodeChange', api => {
-      api.setEnabled(editor.queryCommandState('outdent'));
+      api.setEnabled(editor.queryCommandState('outdent') && editor.selection.isEditable());
     });
     const registerButtons$2 = editor => {
       editor.ui.registry.addButton('outdent', {
@@ -23919,6 +24088,7 @@
       editor.ui.registry.addButton('indent', {
         tooltip: 'Increase indent',
         icon: 'indent',
+        onSetup: onSetupEditableToggle(editor),
         onAction: onActionExecCommand(editor, 'indent')
       });
     };
@@ -23933,7 +24103,7 @@
         api.setActive(e.state);
       };
       editor.on('PastePlainTextToggle', pastePlainTextToggleHandler);
-      return () => editor.off('PastePlainTextToggle', pastePlainTextToggleHandler);
+      return composeUnbinders(() => editor.off('PastePlainTextToggle', pastePlainTextToggleHandler), onSetupEditableToggle(editor)(api));
     };
     const register$4 = editor => {
       const pasteAsText = Cell(getPasteAsText(editor));
@@ -23992,7 +24162,7 @@
         editor.ui.registry.addToggleButton(btn.name, {
           tooltip: btn.text,
           icon: btn.icon,
-          onSetup: onSetupFormatToggle(editor, btn.name),
+          onSetup: onSetupStateToggle(editor, btn.name),
           onAction: onActionToggleFormat(editor, btn.name)
         });
       });
@@ -24001,7 +24171,7 @@
         editor.ui.registry.addToggleButton(name, {
           text: name.toUpperCase(),
           tooltip: 'Heading ' + i,
-          onSetup: onSetupFormatToggle(editor, name),
+          onSetup: onSetupStateToggle(editor, name),
           onAction: onActionToggleFormat(editor, name)
         });
       }
@@ -24009,22 +24179,10 @@
     const registerCommandButtons = editor => {
       global$1.each([
         {
-          name: 'cut',
-          text: 'Cut',
-          action: 'Cut',
-          icon: 'cut'
-        },
-        {
           name: 'copy',
           text: 'Copy',
           action: 'Copy',
           icon: 'copy'
-        },
-        {
-          name: 'paste',
-          text: 'Paste',
-          action: 'Paste',
-          icon: 'paste'
         },
         {
           name: 'help',
@@ -24045,6 +24203,32 @@
           icon: 'new-document'
         },
         {
+          name: 'print',
+          text: 'Print',
+          action: 'mcePrint',
+          icon: 'print'
+        }
+      ], btn => {
+        editor.ui.registry.addButton(btn.name, {
+          tooltip: btn.text,
+          icon: btn.icon,
+          onAction: onActionExecCommand(editor, btn.action)
+        });
+      });
+      global$1.each([
+        {
+          name: 'cut',
+          text: 'Cut',
+          action: 'Cut',
+          icon: 'cut'
+        },
+        {
+          name: 'paste',
+          text: 'Paste',
+          action: 'Paste',
+          icon: 'paste'
+        },
+        {
           name: 'removeformat',
           text: 'Clear formatting',
           action: 'RemoveFormat',
@@ -24057,12 +24241,6 @@
           icon: 'remove'
         },
         {
-          name: 'print',
-          text: 'Print',
-          action: 'mcePrint',
-          icon: 'print'
-        },
-        {
           name: 'hr',
           text: 'Horizontal line',
           action: 'InsertHorizontalRule',
@@ -24072,6 +24250,7 @@
         editor.ui.registry.addButton(btn.name, {
           tooltip: btn.text,
           icon: btn.icon,
+          onSetup: onSetupEditableToggle(editor),
           onAction: onActionExecCommand(editor, btn.action)
         });
       });
@@ -24087,7 +24266,7 @@
           tooltip: btn.text,
           icon: btn.icon,
           onAction: onActionExecCommand(editor, btn.action),
-          onSetup: onSetupFormatToggle(editor, btn.name)
+          onSetup: onSetupStateToggle(editor, btn.name)
         });
       });
     };
@@ -24097,6 +24276,42 @@
       registerCommandToggleButtons(editor);
     };
     const registerMenuItems$2 = editor => {
+      global$1.each([
+        {
+          name: 'newdocument',
+          text: 'New document',
+          action: 'mceNewDocument',
+          icon: 'new-document'
+        },
+        {
+          name: 'copy',
+          text: 'Copy',
+          action: 'Copy',
+          icon: 'copy',
+          shortcut: 'Meta+C'
+        },
+        {
+          name: 'selectall',
+          text: 'Select all',
+          action: 'SelectAll',
+          icon: 'select-all',
+          shortcut: 'Meta+A'
+        },
+        {
+          name: 'print',
+          text: 'Print...',
+          action: 'mcePrint',
+          icon: 'print',
+          shortcut: 'Meta+P'
+        }
+      ], menuitem => {
+        editor.ui.registry.addMenuItem(menuitem.name, {
+          text: menuitem.text,
+          icon: menuitem.icon,
+          shortcut: menuitem.shortcut,
+          onAction: onActionExecCommand(editor, menuitem.action)
+        });
+      });
       global$1.each([
         {
           name: 'bold',
@@ -24144,12 +24359,6 @@
           icon: 'remove-formatting'
         },
         {
-          name: 'newdocument',
-          text: 'New document',
-          action: 'mceNewDocument',
-          icon: 'new-document'
-        },
-        {
           name: 'cut',
           text: 'Cut',
           action: 'Cut',
@@ -24157,32 +24366,11 @@
           shortcut: 'Meta+X'
         },
         {
-          name: 'copy',
-          text: 'Copy',
-          action: 'Copy',
-          icon: 'copy',
-          shortcut: 'Meta+C'
-        },
-        {
           name: 'paste',
           text: 'Paste',
           action: 'Paste',
           icon: 'paste',
           shortcut: 'Meta+V'
-        },
-        {
-          name: 'selectall',
-          text: 'Select all',
-          action: 'SelectAll',
-          icon: 'select-all',
-          shortcut: 'Meta+A'
-        },
-        {
-          name: 'print',
-          text: 'Print...',
-          action: 'mcePrint',
-          icon: 'print',
-          shortcut: 'Meta+P'
         },
         {
           name: 'hr',
@@ -24195,12 +24383,14 @@
           text: menuitem.text,
           icon: menuitem.icon,
           shortcut: menuitem.shortcut,
+          onSetup: onSetupEditableToggle(editor),
           onAction: onActionExecCommand(editor, menuitem.action)
         });
       });
       editor.ui.registry.addMenuItem('codeformat', {
         text: 'Code',
         icon: 'sourcecode',
+        onSetup: onSetupEditableToggle(editor),
         onAction: onActionToggleFormat(editor, 'code')
       });
     };
@@ -25456,10 +25646,14 @@
       if (resizeType === ResizeTypes.None) {
         return Optional.none();
       }
+      const resizeLabel = resizeType === ResizeTypes.Both ? 'Press the arrow keys to resize the editor.' : 'Press the Up and Down arrow keys to resize the editor.';
       return Optional.some(render$3('resize-handle', {
         tag: 'div',
         classes: ['tox-statusbar__resize-handle'],
-        attributes: { title: providersBackstage.translate('Resize') },
+        attributes: {
+          'title': providersBackstage.translate('Resize'),
+          'aria-label': providersBackstage.translate(resizeLabel)
+        },
         behaviours: [
           Dragging.config({
             mode: 'mouse',
@@ -25864,10 +26058,10 @@
         const parsedHeight = numToPx(getHeightWithFallback(editor));
         const parsedWidth = numToPx(getWidthWithFallback(editor));
         if (!editor.inline) {
-          if (isValidValue('div', 'width', parsedWidth)) {
+          if (isValidValue$1('div', 'width', parsedWidth)) {
             set$8(outerContainer.element, 'width', parsedWidth);
           }
-          if (isValidValue('div', 'height', parsedHeight)) {
+          if (isValidValue$1('div', 'height', parsedHeight)) {
             set$8(outerContainer.element, 'height', parsedHeight);
           } else {
             set$8(outerContainer.element, 'height', '400px');
@@ -25955,15 +26149,6 @@
         },
         renderUI
       };
-    };
-
-    const describedBy = (describedElement, describeElement) => {
-      const describeId = Optional.from(get$f(describedElement, 'id')).fold(() => {
-        const id = generate$6('dialog-describe');
-        set$9(describeElement, 'id', id);
-        return id;
-      }, identity);
-      set$9(describedElement, 'aria-describedby', describeId);
     };
 
     const labelledBy = (labelledElement, labelElement) => {
@@ -26118,7 +26303,6 @@
           Blocking.config({ getRoot: dialogComp.get }),
           config(modalEventsId, [runOnAttached(c => {
               labelledBy(c.element, getPartOrDie(c, detail, 'title').element);
-              describedBy(c.element, getPartOrDie(c, detail, 'body').element);
             })])
         ])
       };
@@ -26190,7 +26374,7 @@
       ...baseFooterButtonFields,
       requiredStringEnum('type', ['togglebutton']),
       requiredString('tooltip'),
-      icon,
+      optionalIcon,
       optionalText,
       defaultedBoolean('active', false)
     ];
@@ -26417,7 +26601,10 @@
     const treeFields = [
       type,
       requiredArrayOf('items', treeItemSchema),
-      optionFunction('onLeafAction')
+      optionFunction('onLeafAction'),
+      optionFunction('onToggleExpand'),
+      defaultedArrayOf('defaultExpandedIds', [], string),
+      optionString('defaultSelectedId')
     ];
     const treeSchema = objOf(treeFields);
 
@@ -28969,7 +29156,7 @@
       },
       buttonBehaviours: derive$1([Tabstopping.config({})]),
       components: [render$3('close', {
-          tag: 'div',
+          tag: 'span',
           classes: ['tox-icon']
         }, providersBackstage.icons)],
       action: comp => {
@@ -29471,8 +29658,7 @@
           ],
           attributes: {
             role: 'dialog',
-            ['aria-labelledby']: dialogLabelId,
-            ['aria-describedby']: dialogContentId
+            ['aria-labelledby']: dialogLabelId
           }
         },
         eventOrder: {

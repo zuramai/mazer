@@ -1,5 +1,4 @@
-import { Point } from './helpers.canvas.js';
-import type { ChartArea, FontSpec } from '../types/index.js';
+import type { ChartArea, FontSpec, Point } from '../types/index.js';
 import type { TRBL, TRBLCorners } from '../types/geometric.js';
 /**
  * @alias Chart.helpers.options
@@ -46,9 +45,6 @@ export declare function toTRBLCorners(value: number | TRBLCorners): Record<"topL
  * @since 2.7.0
  */
 export declare function toPadding(value?: number | TRBL): ChartArea;
-export interface CanvasFontSpec extends FontSpec {
-    string: string;
-}
 /**
  * Parses font options and returns the font object.
  * @param options - A object that contains font options to be parsed.

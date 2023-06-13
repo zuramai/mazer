@@ -7,19 +7,6 @@ declare namespace _default {
        */
     function addBox(chart: import("./core.controller.js").default, item: LayoutItem): void;
     /**
-       * Register a box to a chart.
-       * A box is simply a reference to an object that requires layout. eg. Scales, Legend, Title.
-       * @param {Chart} chart - the chart to use
-       * @param {LayoutItem} item - the item to add to be laid out
-       */
-    function addBox(chart: import("./core.controller.js").default, item: LayoutItem): void;
-    /**
-       * Remove a layoutItem from a chart
-       * @param {Chart} chart - the chart to remove the box from
-       * @param {LayoutItem} layoutItem - the item to remove from the layout
-       */
-    function removeBox(chart: import("./core.controller.js").default, layoutItem: LayoutItem): void;
-    /**
        * Remove a layoutItem from a chart
        * @param {Chart} chart - the chart to remove the box from
        * @param {LayoutItem} layoutItem - the item to remove from the layout
@@ -32,22 +19,6 @@ declare namespace _default {
        * @param {object} options - the new item options.
        */
     function configure(chart: import("./core.controller.js").default, item: LayoutItem, options: any): void;
-    /**
-       * Sets (or updates) options on the given `item`.
-       * @param {Chart} chart - the chart in which the item lives (or will be added to)
-       * @param {LayoutItem} item - the item to configure with the given options
-       * @param {object} options - the new item options.
-       */
-    function configure(chart: import("./core.controller.js").default, item: LayoutItem, options: any): void;
-    /**
-       * Fits boxes of the given chart into the given size by having each box measure itself
-       * then running a fitting algorithm
-       * @param {Chart} chart - the chart
-       * @param {number} width - the width to fit into
-       * @param {number} height - the height to fit into
-     * @param {number} minPadding - minimum padding required for each side of chart area
-       */
-    function update(chart: import("./core.controller.js").default, width: number, height: number, minPadding: number): void;
     /**
        * Fits boxes of the given chart into the given size by having each box measure itself
        * then running a fitting algorithm

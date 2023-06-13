@@ -132,7 +132,7 @@ export declare function _deprecated(scope: string, value: unknown, previous: str
  * @private
  */
 export declare function _splitKey(key: string): string[];
-export declare function resolveObjectKey(obj: AnyObject, key: string): AnyObject;
+export declare function resolveObjectKey(obj: AnyObject, key: string): any;
 /**
  * @private
  */

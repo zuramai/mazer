@@ -1,5 +1,5 @@
 /*!
- * Chart.js v4.2.1
+ * Chart.js v4.3.0
  * https://www.chartjs.org
  * (c) 2023 Chart.js Contributors
  * Released under the MIT License
@@ -1815,7 +1815,7 @@ class DoughnutController extends DatasetController {
     };
     static descriptors = {
         _scriptable: (name)=>name !== 'spacing',
-        _indexable: (name)=>name !== 'spacing'
+        _indexable: (name)=>name !== 'spacing' && !name.startsWith('borderDash') && !name.startsWith('hoverBorderDash')
     };
  static overrides = {
         aspectRatio: 1,
@@ -2549,8 +2549,8 @@ BarController: BarController,
 BubbleController: BubbleController,
 DoughnutController: DoughnutController,
 LineController: LineController,
-PolarAreaController: PolarAreaController,
 PieController: PieController,
+PolarAreaController: PolarAreaController,
 RadarController: RadarController,
 ScatterController: ScatterController
 });
@@ -2580,6 +2580,7 @@ ScatterController: ScatterController
    */ static override(members) {
         Object.assign(DateAdapterBase.prototype, members);
     }
+    options;
     constructor(options){
         this.options = options || {};
     }
@@ -3045,18 +3046,18 @@ function placeBoxes(boxes, chartArea, params, stacks) {
             stack.placed += width;
             y = box.bottom;
         } else {
-            const height1 = chartArea.h * weight;
-            const width1 = stack.size || box.width;
+            const height = chartArea.h * weight;
+            const width = stack.size || box.width;
             if (helpers_segment.defined(stack.start)) {
                 x = stack.start;
             }
             if (box.fullSize) {
-                setBoxDims(box, x, userPadding.top, width1, params.outerHeight - userPadding.bottom - userPadding.top);
+                setBoxDims(box, x, userPadding.top, width, params.outerHeight - userPadding.bottom - userPadding.top);
             } else {
-                setBoxDims(box, x, chartArea.top + stack.placed, width1, height1);
+                setBoxDims(box, x, chartArea.top + stack.placed, width, height);
             }
             stack.start = x;
-            stack.placed += height1;
+            stack.placed += height;
             x = box.right;
         }
     }
@@ -3457,7 +3458,11 @@ function _detectPlatform(canvas) {
 class Element {
     static defaults = {};
     static defaultRoutes = undefined;
+    x;
+    y;
     active = false;
+    options;
+    $animations;
     tooltipPosition(useFinalPosition) {
         const { x , y  } = this.getProps([
             'x',
@@ -3669,7 +3674,7 @@ function createTickContext(parent, index, tick) {
     });
 }
 function titleAlign(align, position, reverse) {
-    let ret = helpers_segment._toLeftRightCenter(align);
+     let ret = helpers_segment._toLeftRightCenter(align);
     if (reverse && position !== 'right' || !reverse && position === 'right') {
         ret = reverseAlign(ret);
     }
@@ -3696,9 +3701,9 @@ function titleArgs(scale, offset, position, align) {
         maxWidth = right - left;
     } else {
         if (helpers_segment.isObject(position)) {
-            const positionAxisID1 = Object.keys(position)[0];
-            const value1 = position[positionAxisID1];
-            titleX = scales[positionAxisID1].getPixelForValue(value1) - width + offset;
+            const positionAxisID = Object.keys(position)[0];
+            const value = position[positionAxisID];
+            titleX = scales[positionAxisID].getPixelForValue(value) - width + offset;
         } else if (position === 'center') {
             titleX = (chartArea.left + chartArea.right) / 2 - width + offset;
         } else {
@@ -4176,7 +4181,7 @@ class Scale extends Element {
                 height = lineHeight;
             } else if (helpers_segment.isArray(label)) {
                 for(j = 0, jlen = label.length; j < jlen; ++j){
-                    nestedLabel = label[j];
+                    nestedLabel =  label[j];
                     if (!helpers_segment.isNullOrUndef(nestedLabel) && !helpers_segment.isArray(nestedLabel)) {
                         width = helpers_segment._measureText(ctx, cache.data, cache.gc, width, nestedLabel);
                         height += lineHeight;
@@ -4321,9 +4326,9 @@ class Scale extends Element {
             if (position === 'center') {
                 borderValue = alignBorderValue((chartArea.left + chartArea.right) / 2);
             } else if (helpers_segment.isObject(position)) {
-                const positionAxisID1 = Object.keys(position)[0];
-                const value1 = position[positionAxisID1];
-                borderValue = alignBorderValue(this.chart.scales[positionAxisID1].getPixelForValue(value1));
+                const positionAxisID = Object.keys(position)[0];
+                const value = position[positionAxisID];
+                borderValue = alignBorderValue(this.chart.scales[positionAxisID].getPixelForValue(value));
             }
             tx1 = borderValue - axisHalfWidth;
             tx2 = tx1 - tl;
@@ -4402,9 +4407,9 @@ class Scale extends Element {
             textAlign = ret.textAlign;
             x = ret.x;
         } else if (position === 'right') {
-            const ret1 = this._getYAxisLabelAlignment(tl);
-            textAlign = ret1.textAlign;
-            x = ret1.x;
+            const ret = this._getYAxisLabelAlignment(tl);
+            textAlign = ret.textAlign;
+            x = ret.x;
         } else if (axis === 'x') {
             if (position === 'center') {
                 y = (chartArea.top + chartArea.bottom) / 2 + tickAndPadding;
@@ -4418,9 +4423,9 @@ class Scale extends Element {
             if (position === 'center') {
                 x = (chartArea.left + chartArea.right) / 2 - tickAndPadding;
             } else if (helpers_segment.isObject(position)) {
-                const positionAxisID1 = Object.keys(position)[0];
-                const value1 = position[positionAxisID1];
-                x = this.chart.scales[positionAxisID1].getPixelForValue(value1);
+                const positionAxisID = Object.keys(position)[0];
+                const value = position[positionAxisID];
+                x = this.chart.scales[positionAxisID].getPixelForValue(value);
             }
             textAlign = this._getYAxisLabelAlignment(tl).textAlign;
         }
@@ -5103,8 +5108,8 @@ class PluginService {
         plugins.push(registry.getPlugin(keys[i]));
     }
     const local = config.plugins || [];
-    for(let i1 = 0; i1 < local.length; i1++){
-        const plugin = local[i1];
+    for(let i = 0; i < local.length; i++){
+        const plugin = local[i];
         if (plugins.indexOf(plugin) === -1) {
             plugins.push(plugin);
             localIds[plugin.id] = true;
@@ -5175,6 +5180,11 @@ function getAxisFromDefaultScaleID(id, indexAxis) {
 function getDefaultScaleIDFromAxis(axis, indexAxis) {
     return axis === indexAxis ? '_index_' : '_value_';
 }
+function idMatchesAxis(id) {
+    if (id === 'x' || id === 'y' || id === 'r') {
+        return id;
+    }
+}
 function axisFromPosition(position) {
     if (position === 'top' || position === 'bottom') {
         return 'x';
@@ -5183,15 +5193,33 @@ function axisFromPosition(position) {
         return 'y';
     }
 }
-function determineAxis(id, scaleOptions) {
-    if (id === 'x' || id === 'y' || id === 'r') {
+function determineAxis(id, ...scaleOptions) {
+    if (idMatchesAxis(id)) {
         return id;
     }
-    id = scaleOptions.axis || axisFromPosition(scaleOptions.position) || id.length > 1 && determineAxis(id[0].toLowerCase(), scaleOptions);
-    if (id) {
-        return id;
+    for (const opts of scaleOptions){
+        const axis = opts.axis || axisFromPosition(opts.position) || id.length > 1 && idMatchesAxis(id[0].toLowerCase());
+        if (axis) {
+            return axis;
+        }
     }
-    throw new Error(`Cannot determine type of '${name}' axis. Please provide 'axis' or 'position' option.`);
+    throw new Error(`Cannot determine type of '${id}' axis. Please provide 'axis' or 'position' option.`);
+}
+function getAxisFromDataset(id, axis, dataset) {
+    if (dataset[axis + 'AxisID'] === id) {
+        return {
+            axis
+        };
+    }
+}
+function retrieveAxisFromDatasets(id, config) {
+    if (config.data && config.data.datasets) {
+        const boundDs = config.data.datasets.filter((d)=>d.xAxisID === id || d.yAxisID === id);
+        if (boundDs.length) {
+            return getAxisFromDataset(id, 'x', boundDs[0]) || getAxisFromDataset(id, 'y', boundDs[0]);
+        }
+    }
+    return {};
 }
 function mergeScaleConfig(config, options) {
     const chartDefaults = helpers_segment.overrides[config.type] || {
@@ -5208,7 +5236,7 @@ function mergeScaleConfig(config, options) {
         if (scaleConf._proxy) {
             return console.warn(`Ignoring resolver passed as options for scale: ${id}`);
         }
-        const axis = determineAxis(id, scaleConf);
+        const axis = determineAxis(id, scaleConf, retrieveAxisFromDatasets(id, config), helpers_segment.defaults.scales[scaleConf.type]);
         const defaultId = getDefaultScaleIDFromAxis(axis, chartIndexAxis);
         const defaultScaleOptions = chartDefaults.scales || {};
         scales[id] = helpers_segment.mergeIf(Object.create(null), [
@@ -5467,7 +5495,7 @@ function needContext(proxy, names) {
     return false;
 }
 
-var version = "4.2.1";
+var version = "4.3.0";
 
 const KNOWN_POSITIONS = [
     'top',
@@ -5950,9 +5978,9 @@ class Chart {
         for(let i = 0, ilen = this.data.datasets.length; i < ilen; ++i){
             this.getDatasetMeta(i).controller.configure();
         }
-        for(let i1 = 0, ilen1 = this.data.datasets.length; i1 < ilen1; ++i1){
-            this._updateDataset(i1, helpers_segment.isFunction(mode) ? mode({
-                datasetIndex: i1
+        for(let i = 0, ilen = this.data.datasets.length; i < ilen; ++i){
+            this._updateDataset(i, helpers_segment.isFunction(mode) ? mode({
+                datasetIndex: i
             }) : mode);
         }
         this.notifyPlugins('afterDatasetsUpdate', {
@@ -6493,8 +6521,8 @@ function toRadiusCorners(value) {
         ctx.lineTo(p4.x, p4.y);
         // The corner segment from point 4 to point 5
         if (innerEnd > 0) {
-            const pCenter1 = rThetaToXY(innerEndAdjustedRadius, innerEndAdjustedAngle, x, y);
-            ctx.arc(pCenter1.x, pCenter1.y, innerEnd, endAngle + helpers_segment.HALF_PI, innerEndAdjustedAngle + Math.PI);
+            const pCenter = rThetaToXY(innerEndAdjustedRadius, innerEndAdjustedAngle, x, y);
+            ctx.arc(pCenter.x, pCenter.y, innerEnd, endAngle + helpers_segment.HALF_PI, innerEndAdjustedAngle + Math.PI);
         }
         // The inner arc from point 5 to point b to point 6
         const innerMidAdjustedAngle = (endAngle - innerEnd / innerRadius + (startAngle + innerStart / innerRadius)) / 2;
@@ -6502,16 +6530,16 @@ function toRadiusCorners(value) {
         ctx.arc(x, y, innerRadius, innerMidAdjustedAngle, startAngle + innerStart / innerRadius, true);
         // The corner segment from point 6 to point 7
         if (innerStart > 0) {
-            const pCenter2 = rThetaToXY(innerStartAdjustedRadius, innerStartAdjustedAngle, x, y);
-            ctx.arc(pCenter2.x, pCenter2.y, innerStart, innerStartAdjustedAngle + Math.PI, startAngle - helpers_segment.HALF_PI);
+            const pCenter = rThetaToXY(innerStartAdjustedRadius, innerStartAdjustedAngle, x, y);
+            ctx.arc(pCenter.x, pCenter.y, innerStart, innerStartAdjustedAngle + Math.PI, startAngle - helpers_segment.HALF_PI);
         }
         // The line from point 7 to point 8
         const p8 = rThetaToXY(outerStartAdjustedRadius, startAngle, x, y);
         ctx.lineTo(p8.x, p8.y);
         // The corner segment from point 8 to point 1
         if (outerStart > 0) {
-            const pCenter3 = rThetaToXY(outerStartAdjustedRadius, outerStartAdjustedAngle, x, y);
-            ctx.arc(pCenter3.x, pCenter3.y, outerStart, startAngle - helpers_segment.HALF_PI, outerStartAdjustedAngle);
+            const pCenter = rThetaToXY(outerStartAdjustedRadius, outerStartAdjustedAngle, x, y);
+            ctx.arc(pCenter.x, pCenter.y, outerStart, startAngle - helpers_segment.HALF_PI, outerStartAdjustedAngle);
         }
     } else {
         ctx.moveTo(x, y);
@@ -6542,11 +6570,13 @@ function drawArc(ctx, element, offset, spacing, circular) {
 }
 function drawBorder(ctx, element, offset, spacing, circular) {
     const { fullCircles , startAngle , circumference , options  } = element;
-    const { borderWidth , borderJoinStyle  } = options;
+    const { borderWidth , borderJoinStyle , borderDash , borderDashOffset  } = options;
     const inner = options.borderAlign === 'inner';
     if (!borderWidth) {
         return;
     }
+    ctx.setLineDash(borderDash || []);
+    ctx.lineDashOffset = borderDashOffset;
     if (inner) {
         ctx.lineWidth = borderWidth * 2;
         ctx.lineJoin = borderJoinStyle || 'round';
@@ -6577,6 +6607,8 @@ class ArcElement extends Element {
     static defaults = {
         borderAlign: 'center',
         borderColor: '#fff',
+        borderDash: [],
+        borderDashOffset: 0,
         borderJoinStyle: undefined,
         borderRadius: 0,
         borderWidth: 2,
@@ -6588,6 +6620,17 @@ class ArcElement extends Element {
     static defaultRoutes = {
         backgroundColor: 'backgroundColor'
     };
+    static descriptors = {
+        _scriptable: true,
+        _indexable: (name)=>name !== 'borderDash'
+    };
+    circumference;
+    endAngle;
+    fullCircles;
+    innerRadius;
+    outerRadius;
+    pixelMargin;
+    startAngle;
     constructor(cfg){
         super();
         this.options = undefined;
@@ -6618,7 +6661,7 @@ class ArcElement extends Element {
             'outerRadius',
             'circumference'
         ], useFinalPosition);
-        const rAdjust = this.options.spacing / 2;
+        const rAdjust = (this.options.spacing + this.options.borderWidth) / 2;
         const _circumference = helpers_segment.valueOrDefault(circumference, endAngle - startAngle);
         const betweenAngles = _circumference >= helpers_segment.TAU || helpers_segment._angleBetween(angle, startAngle, endAngle);
         const withinRadius = helpers_segment._isBetween(distance, innerRadius + rAdjust, outerRadius + rAdjust);
@@ -6678,7 +6721,7 @@ function setStyle(ctx, options, style = options) {
 function lineTo(ctx, previous, target) {
     ctx.lineTo(target.x, target.y);
 }
-function getLineMethod(options) {
+ function getLineMethod(options) {
     if (options.stepped) {
         return helpers_segment._steppedLineTo;
     }
@@ -6962,6 +7005,9 @@ function inRange$1(el, pos, axis, useFinalPosition) {
 }
 class PointElement extends Element {
     static id = 'point';
+    parsed;
+    skip;
+    stop;
     /**
    * @type {any}
    */ static defaults = {
@@ -7223,9 +7269,9 @@ class BarElement extends Element {
 var elements = /*#__PURE__*/Object.freeze({
 __proto__: null,
 ArcElement: ArcElement,
+BarElement: BarElement,
 LineElement: LineElement,
-PointElement: PointElement,
-BarElement: BarElement
+PointElement: PointElement
 });
 
 const BORDER_COLORS = [
@@ -8277,15 +8323,15 @@ class Legend extends Element {
         } else {
             let col = 0;
             let top = helpers_segment._alignStartEnd(align, this.top + titleHeight + padding, this.bottom - this.columnSizes[col].height);
-            for (const hitbox1 of hitboxes){
-                if (hitbox1.col !== col) {
-                    col = hitbox1.col;
+            for (const hitbox of hitboxes){
+                if (hitbox.col !== col) {
+                    col = hitbox.col;
                     top = helpers_segment._alignStartEnd(align, this.top + titleHeight + padding, this.bottom - this.columnSizes[col].height);
                 }
-                hitbox1.top = top;
-                hitbox1.left += this.left + padding;
-                hitbox1.left = rtlHelper.leftForLtr(rtlHelper.x(hitbox1.left), hitbox1.width);
-                top += hitbox1.height + padding;
+                hitbox.top = top;
+                hitbox.left += this.left + padding;
+                hitbox.left = rtlHelper.leftForLtr(rtlHelper.x(hitbox.left), hitbox.width);
+                top += hitbox.height + padding;
             }
         }
     }
@@ -9384,9 +9430,9 @@ class Tooltip extends Element {
         }
     }
  _drawColorBox(ctx, pt, i, rtlHelper, options) {
-        const labelColors = this.labelColors[i];
+        const labelColor = this.labelColors[i];
         const labelPointStyle = this.labelPointStyles[i];
-        const { boxHeight , boxWidth , boxPadding  } = options;
+        const { boxHeight , boxWidth  } = options;
         const bodyFont = helpers_segment.toFont(options.bodyFont);
         const colorX = getAlignedX(this, 'left', options);
         const rtlColorX = rtlHelper.x(colorX);
@@ -9404,17 +9450,17 @@ class Tooltip extends Element {
             ctx.strokeStyle = options.multiKeyBackground;
             ctx.fillStyle = options.multiKeyBackground;
             helpers_segment.drawPoint(ctx, drawOptions, centerX, centerY);
-            ctx.strokeStyle = labelColors.borderColor;
-            ctx.fillStyle = labelColors.backgroundColor;
+            ctx.strokeStyle = labelColor.borderColor;
+            ctx.fillStyle = labelColor.backgroundColor;
             helpers_segment.drawPoint(ctx, drawOptions, centerX, centerY);
         } else {
-            ctx.lineWidth = helpers_segment.isObject(labelColors.borderWidth) ? Math.max(...Object.values(labelColors.borderWidth)) : labelColors.borderWidth || 1;
-            ctx.strokeStyle = labelColors.borderColor;
-            ctx.setLineDash(labelColors.borderDash || []);
-            ctx.lineDashOffset = labelColors.borderDashOffset || 0;
-            const outerX = rtlHelper.leftForLtr(rtlColorX, boxWidth - boxPadding);
-            const innerX = rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - boxPadding - 2);
-            const borderRadius = helpers_segment.toTRBLCorners(labelColors.borderRadius);
+            ctx.lineWidth = helpers_segment.isObject(labelColor.borderWidth) ? Math.max(...Object.values(labelColor.borderWidth)) : labelColor.borderWidth || 1;
+            ctx.strokeStyle = labelColor.borderColor;
+            ctx.setLineDash(labelColor.borderDash || []);
+            ctx.lineDashOffset = labelColor.borderDashOffset || 0;
+            const outerX = rtlHelper.leftForLtr(rtlColorX, boxWidth);
+            const innerX = rtlHelper.leftForLtr(rtlHelper.xPlus(rtlColorX, 1), boxWidth - 2);
+            const borderRadius = helpers_segment.toTRBLCorners(labelColor.borderRadius);
             if (Object.values(borderRadius).some((v)=>v !== 0)) {
                 ctx.beginPath();
                 ctx.fillStyle = options.multiKeyBackground;
@@ -9427,7 +9473,7 @@ class Tooltip extends Element {
                 });
                 ctx.fill();
                 ctx.stroke();
-                ctx.fillStyle = labelColors.backgroundColor;
+                ctx.fillStyle = labelColor.backgroundColor;
                 ctx.beginPath();
                 helpers_segment.addRoundedRectPath(ctx, {
                     x: innerX,
@@ -9441,7 +9487,7 @@ class Tooltip extends Element {
                 ctx.fillStyle = options.multiKeyBackground;
                 ctx.fillRect(outerX, colorY, boxWidth, boxHeight);
                 ctx.strokeRect(outerX, colorY, boxWidth, boxHeight);
-                ctx.fillStyle = labelColors.backgroundColor;
+                ctx.fillStyle = labelColor.backgroundColor;
                 ctx.fillRect(innerX, colorY + 1, boxWidth - 2, boxHeight - 2);
             }
         }
@@ -10006,8 +10052,12 @@ function generateTicks$1(generationOptions, dataRange) {
         }
     }
     for(; j < numSpaces; ++j){
+        const tickValue = Math.round((niceMin + j * spacing) * factor) / factor;
+        if (maxDefined && tickValue > max) {
+            break;
+        }
         ticks.push({
-            value: Math.round((niceMin + j * spacing) * factor) / factor
+            value: tickValue
         });
     }
     if (maxDefined && includeBounds && niceMax !== max) {
@@ -10429,29 +10479,66 @@ function updateLimits(limits, orig, angle, hLimits, vLimits) {
         limits.b = Math.max(limits.b, orig.b + y);
     }
 }
+function createPointLabelItem(scale, index, itemOpts) {
+    const outerDistance = scale.drawingArea;
+    const { extra , additionalAngle , padding , size  } = itemOpts;
+    const pointLabelPosition = scale.getPointPosition(index, outerDistance + extra + padding, additionalAngle);
+    const angle = Math.round(helpers_segment.toDegrees(helpers_segment._normalizeAngle(pointLabelPosition.angle + helpers_segment.HALF_PI)));
+    const y = yForAngle(pointLabelPosition.y, size.h, angle);
+    const textAlign = getTextAlignForAngle(angle);
+    const left = leftForTextAlign(pointLabelPosition.x, size.w, textAlign);
+    return {
+        visible: true,
+        x: pointLabelPosition.x,
+        y,
+        textAlign,
+        left,
+        top: y,
+        right: left + size.w,
+        bottom: y + size.h
+    };
+}
+function isNotOverlapped(item, area) {
+    if (!area) {
+        return true;
+    }
+    const { left , top , right , bottom  } = item;
+    const apexesInArea = helpers_segment._isPointInArea({
+        x: left,
+        y: top
+    }, area) || helpers_segment._isPointInArea({
+        x: left,
+        y: bottom
+    }, area) || helpers_segment._isPointInArea({
+        x: right,
+        y: top
+    }, area) || helpers_segment._isPointInArea({
+        x: right,
+        y: bottom
+    }, area);
+    return !apexesInArea;
+}
 function buildPointLabelItems(scale, labelSizes, padding) {
     const items = [];
     const valueCount = scale._pointLabels.length;
     const opts = scale.options;
-    const extra = getTickBackdropHeight(opts) / 2;
-    const outerDistance = scale.drawingArea;
-    const additionalAngle = opts.pointLabels.centerPointLabels ? helpers_segment.PI / valueCount : 0;
+    const { centerPointLabels , display  } = opts.pointLabels;
+    const itemOpts = {
+        extra: getTickBackdropHeight(opts) / 2,
+        additionalAngle: centerPointLabels ? helpers_segment.PI / valueCount : 0
+    };
+    let area;
     for(let i = 0; i < valueCount; i++){
-        const pointLabelPosition = scale.getPointPosition(i, outerDistance + extra + padding[i], additionalAngle);
-        const angle = Math.round(helpers_segment.toDegrees(helpers_segment._normalizeAngle(pointLabelPosition.angle + helpers_segment.HALF_PI)));
-        const size = labelSizes[i];
-        const y = yForAngle(pointLabelPosition.y, size.h, angle);
-        const textAlign = getTextAlignForAngle(angle);
-        const left = leftForTextAlign(pointLabelPosition.x, size.w, textAlign);
-        items.push({
-            x: pointLabelPosition.x,
-            y,
-            textAlign,
-            left,
-            top: y,
-            right: left + size.w,
-            bottom: y + size.h
-        });
+        itemOpts.padding = padding[i];
+        itemOpts.size = labelSizes[i];
+        const item = createPointLabelItem(scale, i, itemOpts);
+        items.push(item);
+        if (display === 'auto') {
+            item.visible = isNotOverlapped(item, area);
+            if (item.visible) {
+                area = item;
+            }
+        }
     }
     return items;
 }
@@ -10479,35 +10566,43 @@ function yForAngle(y, h, angle) {
     }
     return y;
 }
+function drawPointLabelBox(ctx, opts, item) {
+    const { left , top , right , bottom  } = item;
+    const { backdropColor  } = opts;
+    if (!helpers_segment.isNullOrUndef(backdropColor)) {
+        const borderRadius = helpers_segment.toTRBLCorners(opts.borderRadius);
+        const padding = helpers_segment.toPadding(opts.backdropPadding);
+        ctx.fillStyle = backdropColor;
+        const backdropLeft = left - padding.left;
+        const backdropTop = top - padding.top;
+        const backdropWidth = right - left + padding.width;
+        const backdropHeight = bottom - top + padding.height;
+        if (Object.values(borderRadius).some((v)=>v !== 0)) {
+            ctx.beginPath();
+            helpers_segment.addRoundedRectPath(ctx, {
+                x: backdropLeft,
+                y: backdropTop,
+                w: backdropWidth,
+                h: backdropHeight,
+                radius: borderRadius
+            });
+            ctx.fill();
+        } else {
+            ctx.fillRect(backdropLeft, backdropTop, backdropWidth, backdropHeight);
+        }
+    }
+}
 function drawPointLabels(scale, labelCount) {
     const { ctx , options: { pointLabels  }  } = scale;
     for(let i = labelCount - 1; i >= 0; i--){
-        const optsAtIndex = pointLabels.setContext(scale.getPointLabelContext(i));
-        const plFont = helpers_segment.toFont(optsAtIndex.font);
-        const { x , y , textAlign , left , top , right , bottom  } = scale._pointLabelItems[i];
-        const { backdropColor  } = optsAtIndex;
-        if (!helpers_segment.isNullOrUndef(backdropColor)) {
-            const borderRadius = helpers_segment.toTRBLCorners(optsAtIndex.borderRadius);
-            const padding = helpers_segment.toPadding(optsAtIndex.backdropPadding);
-            ctx.fillStyle = backdropColor;
-            const backdropLeft = left - padding.left;
-            const backdropTop = top - padding.top;
-            const backdropWidth = right - left + padding.width;
-            const backdropHeight = bottom - top + padding.height;
-            if (Object.values(borderRadius).some((v)=>v !== 0)) {
-                ctx.beginPath();
-                helpers_segment.addRoundedRectPath(ctx, {
-                    x: backdropLeft,
-                    y: backdropTop,
-                    w: backdropWidth,
-                    h: backdropHeight,
-                    radius: borderRadius
-                });
-                ctx.fill();
-            } else {
-                ctx.fillRect(backdropLeft, backdropTop, backdropWidth, backdropHeight);
-            }
+        const item = scale._pointLabelItems[i];
+        if (!item.visible) {
+            continue;
         }
+        const optsAtIndex = pointLabels.setContext(scale.getPointLabelContext(i));
+        drawPointLabelBox(ctx, optsAtIndex, item);
+        const plFont = helpers_segment.toFont(optsAtIndex.font);
+        const { x , y , textAlign  } = item;
         helpers_segment.renderText(ctx, scale._pointLabels[i], x, y + plFont.lineHeight / 2, plFont, {
             color: optsAtIndex.color,
             textAlign: textAlign,

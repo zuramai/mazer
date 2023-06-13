@@ -20,7 +20,7 @@
   <br>
 </p>
 
-[![Bootstrap Icons preview](https://github.com/twbs/icons/blob/main/.github/preview.png)](https://icons.getbootstrap.com)
+[![Bootstrap Icons preview](https://github.com/twbs/icons/blob/main/.github/preview.png)](https://icons.getbootstrap.com/)
 
 ## Install
 
@@ -36,7 +36,7 @@ For those [using Packagist](https://packagist.org/packages/twbs/bootstrap-icons)
 composer require twbs/bootstrap-icons
 ```
 
-[Also available in Figma.](https://www.figma.com/community/file/1042482994486402696/Bootstrap-Icons)
+[Also available in Figma](https://www.figma.com/community/file/1042482994486402696/Bootstrap-Icons).
 
 ## Usage
 
@@ -47,11 +47,12 @@ Depending on your setup, you can include Bootstrap Icons in a handful of ways.
 - Use the SVG sprite
 - Include via CSS
 
-[See the docs for more information.](https://icons.getbootstrap.com/#usage)
+[See the docs for more information](https://icons.getbootstrap.com/#usage).
 
 ## Development
 
-[![Build Status](https://github.com/twbs/icons/workflows/Tests/badge.svg)](https://github.com/twbs/icons/actions?workflow=Tests)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/twbs/icons/test.yml?branch=main&label=Tests&logo=github)](https://github.com/twbs/icons/actions/workflows/test.yml?query=workflow%3ATests+branch%3Amain)
+[![npm version](https://img.shields.io/npm/v/bootstrap-icons?logo=npm&logoColor=fff)](https://www.npmjs.com/package/bootstrap-icons)
 
 Clone the repo, install dependencies, and start the Hugo server locally.
 
@@ -66,23 +67,25 @@ Then open `http://localhost:4000` in your browser.
 
 ### npm scripts
 
-Here are some key scripts you'll use during development. Be sure to look to our `package.json` for a complete list of scripts.
+Here are some key scripts you'll use during development. Be sure to look to our `package.json` or `npm run` output for a complete list of scripts.
 
-| Script | Description |
-| --- | --- |
-| `start` | Alias for running `docs-serve` |
-| `docs-serve` | Starts a local Hugo server |
-| `pages` | Generates permalink pages for each icon with template Markdown |
-| `icons` | Processes and optimizes SVGs in `icons` directory |
+| Script       | Description                                                                   |
+|--------------|-------------------------------------------------------------------------------|
+| `start`      | Alias for running `docs-serve`                                                |
+| `docs-serve` | Starts a local Hugo server                                                    |
+| `pages`      | Generates permalink pages for each icon with template Markdown                |
+| `icons`      | Processes and optimizes SVGs in `icons` directory, generates fonts and sprite |
 
 ## Adding SVGs
 
 Icons are typically only added by @mdo, but exceptions can be made. New glyphs are designed in Figma first on a 16x16px grid, then exported as flattened SVGs with `fill` (no stroke). Once a new SVG icon has been added to the `icons` directory, we use an npm script to:
 
 1. Optimize our SVGs with SVGO.
-2. Modify the SVGs source HTML, removing all attributes before setting new attributes and values in our preferred order.
+2. Modify the SVGs source code, removing all attributes before setting new attributes and values in our preferred order.
 
 Use `npm run icons` to run the script, run `npm run pages` to build permalink pages, complete those pages, and, finally, commit the results in a new branch for updating.
+
+**Warning**: Please exclude any auto-generated files, like `font/**` and `bootstrap-icons.svg` from your branch because they cause conflicts, and we generally update the dist files before a release.
 
 ## Publishing
 

@@ -70,14 +70,9 @@ declare namespace _default {
     export const id: string;
     export { Legend as _element };
     export function start(chart: any, _args: any, options: any): void;
-    export function start(chart: any, _args: any, options: any): void;
-    export function stop(chart: any): void;
     export function stop(chart: any): void;
     export function beforeUpdate(chart: any, _args: any, options: any): void;
-    export function beforeUpdate(chart: any, _args: any, options: any): void;
     export function afterUpdate(chart: any): void;
-    export function afterUpdate(chart: any): void;
-    export function afterEvent(chart: any, args: any): void;
     export function afterEvent(chart: any, args: any): void;
     export namespace defaults {
         const display: boolean;
@@ -87,14 +82,12 @@ declare namespace _default {
         const reverse: boolean;
         const weight: number;
         function onClick(e: any, legendItem: any, legend: any): void;
-        function onClick(e: any, legendItem: any, legend: any): void;
         const onHover: any;
         const onLeave: any;
         namespace labels {
             function color(ctx: any): any;
             const boxWidth: number;
             const padding: number;
-            function generateLabels(chart: any): any;
             function generateLabels(chart: any): any;
         }
         namespace title {

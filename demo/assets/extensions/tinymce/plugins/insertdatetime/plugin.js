@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.4.1 (2023-03-29)
+ * TinyMCE version 6.5.0 (2023-06-12)
  */
 
 (function () {
@@ -124,6 +124,16 @@
 
     var global = tinymce.util.Tools.resolve('tinymce.util.Tools');
 
+    const onSetupEditable = editor => api => {
+      const nodeChanged = () => {
+        api.setEnabled(editor.selection.isEditable());
+      };
+      editor.on('NodeChange', nodeChanged);
+      nodeChanged();
+      return () => {
+        editor.off('NodeChange', nodeChanged);
+      };
+    };
     const register = editor => {
       const formats = getFormats(editor);
       const defaultFormat = Cell(getDefaultDateTime(editor));
@@ -145,7 +155,8 @@
         onItemAction: (_api, value) => {
           defaultFormat.set(value);
           insertDateTime(value);
-        }
+        },
+        onSetup: onSetupEditable(editor)
       });
       const makeMenuItemHandler = format => () => {
         defaultFormat.set(format);
@@ -158,7 +169,8 @@
           type: 'menuitem',
           text: getDateTime(editor, format),
           onAction: makeMenuItemHandler(format)
-        }))
+        })),
+        onSetup: onSetupEditable(editor)
       });
     };
 

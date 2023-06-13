@@ -247,6 +247,10 @@ var Duration = /*#__PURE__*/function () {
     return $d().add(this.$ms, 'ms').locale(this.$l).fromNow(!withSuffix);
   };
 
+  _proto.valueOf = function valueOf() {
+    return this.asMilliseconds();
+  };
+
   _proto.milliseconds = function milliseconds() {
     return this.get('milliseconds');
   };

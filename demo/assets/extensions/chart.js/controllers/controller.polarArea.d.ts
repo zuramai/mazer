@@ -11,7 +11,9 @@ export default class PolarAreaController extends DatasetController {
         label: any;
         value: string;
     };
-    parseObjectData(meta: any, data: any, start: any, count: any): any[];
+    parseObjectData(meta: any, data: any, start: any, count: any): {
+        r: unknown;
+    }[];
     update(mode: any): void;
     /**
      * @protected

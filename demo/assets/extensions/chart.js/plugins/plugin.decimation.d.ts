@@ -6,6 +6,5 @@ declare namespace _default {
     }
     function beforeElementsUpdate(chart: any, args: any, options: any): void;
     function destroy(chart: any): void;
-    function destroy(chart: any): void;
 }
 export default _default;

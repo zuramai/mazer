@@ -47,7 +47,7 @@ export default class Scale extends Element<import("../types/basic.js").AnyObject
     min: any;
     max: any;
     _range: {
-        min: number; /** @type {object[]|null} */
+        min: number;
         max: number;
     };
     /** @type {Tick[]} */
@@ -127,7 +127,7 @@ export default class Scale extends Element<import("../types/basic.js").AnyObject
     /**
      * @return {import('../types.js').LabelItem[]}
      */
-    getLabelItems(chartArea?: any): import('../types.js').LabelItem[];
+    getLabelItems(chartArea?: import("../types.js").ChartArea): import('../types.js').LabelItem[];
     beforeLayout(): void;
     beforeUpdate(): void;
     /**
@@ -333,7 +333,7 @@ export default class Scale extends Element<import("../types/basic.js").AnyObject
      */
     protected _maxDigits(): number;
 }
-export type Chart = import('./core.controller.js').default;
+export type Chart = import('../types/index.js').Chart;
 export type Tick = {
     value: number | string;
     label?: string;

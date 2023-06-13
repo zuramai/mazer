@@ -336,21 +336,41 @@ button::-moz-focus-inner {
   box-shadow: none;
   color: #fff;
 }
-.tox .tox-button.tox-button--enabled,
-.tox .tox-button.tox-button--enabled:hover {
-  background: #a6ccf7;
-  border-width: 1px;
+.tox .tox-button.tox-button--enabled {
+  background-color: #0054b4;
+  background-image: none;
+  border-color: #0054b4;
   box-shadow: none;
-  color: #222f3e;
+  color: #fff;
 }
-.tox .tox-button.tox-button--enabled > *,
-.tox .tox-button.tox-button--enabled:hover > * {
-  transform: none;
+.tox .tox-button.tox-button--enabled[disabled] {
+  background-color: #0054b4;
+  background-image: none;
+  border-color: #0054b4;
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
 }
-.tox .tox-button.tox-button--enabled svg,
-.tox .tox-button.tox-button--enabled:hover svg {
-  /* stylelint-disable-line no-descending-specificity */
-  fill: #222f3e;
+.tox .tox-button.tox-button--enabled:focus:not(:disabled) {
+  background-color: #00489b;
+  background-image: none;
+  border-color: #00489b;
+  box-shadow: none;
+  color: #fff;
+}
+.tox .tox-button.tox-button--enabled:hover:not(:disabled) {
+  background-color: #00489b;
+  background-image: none;
+  border-color: #00489b;
+  box-shadow: none;
+  color: #fff;
+}
+.tox .tox-button.tox-button--enabled:active:not(:disabled) {
+  background-color: #003c81;
+  background-image: none;
+  border-color: #003c81;
+  box-shadow: none;
+  color: #fff;
 }
 .tox .tox-button--icon-and-text,
 .tox .tox-button.tox-button--icon-and-text,
@@ -409,6 +429,41 @@ button::-moz-focus-inner {
   background-color: #d6d6d6;
   background-image: none;
   border-color: #d6d6d6;
+  box-shadow: none;
+  color: #222f3e;
+}
+.tox .tox-button--secondary.tox-button--enabled {
+  background-color: #a8c8ed;
+  background-image: none;
+  border-color: #a8c8ed;
+  box-shadow: none;
+  color: #222f3e;
+}
+.tox .tox-button--secondary.tox-button--enabled[disabled] {
+  background-color: #a8c8ed;
+  background-image: none;
+  border-color: #a8c8ed;
+  box-shadow: none;
+  color: rgba(34, 47, 62, 0.5);
+}
+.tox .tox-button--secondary.tox-button--enabled:focus:not(:disabled) {
+  background-color: #93bbe9;
+  background-image: none;
+  border-color: #93bbe9;
+  box-shadow: none;
+  color: #222f3e;
+}
+.tox .tox-button--secondary.tox-button--enabled:hover:not(:disabled) {
+  background-color: #93bbe9;
+  background-image: none;
+  border-color: #93bbe9;
+  box-shadow: none;
+  color: #222f3e;
+}
+.tox .tox-button--secondary.tox-button--enabled:active:not(:disabled) {
+  background-color: #7daee4;
+  background-image: none;
+  border-color: #7daee4;
   box-shadow: none;
   color: #222f3e;
 }
@@ -1325,7 +1380,13 @@ button::-moz-focus-inner {
   align-items: flex-start;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   padding: 16px 16px;
+}
+@media only screen and (min-width: 768px ) {
+  .tox .tox-dialog__body-nav {
+    max-width: 11em;
+  }
 }
 @media only screen and (max-width: 767px ) {
   body:not(.tox-force-desktop) .tox .tox-dialog__body-nav {
@@ -1339,11 +1400,12 @@ button::-moz-focus-inner {
   border-bottom: 2px solid transparent;
   color: rgba(34, 47, 62, 0.7);
   display: inline-block;
+  flex-shrink: 0;
   font-size: 14px;
   line-height: 1.3;
   margin-bottom: 8px;
+  max-width: 13em;
   text-decoration: none;
-  white-space: nowrap;
 }
 .tox .tox-dialog__body-nav-item:focus {
   background-color: rgba(0, 108, 231, 0.1);
@@ -1357,7 +1419,7 @@ button::-moz-focus-inner {
   display: flex;
   flex: 1;
   flex-direction: column;
-  max-height: 650px;
+  max-height: min(650px, calc(100vh - 110px));
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   padding: 16px 16px;
@@ -1393,13 +1455,30 @@ button::-moz-focus-inner {
 .tox .tox-dialog__body-content svg {
   fill: #222f3e;
 }
+.tox .tox-dialog__body-content strong {
+  font-weight: bold;
+}
 .tox .tox-dialog__body-content ul {
-  display: block;
   list-style-type: disc;
+}
+.tox .tox-dialog__body-content ul,
+.tox .tox-dialog__body-content ol,
+.tox .tox-dialog__body-content dd {
+  padding-inline-start: 2.5rem;
+}
+.tox .tox-dialog__body-content ul,
+.tox .tox-dialog__body-content ol,
+.tox .tox-dialog__body-content dl {
   margin-bottom: 16px;
+}
+.tox .tox-dialog__body-content ul,
+.tox .tox-dialog__body-content ol,
+.tox .tox-dialog__body-content dl,
+.tox .tox-dialog__body-content dd,
+.tox .tox-dialog__body-content dt {
+  display: block;
   margin-inline-end: 0;
   margin-inline-start: 0;
-  padding-inline-start: 2.5rem;
 }
 .tox .tox-dialog__body-content .tox-form__group h1 {
   color: #222f3e;
@@ -2891,6 +2970,9 @@ body.tox-dialog__disable-scroll {
 .tox .tox-tbtn:active svg {
   fill: #222f3e;
 }
+.tox .tox-tbtn--disabled .tox-tbtn--enabled svg {
+  fill: rgba(34, 47, 62, 0.5);
+}
 .tox .tox-tbtn--disabled,
 .tox .tox-tbtn--disabled:hover,
 .tox .tox-tbtn:disabled,
@@ -2923,6 +3005,10 @@ body.tox-dialog__disable-scroll {
 .tox .tox-tbtn--enabled:hover svg {
   /* stylelint-disable-line no-descending-specificity */
   fill: #222f3e;
+}
+.tox .tox-tbtn--enabled.tox-tbtn--disabled svg,
+.tox .tox-tbtn--enabled:hover.tox-tbtn--disabled svg {
+  fill: rgba(34, 47, 62, 0.5);
 }
 .tox .tox-tbtn:focus:not(.tox-tbtn--disabled) {
   color: #222f3e;
@@ -2991,6 +3077,13 @@ body.tox-dialog__disable-scroll {
   background: #fff;
   color: #222f3e;
 }
+.tox .tox-number-input input:disabled {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: rgba(34, 47, 62, 0.5);
+  cursor: not-allowed;
+}
 .tox .tox-number-input button {
   background: #f7f7f7;
   color: #222f3e;
@@ -3024,6 +3117,16 @@ body.tox-dialog__disable-scroll {
 }
 .tox .tox-number-input button:active svg {
   fill: #222f3e;
+}
+.tox .tox-number-input button:disabled {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: rgba(34, 47, 62, 0.5);
+  cursor: not-allowed;
+}
+.tox .tox-number-input button:disabled svg {
+  fill: rgba(34, 47, 62, 0.5);
 }
 .tox .tox-number-input button.minus {
   border-radius: 3px 0 0 3px;
@@ -3070,6 +3173,10 @@ body.tox-dialog__disable-scroll {
   white-space: nowrap;
   width: 7em;
 }
+.tox .tox-tbtn--disabled .tox-tbtn__select-label,
+.tox .tox-tbtn--select:disabled .tox-tbtn__select-label {
+  cursor: not-allowed;
+}
 .tox .tox-split-button {
   border: 0;
   border-radius: 3px;
@@ -3114,6 +3221,10 @@ body.tox-dialog__disable-scroll {
 }
 .tox.tox-platform-touch .tox-split-button__chevron {
   width: 20px;
+}
+.tox .tox-split-button.tox-tbtn--disabled svg #tox-icon-text-color__color,
+.tox .tox-split-button.tox-tbtn--disabled svg #tox-icon-highlight-bg-color__color {
+  opacity: 0.6;
 }
 .tox .tox-toolbar-overlord {
   background-color: #fff;
@@ -3301,6 +3412,7 @@ body.tox-dialog__disable-scroll {
   text-transform: none;
 }
 .tox .tox-tree .tox-trbtn .tox-tree__label {
+  cursor: default;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -3396,9 +3508,6 @@ body.tox-dialog__disable-scroll {
   flex-direction: column;
   /* stylelint-disable no-descending-specificity */
 }
-.tox .tox-tree .tox-tree--directory.tox-tree--directory--expanded > .tox-tree--directory__label .tox-chevron {
-  transform: rotate(90deg);
-}
 .tox .tox-tree .tox-tree--directory .tox-tree--directory__label {
   font-weight: bold;
 }
@@ -3425,9 +3534,13 @@ body.tox-dialog__disable-scroll {
 }
 .tox .tox-tree .tox-tree--directory .tox-tree--directory__label .tox-chevron {
   margin-right: 6px;
+}
+.tox .tox-tree .tox-tree--directory .tox-tree--directory__label:has(+ .tox-tree--directory__children--growing) .tox-chevron,
+.tox .tox-tree .tox-tree--directory .tox-tree--directory__label:has(+ .tox-tree--directory__children--shrinking) .tox-chevron {
   transition: transform 0.5s ease-in-out;
 }
-.tox .tox-tree .tox-tree--directory .tox-tree--directory__label.tox-tree--directory__label--active .tox-chevron {
+.tox .tox-tree .tox-tree--directory .tox-tree--directory__label:has(+ .tox-tree--directory__children--growing) .tox-chevron,
+.tox .tox-tree .tox-tree--directory .tox-tree--directory__label:has(+ .tox-tree--directory__children--open) .tox-chevron {
   transform: rotate(90deg);
 }
 .tox .tox-tree .tox-tree--leaf__label {

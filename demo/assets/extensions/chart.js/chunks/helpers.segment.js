@@ -1,5 +1,5 @@
 /*!
- * Chart.js v4.2.1
+ * Chart.js v4.3.0
  * https://www.chartjs.org
  * (c) 2023 Chart.js Contributors
  * Released under the MIT License
@@ -547,12 +547,8 @@ function unlistenArrayEvents(array, listener) {
 /**
  * @param items
  */ function _arrayUnique(items) {
-    const set = new Set();
-    let i, ilen;
-    for(i = 0, ilen = items.length; i < ilen; ++i){
-        set.add(items[i]);
-    }
-    if (set.size === ilen) {
+    const set = new Set(items);
+    if (set.size === items.length) {
         return items;
     }
     return Array.from(set);
@@ -877,7 +873,7 @@ const formatters = {
             delta = calculateDelta(tickValue, ticks);
         }
         const logDelta = log10(Math.abs(delta));
-        const numDecimal = Math.max(Math.min(-1 * Math.floor(logDelta), 20), 0);
+        const numDecimal = isNaN(logDelta) ? 1 : Math.max(Math.min(-1 * Math.floor(logDelta), 20), 0);
         const options = {
             notation,
             minimumFractionDigits: numDecimal,
@@ -1108,13 +1104,20 @@ var defaults = /* #__PURE__ */ new Defaults({
     applyScaleDefaults
 ]);
 
-function toFontString(font) {
+/**
+ * Converts the given font object into a CSS font string.
+ * @param font - A font object.
+ * @return The CSS font string. See https://developer.mozilla.org/en-US/docs/Web/CSS/font
+ * @private
+ */ function toFontString(font) {
     if (!font || isNullOrUndef(font.size) || isNullOrUndef(font.family)) {
         return null;
     }
     return (font.style ? font.style + ' ' : '') + (font.weight ? font.weight + ' ' : '') + font.size + 'px ' + font.family;
 }
- function _measureText(ctx, data, gc, longest, string) {
+/**
+ * @private
+ */ function _measureText(ctx, data, gc, longest, string) {
     let textWidth = data[string];
     if (!textWidth) {
         textWidth = data[string] = ctx.measureText(string).width;
@@ -1125,7 +1128,10 @@ function toFontString(font) {
     }
     return longest;
 }
- function _longestText(ctx, font, arrayOfThings, cache) {
+/**
+ * @private
+ */ // eslint-disable-next-line complexity
+function _longestText(ctx, font, arrayOfThings, cache) {
     cache = cache || {};
     let data = cache.data = cache.data || {};
     let gc = cache.garbageCollect = cache.garbageCollect || [];
@@ -1141,11 +1147,15 @@ function toFontString(font) {
     let i, j, jlen, thing, nestedThing;
     for(i = 0; i < ilen; i++){
         thing = arrayOfThings[i];
-        if (thing !== undefined && thing !== null && isArray(thing) !== true) {
+        // Undefined strings and arrays should not be measured
+        if (thing !== undefined && thing !== null && !isArray(thing)) {
             longest = _measureText(ctx, data, gc, longest, thing);
         } else if (isArray(thing)) {
+            // if it is an array lets measure each element
+            // to do maybe simplify this function a bit so we can do this more recursively?
             for(j = 0, jlen = thing.length; j < jlen; j++){
                 nestedThing = thing[j];
+                // Undefined strings and arrays should not be measured
                 if (nestedThing !== undefined && nestedThing !== null && !isArray(nestedThing)) {
                     longest = _measureText(ctx, data, gc, longest, nestedThing);
                 }
@@ -1162,21 +1172,34 @@ function toFontString(font) {
     }
     return longest;
 }
- function _alignPixel(chart, pixel, width) {
+/**
+ * Returns the aligned pixel value to avoid anti-aliasing blur
+ * @param chart - The chart instance.
+ * @param pixel - A pixel value.
+ * @param width - The width of the element.
+ * @returns The aligned pixel value.
+ * @private
+ */ function _alignPixel(chart, pixel, width) {
     const devicePixelRatio = chart.currentDevicePixelRatio;
     const halfWidth = width !== 0 ? Math.max(width / 2, 0.5) : 0;
     return Math.round((pixel - halfWidth) * devicePixelRatio) / devicePixelRatio + halfWidth;
 }
- function clearCanvas(canvas, ctx) {
+/**
+ * Clears the entire canvas.
+ */ function clearCanvas(canvas, ctx) {
     ctx = ctx || canvas.getContext('2d');
     ctx.save();
+    // canvas.width and canvas.height do not consider the canvas transform,
+    // while clearRect does
     ctx.resetTransform();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.restore();
 }
 function drawPoint(ctx, options, x, y) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     drawPointLegend(ctx, options, x, y, null);
 }
+// eslint-disable-next-line complexity
 function drawPointLegend(ctx, options, x, y, w) {
     let type, xOffset, yOffset, size, cornerRadius, width, xOffsetW, yOffsetW;
     const style = options.pointStyle;
@@ -1199,6 +1222,7 @@ function drawPointLegend(ctx, options, x, y, w) {
     }
     ctx.beginPath();
     switch(style){
+        // Default includes circle
         default:
             if (w) {
                 ctx.ellipse(x, y, w / 2, radius, 0, 0, TAU);
@@ -1217,6 +1241,13 @@ function drawPointLegend(ctx, options, x, y, w) {
             ctx.closePath();
             break;
         case 'rectRounded':
+            // NOTE: the rounded rect implementation changed to use `arc` instead of
+            // `quadraticCurveTo` since it generates better results when rect is
+            // almost a circle. 0.516 (instead of 0.5) produces results with visually
+            // closer proportion to the previous impl and it is inscribed in the
+            // circle with `radius`. For more details, see the following PRs:
+            // https://github.com/chartjs/Chart.js/issues/5597
+            // https://github.com/chartjs/Chart.js/issues/5858
             cornerRadius = radius * 0.516;
             size = radius - cornerRadius;
             xOffset = Math.cos(rad + QUARTER_PI) * size;
@@ -1237,7 +1268,7 @@ function drawPointLegend(ctx, options, x, y, w) {
                 break;
             }
             rad += QUARTER_PI;
-         case 'rectRot':
+        /* falls through */ case 'rectRot':
             xOffsetW = Math.cos(rad) * (w ? w / 2 : radius);
             xOffset = Math.cos(rad) * radius;
             yOffset = Math.sin(rad) * radius;
@@ -1250,7 +1281,7 @@ function drawPointLegend(ctx, options, x, y, w) {
             break;
         case 'crossRot':
             rad += QUARTER_PI;
-         case 'cross':
+        /* falls through */ case 'cross':
             xOffsetW = Math.cos(rad) * (w ? w / 2 : radius);
             xOffset = Math.cos(rad) * radius;
             yOffset = Math.sin(rad) * radius;
@@ -1298,8 +1329,14 @@ function drawPointLegend(ctx, options, x, y, w) {
         ctx.stroke();
     }
 }
- function _isPointInArea(point, area, margin) {
-    margin = margin || 0.5;
+/**
+ * Returns true if the point is inside the rectangle
+ * @param point - The point to test
+ * @param area - The rectangle
+ * @param margin - allowed margin
+ * @private
+ */ function _isPointInArea(point, area, margin) {
+    margin = margin || 0.5; // margin - default is to match rounded decimals
     return !area || point && point.x > area.left - margin && point.x < area.right + margin && point.y > area.top - margin && point.y < area.bottom + margin;
 }
 function clipArea(ctx, area) {
@@ -1311,7 +1348,9 @@ function clipArea(ctx, area) {
 function unclipArea(ctx) {
     ctx.restore();
 }
- function _steppedLineTo(ctx, previous, target, flip, mode) {
+/**
+ * @private
+ */ function _steppedLineTo(ctx, previous, target, flip, mode) {
     if (!previous) {
         return ctx.lineTo(target.x, target.y);
     }
@@ -1326,13 +1365,62 @@ function unclipArea(ctx) {
     }
     ctx.lineTo(target.x, target.y);
 }
- function _bezierCurveTo(ctx, previous, target, flip) {
+/**
+ * @private
+ */ function _bezierCurveTo(ctx, previous, target, flip) {
     if (!previous) {
         return ctx.lineTo(target.x, target.y);
     }
     ctx.bezierCurveTo(flip ? previous.cp1x : previous.cp2x, flip ? previous.cp1y : previous.cp2y, flip ? target.cp2x : target.cp1x, flip ? target.cp2y : target.cp1y, target.x, target.y);
 }
- function renderText(ctx, text, x, y, font, opts = {}) {
+function setRenderOpts(ctx, opts) {
+    if (opts.translation) {
+        ctx.translate(opts.translation[0], opts.translation[1]);
+    }
+    if (!isNullOrUndef(opts.rotation)) {
+        ctx.rotate(opts.rotation);
+    }
+    if (opts.color) {
+        ctx.fillStyle = opts.color;
+    }
+    if (opts.textAlign) {
+        ctx.textAlign = opts.textAlign;
+    }
+    if (opts.textBaseline) {
+        ctx.textBaseline = opts.textBaseline;
+    }
+}
+function decorateText(ctx, x, y, line, opts) {
+    if (opts.strikethrough || opts.underline) {
+        /**
+     * Now that IE11 support has been dropped, we can use more
+     * of the TextMetrics object. The actual bounding boxes
+     * are unflagged in Chrome, Firefox, Edge, and Safari so they
+     * can be safely used.
+     * See https://developer.mozilla.org/en-US/docs/Web/API/TextMetrics#Browser_compatibility
+     */ const metrics = ctx.measureText(line);
+        const left = x - metrics.actualBoundingBoxLeft;
+        const right = x + metrics.actualBoundingBoxRight;
+        const top = y - metrics.actualBoundingBoxAscent;
+        const bottom = y + metrics.actualBoundingBoxDescent;
+        const yDecoration = opts.strikethrough ? (top + bottom) / 2 : bottom;
+        ctx.strokeStyle = ctx.fillStyle;
+        ctx.beginPath();
+        ctx.lineWidth = opts.decorationWidth || 2;
+        ctx.moveTo(left, yDecoration);
+        ctx.lineTo(right, yDecoration);
+        ctx.stroke();
+    }
+}
+function drawBackdrop(ctx, opts) {
+    const oldColor = ctx.fillStyle;
+    ctx.fillStyle = opts.color;
+    ctx.fillRect(opts.left, opts.top, opts.width, opts.height);
+    ctx.fillStyle = oldColor;
+}
+/**
+ * Render text onto the canvas
+ */ function renderText(ctx, text, x, y, font, opts = {}) {
     const lines = isArray(text) ? text : [
         text
     ];
@@ -1357,58 +1445,31 @@ function unclipArea(ctx) {
         }
         ctx.fillText(line, x, y, opts.maxWidth);
         decorateText(ctx, x, y, line, opts);
-        y += font.lineHeight;
+        y += Number(font.lineHeight);
     }
     ctx.restore();
 }
-function setRenderOpts(ctx, opts) {
-    if (opts.translation) {
-        ctx.translate(opts.translation[0], opts.translation[1]);
-    }
-    if (!isNullOrUndef(opts.rotation)) {
-        ctx.rotate(opts.rotation);
-    }
-    if (opts.color) {
-        ctx.fillStyle = opts.color;
-    }
-    if (opts.textAlign) {
-        ctx.textAlign = opts.textAlign;
-    }
-    if (opts.textBaseline) {
-        ctx.textBaseline = opts.textBaseline;
-    }
-}
-function decorateText(ctx, x, y, line, opts) {
-    if (opts.strikethrough || opts.underline) {
- const metrics = ctx.measureText(line);
-        const left = x - metrics.actualBoundingBoxLeft;
-        const right = x + metrics.actualBoundingBoxRight;
-        const top = y - metrics.actualBoundingBoxAscent;
-        const bottom = y + metrics.actualBoundingBoxDescent;
-        const yDecoration = opts.strikethrough ? (top + bottom) / 2 : bottom;
-        ctx.strokeStyle = ctx.fillStyle;
-        ctx.beginPath();
-        ctx.lineWidth = opts.decorationWidth || 2;
-        ctx.moveTo(left, yDecoration);
-        ctx.lineTo(right, yDecoration);
-        ctx.stroke();
-    }
-}
-function drawBackdrop(ctx, opts) {
-    const oldColor = ctx.fillStyle;
-    ctx.fillStyle = opts.color;
-    ctx.fillRect(opts.left, opts.top, opts.width, opts.height);
-    ctx.fillStyle = oldColor;
-}
- function addRoundedRectPath(ctx, rect) {
+/**
+ * Add a path of a rectangle with rounded corners to the current sub-path
+ * @param ctx - Context
+ * @param rect - Bounding rect
+ */ function addRoundedRectPath(ctx, rect) {
     const { x , y , w , h , radius  } = rect;
+    // top left arc
     ctx.arc(x + radius.topLeft, y + radius.topLeft, radius.topLeft, -HALF_PI, PI, true);
+    // line from top left to bottom left
     ctx.lineTo(x, y + h - radius.bottomLeft);
+    // bottom left arc
     ctx.arc(x + radius.bottomLeft, y + h - radius.bottomLeft, radius.bottomLeft, PI, HALF_PI, true);
+    // line from bottom left to bottom right
     ctx.lineTo(x + w - radius.bottomRight, y + h);
+    // bottom right arc
     ctx.arc(x + w - radius.bottomRight, y + h - radius.bottomRight, radius.bottomRight, HALF_PI, 0, true);
+    // line from bottom right to top right
     ctx.lineTo(x + w, y + radius.topRight);
+    // top right arc
     ctx.arc(x + w - radius.topRight, y + radius.topRight, radius.topRight, 0, -HALF_PI, true);
+    // line from top right to top left
     ctx.lineTo(x + radius.topLeft, y);
 }
 
@@ -1573,55 +1634,87 @@ function createContext(parentContext, context) {
     return Object.assign(Object.create(parentContext), context);
 }
 
-function _createResolver(scopes, prefixes = [
+/**
+ * Creates a Proxy for resolving raw values for options.
+ * @param scopes - The option scopes to look for values, in resolution order
+ * @param prefixes - The prefixes for values, in resolution order.
+ * @param rootScopes - The root option scopes
+ * @param fallback - Parent scopes fallback
+ * @param getTarget - callback for getting the target for changed values
+ * @returns Proxy
+ * @private
+ */ function _createResolver(scopes, prefixes = [
     ''
-], rootScopes = scopes, fallback, getTarget = ()=>scopes[0]) {
-    if (!defined(fallback)) {
+], rootScopes, fallback, getTarget = ()=>scopes[0]) {
+    const finalRootScopes = rootScopes || scopes;
+    if (typeof fallback === 'undefined') {
         fallback = _resolve('_fallback', scopes);
     }
     const cache = {
         [Symbol.toStringTag]: 'Object',
         _cacheable: true,
         _scopes: scopes,
-        _rootScopes: rootScopes,
+        _rootScopes: finalRootScopes,
         _fallback: fallback,
         _getTarget: getTarget,
         override: (scope)=>_createResolver([
                 scope,
                 ...scopes
-            ], prefixes, rootScopes, fallback)
+            ], prefixes, finalRootScopes, fallback)
     };
     return new Proxy(cache, {
- deleteProperty (target, prop) {
-            delete target[prop];
-            delete target._keys;
-            delete scopes[0][prop];
+        /**
+     * A trap for the delete operator.
+     */ deleteProperty (target, prop) {
+            delete target[prop]; // remove from cache
+            delete target._keys; // remove cached keys
+            delete scopes[0][prop]; // remove from top level scope
             return true;
         },
- get (target, prop) {
+        /**
+     * A trap for getting property values.
+     */ get (target, prop) {
             return _cached(target, prop, ()=>_resolveWithPrefixes(prop, prefixes, scopes, target));
         },
- getOwnPropertyDescriptor (target, prop) {
+        /**
+     * A trap for Object.getOwnPropertyDescriptor.
+     * Also used by Object.hasOwnProperty.
+     */ getOwnPropertyDescriptor (target, prop) {
             return Reflect.getOwnPropertyDescriptor(target._scopes[0], prop);
         },
- getPrototypeOf () {
+        /**
+     * A trap for Object.getPrototypeOf.
+     */ getPrototypeOf () {
             return Reflect.getPrototypeOf(scopes[0]);
         },
- has (target, prop) {
+        /**
+     * A trap for the in operator.
+     */ has (target, prop) {
             return getKeysFromAllScopes(target).includes(prop);
         },
- ownKeys (target) {
+        /**
+     * A trap for Object.getOwnPropertyNames and Object.getOwnPropertySymbols.
+     */ ownKeys (target) {
             return getKeysFromAllScopes(target);
         },
- set (target, prop, value) {
+        /**
+     * A trap for setting property values.
+     */ set (target, prop, value) {
             const storage = target._storage || (target._storage = getTarget());
-            target[prop] = storage[prop] = value;
-            delete target._keys;
+            target[prop] = storage[prop] = value; // set to top level scope + cache
+            delete target._keys; // remove cached keys
             return true;
         }
     });
 }
- function _attachContext(proxy, context, subProxy, descriptorDefaults) {
+/**
+ * Returns an Proxy for resolving option values with context.
+ * @param proxy - The Proxy returned by `_createResolver`
+ * @param context - Context object for scriptable/indexable options
+ * @param subProxy - The proxy provided for scriptable options
+ * @param descriptorDefaults - Defaults for descriptors
+ * @private
+ */ function _attachContext(proxy, context, subProxy, descriptorDefaults) {
     const cache = {
         _cacheable: false,
         _proxy: proxy,
@@ -1633,37 +1726,54 @@ function _createResolver(scopes, prefixes = [
         override: (scope)=>_attachContext(proxy.override(scope), context, subProxy, descriptorDefaults)
     };
     return new Proxy(cache, {
- deleteProperty (target, prop) {
-            delete target[prop];
-            delete proxy[prop];
+        /**
+     * A trap for the delete operator.
+     */ deleteProperty (target, prop) {
+            delete target[prop]; // remove from cache
+            delete proxy[prop]; // remove from proxy
             return true;
         },
- get (target, prop, receiver) {
+        /**
+     * A trap for getting property values.
+     */ get (target, prop, receiver) {
             return _cached(target, prop, ()=>_resolveWithContext(target, prop, receiver));
         },
- getOwnPropertyDescriptor (target, prop) {
+        /**
+     * A trap for Object.getOwnPropertyDescriptor.
+     * Also used by Object.hasOwnProperty.
+     */ getOwnPropertyDescriptor (target, prop) {
             return target._descriptors.allKeys ? Reflect.has(proxy, prop) ? {
                 enumerable: true,
                 configurable: true
             } : undefined : Reflect.getOwnPropertyDescriptor(proxy, prop);
         },
- getPrototypeOf () {
+        /**
+     * A trap for Object.getPrototypeOf.
+     */ getPrototypeOf () {
             return Reflect.getPrototypeOf(proxy);
         },
- has (target, prop) {
+        /**
+     * A trap for the in operator.
+     */ has (target, prop) {
             return Reflect.has(proxy, prop);
         },
- ownKeys () {
+        /**
+     * A trap for Object.getOwnPropertyNames and Object.getOwnPropertySymbols.
+     */ ownKeys () {
             return Reflect.ownKeys(proxy);
         },
- set (target, prop, value) {
-            proxy[prop] = value;
-            delete target[prop];
+        /**
+     * A trap for setting property values.
+     */ set (target, prop, value) {
+            proxy[prop] = value; // set to proxy
+            delete target[prop]; // remove from cache
             return true;
         }
     });
 }
- function _descriptors(proxy, defaults = {
+/**
+ * @private
+ */ function _descriptors(proxy, defaults = {
     scriptable: true,
     indexable: true
 }) {
@@ -1683,12 +1793,14 @@ function _cached(target, prop, resolve) {
         return target[prop];
     }
     const value = resolve();
+    // cache the resolved value
     target[prop] = value;
     return value;
 }
 function _resolveWithContext(target, prop, receiver) {
     const { _proxy , _context , _subProxy , _descriptors: descriptors  } = target;
-    let value = _proxy[prop];
+    let value = _proxy[prop]; // resolve from proxy
+    // resolve with context
     if (isFunction(value) && descriptors.isScriptable(prop)) {
         value = _resolveScriptable(prop, value, target, receiver);
     }
@@ -1696,28 +1808,31 @@ function _resolveWithContext(target, prop, receiver) {
         value = _resolveArray(prop, value, target, descriptors.isIndexable);
     }
     if (needsSubResolver(prop, value)) {
+        // if the resolved value is an object, create a sub resolver for it
         value = _attachContext(value, _context, _subProxy && _subProxy[prop], descriptors);
     }
     return value;
 }
-function _resolveScriptable(prop, value, target, receiver) {
+function _resolveScriptable(prop, getValue, target, receiver) {
     const { _proxy , _context , _subProxy , _stack  } = target;
     if (_stack.has(prop)) {
         throw new Error('Recursion detected: ' + Array.from(_stack).join('->') + '->' + prop);
     }
     _stack.add(prop);
-    value = value(_context, _subProxy || receiver);
+    let value = getValue(_context, _subProxy || receiver);
     _stack.delete(prop);
     if (needsSubResolver(prop, value)) {
+        // When scriptable option returns an object, create a resolver on that.
         value = createSubResolver(_proxy._scopes, _proxy, prop, value);
     }
     return value;
 }
 function _resolveArray(prop, value, target, isIndexable) {
     const { _proxy , _context , _subProxy , _descriptors: descriptors  } = target;
-    if (defined(_context.index) && isIndexable(prop)) {
-        value = value[_context.index % value.length];
+    if (typeof _context.index !== 'undefined' && isIndexable(prop)) {
+        return value[_context.index % value.length];
     } else if (isObject(value[0])) {
+        // Array of objects, return array or resolvers
         const arr = value;
         const scopes = _proxy._scopes.filter((s)=>s !== arr);
         value = [];
@@ -1738,10 +1853,14 @@ function addScopes(set, parentScopes, key, parentFallback, value) {
         if (scope) {
             set.add(scope);
             const fallback = resolveFallback(scope._fallback, key, value);
-            if (defined(fallback) && fallback !== key && fallback !== parentFallback) {
+            if (typeof fallback !== 'undefined' && fallback !== key && fallback !== parentFallback) {
+                // When we reach the descriptor that defines a new _fallback, return that.
+                // The fallback will resume to that new scope.
                 return fallback;
             }
-        } else if (scope === false && defined(parentFallback) && key !== parentFallback) {
+        } else if (scope === false && typeof parentFallback !== 'undefined' && key !== parentFallback) {
+            // Fallback to `false` results to `false`, when falling back to different key.
+            // For example `interaction` from `hover` or `plugins.tooltip` and `animation` from `animations`
             return null;
         }
     }
@@ -1760,7 +1879,7 @@ function createSubResolver(parentScopes, resolver, prop, value) {
     if (key === null) {
         return false;
     }
-    if (defined(fallback) && fallback !== prop) {
+    if (typeof fallback !== 'undefined' && fallback !== prop) {
         key = addScopesFromKey(set, allScopes, fallback, key, value);
         if (key === null) {
             return false;
@@ -1783,6 +1902,7 @@ function subGetTarget(resolver, prop, value) {
     }
     const target = parent[prop];
     if (isArray(target) && isObject(value)) {
+        // For array of objects, the object is used to store updated values
         return value;
     }
     return target || {};
@@ -1791,7 +1911,7 @@ function _resolveWithPrefixes(prop, prefixes, scopes, proxy) {
     let value;
     for (const prefix of prefixes){
         value = _resolve(readKey(prefix, prop), scopes);
-        if (defined(value)) {
+        if (typeof value !== 'undefined') {
             return needsSubResolver(prop, value) ? createSubResolver(scopes, proxy, prop, value) : value;
         }
     }
@@ -1802,7 +1922,7 @@ function _resolve(key, scopes) {
             continue;
         }
         const value = scope[key];
-        if (defined(value)) {
+        if (typeof value !== 'undefined') {
             return value;
         }
     }
@@ -2603,7 +2723,20 @@ function readStyle(options) {
     };
 }
 function styleChanged(style, prevStyle) {
-    return prevStyle && JSON.stringify(style) !== JSON.stringify(prevStyle);
+    if (!prevStyle) {
+        return false;
+    }
+    const cache = [];
+    const replacer = function(key, value) {
+        if (!isPatternOrGradient(value)) {
+            return value;
+        }
+        if (!cache.includes(value)) {
+            cache.push(value);
+        }
+        return cache.indexOf(value);
+    };
+    return JSON.stringify(style, replacer) !== JSON.stringify(prevStyle, replacer);
 }
 
 export { unclipArea as $, _rlookupByKey as A, _lookupByKey as B, _isPointInArea as C, getAngleFromPoint as D, toPadding as E, each as F, getMaximumSize as G, HALF_PI as H, _getParentNode as I, readUsedSize as J, supportsEventListenerOptions as K, throttled as L, _isDomSupported as M, _factorize as N, finiteOrDefault as O, PI as P, callback as Q, _addGrace as R, _limitValue as S, TAU as T, toDegrees as U, _measureText as V, _int16Range as W, _alignPixel as X, clipArea as Y, renderText as Z, _arrayUnique as _, resolve as a, fontString as a$, toFont as a0, _toLeftRightCenter as a1, _alignStartEnd as a2, overrides as a3, merge as a4, _capitalize as a5, descriptors as a6, isFunction as a7, _attachContext as a8, _createResolver as a9, overrideTextDirection as aA, _textX as aB, restoreTextDirection as aC, drawPointLegend as aD, distanceBetweenPoints as aE, noop as aF, _setMinAndMaxByKey as aG, niceNum as aH, almostWhole as aI, almostEquals as aJ, _decimalPlaces as aK, Ticks as aL, log10 as aM, _longestText as aN, _filterBetween as aO, _lookup as aP, isPatternOrGradient as aQ, getHoverColor as aR, clone as aS, _merger as aT, _mergerIf as aU, _deprecated as aV, _splitKey as aW, toFontString as aX, splineCurve as aY, splineCurveMonotone as aZ, getStyle as a_, _descriptors as aa, mergeIf as ab, uid as ac, debounce as ad, retinaScale as ae, clearCanvas as af, setsEqual as ag, _elementsEqual as ah, _isClickEvent as ai, _isBetween as aj, _readValueToProps as ak, _updateBezierControlPoints as al, _computeSegments as am, _boundSegments as an, _steppedInterpolation as ao, _bezierInterpolation as ap, _pointInLine as aq, _steppedLineTo as ar, _bezierCurveTo as as, drawPoint as at, addRoundedRectPath as au, toTRBL as av, toTRBLCorners as aw, _boundSegment as ax, _normalizeAngle as ay, getRtlAdapter as az, isArray as b, toLineHeight as b0, PITAU as b1, INFINITY as b2, RAD_PER_DEG as b3, QUARTER_PI as b4, TWO_THIRDS_PI as b5, _angleDiff as b6, color as c, defaults as d, effects as e, resolveObjectKey as f, isNumberFinite as g, defined as h, isObject as i, createContext as j, isNullOrUndef as k, listenArrayEvents as l, toPercentage as m, toDimension as n, formatNumber as o, _angleBetween as p, _getStartAndCountOfVisiblePoints as q, requestAnimFrame as r, sign as s, toRadians as t, unlistenArrayEvents as u, valueOrDefault as v, _scaleRangesChanged as w, isNumber as x, _parseObjectDataRadialScale as y, getRelativePosition as z };

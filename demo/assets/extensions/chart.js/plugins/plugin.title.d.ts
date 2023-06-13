@@ -34,10 +34,7 @@ declare namespace _default {
     export const id: string;
     export { Title as _element };
     export function start(chart: any, _args: any, options: any): void;
-    export function start(chart: any, _args: any, options: any): void;
     export function stop(chart: any): void;
-    export function stop(chart: any): void;
-    export function beforeUpdate(chart: any, _args: any, options: any): void;
     export function beforeUpdate(chart: any, _args: any, options: any): void;
     export namespace defaults {
         export const align: string;

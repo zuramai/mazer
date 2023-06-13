@@ -1,6 +1,6 @@
 import Element from '../core/core.element.js';
 import type { CartesianParsedData, ChartArea, Point, PointHoverOptions, PointOptions } from '../types/index.js';
-export declare type PointProps = Point;
+export type PointProps = Point;
 export default class PointElement extends Element<PointProps, PointOptions & PointHoverOptions> {
     static id: string;
     parsed: CartesianParsedData;

@@ -5,6 +5,6 @@ export = plugin
 
 declare module 'dayjs/esm' {
   interface Dayjs {
-    isSameOrBefore(date: ConfigType, unit?: OpUnitType): boolean
+    isSameOrBefore(date?: ConfigType, unit?: OpUnitType): boolean
   }
 }

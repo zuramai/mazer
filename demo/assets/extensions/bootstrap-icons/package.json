@@ -1,6 +1,6 @@
 {
   "name": "bootstrap-icons",
-  "version": "1.10.3",
+  "version": "1.10.5",
   "description": "Official open source SVG icon library for Bootstrap",
   "author": "mdo",
   "license": "MIT",
@@ -12,52 +12,27 @@
   "bugs": {
     "url": "https://github.com/twbs/icons/issues"
   },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/twbs"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/bootstrap"
+    }
+  ],
   "keywords": [
     "bootstrap",
-    "icons"
+    "icons",
+    "svg",
+    "font",
+    "sprite",
+    "woff",
+    "woff2"
   ],
-  "scripts": {
-    "start": "npm run docs-serve",
-    "docs-serve": "hugo server --port 4000 --disableFastRender",
-    "docs-build": "hugo --cleanDestinationDir",
-    "pages": "node build/build-pages.js",
-    "icons": "npm-run-all icons-main --aggregate-output --parallel icons-sprite icons-font",
-    "icons-main": "node build/build-svgs.js",
-    "icons-zip": "cross-env-shell \"rm -rf bootstrap-icons-$npm_package_version && cp -r icons/ bootstrap-icons-$npm_package_version && cp bootstrap-icons.svg bootstrap-icons-$npm_package_version && cp -r font/ bootstrap-icons-$npm_package_version && zip -r9 bootstrap-icons-$npm_package_version.zip bootstrap-icons-$npm_package_version && rm -rf bootstrap-icons-$npm_package_version\"",
-    "icons-sprite": "svg-sprite --config svg-sprite.json --log=info icons/*.svg",
-    "icons-font": "fantasticon",
-    "release": "npm-run-all icons docs-build icons-zip",
-    "netlify": "cross-env-shell HUGO_BASEURL=$DEPLOY_PRIME_URL npm-run-all icons docs-build",
-    "test:fusv": "fusv docs/assets/scss/",
-    "test:eslint": "eslint --cache --cache-location node_modules/.cache/.eslintcache --report-unused-disable-directives .",
-    "test:stylelint": "stylelint docs/assets/scss/ --cache --cache-location node_modules/.cache/.stylelintcache --rd",
-    "test:lockfile-lint": "lockfile-lint --allowed-hosts npm --allowed-schemes https: --empty-hostname false --type npm --path package-lock.json",
-    "test:vnu": "node build/vnu-jar.js",
-    "test": "npm-run-all docs-build --parallel --aggregate-output --continue-on-error test:*"
-  },
   "style": "font/bootstrap-icons.css",
   "sass": "font/bootstrap-icons.scss",
-  "devDependencies": {
-    "autoprefixer": "^10.4.13",
-    "bootstrap": "5.3.0-alpha1",
-    "clipboard": "^2.0.11",
-    "cross-env": "^7.0.3",
-    "eslint": "^8.30.0",
-    "fantasticon": "^1.2.3",
-    "find-unused-sass-variables": "^4.0.5",
-    "hugo-bin": "^0.97.0",
-    "list.js": "^2.3.1",
-    "lockfile-lint": "^4.9.6",
-    "npm-run-all": "^4.1.5",
-    "picocolors": "^1.0.0",
-    "postcss": "^8.4.20",
-    "postcss-cli": "^10.1.0",
-    "stylelint": "^14.16.0",
-    "stylelint-config-twbs-bootstrap": "^7.0.0",
-    "svg-sprite": "^3.0.0-alpha1",
-    "svgo": "^2.8.0",
-    "vnu-jar": "22.9.29"
-  },
   "files": [
     "icons/*.svg",
     "bootstrap-icons.svg",
@@ -66,5 +41,51 @@
   ],
   "hugo-bin": {
     "buildTags": "extended"
+  },
+  "scripts": {
+    "start": "npm run docs-serve",
+    "docs-serve": "hugo server --port 4000 --disableFastRender",
+    "docs-build": "hugo --cleanDestinationDir --printUnusedTemplates",
+    "docs-test": "npm-run-all docs-build docs-test:vnu",
+    "docs-test:vnu": "node build/vnu-jar.mjs",
+    "pages": "node build/build-pages.mjs",
+    "icons": "npm-run-all icons-main --aggregate-output --parallel icons-sprite icons-font",
+    "icons-main": "node build/build-svgs.mjs",
+    "icons-zip": "cross-env-shell \"rm -rf bootstrap-icons-$npm_package_version bootstrap-icons-$npm_package_version.zip && cp -r icons/ bootstrap-icons-$npm_package_version && cp bootstrap-icons.svg bootstrap-icons-$npm_package_version && cp -r font/ bootstrap-icons-$npm_package_version && zip -qr9 bootstrap-icons-$npm_package_version.zip bootstrap-icons-$npm_package_version && rm -rf bootstrap-icons-$npm_package_version\"",
+    "icons-sprite": "svg-sprite --config svg-sprite.json --log=info \"icons/*.svg\"",
+    "icons-font": "npm-run-all icons-font-*",
+    "icons-font-main": "fantasticon",
+    "icons-font-min": "cleancss -O1 --format breakWith=lf --with-rebase --output font/bootstrap-icons.min.css font/bootstrap-icons.css",
+    "release": "npm-run-all icons docs-build icons-zip",
+    "release-version": "node build/bump-version.js",
+    "netlify": "cross-env-shell HUGO_BASEURL=$DEPLOY_PRIME_URL npm-run-all icons docs-build",
+    "test:fusv": "fusv docs/assets/scss/",
+    "test:eslint": "eslint --cache --cache-location .cache/.eslintcache --report-unused-disable-directives --ext .js,.mjs .",
+    "test:stylelint": "stylelint docs/assets/scss/ --cache --cache-location .cache/.stylelintcache",
+    "test:lockfile-lint": "lockfile-lint --allowed-hosts npm --allowed-schemes https: --empty-hostname false --type npm --path package-lock.json",
+    "test:check-icons": "node build/check-icons.mjs",
+    "test": "npm-run-all --parallel --aggregate-output --continue-on-error test:*"
+  },
+  "devDependencies": {
+    "@twbs/fantasticon": "^2.7.1",
+    "autoprefixer": "^10.4.14",
+    "bootstrap": "^5.3.0-alpha3",
+    "clean-css-cli": "^5.6.2",
+    "clipboard": "^2.0.11",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.39.0",
+    "find-unused-sass-variables": "^4.0.8",
+    "fuse.js": "^6.6.2",
+    "hugo-bin": "^0.102.0",
+    "lockfile-lint": "^4.10.1",
+    "npm-run-all2": "^6.0.5",
+    "picocolors": "^1.0.0",
+    "postcss": "^8.4.23",
+    "postcss-cli": "^10.1.0",
+    "stylelint": "^15.6.0",
+    "stylelint-config-twbs-bootstrap": "^9.0.1",
+    "svg-sprite": "^3.0.0-beta1",
+    "svgo": "^3.0.2",
+    "vnu-jar": "23.4.11"
   }
 }

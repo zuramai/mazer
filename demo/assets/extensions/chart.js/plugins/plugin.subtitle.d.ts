@@ -1,10 +1,7 @@
 declare namespace _default {
     const id: string;
     function start(chart: any, _args: any, options: any): void;
-    function start(chart: any, _args: any, options: any): void;
     function stop(chart: any): void;
-    function stop(chart: any): void;
-    function beforeUpdate(chart: any, _args: any, options: any): void;
     function beforeUpdate(chart: any, _args: any, options: any): void;
     namespace defaults {
         export const align: string;
