@@ -695,7 +695,7 @@
           </a>
         </header>
 
-        <div class="page-heading email-application">
+        <div class="page-heading email-application overflow-hidden">
           <div class="page-title">
             <div class="row">
               <div class="col-12 col-md-6 order-md-1 order-last">
@@ -911,7 +911,10 @@
                   <div class="card shadow-none quill-wrapper p-0">
                     <div class="card-header">
                       <h3 class="card-title" id="emailCompose">New Message</h3>
-                      <button type="button" class="close close-icon">
+                      <button
+                        type="button"
+                        class="close close-icon email-compose-new-close-btn"
+                      >
                         <i class="bi bi-x"></i>
                       </button>
                     </div>
@@ -3075,6 +3078,18 @@
         .querySelector(".sidebar-close-icon")
         .addEventListener("click", () => {
           document.querySelector(".email-app-sidebar").classList.remove("show");
+        });
+      document.querySelector(".compose-btn").addEventListener("click", () => {
+        document
+          .querySelector(".compose-new-mail-sidebar")
+          .classList.add("show");
+      });
+      document
+        .querySelector(".email-compose-new-close-btn")
+        .addEventListener("click", () => {
+          document
+            .querySelector(".compose-new-mail-sidebar")
+            .classList.remove("show");
         });
     </script>
   </body>
