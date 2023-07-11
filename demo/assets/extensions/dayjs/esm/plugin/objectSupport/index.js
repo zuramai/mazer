@@ -2,7 +2,7 @@ export default (function (o, c, dayjs) {
   var proto = c.prototype;
 
   var isObject = function isObject(obj) {
-    return !(obj instanceof Date) && !(obj instanceof Array) && !proto.$utils().u(obj) && obj.constructor.name === 'Object';
+    return obj !== null && !(obj instanceof Date) && !(obj instanceof Array) && !proto.$utils().u(obj) && obj.constructor.name === 'Object';
   };
 
   var prettyUnit = function prettyUnit(u) {

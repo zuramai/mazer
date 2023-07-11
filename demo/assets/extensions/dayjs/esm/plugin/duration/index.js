@@ -318,6 +318,10 @@ var Duration = /*#__PURE__*/function () {
   return Duration;
 }();
 
+var manipulateDuration = function manipulateDuration(date, duration, k) {
+  return date.add(duration.years() * k, 'y').add(duration.months() * k, 'M').add(duration.days() * k, 'd').add(duration.hours() * k, 'h').add(duration.minutes() * k, 'm').add(duration.seconds() * k, 's').add(duration.milliseconds() * k, 'ms');
+};
+
 export default (function (option, Dayjs, dayjs) {
   $d = dayjs;
   $u = dayjs().$utils();
@@ -334,12 +338,18 @@ export default (function (option, Dayjs, dayjs) {
   var oldSubtract = Dayjs.prototype.subtract;
 
   Dayjs.prototype.add = function (value, unit) {
-    if (isDuration(value)) value = value.asMilliseconds();
+    if (isDuration(value)) {
+      return manipulateDuration(this, value, 1);
+    }
+
     return oldAdd.bind(this)(value, unit);
   };
 
   Dayjs.prototype.subtract = function (value, unit) {
-    if (isDuration(value)) value = value.asMilliseconds();
+    if (isDuration(value)) {
+      return manipulateDuration(this, value, -1);
+    }
+
     return oldSubtract.bind(this)(value, unit);
   };
 });

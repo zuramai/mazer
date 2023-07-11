@@ -18,7 +18,7 @@
 			}
 		};
 
-		if (typeof window !== 'undefined') {
+		if (typeof window === 'undefined') {
 			module.exports = function (root, $) {
 				if ( ! root ) {
 					// CommonJS environments without a window global must pass a
@@ -156,7 +156,7 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 								'aria-controls': settings.sTableId,
 								'aria-disabled': disabled ? 'true' : null,
 								'aria-label': aria[ button ],
-								'aria-role': 'link',
+								'role': 'link',
 								'aria-current': btnClass === 'active' ? 'page' : null,
 								'data-dt-idx': button,
 								'tabindex': settings.iTabIndex,

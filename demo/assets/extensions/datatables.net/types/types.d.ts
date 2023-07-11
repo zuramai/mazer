@@ -1719,7 +1719,7 @@ export interface ApiRowChildMethods<T> {
      * @param showRemove This parameter can be given as true or false
      * @returns DataTables Api instance.
      */
-    (showRemove: boolean): RowChildMethods<T> | Api<T>;
+    (showRemove: boolean): RowChildMethods<T>;
 
     /**
      * Set the data to show in the child row(s). Note that calling this method will replace any child rows which are already attached to the parent row.
@@ -1728,7 +1728,7 @@ export interface ApiRowChildMethods<T> {
      * @param className Class name that is added to the td cell node(s) of the child row(s). As of 1.10.1 it is also added to the tr row node of the child row(s).
      * @returns DataTables Api instance
      */
-    (data: (string | Node | JQuery) | Array<(string | number | JQuery)>, className?: string): RowChildMethods<T> | Api<T>;
+    (data: (string | Node | JQuery) | Array<(string | number | JQuery)>, className?: string): RowChildMethods<T>;
 
     /**
      * Hide the child row(s) of a parent row
@@ -2128,7 +2128,7 @@ export interface ApiStatic {
     new (selector: string | Node | Node[] | JQuery | InternalSettings): Api<any>;
 
     register<T=any>(name: string, fn: Function): T;
-    registerPlural<T=any>(name: string, fn: Function): T;
+    registerPlural<T=any>(pluralName: string, singleName: string, fn: Function): T;
 }
 
 export interface OrderFixed {

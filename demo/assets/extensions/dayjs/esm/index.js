@@ -316,35 +316,90 @@ var Dayjs = /*#__PURE__*/function () {
       return isLowercase ? m.toLowerCase() : m;
     };
 
-    var matches = {
-      YY: String(this.$y).slice(-2),
-      YYYY: Utils.s(this.$y, 4, '0'),
-      M: $M + 1,
-      MM: Utils.s($M + 1, 2, '0'),
-      MMM: getShort(locale.monthsShort, $M, months, 3),
-      MMMM: getShort(months, $M),
-      D: this.$D,
-      DD: Utils.s(this.$D, 2, '0'),
-      d: String(this.$W),
-      dd: getShort(locale.weekdaysMin, this.$W, weekdays, 2),
-      ddd: getShort(locale.weekdaysShort, this.$W, weekdays, 3),
-      dddd: weekdays[this.$W],
-      H: String($H),
-      HH: Utils.s($H, 2, '0'),
-      h: get$H(1),
-      hh: get$H(2),
-      a: meridiemFunc($H, $m, true),
-      A: meridiemFunc($H, $m, false),
-      m: String($m),
-      mm: Utils.s($m, 2, '0'),
-      s: String(this.$s),
-      ss: Utils.s(this.$s, 2, '0'),
-      SSS: Utils.s(this.$ms, 3, '0'),
-      Z: zoneStr // 'ZZ' logic below
+    var matches = function matches(match) {
+      switch (match) {
+        case 'YY':
+          return String(_this3.$y).slice(-2);
 
+        case 'YYYY':
+          return Utils.s(_this3.$y, 4, '0');
+
+        case 'M':
+          return $M + 1;
+
+        case 'MM':
+          return Utils.s($M + 1, 2, '0');
+
+        case 'MMM':
+          return getShort(locale.monthsShort, $M, months, 3);
+
+        case 'MMMM':
+          return getShort(months, $M);
+
+        case 'D':
+          return _this3.$D;
+
+        case 'DD':
+          return Utils.s(_this3.$D, 2, '0');
+
+        case 'd':
+          return String(_this3.$W);
+
+        case 'dd':
+          return getShort(locale.weekdaysMin, _this3.$W, weekdays, 2);
+
+        case 'ddd':
+          return getShort(locale.weekdaysShort, _this3.$W, weekdays, 3);
+
+        case 'dddd':
+          return weekdays[_this3.$W];
+
+        case 'H':
+          return String($H);
+
+        case 'HH':
+          return Utils.s($H, 2, '0');
+
+        case 'h':
+          return get$H(1);
+
+        case 'hh':
+          return get$H(2);
+
+        case 'a':
+          return meridiemFunc($H, $m, true);
+
+        case 'A':
+          return meridiemFunc($H, $m, false);
+
+        case 'm':
+          return String($m);
+
+        case 'mm':
+          return Utils.s($m, 2, '0');
+
+        case 's':
+          return String(_this3.$s);
+
+        case 'ss':
+          return Utils.s(_this3.$s, 2, '0');
+
+        case 'SSS':
+          return Utils.s(_this3.$ms, 3, '0');
+
+        case 'Z':
+          return zoneStr;
+        // 'ZZ' logic below
+
+        default:
+          break;
+      }
+
+      return null;
     };
+
     return str.replace(C.REGEX_FORMAT, function (match, $1) {
-      return $1 || matches[match] || zoneStr.replace(':', '');
+      return $1 || matches(match) || zoneStr.replace(':', '');
     }); // 'ZZ'
   };
 
@@ -355,14 +410,57 @@ var Dayjs = /*#__PURE__*/function () {
   };
 
   _proto.diff = function diff(input, units, _float) {
-    var _C$Y$C$M$C$Q$C$W$C$D$;
+    var _this4 = this;
 
     var unit = Utils.p(units);
     var that = dayjs(input);
     var zoneDelta = (that.utcOffset() - this.utcOffset()) * C.MILLISECONDS_A_MINUTE;
     var diff = this - that;
-    var result = Utils.m(this, that);
-    result = (_C$Y$C$M$C$Q$C$W$C$D$ = {}, _C$Y$C$M$C$Q$C$W$C$D$[C.Y] = result / 12, _C$Y$C$M$C$Q$C$W$C$D$[C.M] = result, _C$Y$C$M$C$Q$C$W$C$D$[C.Q] = result / 3, _C$Y$C$M$C$Q$C$W$C$D$[C.W] = (diff - zoneDelta) / C.MILLISECONDS_A_WEEK, _C$Y$C$M$C$Q$C$W$C$D$[C.D] = (diff - zoneDelta) / C.MILLISECONDS_A_DAY, _C$Y$C$M$C$Q$C$W$C$D$[C.H] = diff / C.MILLISECONDS_A_HOUR, _C$Y$C$M$C$Q$C$W$C$D$[C.MIN] = diff / C.MILLISECONDS_A_MINUTE, _C$Y$C$M$C$Q$C$W$C$D$[C.S] = diff / C.MILLISECONDS_A_SECOND, _C$Y$C$M$C$Q$C$W$C$D$)[unit] || diff; // milliseconds
+
+    var getMonth = function getMonth() {
+      return Utils.m(_this4, that);
+    };
+
+    var result;
+
+    switch (unit) {
+      case C.Y:
+        result = getMonth() / 12;
+        break;
+
+      case C.M:
+        result = getMonth();
+        break;
+
+      case C.Q:
+        result = getMonth() / 3;
+        break;
+
+      case C.W:
+        result = (diff - zoneDelta) / C.MILLISECONDS_A_WEEK;
+        break;
+
+      case C.D:
+        result = (diff - zoneDelta) / C.MILLISECONDS_A_DAY;
+        break;
+
+      case C.H:
+        result = diff / C.MILLISECONDS_A_HOUR;
+        break;
+
+      case C.MIN:
+        result = diff / C.MILLISECONDS_A_MINUTE;
+        break;
+
+      case C.S:
+        result = diff / C.MILLISECONDS_A_SECOND;
+        break;
+
+      default:
+        result = diff; // milliseconds
+
+        break;
+    }
 
     return _float ? result : Utils.a(result);
   };

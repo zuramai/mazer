@@ -1,6 +1,6 @@
 export default (function (o, c, d) {
   var sortBy = function sortBy(method, dates) {
-    if (!dates || !dates.length || !dates[0] || dates.length === 1 && !dates[0].length) {
+    if (!dates || !dates.length || dates.length === 1 && !dates[0] || dates.length === 1 && Array.isArray(dates[0]) && !dates[0].length) {
       return null;
     }
 
@@ -9,6 +9,9 @@ export default (function (o, c, d) {
       dates = _dates[0];
     }
 
+    dates = dates.filter(function (date) {
+      return date;
+    });
     var result;
     var _dates2 = dates;
     result = _dates2[0];

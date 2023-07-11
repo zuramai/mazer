@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.5.0 (2023-06-12)
+ * TinyMCE version 6.5.1 (2023-06-19)
  */
 
 (function () {
@@ -24785,13 +24785,14 @@
     const insertNbspAtPosition = curry(insertTextAtPosition, nbsp);
     const insertSpaceAtPosition = curry(insertTextAtPosition, ' ');
 
+    const insertSpaceOrNbspAtPosition = (root, pos) => needsToHaveNbsp(root, pos) ? insertNbspAtPosition(pos) : insertSpaceAtPosition(pos);
     const locationToCaretPosition = root => location => location.fold(element => prevPosition(root.dom, CaretPosition.before(element)), element => firstPositionIn(element), element => lastPositionIn(element), element => nextPosition(root.dom, CaretPosition.after(element)));
     const insertInlineBoundarySpaceOrNbsp = (root, pos) => checkPos => needsToHaveNbsp(root, checkPos) ? insertNbspAtPosition(pos) : insertSpaceAtPosition(pos);
     const setSelection = editor => pos => {
       editor.selection.setRng(pos.toRange());
       editor.nodeChanged();
-      return true;
     };
+    const isInsideSummary = (domUtils, node) => domUtils.isEditable(domUtils.getParent(node, 'summary'));
     const insertSpaceOrNbspAtSelection = editor => {
       const pos = CaretPosition.fromRangeStart(editor.selection.getRng());
       const root = SugarElement.fromDom(editor.getBody());
@@ -24803,12 +24804,29 @@
         return Optional.none();
       }
     };
+    const insertSpaceInSummaryAtSelectionOnFirefox = editor => {
+      const insertSpaceThunk = () => {
+        const root = SugarElement.fromDom(editor.getBody());
+        if (!editor.selection.isCollapsed()) {
+          editor.getDoc().execCommand('Delete');
+        }
+        const pos = CaretPosition.fromRangeStart(editor.selection.getRng());
+        insertSpaceOrNbspAtPosition(root, pos).each(setSelection(editor));
+      };
+      return someIf(Env.browser.isFirefox() && editor.selection.isEditable() && isInsideSummary(editor.dom, editor.selection.getRng().startContainer), insertSpaceThunk);
+    };
 
     const executeKeydownOverride$1 = (editor, evt) => {
-      executeWithDelayedAction([{
+      executeWithDelayedAction([
+        {
           keyCode: VK.SPACEBAR,
           action: action(insertSpaceOrNbspAtSelection, editor)
-        }], evt).each(applyAction => {
+        },
+        {
+          keyCode: VK.SPACEBAR,
+          action: action(insertSpaceInSummaryAtSelectionOnFirefox, editor)
+        }
+      ], evt).each(applyAction => {
         evt.preventDefault();
         const event = fireBeforeInputEvent(editor, 'insertText', { data: ' ' });
         if (!event.isDefaultPrevented()) {
@@ -25442,26 +25460,31 @@
       setReadOnlyMode(dataTransfer);
       return dataTransfer;
     };
-    const doPaste = (editor, content, internal, pasteAsText) => {
+    const doPaste = (editor, content, internal, pasteAsText, shouldSimulateInputEvent) => {
       const res = process(editor, content, internal);
       if (!res.cancelled) {
         const content = res.content;
-        const args = fireBeforeInputEvent(editor, 'insertFromPaste', { dataTransfer: createPasteDataTransfer(content) });
-        if (!args.isDefaultPrevented()) {
-          insertContent(editor, content, pasteAsText);
-          fireInputEvent(editor, 'insertFromPaste');
+        const doPasteAction = () => insertContent(editor, content, pasteAsText);
+        if (shouldSimulateInputEvent) {
+          const args = fireBeforeInputEvent(editor, 'insertFromPaste', { dataTransfer: createPasteDataTransfer(content) });
+          if (!args.isDefaultPrevented()) {
+            doPasteAction();
+            fireInputEvent(editor, 'insertFromPaste');
+          }
+        } else {
+          doPasteAction();
         }
       }
     };
-    const pasteHtml = (editor, html, internalFlag) => {
+    const pasteHtml = (editor, html, internalFlag, shouldSimulateInputEvent) => {
       const internal = internalFlag ? internalFlag : isMarked(html);
-      doPaste(editor, unmark(html), internal, false);
+      doPaste(editor, unmark(html), internal, false, shouldSimulateInputEvent);
     };
-    const pasteText = (editor, text) => {
+    const pasteText = (editor, text, shouldSimulateInputEvent) => {
       const encodedText = editor.dom.encode(text).replace(/\r\n/g, '\n');
       const normalizedText = normalize$4(encodedText, getPasteTabSpaces(editor));
       const html = toBlockElements(normalizedText, getForcedRootBlock(editor), getForcedRootBlockAttrs(editor));
-      doPaste(editor, html, false, true);
+      doPaste(editor, html, false, true, shouldSimulateInputEvent);
     };
     const getDataTransferItems = dataTransfer => {
       const items = {};
@@ -25499,7 +25522,7 @@
         const blobCache = editor.editorUpload.blobCache;
         const existingBlobInfo = blobCache.getByData(base64, type);
         const blobInfo = existingBlobInfo !== null && existingBlobInfo !== void 0 ? existingBlobInfo : createBlobInfo(editor, blobCache, file, base64);
-        pasteHtml(editor, `<img src="${ blobInfo.blobUri() }">`, false);
+        pasteHtml(editor, `<img src="${ blobInfo.blobUri() }">`, false, true);
       });
     };
     const isClipboardEvent = event => event.type === 'paste';
@@ -25546,7 +25569,7 @@
       return Env.os.isAndroid() && ((_b = (_a = e.clipboardData) === null || _a === void 0 ? void 0 : _a.items) === null || _b === void 0 ? void 0 : _b.length) === 0;
     };
     const isKeyboardPasteEvent = e => VK.metaKeyPressed(e) && e.keyCode === 86 || e.shiftKey && e.keyCode === 45;
-    const insertClipboardContent = (editor, clipboardContent, html, plainTextMode) => {
+    const insertClipboardContent = (editor, clipboardContent, html, plainTextMode, shouldSimulateInputEvent) => {
       let content = trimHtml(html);
       const isInternal = hasContentType(clipboardContent, internalHtmlMime()) || isMarked(html);
       const isPlainTextHtml = !isInternal && isPlainText(content);
@@ -25565,9 +25588,9 @@
         return;
       }
       if (plainTextMode) {
-        pasteText(editor, content);
+        pasteText(editor, content, shouldSimulateInputEvent);
       } else {
-        pasteHtml(editor, content, isInternal);
+        pasteHtml(editor, content, isInternal, shouldSimulateInputEvent);
       }
     };
     const registerEventHandlers = (editor, pasteBin, pasteFormat) => {
@@ -25588,17 +25611,18 @@
         if (!hasHtmlOrText(clipboardContent) && pasteImageData(editor, e, getLastRng())) {
           return;
         }
-        e.preventDefault();
         if (hasContentType(clipboardContent, 'text/html')) {
-          insertClipboardContent(editor, clipboardContent, clipboardContent['text/html'], plainTextMode);
+          e.preventDefault();
+          insertClipboardContent(editor, clipboardContent, clipboardContent['text/html'], plainTextMode, true);
         } else if (hasContentType(clipboardContent, 'text/plain') && hasContentType(clipboardContent, 'text/uri-list')) {
-          insertClipboardContent(editor, clipboardContent, clipboardContent['text/plain'], plainTextMode);
+          e.preventDefault();
+          insertClipboardContent(editor, clipboardContent, clipboardContent['text/plain'], plainTextMode, true);
         } else {
           pasteBin.create();
           Delay.setEditorTimeout(editor, () => {
             const html = pasteBin.getHtml();
             pasteBin.remove();
-            insertClipboardContent(editor, clipboardContent, html, plainTextMode);
+            insertClipboardContent(editor, clipboardContent, html, plainTextMode, false);
           }, 0);
         }
       });
@@ -25646,10 +25670,10 @@
       });
       editor.addCommand('mceInsertClipboardContent', (ui, value) => {
         if (value.html) {
-          pasteHtml(editor, value.html, value.internal);
+          pasteHtml(editor, value.html, value.internal, false);
         }
         if (value.text) {
-          pasteText(editor, value.text);
+          pasteText(editor, value.text, false);
         }
       });
     };
@@ -25803,9 +25827,9 @@
               setFocusedRange(editor, rng);
               const trimmedContent = trimHtml(content);
               if (dropContent['text/html']) {
-                pasteHtml(editor, trimmedContent, internal);
+                pasteHtml(editor, trimmedContent, internal, true);
               } else {
-                pasteText(editor, trimmedContent);
+                pasteText(editor, trimmedContent, true);
               }
             });
           });
@@ -30662,8 +30686,8 @@
       documentBaseURL: null,
       suffix: null,
       majorVersion: '6',
-      minorVersion: '5.0',
-      releaseDate: '2023-06-12',
+      minorVersion: '5.1',
+      releaseDate: '2023-06-19',
       i18n: I18n,
       activeEditor: null,
       focusedEditor: null,
