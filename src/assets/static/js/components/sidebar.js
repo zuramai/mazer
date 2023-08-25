@@ -155,7 +155,6 @@ class Sidebar {
    */
   hide() {
     this.sidebarEL.classList.remove("active")
-    this.sidebarEL.classList.add("inactive")
     this.deleteBackdrop()
     this.toggleOverflowBody()
   }
