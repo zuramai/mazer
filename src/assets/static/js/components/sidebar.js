@@ -119,6 +119,7 @@ class Sidebar {
   onResize() {
     if (isDesktop(window)) {
       this.sidebarEL.classList.add("active")
+      this.sidebarEL.classList.remove("inactive")
     } else {
       this.sidebarEL.classList.remove("active")
     }
