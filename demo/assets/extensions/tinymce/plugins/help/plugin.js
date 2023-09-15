@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.5.1 (2023-06-19)
+ * TinyMCE version 6.7.0 (2023-08-30)
  */
 
 (function () {
@@ -586,6 +586,11 @@
         slug: 'advanced-templates'
       },
       {
+        key: 'ai',
+        name: 'AI Assistant',
+        type: 'premium'
+      },
+      {
         key: 'casechange',
         name: 'Case Change',
         type: 'premium'
@@ -711,9 +716,9 @@
         });
         const sortedPremiumPlugins = sort(map(premiumPlugins, p => p.name), (s1, s2) => s1.localeCompare(s2));
         const premiumPluginList = map(sortedPremiumPlugins, pluginName => `<li>${ pluginName }</li>`).join('');
-        return '<div data-mce-tabstop="1" tabindex="-1">' + '<p><b>' + global$2.translate('Premium plugins:') + '</b></p>' + '<ul>' + premiumPluginList + '<li class="tox-help__more-link" "><a href="https://www.tiny.cloud/pricing/?utm_campaign=editor_referral&utm_medium=help_dialog&utm_source=tinymce" rel="noopener" target="_blank">' + global$2.translate('Learn more...') + '</a></li>' + '</ul>' + '</div>';
+        return '<div>' + '<p><b>' + global$2.translate('Premium plugins:') + '</b></p>' + '<ul>' + premiumPluginList + '<li class="tox-help__more-link" ">' + '<a href="https://www.tiny.cloud/pricing/?utm_campaign=editor_referral&utm_medium=help_dialog&utm_source=tinymce" rel="noopener" target="_blank"' + ' data-alloy-tabstop="true" tabindex="-1">' + global$2.translate('Learn more...') + '</a></li>' + '</ul>' + '</div>';
       };
-      const makeLink = p => `<a href="${ p.url }" target="_blank" rel="noopener">${ p.name }</a>`;
+      const makeLink = p => `<a data-alloy-tabstop="true" tabindex="-1" href="${ p.url }" target="_blank" rel="noopener">${ p.name }</a>`;
       const identifyUnknownPlugin = (editor, key) => {
         const getMetadata = editor.plugins[key].getMetadata;
         if (isFunction(getMetadata)) {
@@ -767,7 +772,7 @@
         if (editor == null) {
           return '';
         }
-        return '<div data-mce-tabstop="1" tabindex="-1">' + pluginLister(editor) + '</div>';
+        return '<div>' + pluginLister(editor) + '</div>';
       };
       const htmlPanel = {
         type: 'htmlpanel',
@@ -789,7 +794,7 @@
     const tab = () => {
       const getVersion = (major, minor) => major.indexOf('@') === 0 ? 'X.X.X' : major + '.' + minor;
       const version = getVersion(global.majorVersion, global.minorVersion);
-      const changeLogLink = '<a href="https://www.tiny.cloud/docs/tinymce/6/changelog/?utm_campaign=editor_referral&utm_medium=help_dialog&utm_source=tinymce" rel="noopener" target="_blank">TinyMCE ' + version + '</a>';
+      const changeLogLink = '<a data-alloy-tabstop="true" tabindex="-1" href="https://www.tiny.cloud/docs/tinymce/6/changelog/?utm_campaign=editor_referral&utm_medium=help_dialog&utm_source=tinymce" rel="noopener" target="_blank">TinyMCE ' + version + '</a>';
       const htmlPanel = {
         type: 'htmlpanel',
         html: '<p>' + global$2.translate([

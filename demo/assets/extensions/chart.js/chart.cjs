@@ -1,5 +1,5 @@
 /*!
- * Chart.js v4.3.0
+ * Chart.js v4.4.0
  * https://www.chartjs.org
  * (c) 2023 Chart.js Contributors
  * Released under the MIT License
@@ -2466,6 +2466,9 @@ class ScatterController extends DatasetController {
             count = points.length;
         }
         if (this.options.showLine) {
+            if (!this.datasetElementType) {
+                this.addElements();
+            }
             const { dataset: line , _dataset  } = meta;
             line._chart = this.chart;
             line._datasetIndex = this.index;
@@ -2477,6 +2480,9 @@ class ScatterController extends DatasetController {
                 animated: !animationsDisabled,
                 options
             }, mode);
+        } else if (this.datasetElementType) {
+            delete meta.dataset;
+            this.datasetElementType = false;
         }
         this.updateElements(points, start, count, mode);
     }
@@ -5495,7 +5501,7 @@ function needContext(proxy, names) {
     return false;
 }
 
-var version = "4.3.0";
+var version = "4.4.0";
 
 const KNOWN_POSITIONS = [
     'top',
@@ -5565,16 +5571,20 @@ function moveNumericKeys(obj, start, move) {
     }
     return e;
 }
-function getDatasetArea(meta) {
+function getSizeForArea(scale, chartArea, field) {
+    return scale.options.clip ? scale[field] : chartArea[field];
+}
+function getDatasetArea(meta, chartArea) {
     const { xScale , yScale  } = meta;
     if (xScale && yScale) {
         return {
-            left: xScale.left,
-            right: xScale.right,
-            top: yScale.top,
-            bottom: yScale.bottom
+            left: getSizeForArea(xScale, chartArea, 'left'),
+            right: getSizeForArea(xScale, chartArea, 'right'),
+            top: getSizeForArea(yScale, chartArea, 'top'),
+            bottom: getSizeForArea(yScale, chartArea, 'bottom')
         };
     }
+    return chartArea;
 }
 class Chart {
     static defaults = helpers_segment.defaults;
@@ -6076,7 +6086,7 @@ class Chart {
         const ctx = this.ctx;
         const clip = meta._clip;
         const useClip = !clip.disabled;
-        const area = getDatasetArea(meta) || this.chartArea;
+        const area = getDatasetArea(meta, this.chartArea);
         const args = {
             meta,
             index: meta.index,
@@ -8459,7 +8469,7 @@ class Legend extends Element {
                 cursor.x += width + padding;
             } else if (typeof legendItem.text !== 'string') {
                 const fontLineHeight = labelFont.lineHeight;
-                cursor.y += calculateLegendItemHeight(legendItem, fontLineHeight);
+                cursor.y += calculateLegendItemHeight(legendItem, fontLineHeight) + padding;
             } else {
                 cursor.y += lineHeight;
             }
@@ -8573,7 +8583,7 @@ function calculateItemHeight(_itemHeight, legendItem, fontLineHeight) {
     return itemHeight;
 }
 function calculateLegendItemHeight(legendItem, fontLineHeight) {
-    const labelHeight = legendItem.text ? legendItem.text.length + 0.5 : 0;
+    const labelHeight = legendItem.text ? legendItem.text.length : 0;
     return fontLineHeight * labelHeight;
 }
 function isListened(type, opts) {
@@ -10877,7 +10887,9 @@ class RadialLinearScale extends LinearScaleBase {
                 ctx.fillRect(-width / 2 - padding.left, -offset - tickFont.size / 2 - padding.top, width + padding.width, tickFont.size + padding.height);
             }
             helpers_segment.renderText(ctx, tick.label, 0, -offset, tickFont, {
-                color: optsAtIndex.color
+                color: optsAtIndex.color,
+                strokeColor: optsAtIndex.textStrokeColor,
+                strokeWidth: optsAtIndex.textStrokeWidth
             });
         });
         ctx.restore();
@@ -11197,7 +11209,7 @@ class TimeScale extends Scale {
         if (time === max || options.bounds === 'ticks' || count === 1) {
             addTick(ticks, time, timestamps);
         }
-        return Object.keys(ticks).sort((a, b)=>a - b).map((x)=>+x);
+        return Object.keys(ticks).sort(sorter).map((x)=>+x);
     }
  getLabelForValue(value) {
         const adapter = this._adapter;
@@ -11379,6 +11391,18 @@ class TimeSeriesScale extends TimeScale {
             }
         }
         return table;
+    }
+ _generate() {
+        const min = this.min;
+        const max = this.max;
+        let timestamps = super.getDataTimestamps();
+        if (!timestamps.includes(min) || !timestamps.length) {
+            timestamps.splice(0, 0, min);
+        }
+        if (!timestamps.includes(max) || timestamps.length === 1) {
+            timestamps.push(max);
+        }
+        return timestamps.sort((a, b)=>a - b);
     }
  _getTimestampsForTable() {
         let timestamps = this._cache.all || [];

@@ -23,6 +23,13 @@ declare class TimeSeriesScale extends TimeScale {
        */
     protected buildLookupTable(timestamps: number[]): object[];
     /**
+      * Generates all timestamps defined in the data.
+      * Important: this method can return ticks outside the min and max range, it's the
+      * responsibility of the calling code to clamp values if needed.
+      * @protected
+      */
+    protected _generate(): any;
+    /**
        * Returns all timestamps
        * @return {number[]}
        * @private

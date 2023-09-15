@@ -6,6 +6,99 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 6.7.0 - 2023-08-30
+
+### Added
+- New `help_accessibility` option displays the keyboard shortcut to open the in-application help in the status bar. #TINY-9379
+- Added a new `InsertNewBlockBefore` command which inserts an empty block before the block containing the current selection. #TINY-10022
+- Added a new `InsertNewBlockAfter` command which inserts an empty block after the block containing the current selection. #TINY-10022
+
+### Improved
+- Adding a newline after a table would, in some specific cases, not work. #TINY-9863
+- Menus now have a slight margin at the top and bottom to more clearly separate them from the frame edge. #TINY-9978
+- Updated **More** toolbar button tooltip text from *More...* to *Reveal or hide additional toolbar items*. #TINY-9629
+- Where multiple case sensitive variants of a translation key are provided, they will now all be preserved in the translation object instead of just the lowercase variant. #TINY-10115
+- Improved screen reader announcements of the column and row selection in the grid presented by the **Table** menu and toolbar item. #TINY-10140
+- Improved the keyboard focus visibility for links inside dialogs. #TINY-10124
+
+### Changed
+- Change `UndoLevelType` from `enum` to union type so that it is easier to use. #TINY-9764
+- The pattern replacement removed spaces if they were contained within a tag that only contained a space and the text to replace. #TINY-9744
+- If loading content CSS takes more than 500ms, the editor will be set to an *in progress* state until the CSS is ready. #TINY-10008
+
+### Fixed
+- Applying an ordered or unordered list to a selected checklist incorrectly turned the list into paragraphs. #TINY-9975
+- Returning an empty string in a custom context menu update function resulted in a small white line appearing on right-click and the browser-native context menu would not present. #TINY-9842
+- For sufficiently long URLs and sufficiently wide windows, URL autocompletion hid middle portions of the URL from view. #TINY-10017
+- Numeric input in toolbar items did not disable when a switching from edit to read-only mode. #TINY-10129
+- The Quick Toolbars plugin showed text alignment buttons on pagebreaks. #TINY-10054
+- Creating lists in empty blocks sometimes, and incorrectly, converted adjacent block elements into list items. #TINY-10136
+- Creating a list from multiple `<div>` elements only created a partial list. #TINY-9872
+- Tab navigation incorrectly stopped around `iframe` dialog components. #TINY-9815
+- It was possible to delete the sole empty block immediately before a `<details>` element if it was nested within another `<details>` element. #TINY-9965
+- Deleting `<li>` elements that only contained `<br>` tags sometimes caused a crash. #TINY-6888
+- It was possible to remove the `<summary>` element from a `<details>` element by dragging and dropping. #TINY-9960
+- It was possible to break `<summary>` elements if content containing block elements was dragged-and-dropped inside them. #TINY-9960
+- Contents were not removed from the drag start source if dragging and dropping internally into a transparent block element. #TINY-9960
+- Using the Media plugin unexpectedly changed `<script>` tags in the editor body to `<image>` tags. #TINY-10007
+- In some circumstances, pressing the **Enter** key scrolled the entire page. #TINY-9828
+- The border styles of a table were incorrectly split into a longhand form after table dialog updates. #TINY-9843
+- Links in **Help → Help → Plugins** and **Help → Help → Version** were not navigable by keyboard. #TINY-10071
+- Fixed the inability to insert content next to the `<details>` element when it is the first or last content element. Pressing the **Up** or **Down** arrow key now inserts a block element before or after the `<details>` element. #TINY-9827
+- An empty element with a `contenteditable="true"` attribute within a noneditable root was deleted when the Backspace key was pressed. #TINY-10011
+- The `color_cols` option was not respected when set to the value 5 with a custom `color_map` specified. #TINY-10126
+- In Safari on macOS, deleting backwards within a `<summary>` element removed the entire `<details>` element if it had no other content. #TINY-10123
+
+## 6.6.2 - 2023-08-09
+
+### Fixed
+- An "Uncaught TypeError: Cannot read properties of null" error would sometimes be thrown when updating the content of a `streamContent: true` iframe dialog component. #TINY-10128
+
+## 6.6.1 - 2023-08-02
+
+### Added
+- Restored filtering option, `pad_empty_with_br`. Set to `true` to pad empty block elements with `<br>` tags instead of the `&nbsp;` character entity. #TINY-9861
+
+### Improved
+- When Safari is the host browser, content updates for iframe dialog components with `streamContent: true` set are now throttled to 500ms intervals. #TINY-10097
+
+### Changed
+- API comments/documentation: a markup typo and run-on sentences both corrected. #TINY-10073
+
+### Fixed
+- On Safari and Firefox, scroll positions were not always maintained when updating the content of a `streamContent: true` iframe dialog component. #TINY-10078
+- On Safari, iframe dialog components did not consistently autoscroll to the end of the scrollable area when `streamContent: true` was set. #TINY-10109
+- Scrolling behavior was inconsistent when updating a `streamContent: true` iframe dialog component with content lacking an HTML document type declaration. #TINY-10110
+- A warning message was sometimes printed to the browser console when closing a dialog that contained an iframe component. #TINY-10070
+- Lists could not be created within editable areas nested inside non-editable areas. #TINY-10000
+- On Safari and Firefox, the border around `iframe` dialog components did not highlight when focused. #TINY-10101
+- Right-clicking on an image in a non-editable context opened the Image context menu. #TINY-10016
+- The `color_cols` option was not respected when a custom `color_map` was defined. #TINY-10098
+- The `color_cols` options were were not rounded to the nearest number when set to a decimal number. #TINY-9737
+
+## 6.6.0 - 2023-07-12
+
+### Added
+- Added a new property value — `bottom` — for inline dialog configurations that anchors the dialog to the bottom of the editor. #TINY-9888
+- Added a new property — `persistent` — for inline dialog configurations that will stop the dialog closing when clicking away from it. #TINY-9991
+- New `ai`, `ai-prompt` and `send` icons. #TINY-9942
+- Added a new property — `streamContent` — for the `iframe` dialog component. This causes `setData()` to update content without reloading the frame, and end scroll positions will be maintained as new content streams in. #TINY-10032
+- AI Assistant plugin toolbar items added to the default toolbar and AI Assistant plugin menu items added to the default menu bar. #TINY-9939
+- Added a new property — `border` — for the `iframe` dialog component that allows a border to be added. #TINY-10049
+- Added a new property — `align` — for the label dialog component that controls text alignment. #TINY-10058
+
+### Improved
+- When defining a modal or inline dialog, if the buttons property is an empty array, or is not defined at all, the footer will now no longer be rendered. #TINY-9996
+- The `iframe` dialog component now has a minimum height of 200px. #TINY-10059
+- Improved detection of scrollable containers when the `ui_mode: 'split'` option is set. #TINY-9385
+
+### Changed
+- The icon in an `alertbanner` dialog component is no longer clickable if the _URL_ field is not specified. #TINY-10013
+
+### Fixed
+- Fixed an issue that caused the inline dialog `size` setting to have no effect. #TINY-10015
+- Fixed an issue that prevented the close button from being clicked when the dialog was blocked. #TINY-10056
+
 ## 6.5.1 - 2023-06-19
 
 ### Fixed

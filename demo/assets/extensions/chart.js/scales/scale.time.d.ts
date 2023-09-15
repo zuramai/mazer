@@ -51,9 +51,9 @@ export default class TimeScale extends Scale {
        * `minor` unit using the given scale time `options`.
        * Important: this method can return ticks outside the min and max range, it's the
        * responsibility of the calling code to clamp values if needed.
-       * @private
+       * @protected
        */
-    private _generate;
+    protected _generate(): number[];
     /**
        * @param {number} value
        * @return {string}

@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.5.1 (2023-06-19)
+ * TinyMCE version 6.7.0 (2023-08-30)
  */
 
 (function () {
@@ -616,6 +616,7 @@
     const documentElement = element => SugarElement.fromDom(documentOrOwner(element).dom.documentElement);
     const defaultView = element => SugarElement.fromDom(documentOrOwner(element).dom.defaultView);
     const parent = element => Optional.from(element.dom.parentNode).map(SugarElement.fromDom);
+    const parentNode = element => parent(element);
     const parentElement = element => Optional.from(element.dom.parentElement).map(SugarElement.fromDom);
     const parents = (element, isRoot) => {
       const stop = isFunction(isRoot) ? isRoot : never;
@@ -6203,6 +6204,8 @@
         const navigate = tabbingConfig.cyclic ? cycleNext : tryNext;
         return go(component, simulatedEvent, tabbingConfig, navigate);
       };
+      const isFirstChild = elem => parentNode(elem).bind(firstChild).exists(child => eq(child, elem));
+      const goFromPseudoTabstop = (component, simulatedEvent, tabbingConfig) => findCurrent(component, tabbingConfig).filter(elem => !tabbingConfig.useTabstopAt(elem)).bind(elem => (isFirstChild(elem) ? goBackwards : goForwards)(component, simulatedEvent, tabbingConfig));
       const execute = (component, simulatedEvent, tabbingConfig) => tabbingConfig.onEnter.bind(f => f(component, simulatedEvent));
       const exit = (component, simulatedEvent, tabbingConfig) => tabbingConfig.onEscape.bind(f => f(component, simulatedEvent));
       const getKeydownRules = constant$1([
@@ -6216,7 +6219,10 @@
           inSet(ENTER)
         ]), execute)
       ]);
-      const getKeyupRules = constant$1([rule(inSet(ESCAPE), exit)]);
+      const getKeyupRules = constant$1([
+        rule(inSet(ESCAPE), exit),
+        rule(inSet(TAB), goFromPseudoTabstop)
+      ]);
       return typical(schema, NoState.init, getKeydownRules, getKeyupRules, () => Optional.some(focusIn));
     };
 
@@ -8558,6 +8564,10 @@
         default: !global$5.deviceType.isTouch()
       });
       registerOption('sidebar_show', { processor: 'string' });
+      registerOption('help_accessibility', {
+        processor: 'boolean',
+        default: editor.hasPlugin('help')
+      });
     };
     const isReadOnly = option$2('readonly');
     const getHeightOption = option$2('height');
@@ -8595,6 +8605,7 @@
     const getPasteAsText = option$2('paste_as_text');
     const getSidebarShow = option$2('sidebar_show');
     const promotionEnabled = option$2('promotion');
+    const useHelpAccessibility = option$2('help_accessibility');
     const isSkinDisabled = editor => editor.options.get('skin') === false;
     const isMenubarEnabled = editor => editor.options.get('menubar') !== false;
     const getSkinUrl = editor => {
@@ -8713,7 +8724,8 @@
         useBranding: useBranding,
         getResize: getResize,
         getPasteAsText: getPasteAsText,
-        getSidebarShow: getSidebarShow
+        getSidebarShow: getSidebarShow,
+        useHelpAccessibility: useHelpAccessibility
     });
 
     const autocompleteSelector = '[data-mce-autocompleter]';
@@ -10432,13 +10444,7 @@
 
     const foregroundId = 'forecolor';
     const backgroundId = 'hilitecolor';
-    const defaultCols = 5;
-    const calcCols = colors => Math.max(defaultCols, Math.ceil(Math.sqrt(colors)));
-    const calcColsOption = (editor, numColors) => {
-      const calculatedCols = calcCols(numColors);
-      const fallbackCols = option$1('color_cols')(editor);
-      return defaultCols === calculatedCols ? fallbackCols : calculatedCols;
-    };
+    const fallbackCols = 5;
     const mapColors = colorMap => {
       const colors = [];
       for (let i = 0; i < colorMap.length; i += 2) {
@@ -10465,6 +10471,19 @@
           return {
             valid: false,
             message: 'Must be an array of strings.'
+          };
+        }
+      };
+      const colorColsProcessor = value => {
+        if (isNumber(value) && value > 0) {
+          return {
+            value,
+            valid: true
+          };
+        } else {
+          return {
+            valid: false,
+            message: 'Must be a positive number.'
           };
         }
       };
@@ -10520,16 +10539,16 @@
       registerOption('color_map_background', { processor: colorProcessor });
       registerOption('color_map_foreground', { processor: colorProcessor });
       registerOption('color_cols', {
-        processor: 'number',
-        default: calcCols(getColors$2(editor, 'default').length)
+        processor: colorColsProcessor,
+        default: calcCols(editor)
       });
       registerOption('color_cols_foreground', {
-        processor: 'number',
-        default: calcColsOption(editor, getColors$2(editor, foregroundId).length)
+        processor: colorColsProcessor,
+        default: defaultCols(editor, foregroundId)
       });
       registerOption('color_cols_background', {
-        processor: 'number',
-        default: calcColsOption(editor, getColors$2(editor, backgroundId).length)
+        processor: colorColsProcessor,
+        default: defaultCols(editor, backgroundId)
       });
       registerOption('custom_colors', {
         processor: 'boolean',
@@ -10544,20 +10563,6 @@
         default: fallbackColor
       });
     };
-    const colorColsOption = (editor, id) => {
-      if (id === foregroundId) {
-        return option$1('color_cols_foreground')(editor);
-      } else if (id === backgroundId) {
-        return option$1('color_cols_background')(editor);
-      } else {
-        return option$1('color_cols')(editor);
-      }
-    };
-    const getColorCols$1 = (editor, id) => {
-      const colorCols = colorColsOption(editor, id);
-      return colorCols > 0 ? colorCols : defaultCols;
-    };
-    const hasCustomColors$1 = option$1('custom_colors');
     const getColors$2 = (editor, id) => {
       if (id === foregroundId && editor.options.isSet('color_map_foreground')) {
         return option$1('color_map_foreground')(editor);
@@ -10567,6 +10572,29 @@
         return option$1('color_map')(editor);
       }
     };
+    const calcCols = (editor, id = 'default') => Math.max(fallbackCols, Math.ceil(Math.sqrt(getColors$2(editor, id).length)));
+    const defaultCols = (editor, id) => {
+      const defaultCols = option$1('color_cols')(editor);
+      const calculatedCols = calcCols(editor, id);
+      if (defaultCols === calcCols(editor)) {
+        return calculatedCols;
+      } else {
+        return defaultCols;
+      }
+    };
+    const getColorCols$1 = (editor, id = 'default') => {
+      const getCols = () => {
+        if (id === foregroundId) {
+          return option$1('color_cols_foreground')(editor);
+        } else if (id === backgroundId) {
+          return option$1('color_cols_background')(editor);
+        } else {
+          return option$1('color_cols')(editor);
+        }
+      };
+      return Math.round(getCols());
+    };
+    const hasCustomColors$1 = option$1('custom_colors');
     const getDefaultForegroundColor = option$1('color_default_foreground');
     const getDefaultBackgroundColor = option$1('color_default_background');
 
@@ -10882,7 +10910,8 @@
 
     const cellOverEvent = generate$6('cell-over');
     const cellExecuteEvent = generate$6('cell-execute');
-    const makeCell = (row, col, labelId) => {
+    const makeAnnouncementText = backstage => (row, col) => backstage.shared.providers.translate(`${ col } columns, ${ row } rows`);
+    const makeCell = (row, col, label) => {
       const emitCellOver = c => emitWith(c, cellOverEvent, {
         row,
         col
@@ -10900,7 +10929,7 @@
           tag: 'div',
           attributes: {
             role: 'button',
-            ['aria-labelledby']: labelId
+            ['aria-label']: label
           }
         },
         behaviours: derive$1([
@@ -10918,12 +10947,13 @@
         ])
       });
     };
-    const makeCells = (labelId, numRows, numCols) => {
+    const makeCells = (getCellLabel, numRows, numCols) => {
       const cells = [];
       for (let i = 0; i < numRows; i++) {
         const row = [];
         for (let j = 0; j < numCols; j++) {
-          row.push(makeCell(i, j, labelId));
+          const label = getCellLabel(i + 1, j + 1);
+          row.push(makeCell(i, j, label));
         }
         cells.push(row);
       }
@@ -10938,17 +10968,16 @@
     };
     const makeComponents = cells => bind$3(cells, cellRow => map$2(cellRow, premade));
     const makeLabelText = (row, col) => text$2(`${ col }x${ row }`);
-    const renderInsertTableMenuItem = spec => {
+    const renderInsertTableMenuItem = (spec, backstage) => {
       const numRows = 10;
       const numColumns = 10;
-      const sizeLabelId = generate$6('size-label');
-      const cells = makeCells(sizeLabelId, numRows, numColumns);
+      const getCellLabel = makeAnnouncementText(backstage);
+      const cells = makeCells(getCellLabel, numRows, numColumns);
       const emptyLabelText = makeLabelText(0, 0);
       const memLabel = record({
         dom: {
           tag: 'span',
-          classes: ['tox-insert-table-picker__label'],
-          attributes: { id: sizeLabelId }
+          classes: ['tox-insert-table-picker__label']
         },
         components: [emptyLabelText],
         behaviours: derive$1([Replacing.config({})])
@@ -11873,12 +11902,15 @@
 
     const nonScrollingOverflows = [
       'visible',
-      'hidden'
+      'hidden',
+      'clip'
     ];
+    const isScrollingOverflowValue = value => trim$1(value).length > 0 && !contains$2(nonScrollingOverflows, value);
     const isScroller = elem => {
       if (isHTMLElement(elem)) {
-        const overflow = get$e(elem, 'overflow');
-        return trim$1(overflow).length > 0 && !contains$2(nonScrollingOverflows, overflow);
+        const overflowX = get$e(elem, 'overflow-x');
+        const overflowY = get$e(elem, 'overflow-y');
+        return isScrollingOverflowValue(overflowX) || isScrollingOverflowValue(overflowY);
       } else {
         return false;
       }
@@ -14318,7 +14350,6 @@
       }
     });
     const withElement = (initialValue, getter, setter) => withComp(initialValue, c => getter(c.element), (c, v) => setter(c.element, v));
-    const domValue = optInitialValue => withElement(optInitialValue, get$6, set$5);
     const domHtml = optInitialValue => withElement(optInitialValue, get$9, set$6);
     const memory = initialValue => Representing.config({
       store: {
@@ -14326,14 +14357,6 @@
         initialValue
       }
     });
-    const RepresentingConfigs = {
-      memento,
-      withElement,
-      withComp,
-      domValue,
-      domHtml,
-      memory
-    };
 
     const english = {
       'colorcustom.rgb.red.label': 'R',
@@ -14379,7 +14402,7 @@
         dom: { tag: 'div' },
         components: [memPicker.asSpec()],
         behaviours: derive$1([
-          RepresentingConfigs.withComp(initialData, comp => {
+          withComp(initialData, comp => {
             const picker = memPicker.get(comp);
             const optRgbForm = Composing.getCurrent(picker);
             const optHex = optRgbForm.bind(rgbForm => {
@@ -14430,7 +14453,7 @@
                 });
               });
             })]),
-          RepresentingConfigs.withComp(Optional.none(), () => editorApi.get().fold(() => initialValue.get().getOr(''), ed => ed.getValue()), (component, value) => {
+          withComp(Optional.none(), () => editorApi.get().fold(() => initialValue.get().getOr(''), ed => ed.getValue()), (component, value) => {
             editorApi.get().fold(() => initialValue.set(value), ed => ed.setValue(value));
           }),
           ComposingConfigs.self()
@@ -14493,7 +14516,7 @@
           classes: ['tox-dropzone-container']
         },
         behaviours: derive$1([
-          RepresentingConfigs.memory(initialData.getOr([])),
+          memory(initialData.getOr([])),
           ComposingConfigs.self(),
           Disabling.config({}),
           Toggling.config({
@@ -14570,6 +14593,74 @@
       components: map$2(spec.items, backstage.interpreter)
     });
 
+    const adaptable = (fn, rate) => {
+      let timer = null;
+      let args = null;
+      const cancel = () => {
+        if (!isNull(timer)) {
+          clearTimeout(timer);
+          timer = null;
+          args = null;
+        }
+      };
+      const throttle = (...newArgs) => {
+        args = newArgs;
+        if (isNull(timer)) {
+          timer = setTimeout(() => {
+            const tempArgs = args;
+            timer = null;
+            args = null;
+            fn.apply(null, tempArgs);
+          }, rate);
+        }
+      };
+      return {
+        cancel,
+        throttle
+      };
+    };
+    const first = (fn, rate) => {
+      let timer = null;
+      const cancel = () => {
+        if (!isNull(timer)) {
+          clearTimeout(timer);
+          timer = null;
+        }
+      };
+      const throttle = (...args) => {
+        if (isNull(timer)) {
+          timer = setTimeout(() => {
+            timer = null;
+            fn.apply(null, args);
+          }, rate);
+        }
+      };
+      return {
+        cancel,
+        throttle
+      };
+    };
+    const last = (fn, rate) => {
+      let timer = null;
+      const cancel = () => {
+        if (!isNull(timer)) {
+          clearTimeout(timer);
+          timer = null;
+        }
+      };
+      const throttle = (...args) => {
+        cancel();
+        timer = setTimeout(() => {
+          timer = null;
+          fn.apply(null, args);
+        }, rate);
+      };
+      return {
+        cancel,
+        throttle
+      };
+    };
+
     const beforeObject = generate$6('alloy-fake-before-tabstop');
     const afterObject = generate$6('alloy-fake-after-tabstop');
     const craftWithClasses = classes => {
@@ -14590,11 +14681,14 @@
         ])
       };
     };
-    const craft = spec => {
+    const craft = (containerClasses, spec) => {
       return {
         dom: {
           tag: 'div',
-          classes: ['tox-navobj']
+          classes: [
+            'tox-navobj',
+            ...containerClasses.getOr([])
+          ]
         },
         components: [
           craftWithClasses([beforeObject]),
@@ -14627,43 +14721,112 @@
       ].join(','), never);
     };
 
-    const getDynamicSource = initialData => {
+    const dialogChannel = generate$6('update-dialog');
+    const titleChannel = generate$6('update-title');
+    const bodyChannel = generate$6('update-body');
+    const footerChannel = generate$6('update-footer');
+    const bodySendMessageChannel = generate$6('body-send-message');
+    const dialogFocusShiftedChannel = generate$6('dialog-focus-shifted');
+
+    const browser = detect$2().browser;
+    const isSafari = browser.isSafari();
+    const isFirefox = browser.isFirefox();
+    const isSafariOrFirefox = isSafari || isFirefox;
+    const isChromium = browser.isChromium();
+    const isElementScrollAtBottom = ({scrollTop, scrollHeight, clientHeight}) => Math.ceil(scrollTop) + clientHeight >= scrollHeight;
+    const scrollToY = (win, y) => win.scrollTo(0, y === 'bottom' ? 99999999 : y);
+    const getScrollingElement = (doc, html) => {
+      const body = doc.body;
+      return Optional.from(!/^<!DOCTYPE (html|HTML)/.test(html) && (!isChromium && !isSafari || isNonNullable(body) && (body.scrollTop !== 0 || Math.abs(body.scrollHeight - body.clientHeight) > 1)) ? body : doc.documentElement);
+    };
+    const writeValue = (iframeElement, html, fallbackFn) => {
+      const iframe = iframeElement.dom;
+      Optional.from(iframe.contentDocument).fold(fallbackFn, doc => {
+        let lastScrollTop = 0;
+        const isScrollAtBottom = getScrollingElement(doc, html).map(el => {
+          lastScrollTop = el.scrollTop;
+          return el;
+        }).forall(isElementScrollAtBottom);
+        const scrollAfterWrite = () => {
+          const win = iframe.contentWindow;
+          if (isNonNullable(win)) {
+            if (isScrollAtBottom) {
+              scrollToY(win, 'bottom');
+            } else if (!isScrollAtBottom && isSafariOrFirefox && lastScrollTop !== 0) {
+              scrollToY(win, lastScrollTop);
+            }
+          }
+        };
+        if (isSafari) {
+          iframe.addEventListener('load', scrollAfterWrite, { once: true });
+        }
+        doc.open();
+        doc.write(html);
+        doc.close();
+        if (!isSafari) {
+          scrollAfterWrite();
+        }
+      });
+    };
+    const throttleInterval = someIf(isSafariOrFirefox, isSafari ? 500 : 200);
+    const writeValueThrottler = throttleInterval.map(interval => adaptable(writeValue, interval));
+    const getDynamicSource = (initialData, stream) => {
       const cachedValue = Cell(initialData.getOr(''));
       return {
         getValue: _frameComponent => cachedValue.get(),
         setValue: (frameComponent, html) => {
           if (cachedValue.get() !== html) {
-            set$9(frameComponent.element, 'srcdoc', html);
+            const iframeElement = frameComponent.element;
+            const setSrcdocValue = () => set$9(iframeElement, 'srcdoc', html);
+            if (stream) {
+              writeValueThrottler.fold(constant$1(writeValue), throttler => throttler.throttle)(iframeElement, html, setSrcdocValue);
+            } else {
+              setSrcdocValue();
+            }
           }
           cachedValue.set(html);
         }
       };
     };
     const renderIFrame = (spec, providersBackstage, initialData) => {
-      const isSandbox = spec.sandboxed;
-      const isTransparent = spec.transparent;
       const baseClass = 'tox-dialog__iframe';
+      const opaqueClass = spec.transparent ? [] : [`${ baseClass }--opaque`];
+      const containerBorderedClass = spec.border ? [`tox-navobj-bordered`] : [];
       const attributes = {
         ...spec.label.map(title => ({ title })).getOr({}),
         ...initialData.map(html => ({ srcdoc: html })).getOr({}),
-        ...isSandbox ? { sandbox: 'allow-scripts allow-same-origin' } : {}
+        ...spec.sandboxed ? { sandbox: 'allow-scripts allow-same-origin' } : {}
       };
-      const sourcing = getDynamicSource(initialData);
+      const sourcing = getDynamicSource(initialData, spec.streamContent);
       const pLabel = spec.label.map(label => renderLabel$3(label, providersBackstage));
-      const factory = newSpec => craft({
+      const factory = newSpec => craft(Optional.from(containerBorderedClass), {
         uid: newSpec.uid,
         dom: {
           tag: 'iframe',
           attributes,
-          classes: isTransparent ? [baseClass] : [
+          classes: [
             baseClass,
-            `${ baseClass }--opaque`
+            ...opaqueClass
           ]
         },
         behaviours: derive$1([
           Tabstopping.config({}),
           Focusing.config({}),
-          RepresentingConfigs.withComp(initialData, sourcing.getValue, sourcing.setValue)
+          withComp(initialData, sourcing.getValue, sourcing.setValue),
+          Receiving.config({
+            channels: {
+              [dialogFocusShiftedChannel]: {
+                onReceive: (comp, message) => {
+                  message.newFocus.each(newFocus => {
+                    parentElement(comp.element).each(parent => {
+                      const f = eq(comp.element, newFocus) ? add$2 : remove$2;
+                      f(parent, 'tox-navobj-bordered-focus');
+                    });
+                  });
+                }
+              }
+            }
+          })
         ])
       });
       const pField = FormField.parts.field({ factory: { sketch: factory } });
@@ -14776,16 +14939,23 @@
         components: [memContainer.asSpec()],
         behaviours: derive$1([
           ComposingConfigs.self(),
-          RepresentingConfigs.withComp(fakeValidatedData, () => cachedData.get(), setValue)
+          withComp(fakeValidatedData, () => cachedData.get(), setValue)
         ])
       };
     };
 
     const renderLabel$2 = (spec, backstageShared) => {
+      const baseClass = 'tox-label';
+      const centerClass = spec.align === 'center' ? [`${ baseClass }--center`] : [];
+      const endClass = spec.align === 'end' ? [`${ baseClass }--end`] : [];
       const label = {
         dom: {
           tag: 'label',
-          classes: ['tox-label']
+          classes: [
+            baseClass,
+            ...centerClass,
+            ...endClass
+          ]
         },
         components: [text$2(backstageShared.providers.translate(spec.label))]
       };
@@ -14802,7 +14972,7 @@
         behaviours: derive$1([
           ComposingConfigs.self(),
           Replacing.config({}),
-          RepresentingConfigs.domHtml(Optional.none()),
+          domHtml(Optional.none()),
           Keying.config({ mode: 'acyclic' })
         ])
       };
@@ -14973,6 +15143,13 @@
             onDehighlightItem: updateAriaOnDehighlight
           }
         },
+        getAnchorOverrides: () => {
+          return {
+            maxHeightFunction: (element, available) => {
+              anchored()(element, available - 10);
+            }
+          };
+        },
         fetch: comp => Future.nu(curry(spec.fetch, comp))
       }));
       return memDropdown.asSpec();
@@ -15128,7 +15305,7 @@
             classes: [],
             dropdownBehaviours: [
               Tabstopping.config({}),
-              RepresentingConfigs.withComp(initialItem.map(item => item.value), comp => get$f(comp.element, dataAttribute), (comp, data) => {
+              withComp(initialItem.map(item => item.value), comp => get$f(comp.element, dataAttribute), (comp, data) => {
                 findItemByValue(spec.items, data).each(item => {
                   set$9(comp.element, dataAttribute, item.value);
                   emitWith(comp, updateMenuText, { text: item.text });
@@ -16423,48 +16600,6 @@
         events: events$5
     });
 
-    const first = (fn, rate) => {
-      let timer = null;
-      const cancel = () => {
-        if (!isNull(timer)) {
-          clearTimeout(timer);
-          timer = null;
-        }
-      };
-      const throttle = (...args) => {
-        if (isNull(timer)) {
-          timer = setTimeout(() => {
-            timer = null;
-            fn.apply(null, args);
-          }, rate);
-        }
-      };
-      return {
-        cancel,
-        throttle
-      };
-    };
-    const last = (fn, rate) => {
-      let timer = null;
-      const cancel = () => {
-        if (!isNull(timer)) {
-          clearTimeout(timer);
-          timer = null;
-        }
-      };
-      const throttle = (...args) => {
-        cancel();
-        timer = setTimeout(() => {
-          timer = null;
-          fn.apply(null, args);
-        }, rate);
-      };
-      return {
-        cancel,
-        throttle
-      };
-    };
-
     const throttle = _config => {
       const state = Cell(null);
       const readState = () => ({ timer: state.get() !== null ? 'set' : 'unset' });
@@ -17101,7 +17236,7 @@
       return renderFormField(Optional.none(), FormField.parts.field({
         factory: Button,
         ...renderButtonSpec(spec, Optional.some(action), providersBackstage, [
-          RepresentingConfigs.memory(''),
+          memory(''),
           ComposingConfigs.self()
         ])
       }));
@@ -17367,51 +17502,53 @@
       });
     };
 
-    const renderAlertBanner = (spec, providersBackstage) => Container.sketch({
-      dom: {
-        tag: 'div',
-        attributes: { role: 'alert' },
-        classes: [
-          'tox-notification',
-          'tox-notification--in',
-          `tox-notification--${ spec.level }`
-        ]
-      },
-      components: [
-        {
-          dom: {
-            tag: 'div',
-            classes: ['tox-notification__icon']
-          },
-          components: [Button.sketch({
-              dom: {
-                tag: 'button',
-                classes: [
-                  'tox-button',
-                  'tox-button--naked',
-                  'tox-button--icon'
-                ],
-                innerHtml: get$2(spec.icon, providersBackstage.icons),
-                attributes: { title: providersBackstage.translate(spec.iconTooltip) }
-              },
-              action: comp => {
-                emitWith(comp, formActionEvent, {
+    const renderAlertBanner = (spec, providersBackstage) => {
+      const icon = get$2(spec.icon, providersBackstage.icons);
+      return Container.sketch({
+        dom: {
+          tag: 'div',
+          attributes: { role: 'alert' },
+          classes: [
+            'tox-notification',
+            'tox-notification--in',
+            `tox-notification--${ spec.level }`
+          ]
+        },
+        components: [
+          {
+            dom: {
+              tag: 'div',
+              classes: ['tox-notification__icon'],
+              innerHtml: !spec.url ? icon : undefined
+            },
+            components: spec.url ? [Button.sketch({
+                dom: {
+                  tag: 'button',
+                  classes: [
+                    'tox-button',
+                    'tox-button--naked',
+                    'tox-button--icon'
+                  ],
+                  innerHtml: icon,
+                  attributes: { title: providersBackstage.translate(spec.iconTooltip) }
+                },
+                action: comp => emitWith(comp, formActionEvent, {
                   name: 'alert-banner',
                   value: spec.url
-                });
-              },
-              buttonBehaviours: derive$1([addFocusableBehaviour()])
-            })]
-        },
-        {
-          dom: {
-            tag: 'div',
-            classes: ['tox-notification__body'],
-            innerHtml: providersBackstage.translate(spec.text)
+                }),
+                buttonBehaviours: derive$1([addFocusableBehaviour()])
+              })] : undefined
+          },
+          {
+            dom: {
+              tag: 'div',
+              classes: ['tox-notification__body'],
+              innerHtml: providersBackstage.translate(spec.text)
+            }
           }
-        }
-      ]
-    });
+        ]
+      });
+    };
 
     const set$1 = (element, status) => {
       element.dom.checked = status;
@@ -17443,7 +17580,7 @@
           }),
           Tabstopping.config({}),
           Focusing.config({}),
-          RepresentingConfigs.withElement(initialData, get$1, set$1),
+          withElement(initialData, get$1, set$1),
           Keying.config({
             mode: 'special',
             onEnter: toggleCheckboxHandler,
@@ -17692,6 +17829,42 @@
       });
       return () => lazyUseEditableAreaAnchor() ? editableAreaAnchor() : standardAnchor();
     };
+    const getInlineBottomDialogAnchor = (inline, contentAreaElement, lazyBottomAnchorBar, lazyUseEditableAreaAnchor) => {
+      const bubbleSize = 12;
+      const overrides = { maxHeightFunction: expandable$1() };
+      const editableAreaAnchor = () => ({
+        type: 'node',
+        root: getContentContainer(getRootNode(contentAreaElement())),
+        node: Optional.from(contentAreaElement()),
+        bubble: nu$5(bubbleSize, bubbleSize, bubbleAlignments$2),
+        layouts: {
+          onRtl: () => [north],
+          onLtr: () => [north]
+        },
+        overrides
+      });
+      const standardAnchor = () => inline ? {
+        type: 'node',
+        root: getContentContainer(getRootNode(contentAreaElement())),
+        node: Optional.from(contentAreaElement()),
+        bubble: nu$5(0, -getOuter$2(contentAreaElement()), bubbleAlignments$2),
+        layouts: {
+          onRtl: () => [north$2],
+          onLtr: () => [north$2]
+        },
+        overrides
+      } : {
+        type: 'hotspot',
+        hotspot: lazyBottomAnchorBar(),
+        bubble: nu$5(0, 0, bubbleAlignments$2),
+        layouts: {
+          onRtl: () => [north$2],
+          onLtr: () => [north$2]
+        },
+        overrides
+      };
+      return () => lazyUseEditableAreaAnchor() ? editableAreaAnchor() : standardAnchor();
+    };
     const getBannerAnchor = (contentAreaElement, lazyAnchorbar, lazyUseEditableAreaAnchor) => {
       const editableAreaAnchor = () => ({
         type: 'node',
@@ -17735,13 +17908,14 @@
       root: bodyElement(),
       node: element
     });
-    const getAnchors = (editor, lazyAnchorbar, isToolbarTop) => {
+    const getAnchors = (editor, lazyAnchorbar, lazyBottomAnchorBar, isToolbarTop) => {
       const useFixedToolbarContainer = useFixedContainer(editor);
       const bodyElement = () => SugarElement.fromDom(editor.getBody());
       const contentAreaElement = () => SugarElement.fromDom(editor.getContentAreaContainer());
       const lazyUseEditableAreaAnchor = () => useFixedToolbarContainer || !isToolbarTop();
       return {
         inlineDialog: getInlineDialogAnchor(contentAreaElement, lazyAnchorbar, lazyUseEditableAreaAnchor),
+        inlineBottomDialog: getInlineBottomDialogAnchor(editor.inline, contentAreaElement, lazyBottomAnchorBar, lazyUseEditableAreaAnchor),
         banner: getBannerAnchor(contentAreaElement, lazyAnchorbar, lazyUseEditableAreaAnchor),
         cursor: getCursorAnchor(editor, bodyElement),
         node: getNodeAnchor$1(bodyElement)
@@ -18221,7 +18395,7 @@
       getUrlPicker: filetype => getUrlPicker(editor, filetype)
     });
 
-    const init$6 = (lazySinks, editor, lazyAnchorbar) => {
+    const init$6 = (lazySinks, editor, lazyAnchorbar, lazyBottomAnchorBar) => {
       const contextMenuState = Cell(false);
       const toolbar = HeaderBackstage(editor);
       const providers = {
@@ -18240,7 +18414,7 @@
       const commonBackstage = {
         shared: {
           providers,
-          anchors: getAnchors(editor, lazyAnchorbar, toolbar.isPositionedAtTop),
+          anchors: getAnchors(editor, lazyAnchorbar, lazyBottomAnchorBar, toolbar.isPositionedAtTop),
           header: toolbar
         },
         urlinput,
@@ -18481,7 +18655,10 @@
         dom: detail.dom,
         components: extra.components,
         behaviours: augment(detail.toolbarBehaviours, extra.behaviours),
-        apis: { setGroups },
+        apis: {
+          setGroups,
+          refresh: noop
+        },
         domModification: { attributes: { role: 'group' } }
       };
     };
@@ -19588,11 +19765,13 @@
       }
       state.clear();
     };
+    const isBlocked = (component, blockingConfig, blockingState) => blockingState.isBlocked();
 
     var BlockingApis = /*#__PURE__*/Object.freeze({
         __proto__: null,
         block: block,
-        unblock: unblock
+        unblock: unblock,
+        isBlocked: isBlocked
     });
 
     var BlockingSchema = [
@@ -20424,7 +20603,7 @@
             name: 'more',
             icon: Optional.some('more-drawer'),
             enabled: true,
-            tooltip: Optional.some('More...'),
+            tooltip: Optional.some('Reveal or hide additional toolbar items'),
             primary: false,
             buttonType: Optional.none(),
             borderless: false
@@ -21186,7 +21365,7 @@
       },
       tools: {
         title: 'Tools',
-        items: 'spellchecker spellcheckerlanguage | autocorrect capitalization | a11ycheck code typography wordcount addtemplate'
+        items: 'aidialog aishortcuts | spellchecker spellcheckerlanguage | autocorrect capitalization | a11ycheck code typography wordcount addtemplate'
       },
       table: {
         title: 'Table',
@@ -21706,7 +21885,7 @@
     const createBespokeNumberInput = (editor, backstage, spec) => {
       let currentComp = Optional.none();
       const getValueFromCurrentComp = comp => comp.map(alloyComp => Representing.getValue(alloyComp)).getOr('');
-      const onSetup = onSetupEvent(editor, 'NodeChange', api => {
+      const onSetup = onSetupEvent(editor, 'NodeChange SwitchMode', api => {
         const comp = api.getComponent();
         currentComp = Optional.some(comp);
         spec.updateInputValue(comp);
@@ -21747,7 +21926,7 @@
       const makeStepperButton = (action, title, tooltip, classes) => {
         const translatedTooltip = backstage.shared.providers.translate(tooltip);
         const altExecuting = generate$6('altExecuting');
-        const onSetup = onSetupEvent(editor, 'NodeChange', api => {
+        const onSetup = onSetupEvent(editor, 'NodeChange SwitchMode', api => {
           Disabling.set(api.getComponent(), !editor.selection.isEditable());
         });
         const onClick = comp => {
@@ -22546,6 +22725,13 @@
         items: [
           'undo',
           'redo'
+        ]
+      },
+      {
+        name: 'ai',
+        items: [
+          'aidialog',
+          'aishortcuts'
         ]
       },
       {
@@ -24780,9 +24966,9 @@
       const sections = foldl(menuConfig, (acc, name) => {
         return get$g(contextMenus, name.toLowerCase()).map(menu => {
           const items = menu.update(selectedElement);
-          if (isString(items)) {
+          if (isString(items) && isNotEmpty(trim$1(items))) {
             return addContextMenuGroup(acc, items.split(' '));
-          } else if (items.length > 0) {
+          } else if (isArray(items) && items.length > 0) {
             const allItems = map$2(items, makeContextItem);
             return addContextMenuGroup(acc, allItems);
           } else {
@@ -25759,22 +25945,83 @@
             }]
         };
       };
-      const getTextComponents = () => {
+      const renderHelpAccessibility = () => {
+        const shortcutText = convertText('Alt+0');
+        const text = `Press {0} for help`;
+        return {
+          dom: {
+            tag: 'div',
+            classes: ['tox-statusbar__help-text']
+          },
+          components: [text$2(global$8.translate([
+              text,
+              shortcutText
+            ]))]
+        };
+      };
+      const renderRightContainer = () => {
         const components = [];
-        if (useElementPath(editor)) {
-          components.push(renderElementPath(editor, {}, providersBackstage));
-        }
         if (editor.hasPlugin('wordcount')) {
           components.push(renderWordCount(editor, providersBackstage));
         }
         if (useBranding(editor)) {
           components.push(renderBranding());
         }
+        return {
+          dom: {
+            tag: 'div',
+            classes: ['tox-statusbar__right-container']
+          },
+          components
+        };
+      };
+      const getTextComponents = () => {
+        const components = [];
+        const shouldRenderHelp = useHelpAccessibility(editor);
+        const shouldRenderElementPath = useElementPath(editor);
+        const shouldRenderRightContainer = useBranding(editor) || editor.hasPlugin('wordcount');
+        const getTextComponentClasses = () => {
+          const flexStart = 'tox-statusbar__text-container--flex-start';
+          const flexEnd = 'tox-statusbar__text-container--flex-end';
+          const spaceAround = 'tox-statusbar__text-container--space-around';
+          if (shouldRenderHelp) {
+            const container3Columns = 'tox-statusbar__text-container-3-cols';
+            if (!shouldRenderRightContainer && !shouldRenderElementPath) {
+              return [
+                container3Columns,
+                spaceAround
+              ];
+            }
+            if (shouldRenderRightContainer && !shouldRenderElementPath) {
+              return [
+                container3Columns,
+                flexEnd
+              ];
+            }
+            return [
+              container3Columns,
+              flexStart
+            ];
+          }
+          return [shouldRenderRightContainer && !shouldRenderElementPath ? flexEnd : flexStart];
+        };
+        if (shouldRenderElementPath) {
+          components.push(renderElementPath(editor, {}, providersBackstage));
+        }
+        if (shouldRenderHelp) {
+          components.push(renderHelpAccessibility());
+        }
+        if (shouldRenderRightContainer) {
+          components.push(renderRightContainer());
+        }
         if (components.length > 0) {
           return [{
               dom: {
                 tag: 'div',
-                classes: ['tox-statusbar__text-container']
+                classes: [
+                  'tox-statusbar__text-container',
+                  ...getTextComponentClasses()
+                ]
               },
               components
             }];
@@ -25816,16 +26063,23 @@
           classes: ['tox-anchorbar']
         }
       });
+      const memBottomAnchorBar = record({
+        dom: {
+          tag: 'div',
+          classes: ['tox-bottom-anchorbar']
+        }
+      });
       const lazyHeader = () => lazyUiRefs.mainUi.get().map(ui => ui.outerContainer).bind(OuterContainer.getHeader);
       const lazyDialogSinkResult = () => Result.fromOption(lazyUiRefs.dialogUi.get().map(ui => ui.sink), 'UI has not been rendered');
       const lazyPopupSinkResult = () => Result.fromOption(lazyUiRefs.popupUi.get().map(ui => ui.sink), '(popup) UI has not been rendered');
       const lazyAnchorBar = lazyUiRefs.lazyGetInOuterOrDie('anchor bar', memAnchorBar.getOpt);
+      const lazyBottomAnchorBar = lazyUiRefs.lazyGetInOuterOrDie('bottom anchor bar', memBottomAnchorBar.getOpt);
       const lazyToolbar = lazyUiRefs.lazyGetInOuterOrDie('toolbar', OuterContainer.getToolbar);
       const lazyThrobber = lazyUiRefs.lazyGetInOuterOrDie('throbber', OuterContainer.getThrobber);
       const backstages = init$6({
         popup: lazyPopupSinkResult,
         dialog: lazyDialogSinkResult
-      }, editor, lazyAnchorBar);
+      }, editor, lazyAnchorBar, lazyBottomAnchorBar);
       const makeHeaderPart = () => {
         const verticalDirAttributes = { attributes: { [Attribute]: isToolbarBottom ? AttributeValue.BottomToTop : AttributeValue.TopToBottom } };
         const partMenubar = OuterContainer.parts.menubar({
@@ -26008,7 +26262,10 @@
         const editorContainer = OuterContainer.parts.editorContainer({
           components: flatten([
             editorComponents,
-            isInline ? [] : statusbar.toArray()
+            isInline ? [] : [
+              memBottomAnchorBar.asSpec(),
+              ...statusbar.toArray()
+            ]
           ])
         });
         const isHidden = isDistractionFree(editor);
@@ -26244,7 +26501,7 @@
           behaviours: derive$1([
             Focusing.config({}),
             config('dialog-blocker-events', [runOnSource(focusin(), () => {
-                Keying.focusIn(dialog);
+                Blocking.isBlocked(dialog) ? noop() : Keying.focusIn(dialog);
               })])
           ])
         });
@@ -26260,7 +26517,7 @@
         });
       };
       const getDialogBody = dialog => getPartOrDie(dialog, detail, 'body');
-      const getDialogFooter = dialog => getPartOrDie(dialog, detail, 'footer');
+      const getDialogFooter = dialog => getPart(dialog, detail, 'footer');
       const setBusy = (dialog, getBusySpec) => {
         Blocking.block(dialog, getBusySpec);
       };
@@ -26484,7 +26741,9 @@
     const htmlPanelSchema = objOf(htmlPanelFields);
 
     const iframeFields = formComponentWithLabelFields.concat([
+      defaultedBoolean('border', false),
       defaultedBoolean('sandboxed', true),
+      defaultedBoolean('streamContent', false),
       defaultedBoolean('transparent', true)
     ]);
     const iframeSchema = objOf(iframeFields);
@@ -26510,7 +26769,12 @@
     const createLabelFields = itemsField => [
       type,
       label,
-      itemsField
+      itemsField,
+      defaultedStringEnum('align', 'start', [
+        'start',
+        'center',
+        'end'
+      ])
     ];
 
     const listBoxSingleItemFields = [
@@ -26676,7 +26940,7 @@
         tabpanel: tabPanelSchema
       })),
       defaultedString('size', 'normal'),
-      requiredArrayOf('buttons', dialogButtonSchema),
+      defaultedArrayOf('buttons', [], dialogButtonSchema),
       defaulted('initialData', {}),
       defaultedFunction('onAction', noop),
       defaultedFunction('onChange', noop),
@@ -26883,12 +27147,15 @@
             useTabstopAt: not(isPseudoStop)
           }),
           ComposingConfigs.memento(memForm),
-          RepresentingConfigs.memento(memForm, {
+          memento(memForm, {
             postprocess: formValue => toValidValues(formValue).fold(err => {
               console.error(err);
               return {};
             }, identity)
-          })
+          }),
+          config('dialog-body-panel', [run$1(focusin(), (comp, se) => {
+              comp.getSystem().broadcastOn([dialogFocusShiftedChannel], { newFocus: Optional.some(se.event.target) });
+            })])
         ])
       };
     };
@@ -27343,7 +27610,7 @@
           config('tabpanel', tabMode.extraEvents),
           Keying.config({ mode: 'acyclic' }),
           Composing.config({ find: comp => head(TabSection.getViewItems(comp)) }),
-          RepresentingConfigs.withComp(Optional.none(), tsection => {
+          withComp(Optional.none(), tsection => {
             tsection.getSystem().broadcastOn([SendDataToSectionChannel], {});
             return storedValue.get();
           }, (tsection, value) => {
@@ -27353,12 +27620,6 @@
         ])
       });
     };
-
-    const dialogChannel = generate$6('update-dialog');
-    const titleChannel = generate$6('update-title');
-    const bodyChannel = generate$6('update-body');
-    const footerChannel = generate$6('update-footer');
-    const bodySendMessageChannel = generate$6('body-send-message');
 
     const renderBody = (spec, dialogId, contentId, backstage, ariaAttrs) => {
       const renderComponents = incoming => {
@@ -27411,7 +27672,7 @@
               tag: 'div',
               classes: ['tox-dialog__body-iframe']
             },
-            components: [craft({
+            components: [craft(Optional.none(), {
                 dom: {
                   tag: 'iframe',
                   attributes: { src: spec.url }
@@ -29110,9 +29371,14 @@
         dragBlockClass: blockerClass,
         modalBehaviours: derive$1([
           Focusing.config({}),
-          config('dialog-events', spec.dialogEvents.concat([runOnSource(focusin(), (comp, _se) => {
-              Keying.focusIn(comp);
-            })])),
+          config('dialog-events', spec.dialogEvents.concat([
+            runOnSource(focusin(), (comp, _se) => {
+              Blocking.isBlocked(comp) ? noop() : Keying.focusIn(comp);
+            }),
+            run$1(focusShifted(), (comp, se) => {
+              comp.getSystem().broadcastOn([dialogFocusShiftedChannel], { newFocus: se.event.newFocus });
+            })
+          ])),
           config('scroll-lock', [
             runOnAttached(() => {
               add$2(body(), scrollLockClass);
@@ -29215,7 +29481,7 @@
       title: backstage.shared.providers.translate(title),
       draggable: backstage.dialog.isDraggableModal()
     }, dialogId, backstage.shared.providers);
-    const getBusySpec = (message, bs, providers) => ({
+    const getBusySpec = (message, bs, providers, headerHeight) => ({
       dom: {
         tag: 'div',
         classes: ['tox-dialog__busy-spinner'],
@@ -29224,7 +29490,7 @@
           left: '0px',
           right: '0px',
           bottom: '0px',
-          top: '0px',
+          top: `${ headerHeight.getOr(0) }px`,
           position: 'absolute'
         }
       },
@@ -29234,7 +29500,8 @@
     const getEventExtras = (lazyDialog, providers, extra) => ({
       onClose: () => extra.closeWindow(),
       onBlock: blockEvent => {
-        ModalDialog.setBusy(lazyDialog(), (_comp, bs) => getBusySpec(blockEvent.message, bs, providers));
+        const headerHeight = descendant(lazyDialog().element, '.tox-dialog__header').map(header => get$d(header));
+        ModalDialog.setBusy(lazyDialog(), (_comp, bs) => getBusySpec(blockEvent.message, bs, providers, headerHeight));
       },
       onUnblock: () => {
         ModalDialog.setIdle(lazyDialog());
@@ -29252,7 +29519,7 @@
             updateState,
             initialData
           }),
-          RepresentingConfigs.memory({}),
+          memory({}),
           ...spec.extraBehaviours
         ],
         onEscape: comp => {
@@ -29360,7 +29627,7 @@
           spec.onChange(api, { name: event.name });
         }),
         fireApiEvent(formActionEvent, (api, spec, event, component) => {
-          const focusIn = () => Keying.focusIn(component);
+          const focusIn = () => component.getSystem().isConnected() ? Keying.focusIn(component) : undefined;
           const isDisabled = focused => has$1(focused, 'disabled') || getOpt(focused, 'aria-disabled').exists(val => val === 'true');
           const rootNode = getRootNode(component.element);
           const current = active$1(rootNode);
@@ -29389,10 +29656,6 @@
           Representing.setValue(component, api.getData());
         })
       ];
-    };
-    const SilverDialogEvents = {
-      initUrlDialog,
-      initDialog
     };
 
     const makeButton = (button, backstage) => renderFooterButton(button, button.type, backstage);
@@ -29450,7 +29713,7 @@
         const form = Composing.getCurrent(access.getFormWrapper()).getOr(access.getFormWrapper());
         return Form.getField(form, name).orThunk(() => {
           const footer = access.getFooter();
-          const footerState = Reflecting.getState(footer).get();
+          const footerState = footer.bind(f => Reflecting.getState(f).get());
           return footerState.bind(f => f.lookupByName(name));
         });
       } else {
@@ -29577,14 +29840,14 @@
       }, dialogId, backstage);
       const storedMenuButtons = mapMenuButtons(internalDialog.buttons);
       const objOfCells = extractCellsToObject(storedMenuButtons);
-      const footer = renderModalFooter({ buttons: storedMenuButtons }, dialogId, backstage);
-      const dialogEvents = SilverDialogEvents.initDialog(() => instanceApi, getEventExtras(() => dialog, backstage.shared.providers, extra), backstage.shared.getSink);
+      const footer = someIf(storedMenuButtons.length !== 0, renderModalFooter({ buttons: storedMenuButtons }, dialogId, backstage));
+      const dialogEvents = initDialog(() => instanceApi, getEventExtras(() => dialog, backstage.shared.providers, extra), backstage.shared.getSink);
       const dialogSize = getDialogSizeClasses(internalDialog.size);
       const spec = {
         id: dialogId,
         header,
         body,
-        footer: Optional.some(footer),
+        footer,
         extraClasses: dialogSize,
         extraBehaviours: [],
         extraStyles: {}
@@ -29622,11 +29885,20 @@
       };
     };
 
-    const renderInlineDialog = (dialogInit, extra, backstage, ariaAttrs) => {
+    const getInlineDialogSizeClass = size => {
+      switch (size) {
+      case 'medium':
+        return Optional.some('tox-dialog--width-md');
+      default:
+        return Optional.none();
+      }
+    };
+    const renderInlineDialog = (dialogInit, extra, backstage, ariaAttrs = false) => {
       const dialogId = generate$6('dialog');
       const dialogLabelId = generate$6('dialog-label');
       const dialogContentId = generate$6('dialog-content');
       const internalDialog = dialogInit.internalDialog;
+      const dialogSize = getInlineDialogSizeClass(internalDialog.size);
       const updateState = (_comp, incoming) => Optional.some(incoming);
       const memHeader = record(renderInlineHeader({
         title: internalDialog.title,
@@ -29638,10 +29910,13 @@
       }, dialogId, dialogContentId, backstage, ariaAttrs));
       const storagedMenuButtons = mapMenuButtons(internalDialog.buttons);
       const objOfCells = extractCellsToObject(storagedMenuButtons);
-      const memFooter = record(renderInlineFooter({ buttons: storagedMenuButtons }, dialogId, backstage));
-      const dialogEvents = SilverDialogEvents.initDialog(() => instanceApi, {
+      const optMemFooter = someIf(storagedMenuButtons.length !== 0, record(renderInlineFooter({ buttons: storagedMenuButtons }, dialogId, backstage)));
+      const dialogEvents = initDialog(() => instanceApi, {
         onBlock: event => {
-          Blocking.block(dialog, (_comp, bs) => getBusySpec(event.message, bs, backstage.shared.providers));
+          Blocking.block(dialog, (_comp, bs) => {
+            const headerHeight = memHeader.getOpt(dialog).map(dialog => get$d(dialog.element));
+            return getBusySpec(event.message, bs, backstage.shared.providers, headerHeight);
+          });
         },
         onUnblock: () => {
           Blocking.unblock(dialog);
@@ -29654,7 +29929,8 @@
           tag: 'div',
           classes: [
             'tox-dialog',
-            inlineClass
+            inlineClass,
+            ...dialogSize.toArray()
           ],
           attributes: {
             role: 'dialog',
@@ -29688,17 +29964,22 @@
             initialData: dialogInit
           }),
           Focusing.config({}),
-          config('execute-on-form', dialogEvents.concat([runOnSource(focusin(), (comp, _se) => {
+          config('execute-on-form', dialogEvents.concat([
+            runOnSource(focusin(), (comp, _se) => {
               Keying.focusIn(comp);
-            })])),
+            }),
+            run$1(focusShifted(), (comp, se) => {
+              comp.getSystem().broadcastOn([dialogFocusShiftedChannel], { newFocus: se.event.newFocus });
+            })
+          ])),
           Blocking.config({ getRoot: () => Optional.some(dialog) }),
           Replacing.config({}),
-          RepresentingConfigs.memory({})
+          memory({})
         ]),
         components: [
           memHeader.asSpec(),
           memBody.asSpec(),
-          memFooter.asSpec()
+          ...optMemFooter.map(memFooter => memFooter.asSpec()).toArray()
         ]
       });
       const toggleFullscreen = () => {
@@ -29715,7 +29996,7 @@
       const instanceApi = getDialogApi({
         getId: constant$1(dialogId),
         getRoot: constant$1(dialog),
-        getFooter: () => memFooter.get(dialog),
+        getFooter: () => optMemFooter.map(memFooter => memFooter.get(dialog)),
         getBody: () => memBody.get(dialog),
         getFormWrapper: () => {
           const body = memBody.get(dialog);
@@ -29812,7 +30093,7 @@
           return Optional.some(renderModalFooter({ buttons }, dialogId, backstage));
         }
       });
-      const dialogEvents = SilverDialogEvents.initUrlDialog(() => instanceApi, getEventExtras(() => dialog, backstage.shared.providers, extra));
+      const dialogEvents = initUrlDialog(() => instanceApi, getEventExtras(() => dialog, backstage.shared.providers, extra));
       const styles = {
         ...internalDialog.height.fold(() => ({}), height => ({
           'height': height + 'px',
@@ -30004,13 +30285,16 @@
       const alertDialog = setup$2(extras.backstages.dialog);
       const confirmDialog = setup$1(extras.backstages.dialog);
       const open = (config, params, closeWindow) => {
-        if (params !== undefined && params.inline === 'toolbar') {
-          return openInlineDialog(config, extras.backstages.popup.shared.anchors.inlineDialog(), closeWindow, params.ariaAttrs);
-        } else if (params !== undefined && params.inline === 'cursor') {
-          return openInlineDialog(config, extras.backstages.popup.shared.anchors.cursor(), closeWindow, params.ariaAttrs);
-        } else {
-          return openModalDialog(config, closeWindow);
+        if (!isUndefined(params)) {
+          if (params.inline === 'toolbar') {
+            return openInlineDialog(config, extras.backstages.popup.shared.anchors.inlineDialog(), closeWindow, params);
+          } else if (params.inline === 'bottom') {
+            return openBottomInlineDialog(config, extras.backstages.popup.shared.anchors.inlineBottomDialog(), closeWindow, params);
+          } else if (params.inline === 'cursor') {
+            return openInlineDialog(config, extras.backstages.popup.shared.anchors.cursor(), closeWindow, params);
+          }
         }
+        return openModalDialog(config, closeWindow);
       };
       const openUrl = (config, closeWindow) => openModalUrlDialog(config, closeWindow);
       const openModalUrlDialog = (config, closeWindow) => {
@@ -30047,7 +30331,7 @@
         };
         return DialogManager.open(factory, config);
       };
-      const openInlineDialog = (config$1, anchor, closeWindow, ariaAttrs = false) => {
+      const openInlineDialog = (config$1, anchor, closeWindow, windowParams) => {
         const factory = (contents, internalInitialData, dataValidator) => {
           const initialData = validateData(internalInitialData, dataValidator);
           const inlineDialog = value$2();
@@ -30069,14 +30353,14 @@
               inlineDialog.clear();
               closeWindow(dialogUi.instanceApi);
             }
-          }, extras.backstages.popup, ariaAttrs);
+          }, extras.backstages.popup, windowParams.ariaAttrs);
           const inlineDialogComp = build$1(InlineView.sketch({
             lazySink: extras.backstages.popup.shared.getSink,
             dom: {
               tag: 'div',
               classes: []
             },
-            fireDismissalEventInstead: {},
+            fireDismissalEventInstead: windowParams.persistent ? { event: 'doNotDismissYet' } : {},
             ...isToolbarLocationTop ? {} : { fireRepositionEventInstead: {} },
             inlineBehaviours: derive$1([
               config('window-manager-inline-events', [run$1(dismissRequested(), (_comp, _se) => {
@@ -30097,6 +30381,92 @@
             Docking.refresh(inlineDialogComp);
             editor.on('ResizeEditor', refreshDocking);
           }
+          dialogUi.instanceApi.setData(initialData);
+          Keying.focusIn(dialogUi.dialog);
+          return dialogUi.instanceApi;
+        };
+        return DialogManager.open(factory, config$1);
+      };
+      const openBottomInlineDialog = (config$1, anchor, closeWindow, windowParams) => {
+        const factory = (contents, internalInitialData, dataValidator) => {
+          const initialData = validateData(internalInitialData, dataValidator);
+          const inlineDialog = value$2();
+          const isToolbarLocationTop = extras.backstages.popup.shared.header.isPositionedAtTop();
+          const dialogInit = {
+            dataValidator,
+            initialData,
+            internalDialog: contents
+          };
+          const refreshDocking = () => inlineDialog.on(dialog => {
+            InlineView.reposition(dialog);
+            Docking.refresh(dialog);
+          });
+          const dialogUi = renderInlineDialog(dialogInit, {
+            redial: DialogManager.redial,
+            closeWindow: () => {
+              inlineDialog.on(InlineView.hide);
+              editor.off('ResizeEditor ScrollWindow ElementScroll', refreshDocking);
+              inlineDialog.clear();
+              closeWindow(dialogUi.instanceApi);
+            }
+          }, extras.backstages.popup, windowParams.ariaAttrs);
+          const inlineDialogComp = build$1(InlineView.sketch({
+            lazySink: extras.backstages.popup.shared.getSink,
+            dom: {
+              tag: 'div',
+              classes: []
+            },
+            fireDismissalEventInstead: windowParams.persistent ? { event: 'doNotDismissYet' } : {},
+            ...isToolbarLocationTop ? {} : { fireRepositionEventInstead: {} },
+            inlineBehaviours: derive$1([
+              config('window-manager-inline-events', [run$1(dismissRequested(), (_comp, _se) => {
+                  emit(dialogUi.dialog, formCancelEvent);
+                })]),
+              Docking.config({
+                contextual: {
+                  lazyContext: () => Optional.some(box$1(SugarElement.fromDom(editor.getContentAreaContainer()))),
+                  fadeInClass: 'tox-dialog-dock-fadein',
+                  fadeOutClass: 'tox-dialog-dock-fadeout',
+                  transitionClass: 'tox-dialog-dock-transition'
+                },
+                modes: [
+                  'top',
+                  'bottom'
+                ],
+                lazyViewport: comp => {
+                  const optScrollingContext = detectWhenSplitUiMode(editor, comp.element);
+                  return optScrollingContext.map(sc => {
+                    const combinedBounds = getBoundsFrom(sc);
+                    return {
+                      bounds: combinedBounds,
+                      optScrollEnv: Optional.some({
+                        currentScrollTop: sc.element.dom.scrollTop,
+                        scrollElmTop: absolute$3(sc.element).top
+                      })
+                    };
+                  }).getOrThunk(() => ({
+                    bounds: win(),
+                    optScrollEnv: Optional.none()
+                  }));
+                }
+              })
+            ]),
+            isExtraPart: (_comp, target) => isAlertOrConfirmDialog(target)
+          }));
+          inlineDialog.set(inlineDialogComp);
+          const getInlineDialogBounds = () => {
+            return extras.backstages.popup.shared.getSink().toOptional().bind(s => {
+              const optScrollingContext = detectWhenSplitUiMode(editor, s.element);
+              const margin = 15;
+              const bounds$1 = optScrollingContext.map(sc => getBoundsFrom(sc)).getOr(win());
+              const contentAreaContainer = box$1(SugarElement.fromDom(editor.getContentAreaContainer()));
+              const constrainedBounds = constrain(contentAreaContainer, bounds$1);
+              return Optional.some(bounds(constrainedBounds.x, constrainedBounds.y, constrainedBounds.width, constrainedBounds.height - margin));
+            });
+          };
+          InlineView.showWithinBounds(inlineDialogComp, premade(dialogUi.dialog), { anchor }, getInlineDialogBounds);
+          Docking.refresh(inlineDialogComp);
+          editor.on('ResizeEditor ScrollWindow ElementScroll', refreshDocking);
           dialogUi.instanceApi.setData(initialData);
           Keying.focusIn(dialogUi.dialog);
           return dialogUi.instanceApi;

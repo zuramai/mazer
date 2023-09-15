@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.5.1 (2023-06-19)
+ * TinyMCE version 6.7.0 (2023-08-30)
  */
 
 (function () {
@@ -960,26 +960,26 @@
 
     const userAgent = navigator.userAgent;
     const platform$3 = detect$2();
-    const browser$2 = platform$3.browser;
+    const browser$3 = platform$3.browser;
     const os$1 = platform$3.os;
     const deviceType = platform$3.deviceType;
     const windowsPhone = userAgent.indexOf('Windows Phone') !== -1;
     const Env = {
       transparentSrc: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
-      documentMode: browser$2.isIE() ? document.documentMode || 7 : 10,
+      documentMode: browser$3.isIE() ? document.documentMode || 7 : 10,
       cacheSuffix: null,
       container: null,
-      canHaveCSP: !browser$2.isIE(),
+      canHaveCSP: !browser$3.isIE(),
       windowsPhone,
       browser: {
-        current: browser$2.current,
-        version: browser$2.version,
-        isChromium: browser$2.isChromium,
-        isEdge: browser$2.isEdge,
-        isFirefox: browser$2.isFirefox,
-        isIE: browser$2.isIE,
-        isOpera: browser$2.isOpera,
-        isSafari: browser$2.isSafari
+        current: browser$3.current,
+        version: browser$3.version,
+        isChromium: browser$3.isChromium,
+        isEdge: browser$3.isEdge,
+        isFirefox: browser$3.isFirefox,
+        isIE: browser$3.isIE,
+        isOpera: browser$3.isOpera,
+        isSafari: browser$3.isSafari
       },
       os: {
         current: os$1.current,
@@ -1101,6 +1101,7 @@
     };
 
     const is$2 = (lhs, rhs, comparator = tripleEquals) => lhs.exists(left => comparator(left, rhs));
+    const equals = (lhs, rhs, comparator = tripleEquals) => lift2(lhs, rhs, comparator).getOr(lhs.isNone() && rhs.isNone());
     const cat = arr => {
       const r = [];
       const push = x => {
@@ -1743,6 +1744,13 @@
       const x = doc.body.scrollLeft || doc.documentElement.scrollLeft;
       const y = doc.body.scrollTop || doc.documentElement.scrollTop;
       return SugarPosition(x, y);
+    };
+    const to = (x, y, _DOC) => {
+      const doc = _DOC !== undefined ? _DOC.dom : document;
+      const win = doc.defaultView;
+      if (win) {
+        win.scrollTo(x, y);
+      }
     };
     const intoView = (element, alignToTop) => {
       const isSafari = detect$2().browser.isSafari();
@@ -2523,12 +2531,11 @@
     const isTransparentBlock = (schema, node) => isTransparentElement(schema, node) && hasBlockAttr(node);
     const isTransparentInline = (schema, node) => isTransparentElement(schema, node) && !hasBlockAttr(node);
     const isTransparentAstBlock = (schema, node) => node.type === 1 && isTransparentElementName(schema, node.name) && isString(node.attr(transparentBlockAttr));
-    const isTransparentAstInline = (schema, node) => node.type === 1 && isTransparentElementName(schema, node.name) && isUndefined(node.attr(transparentBlockAttr));
 
-    const browser$1 = detect$2().browser;
+    const browser$2 = detect$2().browser;
     const firstElement = nodes => find$2(nodes, isElement$7);
     const getTableCaptionDeltaY = elm => {
-      if (browser$1.isFirefox() && name(elm) === 'table') {
+      if (browser$2.isFirefox() && name(elm) === 'table') {
         return firstElement(children$1(elm)).filter(elm => {
           return name(elm) === 'caption';
         }).bind(caption => {
@@ -2891,54 +2898,34 @@
       decode
     };
 
-    const lookupCache = {};
-    const mapCache = {};
-    const dummyObj = {};
-    const makeMap$2 = Tools.makeMap, each$b = Tools.each, extend$2 = Tools.extend, explode$2 = Tools.explode, inArray = Tools.inArray;
     const split$1 = (items, delim) => {
       items = Tools.trim(items);
       return items ? items.split(delim || ' ') : [];
     };
-    const createMap = (defaultValue, extendWith = {}) => {
-      const value = makeMap$2(defaultValue, ' ', makeMap$2(defaultValue.toUpperCase(), ' '));
-      return extend$2(value, extendWith);
+    const patternToRegExp = str => new RegExp('^' + str.replace(/([?+*])/g, '.$1') + '$');
+
+    const parseCustomElementsRules = value => {
+      const customElementRegExp = /^(~)?(.+)$/;
+      return bind$3(split$1(value, ','), rule => {
+        const matches = customElementRegExp.exec(rule);
+        if (matches) {
+          const inline = matches[1] === '~';
+          const cloneName = inline ? 'span' : 'div';
+          const name = matches[2];
+          return [{
+              inline,
+              cloneName,
+              name
+            }];
+        } else {
+          return [];
+        }
+      });
     };
-    const getTextRootBlockElements = schema => createMap('td th li dt dd figcaption caption details summary', schema.getTextBlockElements());
-    const compileSchema = type => {
-      const schema = {};
+
+    const getElementSetsAsStrings = type => {
       let globalAttributes, blockContent;
       let phrasingContent, flowContent;
-      const add = (name, attributes = '', children = '') => {
-        const childNames = split$1(children);
-        const names = split$1(name);
-        let ni = names.length;
-        while (ni--) {
-          const attributesOrder = split$1([
-            globalAttributes,
-            attributes
-          ].join(' '));
-          schema[names[ni]] = {
-            attributes: mapToObject(attributesOrder, () => ({})),
-            attributesOrder,
-            children: mapToObject(childNames, constant(dummyObj))
-          };
-        }
-      };
-      const addAttrs = (name, attributes) => {
-        const names = split$1(name);
-        const attrs = split$1(attributes);
-        let ni = names.length;
-        while (ni--) {
-          const schemaItem = schema[names[ni]];
-          for (let i = 0, l = attrs.length; i < l; i++) {
-            schemaItem.attributes[attrs[i]] = {};
-            schemaItem.attributesOrder.push(attrs[i]);
-          }
-        }
-      };
-      if (lookupCache[type]) {
-        return lookupCache[type];
-      }
       globalAttributes = 'id accesskey class dir lang style tabindex title role';
       blockContent = 'address blockquote div dl fieldset form h1 h2 h3 h4 h5 h6 hr menu ol p pre table ul';
       phrasingContent = 'a abbr b bdo br button cite code del dfn em embed i iframe img input ins kbd ' + 'label map noscript object q s samp script select small span strong sub sup ' + 'textarea u var #text #comment';
@@ -2955,9 +2942,6 @@
           phrasingContent,
           html4PhrasingContent
         ].join(' ');
-        each$b(split$1(html4PhrasingContent), name => {
-          add(name, '', phrasingContent);
-        });
         const html4BlockContent = 'center dir isindex noframes';
         blockContent = [
           blockContent,
@@ -2967,14 +2951,60 @@
           blockContent,
           phrasingContent
         ].join(' ');
-        each$b(split$1(html4BlockContent), name => {
-          add(name, '', flowContent);
-        });
       }
       flowContent = flowContent || [
         blockContent,
         phrasingContent
       ].join(' ');
+      return {
+        globalAttributes,
+        blockContent,
+        phrasingContent,
+        flowContent
+      };
+    };
+
+    const makeSchema = type => {
+      const {globalAttributes, phrasingContent, flowContent} = getElementSetsAsStrings(type);
+      const schema = {};
+      const add = (name, attributes = '', children = '') => {
+        const childNames = split$1(children);
+        const names = split$1(name);
+        let ni = names.length;
+        while (ni--) {
+          const attributesOrder = split$1([
+            globalAttributes,
+            attributes
+          ].join(' '));
+          schema[names[ni]] = {
+            attributes: mapToObject(attributesOrder, constant({})),
+            attributesOrder,
+            children: mapToObject(childNames, constant({}))
+          };
+        }
+      };
+      const addAttrs = (name, attributes) => {
+        const names = split$1(name);
+        const attrs = split$1(attributes);
+        let ni = names.length;
+        while (ni--) {
+          const schemaItem = schema[names[ni]];
+          for (let i = 0, l = attrs.length; i < l; i++) {
+            schemaItem.attributes[attrs[i]] = {};
+            schemaItem.attributesOrder.push(attrs[i]);
+          }
+        }
+      };
+      if (type !== 'html5-strict') {
+        const html4PhrasingContent = 'acronym applet basefont big font strike tt';
+        each$e(split$1(html4PhrasingContent), name => {
+          add(name, '', phrasingContent);
+        });
+        const html4BlockContent = 'center dir isindex noframes';
+        each$e(split$1(html4BlockContent), name => {
+          add(name, '', flowContent);
+        });
+      }
       add('html', 'manifest', 'head body');
       add('head', '', 'base command link meta noscript script style title');
       add('title hr noscript br');
@@ -3126,16 +3156,155 @@
           delete item.children.video;
         });
       }
-      each$b(split$1('a form meter progress dfn'), name => {
+      each$e(split$1('a form meter progress dfn'), name => {
         if (schema[name]) {
           delete schema[name].children[name];
         }
       });
       delete schema.caption.children.table;
       delete schema.script;
-      lookupCache[type] = schema;
       return schema;
     };
+
+    const prefixToOperation = prefix => prefix === '-' ? 'remove' : 'add';
+    const parseValidChildrenRules = value => {
+      const childRuleRegExp = /^([+\-]?)([A-Za-z0-9_\-.\u00b7\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u037d\u037f-\u1fff\u200c-\u200d\u203f-\u2040\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]+)\[([^\]]+)]$/;
+      return bind$3(split$1(value, ','), rule => {
+        const matches = childRuleRegExp.exec(rule);
+        if (matches) {
+          const prefix = matches[1];
+          const operation = prefix ? prefixToOperation(prefix) : 'replace';
+          const name = matches[2];
+          const validChildren = split$1(matches[3], '|');
+          return [{
+              operation,
+              name,
+              validChildren
+            }];
+        } else {
+          return [];
+        }
+      });
+    };
+
+    const parseValidElementsAttrDataIntoElement = (attrData, targetElement) => {
+      const attrRuleRegExp = /^([!\-])?(\w+[\\:]:\w+|[^=~<]+)?(?:([=~<])(.*))?$/;
+      const hasPatternsRegExp = /[*?+]/;
+      const {attributes, attributesOrder} = targetElement;
+      return each$e(split$1(attrData, '|'), rule => {
+        const matches = attrRuleRegExp.exec(rule);
+        if (matches) {
+          const attr = {};
+          const attrType = matches[1];
+          const attrName = matches[2].replace(/[\\:]:/g, ':');
+          const attrPrefix = matches[3];
+          const value = matches[4];
+          if (attrType === '!') {
+            targetElement.attributesRequired = targetElement.attributesRequired || [];
+            targetElement.attributesRequired.push(attrName);
+            attr.required = true;
+          }
+          if (attrType === '-') {
+            delete attributes[attrName];
+            attributesOrder.splice(Tools.inArray(attributesOrder, attrName), 1);
+            return;
+          }
+          if (attrPrefix) {
+            if (attrPrefix === '=') {
+              targetElement.attributesDefault = targetElement.attributesDefault || [];
+              targetElement.attributesDefault.push({
+                name: attrName,
+                value
+              });
+              attr.defaultValue = value;
+            } else if (attrPrefix === '~') {
+              targetElement.attributesForced = targetElement.attributesForced || [];
+              targetElement.attributesForced.push({
+                name: attrName,
+                value
+              });
+              attr.forcedValue = value;
+            } else if (attrPrefix === '<') {
+              attr.validValues = Tools.makeMap(value, '?');
+            }
+          }
+          if (hasPatternsRegExp.test(attrName)) {
+            const attrPattern = attr;
+            targetElement.attributePatterns = targetElement.attributePatterns || [];
+            attrPattern.pattern = patternToRegExp(attrName);
+            targetElement.attributePatterns.push(attrPattern);
+          } else {
+            if (!attributes[attrName]) {
+              attributesOrder.push(attrName);
+            }
+            attributes[attrName] = attr;
+          }
+        }
+      });
+    };
+    const cloneAttributesInto = (from, to) => {
+      each$d(from.attributes, (value, key) => {
+        to.attributes[key] = value;
+      });
+      to.attributesOrder.push(...from.attributesOrder);
+    };
+    const parseValidElementsRules = (globalElement, validElements) => {
+      const elementRuleRegExp = /^([#+\-])?([^\[!\/]+)(?:\/([^\[!]+))?(?:(!?)\[([^\]]+)])?$/;
+      return bind$3(split$1(validElements, ','), rule => {
+        const matches = elementRuleRegExp.exec(rule);
+        if (matches) {
+          const prefix = matches[1];
+          const elementName = matches[2];
+          const outputName = matches[3];
+          const attrsPrefix = matches[4];
+          const attrData = matches[5];
+          const element = {
+            attributes: {},
+            attributesOrder: []
+          };
+          globalElement.each(el => cloneAttributesInto(el, element));
+          if (prefix === '#') {
+            element.paddEmpty = true;
+          } else if (prefix === '-') {
+            element.removeEmpty = true;
+          }
+          if (attrsPrefix === '!') {
+            element.removeEmptyAttrs = true;
+          }
+          if (attrData) {
+            parseValidElementsAttrDataIntoElement(attrData, element);
+          }
+          if (outputName) {
+            element.outputName = elementName;
+          }
+          if (elementName === '@') {
+            if (globalElement.isNone()) {
+              globalElement = Optional.some(element);
+            } else {
+              return [];
+            }
+          }
+          return [outputName ? {
+              name: elementName,
+              element,
+              aliasName: outputName
+            } : {
+              name: elementName,
+              element
+            }];
+        } else {
+          return [];
+        }
+      });
+    };
+
+    const mapCache = {};
+    const makeMap$2 = Tools.makeMap, each$b = Tools.each, extend$2 = Tools.extend, explode$2 = Tools.explode;
+    const createMap = (defaultValue, extendWith = {}) => {
+      const value = makeMap$2(defaultValue, ' ', makeMap$2(defaultValue.toUpperCase(), ' '));
+      return extend$2(value, extendWith);
+    };
+    const getTextRootBlockElements = schema => createMap('td th li dt dd figcaption caption details summary', schema.getTextBlockElements());
     const compileElementMap = (value, mode) => {
       if (value) {
         const styles = {};
@@ -3171,7 +3340,7 @@
         }
       };
       const schemaType = (_a = settings.schema) !== null && _a !== void 0 ? _a : 'html5';
-      const schemaItems = compileSchema(schemaType);
+      const schemaItems = makeSchema(schemaType);
       if (settings.verify_html === false) {
         settings.valid_elements = '*[*]';
       }
@@ -3192,122 +3361,21 @@
       each$b('script noscript iframe noframes noembed title style textarea xmp plaintext'.split(' '), name => {
         specialElements[name] = new RegExp('</' + name + '[^>]*>', 'gi');
       });
-      const patternToRegExp = str => new RegExp('^' + str.replace(/([?+*])/g, '.$1') + '$');
       const addValidElements = validElements => {
-        const elementRuleRegExp = /^([#+\-])?([^\[!\/]+)(?:\/([^\[!]+))?(?:(!?)\[([^\]]+)])?$/;
-        const attrRuleRegExp = /^([!\-])?(\w+[\\:]:\w+|[^=~<]+)?(?:([=~<])(.*))?$/;
+        const globalElement = Optional.from(elements['@']);
         const hasPatternsRegExp = /[*?+]/;
-        if (validElements) {
-          const validElementsArr = split$1(validElements, ',');
-          let globalAttributes;
-          let globalAttributesOrder;
-          if (elements['@']) {
-            globalAttributes = elements['@'].attributes;
-            globalAttributesOrder = elements['@'].attributesOrder;
+        each$e(parseValidElementsRules(globalElement, validElements !== null && validElements !== void 0 ? validElements : ''), ({name, element, aliasName}) => {
+          if (aliasName) {
+            elements[aliasName] = element;
           }
-          for (let ei = 0, el = validElementsArr.length; ei < el; ei++) {
-            let matches = elementRuleRegExp.exec(validElementsArr[ei]);
-            if (matches) {
-              const prefix = matches[1];
-              const elementName = matches[2];
-              const outputName = matches[3];
-              const attrData = matches[5];
-              const attributes = {};
-              const attributesOrder = [];
-              const element = {
-                attributes,
-                attributesOrder
-              };
-              if (prefix === '#') {
-                element.paddEmpty = true;
-              }
-              if (prefix === '-') {
-                element.removeEmpty = true;
-              }
-              if (matches[4] === '!') {
-                element.removeEmptyAttrs = true;
-              }
-              if (globalAttributes) {
-                each$d(globalAttributes, (value, key) => {
-                  attributes[key] = value;
-                });
-                if (globalAttributesOrder) {
-                  attributesOrder.push(...globalAttributesOrder);
-                }
-              }
-              if (attrData) {
-                const attrDatas = split$1(attrData, '|');
-                for (let ai = 0, al = attrDatas.length; ai < al; ai++) {
-                  matches = attrRuleRegExp.exec(attrDatas[ai]);
-                  if (matches) {
-                    const attr = {};
-                    const attrType = matches[1];
-                    const attrName = matches[2].replace(/[\\:]:/g, ':');
-                    const attrPrefix = matches[3];
-                    const value = matches[4];
-                    if (attrType === '!') {
-                      element.attributesRequired = element.attributesRequired || [];
-                      element.attributesRequired.push(attrName);
-                      attr.required = true;
-                    }
-                    if (attrType === '-') {
-                      delete attributes[attrName];
-                      attributesOrder.splice(inArray(attributesOrder, attrName), 1);
-                      continue;
-                    }
-                    if (attrPrefix) {
-                      if (attrPrefix === '=') {
-                        element.attributesDefault = element.attributesDefault || [];
-                        element.attributesDefault.push({
-                          name: attrName,
-                          value
-                        });
-                        attr.defaultValue = value;
-                      }
-                      if (attrPrefix === '~') {
-                        element.attributesForced = element.attributesForced || [];
-                        element.attributesForced.push({
-                          name: attrName,
-                          value
-                        });
-                        attr.forcedValue = value;
-                      }
-                      if (attrPrefix === '<') {
-                        attr.validValues = makeMap$2(value, '?');
-                      }
-                    }
-                    if (hasPatternsRegExp.test(attrName)) {
-                      const attrPattern = attr;
-                      element.attributePatterns = element.attributePatterns || [];
-                      attrPattern.pattern = patternToRegExp(attrName);
-                      element.attributePatterns.push(attrPattern);
-                    } else {
-                      if (!attributes[attrName]) {
-                        attributesOrder.push(attrName);
-                      }
-                      attributes[attrName] = attr;
-                    }
-                  }
-                }
-              }
-              if (!globalAttributes && elementName === '@') {
-                globalAttributes = attributes;
-                globalAttributesOrder = attributesOrder;
-              }
-              if (outputName) {
-                element.outputName = elementName;
-                elements[outputName] = element;
-              }
-              if (hasPatternsRegExp.test(elementName)) {
-                const patternElement = element;
-                patternElement.pattern = patternToRegExp(elementName);
-                patternElements.push(patternElement);
-              } else {
-                elements[elementName] = element;
-              }
-            }
+          if (hasPatternsRegExp.test(name)) {
+            const patternElement = element;
+            patternElement.pattern = patternToRegExp(name);
+            patternElements.push(patternElement);
+          } else {
+            elements[name] = element;
           }
-        }
+        });
       };
       const setValidElements = validElements => {
         patternElements = [];
@@ -3315,71 +3383,46 @@
           delete elements[name];
         });
         addValidElements(validElements);
-        each$b(schemaItems, (element, name) => {
-          children[name] = element.children;
-        });
       };
       const addCustomElements = customElements => {
-        const customElementRegExp = /^(~)?(.+)$/;
-        if (customElements) {
-          delete mapCache.text_block_elements;
-          delete mapCache.block_elements;
-          each$b(split$1(customElements, ','), rule => {
-            const matches = customElementRegExp.exec(rule);
-            if (matches) {
-              const inline = matches[1] === '~';
-              const cloneName = inline ? 'span' : 'div';
-              const name = matches[2];
-              children[name] = children[cloneName];
-              customElementsMap[name] = cloneName;
-              nonEmptyElementsMap[name.toUpperCase()] = {};
-              nonEmptyElementsMap[name] = {};
-              if (!inline) {
-                blockElementsMap[name.toUpperCase()] = {};
-                blockElementsMap[name] = {};
-              }
-              if (!elements[name]) {
-                let customRule = elements[cloneName];
-                customRule = extend$2({}, customRule);
-                delete customRule.removeEmptyAttrs;
-                delete customRule.removeEmpty;
-                elements[name] = customRule;
-              }
-              each$b(children, (element, elmName) => {
-                if (element[cloneName]) {
-                  children[elmName] = element = extend$2({}, children[elmName]);
-                  element[name] = element[cloneName];
-                }
-              });
+        delete mapCache.text_block_elements;
+        delete mapCache.block_elements;
+        each$e(parseCustomElementsRules(customElements !== null && customElements !== void 0 ? customElements : ''), ({inline, name, cloneName}) => {
+          children[name] = children[cloneName];
+          customElementsMap[name] = cloneName;
+          nonEmptyElementsMap[name.toUpperCase()] = {};
+          nonEmptyElementsMap[name] = {};
+          if (!inline) {
+            blockElementsMap[name.toUpperCase()] = {};
+            blockElementsMap[name] = {};
+          }
+          if (!elements[name]) {
+            let customRule = elements[cloneName];
+            customRule = extend$2({}, customRule);
+            delete customRule.removeEmptyAttrs;
+            delete customRule.removeEmpty;
+            elements[name] = customRule;
+          }
+          each$d(children, (element, elmName) => {
+            if (element[cloneName]) {
+              children[elmName] = element = extend$2({}, children[elmName]);
+              element[name] = element[cloneName];
             }
           });
-        }
+        });
       };
       const addValidChildren = validChildren => {
-        const childRuleRegExp = /^([+\-]?)([A-Za-z0-9_\-.\u00b7\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u037d\u037f-\u1fff\u200c-\u200d\u203f-\u2040\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]+)\[([^\]]+)]$/;
-        delete lookupCache[schemaType];
-        if (validChildren) {
-          each$b(split$1(validChildren, ','), rule => {
-            const matches = childRuleRegExp.exec(rule);
-            if (matches) {
-              const prefix = matches[1];
-              let parent;
-              if (prefix) {
-                parent = children[matches[2]];
-              } else {
-                parent = children[matches[2]] = { '#comment': {} };
-              }
-              parent = children[matches[2]];
-              each$b(split$1(matches[3], '|'), child => {
-                if (prefix === '-') {
-                  delete parent[child];
-                } else {
-                  parent[child] = {};
-                }
-              });
+        each$e(parseValidChildrenRules(validChildren !== null && validChildren !== void 0 ? validChildren : ''), ({operation, name, validChildren}) => {
+          const parent = operation === 'replace' ? { '#comment': {} } : children[name];
+          each$e(validChildren, child => {
+            if (operation === 'remove') {
+              delete parent[child];
+            } else {
+              parent[child] = {};
             }
           });
-        }
+          children[name] = parent;
+        });
       };
       const getElementRule = name => {
         const element = elements[name];
@@ -3430,6 +3473,9 @@
         });
       } else {
         setValidElements(settings.valid_elements);
+        each$b(schemaItems, (element, name) => {
+          children[name] = element.children;
+        });
       }
       addCustomElements(settings.custom_elements);
       addValidChildren(settings.valid_children);
@@ -3599,7 +3645,7 @@
             if (!value) {
               return;
             }
-            const values = value.split(' ');
+            const values = value.indexOf(',') > -1 ? [value] : value.split(' ');
             let i = values.length;
             while (i--) {
               if (values[i] !== values[0]) {
@@ -5024,6 +5070,10 @@
       };
     };
 
+    const isDuplicated = (items, item) => {
+      const firstIndex = items.indexOf(item);
+      return firstIndex !== -1 && items.indexOf(item, firstIndex + 1) > firstIndex;
+    };
     const isRaw = str => isObject(str) && has$2(str, 'raw');
     const isTokenised = str => isArray$1(str) && str.length > 1;
     const data = {};
@@ -5041,8 +5091,17 @@
       if (!langData) {
         data[code] = langData = {};
       }
+      const lcNames = map$3(keys(items), name => name.toLowerCase());
       each$d(items, (translation, name) => {
-        langData[name.toLowerCase()] = translation;
+        const lcName = name.toLowerCase();
+        if (lcName !== name && isDuplicated(lcNames, lcName)) {
+          if (!has$2(items, lcName)) {
+            langData[lcName] = translation;
+          }
+          langData[name] = translation;
+        } else {
+          langData[lcName] = translation;
+        }
       });
     };
     const translate = text => {
@@ -5055,8 +5114,8 @@
       };
       const isEmpty = text => text === '' || text === null || text === undefined;
       const getLangData = text => {
-        const textstr = toString(text);
-        return get$a(langData, textstr.toLowerCase()).map(toString).getOr(textstr);
+        const textStr = toString(text);
+        return has$2(langData, textStr) ? toString(langData[textStr]) : get$a(langData, textStr.toLowerCase()).map(toString).getOr(textStr);
       };
       const removeContext = str => str.replace(/{context:\w+}$/, '');
       if (isEmpty(text)) {
@@ -7015,6 +7074,10 @@
       registerOption('remove_trailing_brs', {
         processor: 'boolean',
         default: true
+      });
+      registerOption('pad_empty_with_br', {
+        processor: 'boolean',
+        default: false
       });
       registerOption('inline_styles', {
         processor: 'boolean',
@@ -10275,7 +10338,7 @@
         return;
       }
       const scrollTop = get$5(doc).top;
-      f(doc, scrollTop, marker, alignToTop);
+      f(editor, doc, scrollTop, marker, alignToTop);
       fireAfterScrollIntoViewEvent(editor, data);
     };
     const applyWithMarker = (editor, f, rng, alignToTop) => {
@@ -10301,28 +10364,36 @@
       newRng.setEnd(endElement, endOffset);
       editor.selection.setRng(rng);
     };
-    const scrollToMarker = (marker, alignToTop) => marker.element.dom.scrollIntoView({ block: alignToTop ? 'start' : 'end' });
-    const intoWindowIfNeeded = (scrollTop, viewHeight, marker, alignToTop) => {
+    const scrollToMarker = (editor, marker, viewHeight, alignToTop, doc) => {
+      const pos = marker.pos;
+      if (alignToTop) {
+        to(pos.left, pos.top, doc);
+      } else {
+        const y = pos.top - viewHeight + marker.height;
+        to(-editor.getBody().getBoundingClientRect().left, y, doc);
+      }
+    };
+    const intoWindowIfNeeded = (editor, doc, scrollTop, viewHeight, marker, alignToTop) => {
       const viewportBottom = viewHeight + scrollTop;
       const markerTop = marker.pos.top;
       const markerBottom = marker.bottom;
       const largerThanViewport = markerBottom - markerTop >= viewHeight;
       if (markerTop < scrollTop) {
-        scrollToMarker(marker, alignToTop !== false);
+        scrollToMarker(editor, marker, viewHeight, alignToTop !== false, doc);
       } else if (markerTop > viewportBottom) {
         const align = largerThanViewport ? alignToTop !== false : alignToTop === true;
-        scrollToMarker(marker, align);
+        scrollToMarker(editor, marker, viewHeight, align, doc);
       } else if (markerBottom > viewportBottom && !largerThanViewport) {
-        scrollToMarker(marker, alignToTop === true);
+        scrollToMarker(editor, marker, viewHeight, alignToTop === true, doc);
       }
     };
-    const intoWindow = (doc, scrollTop, marker, alignToTop) => {
+    const intoWindow = (editor, doc, scrollTop, marker, alignToTop) => {
       const viewHeight = defaultView(doc).dom.innerHeight;
-      intoWindowIfNeeded(scrollTop, viewHeight, marker, alignToTop);
+      intoWindowIfNeeded(editor, doc, scrollTop, viewHeight, marker, alignToTop);
     };
-    const intoFrame = (doc, scrollTop, marker, alignToTop) => {
+    const intoFrame = (editor, doc, scrollTop, marker, alignToTop) => {
       const frameViewHeight = defaultView(doc).dom.innerHeight;
-      intoWindowIfNeeded(scrollTop, frameViewHeight, marker, alignToTop);
+      intoWindowIfNeeded(editor, doc, scrollTop, frameViewHeight, marker, alignToTop);
       const op = find(marker.element);
       const viewportBounds = getBounds(window);
       if (op.top < viewportBounds.y) {
@@ -12180,7 +12251,7 @@
       const rootElm = SugarElement.fromDom(editor.getBody());
       return getParentCaption(rootElm, startElm).fold(() => deleteCaretCells(editor, forward, rootElm, startElm).orThunk(() => someIf(isBeforeOrAfterTable(editor, forward), noop)), fromCaption => deleteCaretCaption(editor, forward, rootElm, fromCaption));
     };
-    const backspaceDelete$9 = (editor, forward) => {
+    const backspaceDelete$a = (editor, forward) => {
       const startElm = SugarElement.fromDom(editor.selection.getStart(true));
       const cells = getCellsFromEditor(editor);
       return editor.selection.isCollapsed() && cells.length === 0 ? deleteCaret$3(editor, forward, startElm) : deleteRange$3(editor, startElm, cells);
@@ -12337,10 +12408,13 @@
       runFilters(matches, args);
     };
 
-    const paddEmptyNode = (args, isBlock, node) => {
-      if (args.insert && isBlock(node)) {
+    const paddEmptyNode = (settings, args, isBlock, node) => {
+      const brPreferred = settings.pad_empty_with_br || args.insert;
+      if (brPreferred && isBlock(node)) {
         const astNode = new AstNode('br', 1);
-        astNode.attr('data-mce-bogus', '1');
+        if (args.insert) {
+          astNode.attr('data-mce-bogus', '1');
+        }
         node.empty().append(astNode);
       } else {
         node.empty().append(new AstNode('#text', 3)).value = nbsp;
@@ -12390,7 +12464,7 @@
       const textBlockElements = schema.getTextBlockElements();
       const nonEmptyElements = schema.getNonEmptyElements();
       const whitespaceElements = schema.getWhitespaceElements();
-      const nonSplittableElements = Tools.makeMap('tr,td,th,tbody,thead,tfoot,table');
+      const nonSplittableElements = Tools.makeMap('tr,td,th,tbody,thead,tfoot,table,summary');
       const fixed = new Set();
       const isSplittableElement = node => node !== rootNode && !nonSplittableElements[node.name];
       for (let ni = 0; ni < nodes.length; ni++) {
@@ -12629,7 +12703,7 @@
       }
       return findLastOf(elms[elms.length - 1], rootNode);
     };
-    const insertBefore$1 = (target, elms, rootNode) => {
+    const insertBefore$2 = (target, elms, rootNode) => {
       const parentElm = target.parentNode;
       if (parentElm) {
         Tools.each(elms, elm => {
@@ -12638,7 +12712,7 @@
       }
       return findFirstIn(target, rootNode);
     };
-    const insertAfter$1 = (target, elms, rootNode, dom) => {
+    const insertAfter$2 = (target, elms, rootNode, dom) => {
       dom.insertAfter(elms.reverse(), target);
       return findLastOf(elms[0], rootNode);
     };
@@ -12658,9 +12732,9 @@
       if (!liTarget) {
         return null;
       } else if (isAt(BEGINNING)) {
-        return insertBefore$1(liTarget, liElms, rootNode);
+        return insertBefore$2(liTarget, liElms, rootNode);
       } else if (isAt(END)) {
-        return insertAfter$1(liTarget, liElms, rootNode, dom);
+        return insertAfter$2(liTarget, liElms, rootNode, dom);
       } else {
         return insertMiddle(liTarget, liElms, rootNode, rng);
       }
@@ -12788,14 +12862,15 @@
       const parentBlock = dom.getParent(marker, dom.isBlock);
       dom.remove(marker);
       if (parentBlock && dom.isEmpty(parentBlock)) {
+        const isCell = isTableCell(parentBlock);
         empty(SugarElement.fromDom(parentBlock));
         rng.setStart(parentBlock, 0);
         rng.setEnd(parentBlock, 0);
-        if (!isTableCell(parentBlock) && !isPartOfFragment(parentBlock) && (nextRng = findNextCaretRng(rng))) {
+        if (!isCell && !isPartOfFragment(parentBlock) && (nextRng = findNextCaretRng(rng))) {
           rng = nextRng;
           dom.remove(parentBlock);
         } else {
-          dom.add(parentBlock, dom.create('br', { 'data-mce-bogus': '1' }));
+          dom.add(parentBlock, dom.create('br', isCell ? {} : { 'data-mce-bogus': '1' }));
         }
       }
       selection.setRng(rng);
@@ -12820,18 +12895,6 @@
         }
       }
       return Optional.none();
-    };
-    const preventSplittingSummary = editor => {
-      each$e(from(editor.getBody().querySelectorAll('details')), accordion => {
-        const summaries = filter$5(from(accordion.children), node => node.nodeName === 'SUMMARY');
-        if (summaries.length > 1) {
-          each$e(summaries.slice(1), summary => {
-            const element = SugarElement.fromDom(summary);
-            remove$7(element, 'mce-accordion-summary');
-            mutate(element, 'p');
-          });
-        }
-      });
     };
     const insertHtmlAtCaret = (editor, value, details) => {
       var _a, _b;
@@ -12929,7 +12992,6 @@
       moveSelectionToMarker(editor, dom.get('mce_marker'));
       unmarkFragmentElements(editor.getBody());
       trimBrsFromTableCell(dom, selection.getStart());
-      preventSplittingSummary(editor);
       updateCaret(editor.schema, editor.getBody(), selection.getStart());
       return value;
     };
@@ -14596,17 +14658,17 @@
       }
     };
 
-    const addNodeFilter = (htmlParser, schema) => {
+    const addNodeFilter = (settings, htmlParser, schema) => {
       htmlParser.addNodeFilter('br', (nodes, _, args) => {
         const blockElements = Tools.extend({}, schema.getBlockElements());
         const nonEmptyElements = schema.getNonEmptyElements();
         const whitespaceElements = schema.getWhitespaceElements();
         blockElements.body = 1;
-        const isBlock = node => node.name in blockElements && isTransparentAstInline(schema, node);
+        const isBlock = node => node.name in blockElements || isTransparentAstBlock(schema, node);
         for (let i = 0, l = nodes.length; i < l; i++) {
           let node = nodes[i];
           let parent = node.parent;
-          if (parent && blockElements[parent.name] && node === parent.lastChild) {
+          if (parent && isBlock(parent) && node === parent.lastChild) {
             let prev = node.prev;
             while (prev) {
               const prevName = prev.name;
@@ -14626,7 +14688,7 @@
                   if (elementRule.removeEmpty) {
                     parent.remove();
                   } else if (elementRule.paddEmpty) {
-                    paddEmptyNode(args, isBlock, parent);
+                    paddEmptyNode(settings, args, isBlock, parent);
                   }
                 }
               }
@@ -14781,7 +14843,7 @@
     const register$4 = (parser, settings) => {
       const schema = parser.schema;
       if (settings.remove_trailing_brs) {
-        addNodeFilter(parser, schema);
+        addNodeFilter(settings, parser, schema);
       }
       parser.addAttributeFilter('href', nodes => {
         let i = nodes.length;
@@ -16993,7 +17055,7 @@
           if (validate && elementRule) {
             const isNodeEmpty = isEmpty(schema, nonEmptyElements, whitespaceElements, node);
             if (elementRule.paddInEmptyBlock && isNodeEmpty && isTextRootBlockEmpty(node)) {
-              paddEmptyNode(args, isBlock, node);
+              paddEmptyNode(settings, args, isBlock, node);
             } else if (elementRule.removeEmpty && isNodeEmpty) {
               if (isBlock(node)) {
                 node.remove();
@@ -17001,7 +17063,7 @@
                 node.unwrap();
               }
             } else if (elementRule.paddEmpty && (isNodeEmpty || isPaddedWithNbsp(node))) {
-              paddEmptyNode(args, isBlock, node);
+              paddEmptyNode(settings, args, isBlock, node);
             }
           }
         } else if (node.type === 3) {
@@ -18676,7 +18738,7 @@
         }
       });
       if (settings.remove_trailing_brs) {
-        addNodeFilter(htmlParser, htmlParser.schema);
+        addNodeFilter(settings, htmlParser, htmlParser.schema);
       }
     };
     const trimTrailingBr = rootNode => {
@@ -18775,6 +18837,7 @@
       const defaultedSettings = {
         entity_encoding: 'named',
         remove_trailing_brs: true,
+        pad_empty_with_br: false,
         ...settings
       };
       const dom = editor && editor.dom ? editor.dom : DOMUtils.DOM;
@@ -20951,7 +21014,7 @@
     };
     const mergeBlocks = (rootNode, forward, block1, block2) => forward ? mergeBlockInto(rootNode, block2, block1) : mergeBlockInto(rootNode, block1, block2);
 
-    const backspaceDelete$8 = (editor, forward) => {
+    const backspaceDelete$9 = (editor, forward) => {
       const rootNode = SugarElement.fromDom(editor.getBody());
       const position = read$1(rootNode.dom, forward, editor.selection.getRng()).map(blockBoundary => () => {
         mergeBlocks(rootNode, forward, blockBoundary.from.block, blockBoundary.to.block).each(pos => {
@@ -20998,7 +21061,7 @@
       const rng = editor.selection.getRng();
       return isEverythingSelected(rootNode, rng) ? emptyEditor(editor) : deleteRangeMergeBlocks(rootNode, editor.selection);
     };
-    const backspaceDelete$7 = (editor, _forward) => editor.selection.isCollapsed() ? Optional.none() : deleteRange$2(editor);
+    const backspaceDelete$8 = (editor, _forward) => editor.selection.isCollapsed() ? Optional.none() : deleteRange$2(editor);
 
     const showCaret = (direction, editor, node, before, scrollIntoView) => Optional.from(editor._selectionOverrides.showCaret(direction, node, before, scrollIntoView));
     const getNodeRange = node => {
@@ -21081,7 +21144,7 @@
       }
       return Optional.none();
     };
-    const backspaceDelete$6 = (editor, forward) => deleteBoundaryText(editor, forward);
+    const backspaceDelete$7 = (editor, forward) => deleteBoundaryText(editor, forward);
 
     const getEdgeCefPosition = (editor, atStart) => {
       const root = editor.getBody();
@@ -21220,7 +21283,7 @@
       }
       return true;
     };
-    const backspaceDelete$5 = (editor, forward) => {
+    const backspaceDelete$6 = (editor, forward) => {
       if (editor.selection.isCollapsed()) {
         return backspaceDeleteCaret(editor, forward);
       } else {
@@ -21232,7 +21295,7 @@
       const fromPos = CaretPosition.fromRangeStart(editor.selection.getRng());
       return fromPosition(forward, editor.getBody(), fromPos).filter(pos => forward ? isBeforeImageBlock(pos) : isAfterImageBlock(pos)).bind(pos => getChildNodeAtRelativeOffset(forward ? 0 : -1, pos)).map(elm => () => editor.selection.select(elm));
     };
-    const backspaceDelete$4 = (editor, forward) => editor.selection.isCollapsed() ? deleteCaret$2(editor, forward) : Optional.none();
+    const backspaceDelete$5 = (editor, forward) => editor.selection.isCollapsed() ? deleteCaret$2(editor, forward) : Optional.none();
 
     const isText$2 = isText$a;
     const startsWithCaretContainer = node => isText$2(node) && node.data[0] === ZWSP$1;
@@ -21242,7 +21305,7 @@
       const doc = (_a = node.ownerDocument) !== null && _a !== void 0 ? _a : document;
       return doc.createTextNode(ZWSP$1);
     };
-    const insertBefore = node => {
+    const insertBefore$1 = node => {
       var _a;
       if (isText$2(node.previousSibling)) {
         if (endsWithCaretContainer(node.previousSibling)) {
@@ -21264,7 +21327,7 @@
         return newNode;
       }
     };
-    const insertAfter = node => {
+    const insertAfter$1 = node => {
       var _a, _b;
       if (isText$2(node.nextSibling)) {
         if (startsWithCaretContainer(node.nextSibling)) {
@@ -21290,7 +21353,7 @@
         return newNode;
       }
     };
-    const insertInline = (before, node) => before ? insertBefore(node) : insertAfter(node);
+    const insertInline = (before, node) => before ? insertBefore$1(node) : insertAfter$1(node);
     const insertInlineBefore = curry(insertInline, true);
     const insertInlineAfter = curry(insertInline, false);
 
@@ -21840,7 +21903,7 @@
         });
       }
     };
-    const move$2 = (editor, caret, forward) => isInlineBoundariesEnabled(editor) ? findLocation(editor, caret, forward).isSome() : false;
+    const move$3 = (editor, caret, forward) => isInlineBoundariesEnabled(editor) ? findLocation(editor, caret, forward).isSome() : false;
     const moveWord = (forward, editor, _caret) => isInlineBoundariesEnabled(editor) ? moveByWord(forward, editor) : false;
     const setupSelectedState = editor => {
       const caret = Cell(null);
@@ -21933,7 +21996,7 @@
         })));
       });
     };
-    const backspaceDelete$3 = (editor, caret, forward) => {
+    const backspaceDelete$4 = (editor, caret, forward) => {
       if (editor.selection.isCollapsed() && isInlineBoundariesEnabled(editor)) {
         const from = CaretPosition.fromRangeStart(editor.selection.getRng());
         return backspaceDeleteCollapsed(editor, caret, forward, from);
@@ -22028,7 +22091,7 @@
         return Optional.none();
       }
     };
-    const backspaceDelete$2 = (editor, forward) => editor.selection.isCollapsed() ? deleteCaret$1(editor, forward) : deleteRange$1(editor);
+    const backspaceDelete$3 = (editor, forward) => editor.selection.isCollapsed() ? deleteCaret$1(editor, forward) : deleteRange$1(editor);
     const hasAncestorInlineCaret = elm => ancestor$1(elm, node => isCaretNode(node.dom), isBlock$2);
     const hasAncestorInlineCaretAtStart = editor => hasAncestorInlineCaret(SugarElement.fromDom(editor.selection.getStart()));
     const requiresRefreshCaretOverride = editor => {
@@ -22066,7 +22129,7 @@
       const selectedNode = editor.selection.getNode();
       return isMedia$2(selectedNode) ? deleteElement(editor, forward, selectedNode) : Optional.none();
     };
-    const backspaceDelete$1 = (editor, forward) => editor.selection.isCollapsed() ? deleteCaret(editor, forward) : deleteRange(editor, forward);
+    const backspaceDelete$2 = (editor, forward) => editor.selection.isCollapsed() ? deleteCaret(editor, forward) : deleteRange(editor, forward);
 
     const isEditable = target => closest$4(target, elm => isContentEditableTrue$3(elm.dom) || isContentEditableFalse$b(elm.dom)).exists(elm => isContentEditableTrue$3(elm.dom));
     const parseIndentValue = value => toInt(value !== null && value !== void 0 ? value : '').getOr(0);
@@ -22113,7 +22176,7 @@
     const indent = editor => handle(editor, 'indent');
     const outdent = editor => handle(editor, 'outdent');
 
-    const backspaceDelete = editor => {
+    const backspaceDelete$1 = editor => {
       if (editor.selection.isCollapsed() && canOutdent(editor)) {
         const dom = editor.dom;
         const rng = editor.selection.getRng();
@@ -22127,16 +22190,16 @@
     };
 
     const findAction = (editor, caret, forward) => findMap([
-      backspaceDelete,
-      backspaceDelete$5,
-      backspaceDelete$6,
-      (editor, forward) => backspaceDelete$3(editor, caret, forward),
-      backspaceDelete$8,
-      backspaceDelete$9,
-      backspaceDelete$4,
       backspaceDelete$1,
+      backspaceDelete$6,
       backspaceDelete$7,
-      backspaceDelete$2
+      (editor, forward) => backspaceDelete$4(editor, caret, forward),
+      backspaceDelete$9,
+      backspaceDelete$a,
+      backspaceDelete$5,
+      backspaceDelete$2,
+      backspaceDelete$8,
+      backspaceDelete$3
     ], item => item(editor, forward)).filter(_ => editor.selection.isEditable());
     const deleteCommand = (editor, caret) => {
       const result = findAction(editor, caret, false);
@@ -22473,7 +22536,7 @@
       moveToRange(editor, newRange);
       return true;
     });
-    const moveV$3 = (editor, down) => getVerticalRange(editor, down).exists(newRange => {
+    const moveV$4 = (editor, down) => getVerticalRange(editor, down).exists(newRange => {
       moveToRange(editor, newRange);
       return true;
     });
@@ -22515,13 +22578,44 @@
         }
       });
     };
-    const moveV$2 = (editor, forward) => {
+    const moveV$3 = (editor, forward) => {
       if (editor.selection.isCollapsed()) {
         return moveCaretToNewEmptyLine(editor, forward);
       } else {
         return false;
       }
     };
+
+    const moveUp = (editor, details, summary) => {
+      const rng = editor.selection.getRng();
+      const pos = CaretPosition.fromRangeStart(rng);
+      const root = editor.getBody();
+      if (root.firstChild === details && isAtFirstLine(summary, pos)) {
+        editor.execCommand('InsertNewBlockBefore');
+        return true;
+      } else {
+        return false;
+      }
+    };
+    const moveDown = (editor, details) => {
+      const rng = editor.selection.getRng();
+      const pos = CaretPosition.fromRangeStart(rng);
+      const root = editor.getBody();
+      if (root.lastChild === details && isAtLastLine(details, pos)) {
+        editor.execCommand('InsertNewBlockAfter');
+        return true;
+      } else {
+        return false;
+      }
+    };
+    const move$2 = (editor, forward) => {
+      if (forward) {
+        return Optional.from(editor.dom.getParent(editor.selection.getNode(), 'details')).map(details => moveDown(editor, details)).getOr(false);
+      } else {
+        return Optional.from(editor.dom.getParent(editor.selection.getNode(), 'summary')).bind(summary => Optional.from(editor.dom.getParent(summary, 'details')).map(details => moveUp(editor, details, summary))).getOr(false);
+      }
+    };
+    const moveV$2 = (editor, forward) => move$2(editor, forward);
 
     const baseKeyPattern = {
       shiftKey: false,
@@ -22815,11 +22909,11 @@
         },
         {
           keyCode: VK.UP,
-          action: action(moveV$3, editor, false)
+          action: action(moveV$4, editor, false)
         },
         {
           keyCode: VK.DOWN,
-          action: action(moveV$3, editor, true)
+          action: action(moveV$4, editor, true)
         },
         ...isMac ? [
           {
@@ -22852,6 +22946,18 @@
           action: action(moveV, editor, true)
         },
         {
+          keyCode: VK.UP,
+          action: action(moveV, editor, false)
+        },
+        {
+          keyCode: VK.UP,
+          action: action(moveV$2, editor, false)
+        },
+        {
+          keyCode: VK.DOWN,
+          action: action(moveV$2, editor, true)
+        },
+        {
           keyCode: VK.RIGHT,
           action: action(moveH$1, editor, true)
         },
@@ -22869,11 +22975,11 @@
         },
         {
           keyCode: VK.RIGHT,
-          action: action(move$2, editor, caret, true)
+          action: action(move$3, editor, caret, true)
         },
         {
           keyCode: VK.LEFT,
-          action: action(move$2, editor, caret, false)
+          action: action(move$3, editor, caret, false)
         },
         {
           keyCode: VK.RIGHT,
@@ -22889,11 +22995,11 @@
         },
         {
           keyCode: VK.UP,
-          action: action(moveV$2, editor, false)
+          action: action(moveV$3, editor, false)
         },
         {
           keyCode: VK.DOWN,
-          action: action(moveV$2, editor, true)
+          action: action(moveV$3, editor, true)
         }
       ], evt).each(_ => {
         evt.preventDefault();
@@ -23590,6 +23696,184 @@
       });
     };
 
+    const browser$1 = detect$2().browser;
+    const isSafari = browser$1.isSafari();
+    const emptyNodeContents = node => fillWithPaddingBr(SugarElement.fromDom(node));
+    const isEntireNodeSelected = (rng, node) => {
+      var _a;
+      return rng.startOffset === 0 && rng.endOffset === ((_a = node.textContent) === null || _a === void 0 ? void 0 : _a.length);
+    };
+    const getParentDetailsElementAtPos = (dom, pos) => Optional.from(dom.getParent(pos.container(), 'details'));
+    const isInDetailsElement = (dom, pos) => getParentDetailsElementAtPos(dom, pos).isSome();
+    const getDetailsElements = (dom, rng) => {
+      const startDetails = Optional.from(dom.getParent(rng.startContainer, 'details'));
+      const endDetails = Optional.from(dom.getParent(rng.endContainer, 'details'));
+      if (startDetails.isSome() || endDetails.isSome()) {
+        const startSummary = startDetails.bind(details => Optional.from(dom.select('summary', details)[0]));
+        return Optional.some({
+          startSummary,
+          startDetails,
+          endDetails
+        });
+      } else {
+        return Optional.none();
+      }
+    };
+    const isCaretInTheBeginningOf = (caretPos, element) => firstPositionIn(element).exists(pos => pos.isEqual(caretPos));
+    const isCaretInTheEndOf = (caretPos, element) => {
+      return lastPositionIn(element).exists(pos => {
+        if (isBr$6(pos.getNode())) {
+          return prevPosition(element, pos).exists(pos2 => pos2.isEqual(caretPos)) || pos.isEqual(caretPos);
+        } else {
+          return pos.isEqual(caretPos);
+        }
+      });
+    };
+    const isCaretAtStartOfSummary = (caretPos, detailsElements) => detailsElements.startSummary.exists(summary => isCaretInTheBeginningOf(caretPos, summary));
+    const isCaretAtEndOfSummary = (caretPos, detailsElements) => detailsElements.startSummary.exists(summary => isCaretInTheEndOf(caretPos, summary));
+    const isCaretInFirstPositionInBody = (caretPos, detailsElements) => detailsElements.startDetails.exists(details => prevPosition(details, caretPos).forall(pos => detailsElements.startSummary.exists(summary => !summary.contains(caretPos.container()) && summary.contains(pos.container()))));
+    const isCaretInLastPositionInBody = (root, caretPos, detailsElements) => detailsElements.startDetails.exists(details => nextPosition(root, caretPos).forall(pos => !details.contains(pos.container())));
+    const setCaretToPosition = (editor, position) => {
+      const node = position.getNode();
+      if (!isUndefined(node)) {
+        editor.selection.setCursorLocation(node, position.offset());
+      }
+    };
+    const moveCaretToDetailsPos = (editor, pos, forward) => {
+      const details = editor.dom.getParent(pos.container(), 'details');
+      if (details && !details.open) {
+        const summary = editor.dom.select('summary', details)[0];
+        if (summary) {
+          const newPos = forward ? firstPositionIn(summary) : lastPositionIn(summary);
+          newPos.each(pos => setCaretToPosition(editor, pos));
+        }
+      } else {
+        setCaretToPosition(editor, pos);
+      }
+    };
+    const isPartialDelete = (rng, detailsElements) => {
+      const containsStart = element => element.contains(rng.startContainer);
+      const containsEnd = element => element.contains(rng.endContainer);
+      const startInSummary = detailsElements.startSummary.exists(containsStart);
+      const endInSummary = detailsElements.startSummary.exists(containsEnd);
+      const isPartiallySelectedDetailsElements = detailsElements.startDetails.forall(startDetails => detailsElements.endDetails.forall(endDetails => startDetails !== endDetails));
+      const isInPartiallySelectedSummary = (startInSummary || endInSummary) && !(startInSummary && endInSummary);
+      return isInPartiallySelectedSummary || isPartiallySelectedDetailsElements;
+    };
+    const shouldPreventDeleteIntoDetails = (editor, forward, granularity) => {
+      const {dom, selection} = editor;
+      const root = editor.getBody();
+      if (granularity === 'character') {
+        const caretPos = CaretPosition.fromRangeStart(selection.getRng());
+        const parentBlock = dom.getParent(caretPos.container(), dom.isBlock);
+        const parentDetailsAtCaret = getParentDetailsElementAtPos(dom, caretPos);
+        const inEmptyParentBlock = parentBlock && dom.isEmpty(parentBlock);
+        const isFirstBlock = isNull(parentBlock === null || parentBlock === void 0 ? void 0 : parentBlock.previousSibling);
+        const isLastBlock = isNull(parentBlock === null || parentBlock === void 0 ? void 0 : parentBlock.nextSibling);
+        if (inEmptyParentBlock) {
+          const firstOrLast = forward ? isLastBlock : isFirstBlock;
+          if (firstOrLast) {
+            const isBeforeAfterDetails = navigate(!forward, root, caretPos).exists(pos => {
+              return isInDetailsElement(dom, pos) && !equals(parentDetailsAtCaret, getParentDetailsElementAtPos(dom, pos));
+            });
+            if (isBeforeAfterDetails) {
+              return true;
+            }
+          }
+        }
+        return navigate(forward, root, caretPos).fold(never, pos => {
+          const parentDetailsAtNewPos = getParentDetailsElementAtPos(dom, pos);
+          if (isInDetailsElement(dom, pos) && !equals(parentDetailsAtCaret, parentDetailsAtNewPos)) {
+            if (!forward) {
+              moveCaretToDetailsPos(editor, pos, false);
+            }
+            if (parentBlock && inEmptyParentBlock) {
+              if (forward && isFirstBlock) {
+                return true;
+              } else if (!forward && isLastBlock) {
+                return true;
+              }
+              moveCaretToDetailsPos(editor, pos, forward);
+              editor.dom.remove(parentBlock);
+            }
+            return true;
+          } else {
+            return false;
+          }
+        });
+      } else {
+        return false;
+      }
+    };
+    const shouldPreventDeleteSummaryAction = (editor, detailElements, forward, granularity) => {
+      const selection = editor.selection;
+      const rng = selection.getRng();
+      const caretPos = CaretPosition.fromRangeStart(rng);
+      const root = editor.getBody();
+      if (granularity === 'selection') {
+        return isPartialDelete(rng, detailElements);
+      } else if (forward) {
+        return isCaretAtEndOfSummary(caretPos, detailElements) || isCaretInLastPositionInBody(root, caretPos, detailElements);
+      } else {
+        return isCaretAtStartOfSummary(caretPos, detailElements) || isCaretInFirstPositionInBody(caretPos, detailElements);
+      }
+    };
+    const shouldPreventDeleteAction = (editor, forward, granularity) => getDetailsElements(editor.dom, editor.selection.getRng()).fold(() => shouldPreventDeleteIntoDetails(editor, forward, granularity), detailsElements => shouldPreventDeleteSummaryAction(editor, detailsElements, forward, granularity) || shouldPreventDeleteIntoDetails(editor, forward, granularity));
+    const handleDeleteActionSafari = (editor, forward, granularity) => {
+      const selection = editor.selection;
+      const node = selection.getNode();
+      const rng = selection.getRng();
+      const caretPos = CaretPosition.fromRangeStart(rng);
+      if (isSummary(node)) {
+        if (granularity === 'selection' && isEntireNodeSelected(rng, node) || willDeleteLastPositionInElement(forward, caretPos, node)) {
+          emptyNodeContents(node);
+        } else {
+          editor.undoManager.transact(() => {
+            const sel = selection.getSel();
+            let {anchorNode, anchorOffset, focusNode, focusOffset} = sel !== null && sel !== void 0 ? sel : {};
+            const applySelection = () => {
+              if (isNonNullable(anchorNode) && isNonNullable(anchorOffset) && isNonNullable(focusNode) && isNonNullable(focusOffset)) {
+                sel === null || sel === void 0 ? void 0 : sel.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
+              }
+            };
+            const updateSelection = () => {
+              anchorNode = sel === null || sel === void 0 ? void 0 : sel.anchorNode;
+              anchorOffset = sel === null || sel === void 0 ? void 0 : sel.anchorOffset;
+              focusNode = sel === null || sel === void 0 ? void 0 : sel.focusNode;
+              focusOffset = sel === null || sel === void 0 ? void 0 : sel.focusOffset;
+            };
+            const appendAllChildNodes = (from, to) => {
+              each$e(from.childNodes, child => {
+                if (isNode(child)) {
+                  to.appendChild(child);
+                }
+              });
+            };
+            const container = editor.dom.create('span', { 'data-mce-bogus': '1' });
+            appendAllChildNodes(node, container);
+            node.appendChild(container);
+            applySelection();
+            if (granularity === 'word' || granularity === 'line') {
+              sel === null || sel === void 0 ? void 0 : sel.modify('extend', forward ? 'right' : 'left', granularity);
+            }
+            if (!selection.isCollapsed() && isEntireNodeSelected(selection.getRng(), container)) {
+              emptyNodeContents(node);
+            } else {
+              editor.execCommand(forward ? 'ForwardDelete' : 'Delete');
+              updateSelection();
+              appendAllChildNodes(container, node);
+              applySelection();
+            }
+            editor.dom.remove(container);
+          });
+        }
+        return true;
+      } else {
+        return false;
+      }
+    };
+    const backspaceDelete = (editor, forward, granularity) => shouldPreventDeleteAction(editor, forward, granularity) || isSafari && handleDeleteActionSafari(editor, forward, granularity) ? Optional.some(noop) : Optional.none();
+
     const createAndFireInputEvent = eventType => (editor, inputType, specifics = {}) => {
       const target = editor.getBody();
       const overrides = {
@@ -23620,20 +23904,26 @@
     const fireInputEvent = createAndFireInputEvent('input');
     const fireBeforeInputEvent = createAndFireInputEvent('beforeinput');
 
+    const platform$2 = detect$2();
+    const os = platform$2.os;
+    const isMacOSOriOS = os.isMacOS() || os.isiOS();
+    const browser = platform$2.browser;
+    const isFirefox = browser.isFirefox();
     const executeKeydownOverride$3 = (editor, caret, evt) => {
       const inputType = evt.keyCode === VK.BACKSPACE ? 'deleteContentBackward' : 'deleteContentForward';
+      const isCollapsed = editor.selection.isCollapsed();
+      const unmodifiedGranularity = isCollapsed ? 'character' : 'selection';
+      const getModifiedGranularity = isWord => {
+        if (isCollapsed) {
+          return isWord ? 'word' : 'line';
+        } else {
+          return 'selection';
+        }
+      };
       executeWithDelayedAction([
         {
           keyCode: VK.BACKSPACE,
-          action: action(backspaceDelete, editor)
-        },
-        {
-          keyCode: VK.BACKSPACE,
-          action: action(backspaceDelete$5, editor, false)
-        },
-        {
-          keyCode: VK.DELETE,
-          action: action(backspaceDelete$5, editor, true)
+          action: action(backspaceDelete$1, editor)
         },
         {
           keyCode: VK.BACKSPACE,
@@ -23645,43 +23935,79 @@
         },
         {
           keyCode: VK.BACKSPACE,
-          action: action(backspaceDelete$3, editor, caret, false)
-        },
-        {
-          keyCode: VK.DELETE,
-          action: action(backspaceDelete$3, editor, caret, true)
-        },
-        {
-          keyCode: VK.BACKSPACE,
-          action: action(backspaceDelete$9, editor, false)
-        },
-        {
-          keyCode: VK.DELETE,
-          action: action(backspaceDelete$9, editor, true)
-        },
-        {
-          keyCode: VK.BACKSPACE,
-          action: action(backspaceDelete$4, editor, false)
-        },
-        {
-          keyCode: VK.DELETE,
-          action: action(backspaceDelete$4, editor, true)
-        },
-        {
-          keyCode: VK.BACKSPACE,
-          action: action(backspaceDelete$1, editor, false)
-        },
-        {
-          keyCode: VK.DELETE,
-          action: action(backspaceDelete$1, editor, true)
-        },
-        {
-          keyCode: VK.BACKSPACE,
           action: action(backspaceDelete$7, editor, false)
         },
         {
           keyCode: VK.DELETE,
           action: action(backspaceDelete$7, editor, true)
+        },
+        {
+          keyCode: VK.BACKSPACE,
+          action: action(backspaceDelete$4, editor, caret, false)
+        },
+        {
+          keyCode: VK.DELETE,
+          action: action(backspaceDelete$4, editor, caret, true)
+        },
+        {
+          keyCode: VK.BACKSPACE,
+          action: action(backspaceDelete$a, editor, false)
+        },
+        {
+          keyCode: VK.DELETE,
+          action: action(backspaceDelete$a, editor, true)
+        },
+        {
+          keyCode: VK.BACKSPACE,
+          action: action(backspaceDelete, editor, false, unmodifiedGranularity)
+        },
+        {
+          keyCode: VK.DELETE,
+          action: action(backspaceDelete, editor, true, unmodifiedGranularity)
+        },
+        ...isMacOSOriOS ? [
+          {
+            keyCode: VK.BACKSPACE,
+            altKey: true,
+            action: action(backspaceDelete, editor, false, getModifiedGranularity(true))
+          },
+          {
+            keyCode: VK.DELETE,
+            altKey: true,
+            action: action(backspaceDelete, editor, true, getModifiedGranularity(true))
+          },
+          {
+            keyCode: VK.BACKSPACE,
+            metaKey: true,
+            action: action(backspaceDelete, editor, false, getModifiedGranularity(false))
+          }
+        ] : [
+          {
+            keyCode: VK.BACKSPACE,
+            ctrlKey: true,
+            action: action(backspaceDelete, editor, false, getModifiedGranularity(true))
+          },
+          {
+            keyCode: VK.DELETE,
+            ctrlKey: true,
+            action: action(backspaceDelete, editor, true, getModifiedGranularity(true))
+          }
+        ],
+        {
+          keyCode: VK.BACKSPACE,
+          action: action(backspaceDelete$5, editor, false)
+        },
+        {
+          keyCode: VK.DELETE,
+          action: action(backspaceDelete$5, editor, true)
+        },
+        {
+          keyCode: VK.BACKSPACE,
+          action: action(backspaceDelete$2, editor, false)
+        },
+        {
+          keyCode: VK.DELETE,
+          action: action(backspaceDelete$2, editor, true)
         },
         {
           keyCode: VK.BACKSPACE,
@@ -23693,11 +24019,19 @@
         },
         {
           keyCode: VK.BACKSPACE,
-          action: action(backspaceDelete$2, editor, false)
+          action: action(backspaceDelete$9, editor, false)
         },
         {
           keyCode: VK.DELETE,
-          action: action(backspaceDelete$2, editor, true)
+          action: action(backspaceDelete$9, editor, true)
+        },
+        {
+          keyCode: VK.BACKSPACE,
+          action: action(backspaceDelete$3, editor, false)
+        },
+        {
+          keyCode: VK.DELETE,
+          action: action(backspaceDelete$3, editor, true)
         }
       ], evt).filter(_ => editor.selection.isEditable()).each(applyAction => {
         evt.preventDefault();
@@ -23708,11 +24042,16 @@
         }
       });
     };
-    const executeKeyupOverride = (editor, evt, isBackspaceKeydown) => {
-      const platform = detect$2();
-      const os = platform.os;
-      const browser = platform.browser;
-      const multiDeleteKeyPatterns = os.isMacOS() ? [
+    const executeKeyupOverride = (editor, evt, isBackspaceKeydown) => execute([
+      {
+        keyCode: VK.BACKSPACE,
+        action: action(paddEmptyElement, editor)
+      },
+      {
+        keyCode: VK.DELETE,
+        action: action(paddEmptyElement, editor)
+      },
+      ...isMacOSOriOS ? [
         {
           keyCode: VK.BACKSPACE,
           altKey: true,
@@ -23722,7 +24061,11 @@
           keyCode: VK.DELETE,
           altKey: true,
           action: action(refreshCaret, editor)
-        }
+        },
+        ...isBackspaceKeydown ? [{
+            keyCode: isFirefox ? 224 : 91,
+            action: action(refreshCaret, editor)
+          }] : []
       ] : [
         {
           keyCode: VK.BACKSPACE,
@@ -23734,25 +24077,8 @@
           ctrlKey: true,
           action: action(refreshCaret, editor)
         }
-      ];
-      if (os.isMacOS() && isBackspaceKeydown) {
-        multiDeleteKeyPatterns.push({
-          keyCode: browser.isFirefox() ? 224 : 91,
-          action: action(refreshCaret, editor)
-        });
-      }
-      execute([
-        {
-          keyCode: VK.BACKSPACE,
-          action: action(paddEmptyElement, editor)
-        },
-        {
-          keyCode: VK.DELETE,
-          action: action(paddEmptyElement, editor)
-        },
-        ...multiDeleteKeyPatterns
-      ], evt);
-    };
+      ]
+    ], evt);
     const setup$i = (editor, caret) => {
       let isBackspaceKeydown = false;
       editor.on('keydown', evt => {
@@ -23838,6 +24164,7 @@
       while (parent !== root && parent && dom.getContentEditable(parent) !== 'false') {
         if (dom.getContentEditable(parent) === 'true') {
           editableRoot = parent;
+          break;
         }
         parent = parent.parentNode;
       }
@@ -23855,6 +24182,82 @@
       return getParentBlock$1(editor).filter(elm => {
         return isListItem$1(SugarElement.fromDom(elm));
       }).isSome();
+    };
+    const emptyBlock = elm => {
+      elm.innerHTML = '<br data-mce-bogus="1">';
+    };
+    const applyAttributes = (editor, node, forcedRootBlockAttrs) => {
+      const dom = editor.dom;
+      Optional.from(forcedRootBlockAttrs.style).map(dom.parseStyle).each(attrStyles => {
+        const currentStyles = getAllRaw(SugarElement.fromDom(node));
+        const newStyles = {
+          ...currentStyles,
+          ...attrStyles
+        };
+        dom.setStyles(node, newStyles);
+      });
+      const attrClassesOpt = Optional.from(forcedRootBlockAttrs.class).map(attrClasses => attrClasses.split(/\s+/));
+      const currentClassesOpt = Optional.from(node.className).map(currentClasses => filter$5(currentClasses.split(/\s+/), clazz => clazz !== ''));
+      lift2(attrClassesOpt, currentClassesOpt, (attrClasses, currentClasses) => {
+        const filteredClasses = filter$5(currentClasses, clazz => !contains$2(attrClasses, clazz));
+        const newClasses = [
+          ...attrClasses,
+          ...filteredClasses
+        ];
+        dom.setAttrib(node, 'class', newClasses.join(' '));
+      });
+      const appliedAttrs = [
+        'style',
+        'class'
+      ];
+      const remainingAttrs = filter$4(forcedRootBlockAttrs, (_, attrs) => !contains$2(appliedAttrs, attrs));
+      dom.setAttribs(node, remainingAttrs);
+    };
+    const setForcedBlockAttrs = (editor, node) => {
+      const forcedRootBlockName = getForcedRootBlock(editor);
+      if (forcedRootBlockName.toLowerCase() === node.tagName.toLowerCase()) {
+        const forcedRootBlockAttrs = getForcedRootBlockAttrs(editor);
+        applyAttributes(editor, node, forcedRootBlockAttrs);
+      }
+    };
+    const createNewBlock = (editor, container, parentBlock, editableRoot, keepStyles = true, name) => {
+      const dom = editor.dom;
+      const schema = editor.schema;
+      const newBlockName = getForcedRootBlock(editor);
+      const parentBlockName = parentBlock ? parentBlock.nodeName.toUpperCase() : '';
+      let node = container;
+      const textInlineElements = schema.getTextInlineElements();
+      let block;
+      if (name || parentBlockName === 'TABLE' || parentBlockName === 'HR') {
+        block = dom.create(name || newBlockName);
+      } else {
+        block = parentBlock.cloneNode(false);
+      }
+      let caretNode = block;
+      if (!keepStyles) {
+        dom.setAttrib(block, 'style', null);
+        dom.setAttrib(block, 'class', null);
+      } else {
+        do {
+          if (textInlineElements[node.nodeName]) {
+            if (isCaretNode(node) || isBookmarkNode$1(node)) {
+              continue;
+            }
+            const clonedNode = node.cloneNode(false);
+            dom.setAttrib(clonedNode, 'id', '');
+            if (block.hasChildNodes()) {
+              clonedNode.appendChild(block.firstChild);
+              block.appendChild(clonedNode);
+            } else {
+              caretNode = clonedNode;
+              block.appendChild(clonedNode);
+            }
+          }
+        } while ((node = node.parentNode) && node !== editableRoot);
+      }
+      setForcedBlockAttrs(editor, block);
+      emptyBlock(caretNode);
+      return block;
     };
 
     const getDetailsRoot = (editor, element) => editor.dom.getParent(element, isDetails);
@@ -23918,7 +24321,7 @@
       }
       return node === parentBlock;
     };
-    const insert$3 = (editor, createNewBlock, containerBlock, parentBlock, newBlockName) => {
+    const insert$4 = (editor, createNewBlock, containerBlock, parentBlock, newBlockName) => {
       const dom = editor.dom;
       const rng = editor.selection.getRng();
       const containerParent = containerBlock.parentNode;
@@ -23984,9 +24387,6 @@
     const isEmptyAnchor = (dom, elm) => {
       return elm && elm.nodeName === 'A' && dom.isEmpty(elm);
     };
-    const emptyBlock = elm => {
-      elm.innerHTML = '<br data-mce-bogus="1">';
-    };
     const containerAndSiblingName = (container, nodeName) => {
       return container.nodeName === nodeName || container.previousSibling && container.previousSibling.nodeName === nodeName;
     };
@@ -24043,40 +24443,6 @@
         }
         currentNode = currentNode.firstChild;
       } while (currentNode);
-    };
-    const applyAttributes = (editor, node, forcedRootBlockAttrs) => {
-      const dom = editor.dom;
-      Optional.from(forcedRootBlockAttrs.style).map(dom.parseStyle).each(attrStyles => {
-        const currentStyles = getAllRaw(SugarElement.fromDom(node));
-        const newStyles = {
-          ...currentStyles,
-          ...attrStyles
-        };
-        dom.setStyles(node, newStyles);
-      });
-      const attrClassesOpt = Optional.from(forcedRootBlockAttrs.class).map(attrClasses => attrClasses.split(/\s+/));
-      const currentClassesOpt = Optional.from(node.className).map(currentClasses => filter$5(currentClasses.split(/\s+/), clazz => clazz !== ''));
-      lift2(attrClassesOpt, currentClassesOpt, (attrClasses, currentClasses) => {
-        const filteredClasses = filter$5(currentClasses, clazz => !contains$2(attrClasses, clazz));
-        const newClasses = [
-          ...attrClasses,
-          ...filteredClasses
-        ];
-        dom.setAttrib(node, 'class', newClasses.join(' '));
-      });
-      const appliedAttrs = [
-        'style',
-        'class'
-      ];
-      const remainingAttrs = filter$4(forcedRootBlockAttrs, (_, attrs) => !contains$2(appliedAttrs, attrs));
-      dom.setAttribs(node, remainingAttrs);
-    };
-    const setForcedBlockAttrs = (editor, node) => {
-      const forcedRootBlockName = getForcedRootBlock(editor);
-      if (forcedRootBlockName.toLowerCase() === node.tagName.toLowerCase()) {
-        const forcedRootBlockAttrs = getForcedRootBlockAttrs(editor);
-        applyAttributes(editor, node, forcedRootBlockAttrs);
-      }
     };
     const wrapSelfAndSiblingsInDefaultBlock = (editor, newBlockName, rng, container, offset) => {
       var _a, _b;
@@ -24137,7 +24503,7 @@
         return optionValue;
       }
     };
-    const insert$2 = (editor, evt) => {
+    const insert$3 = (editor, evt) => {
       let container;
       let offset;
       let parentBlockName;
@@ -24147,45 +24513,12 @@
       const schema = editor.schema, nonEmptyElementsMap = schema.getNonEmptyElements();
       const rng = editor.selection.getRng();
       const newBlockName = getForcedRootBlock(editor);
-      const isInRoot = rng.collapsed && rng.startContainer === editor.dom.getRoot();
       const start = SugarElement.fromDom(rng.startContainer);
       const child = child$1(start, rng.startOffset);
       const isCef = child.exists(element => isHTMLElement(element) && !isEditable$3(element));
-      const inRootAndLastOrCef = isInRoot && isCef;
-      const createNewBlock = name => {
-        let node = container;
-        const textInlineElements = schema.getTextInlineElements();
-        let block;
-        if (name || parentBlockName === 'TABLE' || parentBlockName === 'HR') {
-          block = dom.create(name || newBlockName);
-        } else {
-          block = parentBlock.cloneNode(false);
-        }
-        let caretNode = block;
-        if (shouldKeepStyles(editor) === false) {
-          dom.setAttrib(block, 'style', null);
-          dom.setAttrib(block, 'class', null);
-        } else {
-          do {
-            if (textInlineElements[node.nodeName]) {
-              if (isCaretNode(node) || isBookmarkNode$1(node)) {
-                continue;
-              }
-              const clonedNode = node.cloneNode(false);
-              dom.setAttrib(clonedNode, 'id', '');
-              if (block.hasChildNodes()) {
-                clonedNode.appendChild(block.firstChild);
-                block.appendChild(clonedNode);
-              } else {
-                caretNode = clonedNode;
-                block.appendChild(clonedNode);
-              }
-            }
-          } while ((node = node.parentNode) && node !== editableRoot);
-        }
-        setForcedBlockAttrs(editor, block);
-        emptyBlock(caretNode);
-        return block;
+      const collapsedAndCef = rng.collapsed && isCef;
+      const createNewBlock$1 = name => {
+        return createNewBlock(editor, container, parentBlock, editableRoot, shouldKeepStyles(editor), name);
       };
       const isCaretAtStartOrEndOfBlock = start => {
         const normalizedOffset = normalizeZwspOffset(start, container, offset);
@@ -24232,9 +24565,9 @@
       const insertNewBlockAfter = () => {
         let block;
         if (/^(H[1-6]|PRE|FIGURE)$/.test(parentBlockName) && containerBlockName !== 'HGROUP') {
-          block = createNewBlock(newBlockName);
+          block = createNewBlock$1(newBlockName);
         } else {
-          block = createNewBlock();
+          block = createNewBlock$1();
         }
         if (shouldEndContainer(editor, containerBlock) && canSplitBlock(dom, containerBlock) && dom.isEmpty(parentBlock, undefined, { includeZwsp: true })) {
           block = dom.split(containerBlock, parentBlock);
@@ -24252,7 +24585,7 @@
       offset = rng.startOffset;
       const shiftKey = !!(evt && evt.shiftKey);
       const ctrlKey = !!(evt && evt.ctrlKey);
-      if (isElement$6(container) && container.hasChildNodes() && !inRootAndLastOrCef) {
+      if (isElement$6(container) && container.hasChildNodes() && !collapsedAndCef) {
         isAfterLastNodeInContainer = offset > container.childNodes.length - 1;
         container = container.childNodes[Math.min(offset, container.childNodes.length - 1)] || container;
         if (isAfterLastNodeInContainer && isText$a(container)) {
@@ -24279,21 +24612,21 @@
         parentBlockName = containerBlockName;
       }
       if (isElement$6(containerBlock) && isLastEmptyBlockInDetails(editor, shiftKey, parentBlock)) {
-        return insertNewLine(editor, createNewBlock, parentBlock);
+        return insertNewLine(editor, createNewBlock$1, parentBlock);
       }
       if (/^(LI|DT|DD)$/.test(parentBlockName) && isElement$6(containerBlock)) {
         if (dom.isEmpty(parentBlock)) {
-          insert$3(editor, createNewBlock, containerBlock, parentBlock, newBlockName);
+          insert$4(editor, createNewBlock$1, containerBlock, parentBlock, newBlockName);
           return;
         }
       }
-      if (!inRootAndLastOrCef && (parentBlock === editor.getBody() || !canSplitBlock(dom, parentBlock))) {
+      if (!collapsedAndCef && (parentBlock === editor.getBody() || !canSplitBlock(dom, parentBlock))) {
         return;
       }
       const parentBlockParent = parentBlock.parentNode;
       let newBlock;
-      if (inRootAndLastOrCef) {
-        newBlock = createNewBlock(newBlockName);
+      if (collapsedAndCef) {
+        newBlock = createNewBlock$1(newBlockName);
         child.fold(() => {
           append$1(start, SugarElement.fromDom(newBlock));
         }, child => {
@@ -24310,7 +24643,7 @@
       } else if (isCaretAtStartOrEndOfBlock(false)) {
         newBlock = insertNewBlockAfter();
       } else if (isCaretAtStartOrEndOfBlock(true) && parentBlockParent) {
-        newBlock = parentBlockParent.insertBefore(createNewBlock(), parentBlock);
+        newBlock = parentBlockParent.insertBefore(createNewBlock$1(), parentBlock);
         const isNearChildren = hasChildNodes(SugarElement.fromDom(rng.startContainer)) && rng.collapsed;
         moveToCaretPosition(editor, containerAndSiblingName(parentBlock, 'HR') || isNearChildren ? newBlock : parentBlock);
       } else {
@@ -24340,7 +24673,7 @@
     };
     const fakeEventName$1 = 'insertParagraph';
     const blockbreak = {
-      insert: insert$2,
+      insert: insert$3,
       fakeEventName: fakeEventName$1
     };
 
@@ -24449,7 +24782,7 @@
     const insertBrOutsideAnchor = (editor, location) => {
       location.fold(noop, curry(insertBrBefore, editor), curry(insertBrAfter, editor), noop);
     };
-    const insert$1 = (editor, evt) => {
+    const insert$2 = (editor, evt) => {
       const anchorLocation = readInlineAnchorLocation(editor);
       if (anchorLocation.isSome()) {
         anchorLocation.each(curry(insertBrOutsideAnchor, editor));
@@ -24459,7 +24792,7 @@
     };
     const fakeEventName = 'insertLineBreak';
     const linebreak = {
-      insert: insert$1,
+      insert: insert$2,
       fakeEventName
     };
 
@@ -24516,11 +24849,10 @@
     };
     const isInRootWithEmptyOrCEF = editor => {
       const rng = editor.selection.getRng();
-      const isInRoot = rng.collapsed && rng.startContainer === editor.dom.getRoot();
       const start = SugarElement.fromDom(rng.startContainer);
       const child = child$1(start, rng.startOffset);
       const isCefOpt = child.map(element => isHTMLElement(element) && !isEditable$3(element));
-      return isInRoot && isCefOpt.getOr(true);
+      return rng.collapsed && isCefOpt.getOr(true);
     };
     const match = (predicates, action) => {
       return (editor, shiftKey) => {
@@ -24586,7 +24918,7 @@
         fireInputEvent(editor, breakType.fakeEventName);
       }
     };
-    const insert = (editor, evt) => {
+    const insert$1 = (editor, evt) => {
       const br = () => insertBreak(linebreak, editor, evt);
       const block = () => insertBreak(blockbreak, editor, evt);
       const logicalAction = getAction(editor, evt);
@@ -24606,8 +24938,8 @@
       }
     };
 
-    const platform$2 = detect$2();
-    const isIOSSafari = platform$2.os.isiOS() && platform$2.browser.isSafari();
+    const platform$1 = detect$2();
+    const isIOSSafari = platform$1.os.isiOS() && platform$1.browser.isSafari();
     const handleEnterKeyEvent = (editor, event) => {
       if (event.isDefaultPrevented()) {
         return;
@@ -24615,7 +24947,7 @@
       event.preventDefault();
       endTypingLevelIgnoreLocks(editor.undoManager);
       editor.undoManager.transact(() => {
-        insert(editor, event);
+        insert$1(editor, event);
       });
     };
     const isCaretAfterKoreanCharacter = rng => {
@@ -24720,7 +25052,7 @@
       });
     };
 
-    const platform$1 = detect$2();
+    const platform = detect$2();
     const executeKeyupAction = (editor, caret, evt) => {
       execute([
         {
@@ -24744,7 +25076,7 @@
       blocked.set(block);
     };
     const setup$e = (editor, caret) => {
-      if (platform$1.os.isMacOS()) {
+      if (platform.os.isMacOS()) {
         return;
       }
       const blocked = Cell(false);
@@ -25774,14 +26106,33 @@
       }
     };
     const hasImage = dataTransfer => exists(dataTransfer.files, file => /^image\//.test(file.type));
-    const isTransparentBlockDrop = (dom, schema, target, dropContent) => {
+    const needsCustomInternalDrop = (dom, schema, target, dropContent) => {
       const parentTransparent = dom.getParent(target, node => isTransparentBlock(schema, node));
-      if (parentTransparent && has$2(dropContent, 'text/html')) {
+      const inSummary = !isNull(dom.getParent(target, 'summary'));
+      if (inSummary) {
+        return true;
+      } else if (parentTransparent && has$2(dropContent, 'text/html')) {
         const fragment = new DOMParser().parseFromString(dropContent['text/html'], 'text/html').body;
         return !isNull(fragment.querySelector(parentTransparent.nodeName.toLowerCase()));
       } else {
         return false;
       }
+    };
+    const setupSummaryDeleteByDragFix = editor => {
+      editor.on('input', e => {
+        const hasNoSummary = el => isNull(el.querySelector('summary'));
+        if (e.inputType === 'deleteByDrag') {
+          const brokenDetailElements = filter$5(editor.dom.select('details'), hasNoSummary);
+          each$e(brokenDetailElements, details => {
+            if (isBr$6(details.firstChild)) {
+              details.firstChild.remove();
+            }
+            const summary = editor.dom.create('summary');
+            summary.appendChild(createPaddingBr().dom);
+            details.prepend(summary);
+          });
+        }
+      });
     };
     const setup$a = (editor, draggingInternallyState) => {
       if (shouldPasteBlockDrop(editor)) {
@@ -25813,15 +26164,16 @@
         }
         const internalContent = dropContent[internalHtmlMime()];
         const content = internalContent || dropContent['text/html'] || dropContent['text/plain'];
-        const transparentElementDrop = isTransparentBlockDrop(editor.dom, editor.schema, rng.startContainer, dropContent);
-        if (draggingInternallyState.get() && !transparentElementDrop) {
+        const needsInternalDrop = needsCustomInternalDrop(editor.dom, editor.schema, rng.startContainer, dropContent);
+        const isInternalDrop = draggingInternallyState.get();
+        if (isInternalDrop && !needsInternalDrop) {
           return;
         }
         if (content) {
           e.preventDefault();
           Delay.setEditorTimeout(editor, () => {
             editor.undoManager.transact(() => {
-              if (internalContent) {
+              if (internalContent || isInternalDrop && needsInternalDrop) {
                 editor.execCommand('Delete');
               }
               setFocusedRange(editor, rng);
@@ -25847,6 +26199,7 @@
           draggingInternallyState.set(false);
         }
       });
+      setupSummaryDeleteByDragFix(editor);
     };
 
     const setup$9 = editor => {
@@ -25956,197 +26309,9 @@
         });
       });
     };
-    const emptyNodeContents = node => fillWithPaddingBr(SugarElement.fromDom(node));
-    const setCaretToPosition = (editor, position) => {
-      const node = position.getNode();
-      if (!isUndefined(node)) {
-        editor.selection.setCursorLocation(node, position.offset());
-      }
-    };
-    const isEntireNodeSelected = (rng, node) => {
-      var _a;
-      return rng.startOffset === 0 && rng.endOffset === ((_a = node.textContent) === null || _a === void 0 ? void 0 : _a.length);
-    };
-    const platform = detect$2();
-    const browser = platform.browser;
-    const os = platform.os;
-    const isSafari = browser.isSafari();
-    const isMacOSOriOS = os.isMacOS() || os.isiOS();
-    const isCaretInTheBeginningOf = (caretPos, element) => firstPositionIn(element).exists(pos => pos.isEqual(caretPos));
-    const isCaretInTheEndOf = (caretPos, element) => {
-      return lastPositionIn(element).exists(pos => {
-        if (isBr$6(pos.getNode())) {
-          return prevPosition(element, pos).exists(pos2 => pos2.isEqual(caretPos)) || pos.isEqual(caretPos);
-        } else {
-          return pos.isEqual(caretPos);
-        }
-      });
-    };
-    const getDetailsElements = (dom, rng) => {
-      const startDetails = Optional.from(dom.getParent(rng.startContainer, 'details'));
-      const endDetails = Optional.from(dom.getParent(rng.endContainer, 'details'));
-      if (startDetails.isSome() || endDetails.isSome()) {
-        const startSummary = startDetails.bind(details => Optional.from(dom.select('summary', details)[0]));
-        return Optional.some({
-          startSummary,
-          startDetails,
-          endDetails
-        });
-      } else {
-        return Optional.none();
-      }
-    };
-    const isPartialDelete = (rng, detailsElements) => {
-      const containsStart = element => element.contains(rng.startContainer);
-      const containsEnd = element => element.contains(rng.endContainer);
-      const startInSummary = detailsElements.startSummary.exists(containsStart);
-      const endInSummary = detailsElements.startSummary.exists(containsEnd);
-      const isPartiallySelectedDetailsElements = detailsElements.startDetails.forall(startDetails => detailsElements.endDetails.forall(endDetails => startDetails !== endDetails));
-      const isInPartiallySelectedSummary = (startInSummary || endInSummary) && !(startInSummary && endInSummary);
-      return isInPartiallySelectedSummary || isPartiallySelectedDetailsElements;
-    };
-    const isCaretAtStartOfSummary = (caretPos, detailsElements) => detailsElements.startSummary.exists(summary => isCaretInTheBeginningOf(caretPos, summary));
-    const isCaretAtEndOfSummary = (caretPos, detailsElements) => detailsElements.startSummary.exists(summary => isCaretInTheEndOf(caretPos, summary));
-    const isCaretInFirstPositionInBody = (caretPos, detailsElements) => detailsElements.startDetails.exists(details => prevPosition(details, caretPos).forall(pos => detailsElements.startSummary.exists(summary => !summary.contains(caretPos.container()) && summary.contains(pos.container()))));
-    const isCaretInLastPositionInBody = (root, caretPos, detailsElements) => detailsElements.startDetails.exists(details => nextPosition(root, caretPos).forall(pos => !details.contains(pos.container())));
-    const isInDetailsElement = (dom, pos) => isNonNullable(dom.getParent(pos.container(), 'details'));
-    const moveCaretToDetailsPos = (editor, pos) => {
-      const details = editor.dom.getParent(pos.container(), 'details');
-      if (details && !details.open) {
-        const summary = editor.dom.select('summary', details)[0];
-        if (summary) {
-          lastPositionIn(summary).each(pos => setCaretToPosition(editor, pos));
-        }
-      } else {
-        setCaretToPosition(editor, pos);
-      }
-    };
-    const preventDeleteIntoDetails = (editor, forward) => {
-      const {dom, selection} = editor;
-      const root = editor.getBody();
-      if (editor.selection.isCollapsed()) {
-        const caretPos = CaretPosition.fromRangeStart(selection.getRng());
-        const parentBlock = dom.getParent(caretPos.container(), dom.isBlock);
-        if (parentBlock && dom.isEmpty(parentBlock)) {
-          if (isNull(parentBlock.nextSibling)) {
-            const pos = prevPosition(root, caretPos).filter(pos => isInDetailsElement(dom, pos));
-            if (pos.isSome()) {
-              pos.each(pos => {
-                if (!forward) {
-                  moveCaretToDetailsPos(editor, pos);
-                }
-              });
-              return true;
-            }
-          } else if (isNull(parentBlock.previousSibling)) {
-            const pos = nextPosition(root, caretPos).filter(pos => isInDetailsElement(dom, pos));
-            if (pos) {
-              return true;
-            }
-          }
-        }
-        return navigate(forward, root, caretPos).fold(never, pos => {
-          if (isInDetailsElement(dom, pos)) {
-            if (parentBlock && dom.isEmpty(parentBlock)) {
-              editor.dom.remove(parentBlock);
-            }
-            if (!forward) {
-              moveCaretToDetailsPos(editor, pos);
-            }
-            return true;
-          } else {
-            return false;
-          }
-        });
-      } else {
-        return false;
-      }
-    };
-    const preventDeleteSummaryAction = (editor, detailElements, e) => {
-      const selection = editor.selection;
-      const node = selection.getNode();
-      const rng = selection.getRng();
-      const isBackspace = e.keyCode === VK.BACKSPACE;
-      const isDelete = e.keyCode === VK.DELETE;
-      const isCollapsed = editor.selection.isCollapsed();
-      const caretPos = CaretPosition.fromRangeStart(rng);
-      const root = editor.getBody();
-      if (!isCollapsed && isPartialDelete(rng, detailElements)) {
-        return true;
-      } else if (isCollapsed && isBackspace && isCaretAtStartOfSummary(caretPos, detailElements)) {
-        return true;
-      } else if (isCollapsed && isDelete && isCaretAtEndOfSummary(caretPos, detailElements)) {
-        return true;
-      } else if (isCollapsed && isBackspace && isCaretInFirstPositionInBody(caretPos, detailElements)) {
-        return true;
-      } else if (isCollapsed && isDelete && isCaretInLastPositionInBody(root, caretPos, detailElements)) {
-        return true;
-      } else if (isSafari && isSummary(node)) {
-        if (!isCollapsed && isEntireNodeSelected(rng, node) || willDeleteLastPositionInElement(isDelete, caretPos, node)) {
-          emptyNodeContents(node);
-        } else {
-          editor.undoManager.transact(() => {
-            const sel = selection.getSel();
-            let {anchorNode, anchorOffset, focusNode, focusOffset} = sel !== null && sel !== void 0 ? sel : {};
-            const applySelection = () => {
-              if (isNonNullable(anchorNode) && isNonNullable(anchorOffset) && isNonNullable(focusNode) && isNonNullable(focusOffset)) {
-                sel === null || sel === void 0 ? void 0 : sel.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
-              }
-            };
-            const updateSelection = () => {
-              anchorNode = sel === null || sel === void 0 ? void 0 : sel.anchorNode;
-              anchorOffset = sel === null || sel === void 0 ? void 0 : sel.anchorOffset;
-              focusNode = sel === null || sel === void 0 ? void 0 : sel.focusNode;
-              focusOffset = sel === null || sel === void 0 ? void 0 : sel.focusOffset;
-            };
-            const appendAllChildNodes = (from, to) => {
-              each$e(from.childNodes, child => {
-                if (isNode(child)) {
-                  to.appendChild(child);
-                }
-              });
-            };
-            const container = editor.dom.create('span', { 'data-mce-bogus': 'all' });
-            appendAllChildNodes(node, container);
-            node.appendChild(container);
-            applySelection();
-            if (isCollapsed && (isMacOSOriOS && (e.altKey || isBackspace && e.metaKey) || !isMacOSOriOS && e.ctrlKey)) {
-              sel === null || sel === void 0 ? void 0 : sel.modify('extend', isBackspace ? 'left' : 'right', e.metaKey ? 'line' : 'word');
-            }
-            if (!selection.isCollapsed() && isEntireNodeSelected(selection.getRng(), container)) {
-              emptyNodeContents(node);
-            } else {
-              editor.execCommand(isBackspace ? 'Delete' : 'ForwardDelete');
-              updateSelection();
-              appendAllChildNodes(container, node);
-              applySelection();
-            }
-            editor.dom.remove(container);
-          });
-        }
-        return true;
-      }
-      return false;
-    };
-    const preventDeletingSummary = editor => {
-      editor.on('keydown', e => {
-        if (e.keyCode === VK.BACKSPACE || e.keyCode === VK.DELETE) {
-          getDetailsElements(editor.dom, editor.selection.getRng()).fold(() => {
-            if (preventDeleteIntoDetails(editor, e.keyCode === VK.DELETE)) {
-              e.preventDefault();
-            }
-          }, detailsElements => {
-            if (preventDeleteSummaryAction(editor, detailsElements, e)) {
-              e.preventDefault();
-            }
-          });
-        }
-      });
-    };
     const setup$6 = editor => {
       preventSummaryToggle(editor);
       filterDetails(editor);
-      preventDeletingSummary(editor);
     };
 
     const isBr = isBr$6;
@@ -27123,7 +27288,7 @@
     const cleanEmptyNodes = (dom, node, isRoot) => {
       if (node && dom.isEmpty(node) && !isRoot(node)) {
         const parent = node.parentNode;
-        dom.remove(node);
+        dom.remove(node, isText$a(node.firstChild) && isWhitespaceText(node.firstChild.data));
         cleanEmptyNodes(dom, parent, isRoot);
       }
     };
@@ -27615,12 +27780,17 @@
           const allSelection = serializeRng(allRng);
           return selection === allSelection;
         };
+        const hasPreservedEmptyElements = elm => {
+          const scope = SugarElement.fromDom(elm);
+          const isEditableHost = elm => parentElement(elm).exists(elm => !isEditable$3(elm));
+          return exists(descendants(scope, '[contenteditable="true"]'), isEditableHost);
+        };
         editor.on('keydown', e => {
           const keyCode = e.keyCode;
           if (!isDefaultPrevented(e) && (keyCode === DELETE || keyCode === BACKSPACE) && editor.selection.isEditable()) {
             const isCollapsed = editor.selection.isCollapsed();
             const body = editor.getBody();
-            if (isCollapsed && !dom.isEmpty(body)) {
+            if (isCollapsed && (!dom.isEmpty(body) || hasPreservedEmptyElements(body))) {
               return;
             }
             if (!isCollapsed && !allContentsSelected(editor.selection.getRng())) {
@@ -28045,6 +28215,7 @@
         ...mkSchemaSettings(editor),
         ...removeUndefined({
           remove_trailing_brs: getOption('remove_trailing_brs'),
+          pad_empty_with_br: getOption('pad_empty_with_br'),
           url_converter: getOption('url_converter'),
           url_converter_scope: getOption('url_converter_scope'),
           element_format: getOption('element_format'),
@@ -28244,6 +28415,19 @@
         initEditor(editor);
       }
     };
+    const startProgress = editor => {
+      let canceled = false;
+      const progressTimeout = setTimeout(() => {
+        if (!canceled) {
+          editor.setProgressState(true);
+        }
+      }, 500);
+      return () => {
+        clearTimeout(progressTimeout);
+        canceled = true;
+        editor.setProgressState(false);
+      };
+    };
     const contentBodyLoaded = editor => {
       const targetElm = editor.getElement();
       let doc = editor.getDoc();
@@ -28304,7 +28488,11 @@
       const setupRtcThunk = setup$s(editor);
       preInit(editor);
       setupRtcThunk.fold(() => {
-        loadContentCss(editor).then(() => initEditorWithInitialContent(editor));
+        const cancelProgress = startProgress(editor);
+        loadContentCss(editor).then(() => {
+          initEditorWithInitialContent(editor);
+          cancelProgress();
+        });
       }, setupRtc => {
         editor.setProgressState(true);
         loadContentCss(editor).then(() => {
@@ -28862,12 +29050,12 @@
         JustifyFull: alignStates('alignjustify')
       }, 'state');
     };
-    const registerCommands$a = editor => {
+    const registerCommands$b = editor => {
       registerExecCommands$3(editor);
       registerQueryStateCommands$1(editor);
     };
 
-    const registerCommands$9 = editor => {
+    const registerCommands$a = editor => {
       editor.editorCommands.addCommands({
         'Cut,Copy,Paste': command => {
           const doc = editor.getDoc();
@@ -28951,7 +29139,7 @@
       }
     };
 
-    const registerCommands$8 = editor => {
+    const registerCommands$9 = editor => {
       editor.editorCommands.addCommands({
         mceCleanup: () => {
           const bm = editor.selection.getBookmark();
@@ -29129,12 +29317,12 @@
       editor.editorCommands.addQueryValueHandler('FontSize', () => fontSizeQuery(editor));
       editor.editorCommands.addQueryValueHandler('LineHeight', () => lineHeightQuery(editor));
     };
-    const registerCommands$7 = editor => {
+    const registerCommands$8 = editor => {
       registerExecCommands$2(editor);
       registerQueryValueCommands(editor);
     };
 
-    const registerCommands$6 = editor => {
+    const registerCommands$7 = editor => {
       editor.editorCommands.addCommands({
         mceAddUndoLevel: () => {
           editor.undoManager.add();
@@ -29151,7 +29339,7 @@
       });
     };
 
-    const registerCommands$5 = editor => {
+    const registerCommands$6 = editor => {
       editor.editorCommands.addCommands({
         Indent: () => {
           indent(editor);
@@ -29163,7 +29351,7 @@
       editor.editorCommands.addCommands({ Outdent: () => canOutdent(editor) }, 'state');
     };
 
-    const registerCommands$4 = editor => {
+    const registerCommands$5 = editor => {
       const applyLinkToSelection = (_command, _ui, value) => {
         const linkDetails = isString(value) ? { href: value } : value;
         const anchor = editor.dom.getParent(editor.selection.getNode(), 'a');
@@ -29219,9 +29407,48 @@
         }
       }, 'state');
     };
-    const registerCommands$3 = editor => {
+    const registerCommands$4 = editor => {
       registerExecCommands$1(editor);
       registerQueryStateCommands(editor);
+    };
+
+    const getTopParentBlock = (editor, node, root, container) => {
+      const dom = editor.dom;
+      const selector = node => dom.isBlock(node) && node.parentElement === root;
+      const topParentBlock = selector(node) ? node : dom.getParent(container, selector, root);
+      return Optional.from(topParentBlock).map(SugarElement.fromDom);
+    };
+    const insert = (editor, before) => {
+      const dom = editor.dom;
+      const rng = editor.selection.getRng();
+      const node = before ? editor.selection.getStart() : editor.selection.getEnd();
+      const container = before ? rng.startContainer : rng.endContainer;
+      const root = getEditableRoot(dom, container);
+      if (!root || !root.isContentEditable) {
+        return;
+      }
+      const insertFn = before ? before$3 : after$4;
+      const newBlockName = getForcedRootBlock(editor);
+      getTopParentBlock(editor, node, root, container).each(parentBlock => {
+        const newBlock = createNewBlock(editor, container, parentBlock.dom, root, false, newBlockName);
+        insertFn(parentBlock, SugarElement.fromDom(newBlock));
+        editor.selection.setCursorLocation(newBlock, 0);
+        editor.dispatch('NewBlock', { newBlock });
+        fireInputEvent(editor, 'insertParagraph');
+      });
+    };
+    const insertBefore = editor => insert(editor, true);
+    const insertAfter = editor => insert(editor, false);
+
+    const registerCommands$3 = editor => {
+      editor.editorCommands.addCommands({
+        InsertNewBlockBefore: () => {
+          insertBefore(editor);
+        },
+        InsertNewBlockAfter: () => {
+          insertAfter(editor);
+        }
+      });
     };
 
     const registerCommands$2 = editor => {
@@ -29230,7 +29457,7 @@
           insertBreak(blockbreak, editor);
         },
         mceInsertNewLine: (_command, _ui, value) => {
-          insert(editor, value);
+          insert$1(editor, value);
         },
         InsertLineBreak: (_command, _ui, _value) => {
           insertBreak(linebreak, editor);
@@ -29288,16 +29515,17 @@
       });
     };
     const registerCommands = editor => {
+      registerCommands$b(editor);
       registerCommands$a(editor);
-      registerCommands$9(editor);
-      registerCommands$6(editor);
-      registerCommands$1(editor);
-      registerCommands$8(editor);
-      registerCommands$4(editor);
-      registerCommands$5(editor);
-      registerCommands$2(editor);
-      registerCommands$3(editor);
       registerCommands$7(editor);
+      registerCommands$1(editor);
+      registerCommands$9(editor);
+      registerCommands$5(editor);
+      registerCommands$6(editor);
+      registerCommands$3(editor);
+      registerCommands$2(editor);
+      registerCommands$4(editor);
+      registerCommands$8(editor);
       registerExecCommands(editor);
     };
 
@@ -30686,8 +30914,8 @@
       documentBaseURL: null,
       suffix: null,
       majorVersion: '6',
-      minorVersion: '5.1',
-      releaseDate: '2023-06-19',
+      minorVersion: '7.0',
+      releaseDate: '2023-08-30',
       i18n: I18n,
       activeEditor: null,
       focusedEditor: null,

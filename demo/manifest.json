@@ -3,13 +3,13 @@
     "file": "assets/compiled/fonts/bootstrap-icons.woff2",
     "src": "../node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
   },
+  "app-dark.css": {
+    "file": "assets/compiled/css/app-dark.css",
+    "src": "app-dark.css"
+  },
   "app.css": {
     "file": "assets/compiled/css/app.css",
     "src": "app.css"
-  },
-  "application-chat.css": {
-    "file": "assets/compiled/css/application-chat.css",
-    "src": "application-chat.css"
   },
   "application-email.css": {
     "file": "assets/compiled/css/application-email.css",
@@ -207,21 +207,21 @@
     "file": "assets/compiled/svg/rings.svg",
     "src": "assets/static/images/svg-loaders/rings.svg"
   },
-  "auth-forgot-password.css": {
-    "file": "assets/compiled/css/auth-forgot-password.css",
-    "src": "auth-forgot-password.css"
+  "auth.css": {
+    "file": "assets/compiled/css/auth.css",
+    "src": "auth.css"
   },
-  "error-403.css": {
-    "file": "assets/compiled/css/error-403.css",
-    "src": "error-403.css"
+  "error.css": {
+    "file": "assets/compiled/css/error.css",
+    "src": "error.css"
   },
   "form-editor-summernote.css": {
     "file": "assets/compiled/css/form-editor-summernote.css",
     "src": "form-editor-summernote.css"
   },
-  "layout-rtl-backup.css": {
-    "file": "assets/compiled/css/layout-rtl-backup.css",
-    "src": "layout-rtl-backup.css"
+  "iconly.css": {
+    "file": "assets/compiled/css/iconly.css",
+    "src": "iconly.css"
   },
   "table-datatable-jquery.css": {
     "file": "assets/compiled/css/table-datatable-jquery.css",

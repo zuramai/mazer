@@ -1,5 +1,5 @@
 /*!
- * Chart.js v4.3.0
+ * Chart.js v4.4.0
  * https://www.chartjs.org
  * (c) 2023 Chart.js Contributors
  * Released under the MIT License
@@ -627,7 +627,7 @@ function fontString(pixelSize, fontStyle, fontFamily) {
         const { min , max , minDefined , maxDefined  } = iScale.getUserBounds();
         if (minDefined) {
             start = _limitValue(Math.min(// @ts-expect-error Need to type _parsed
-            _lookupByKey(_parsed, iScale.axis, min).lo, // @ts-expect-error Need to fix types on _lookupByKey
+            _lookupByKey(_parsed, axis, min).lo, // @ts-expect-error Need to fix types on _lookupByKey
             animationsDisabled ? pointCount : _lookupByKey(points, axis, iScale.getPixelForValue(min)).lo), 0, pointCount - 1);
         }
         if (maxDefined) {
@@ -918,6 +918,7 @@ function applyScaleDefaults(defaults) {
         reverse: false,
         beginAtZero: false,
  bounds: 'ticks',
+        clip: true,
  grace: 0,
         grid: {
             display: true,
@@ -1456,7 +1457,7 @@ function drawBackdrop(ctx, opts) {
  */ function addRoundedRectPath(ctx, rect) {
     const { x , y , w , h , radius  } = rect;
     // top left arc
-    ctx.arc(x + radius.topLeft, y + radius.topLeft, radius.topLeft, -HALF_PI, PI, true);
+    ctx.arc(x + radius.topLeft, y + radius.topLeft, radius.topLeft, 1.5 * PI, PI, true);
     // line from top left to bottom left
     ctx.lineTo(x, y + h - radius.bottomLeft);
     // bottom left arc

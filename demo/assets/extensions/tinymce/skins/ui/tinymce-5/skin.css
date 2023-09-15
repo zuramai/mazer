@@ -259,6 +259,10 @@ button::-moz-focus-inner {
   display: flex;
   flex: 0 0 auto;
 }
+.tox .tox-bottom-anchorbar {
+  display: flex;
+  flex: 0 0 auto;
+}
 .tox .tox-bar {
   display: flex;
   flex: 0 0 auto;
@@ -734,6 +738,7 @@ button::-moz-focus-inner {
   font-style: normal;
   font-weight: normal;
   line-height: 24px;
+  max-width: 100%;
   text-transform: none;
   word-break: break-all;
 }
@@ -1441,16 +1446,21 @@ button::-moz-focus-inner {
 .tox .tox-dialog__body-content a {
   color: #207ab7;
   cursor: pointer;
-  text-decoration: none;
+  text-decoration: underline;
 }
 .tox .tox-dialog__body-content a:hover,
 .tox .tox-dialog__body-content a:focus {
-  color: #185d8c;
-  text-decoration: none;
+  color: #114060;
+  text-decoration: underline;
+}
+.tox .tox-dialog__body-content a:focus-visible {
+  border-radius: 1px;
+  outline: 2px solid #207ab7;
+  outline-offset: 2px;
 }
 .tox .tox-dialog__body-content a:active {
-  color: #185d8c;
-  text-decoration: none;
+  color: #092335;
+  text-decoration: underline;
 }
 .tox .tox-dialog__body-content svg {
   fill: #222f3e;
@@ -1518,6 +1528,12 @@ button::-moz-focus-inner {
 .tox .tox-dialog__body-content .tox-form__group p:only-child {
   margin-bottom: 0;
   margin-top: 0;
+}
+.tox .tox-dialog__body-content .tox-form__group .tox-label.tox-label--center {
+  text-align: center;
+}
+.tox .tox-dialog__body-content .tox-form__group .tox-label.tox-label--end {
+  text-align: end;
 }
 .tox .tox-dialog--width-lg {
   height: 650px;
@@ -1587,8 +1603,29 @@ button::-moz-focus-inner {
 .tox .tox-dialog__table td:first-child {
   padding-right: 8px;
 }
+.tox .tox-dialog__iframe {
+  min-height: 200px;
+}
 .tox .tox-dialog__iframe.tox-dialog__iframe--opaque {
   background: #fff;
+}
+.tox .tox-navobj-bordered {
+  position: relative;
+}
+.tox .tox-navobj-bordered::before {
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  content: '';
+  inset: 0;
+  opacity: 1;
+  pointer-events: none;
+  position: absolute;
+  z-index: 1;
+}
+.tox .tox-navobj-bordered-focus.tox-navobj-bordered::before {
+  border-color: #207ab7;
+  box-shadow: none;
+  outline: 2px solid rgba(32, 122, 183, 0.25);
 }
 .tox .tox-dialog__popups {
   position: absolute;
@@ -2320,6 +2357,9 @@ body.tox-dialog__disable-scroll {
     overflow-wrap: break-word;
     word-break: normal;
   }
+  .tox .tox-dialog__popups .tox-menu .tox-collection__item-label {
+    word-break: break-all;
+  }
 }
 .tox .tox-menu__label h1,
 .tox .tox-menu__label h2,
@@ -2822,19 +2862,42 @@ body.tox-dialog__disable-scroll {
   position: relative;
   text-transform: uppercase;
 }
-.tox .tox-statusbar__text-container {
-  display: flex;
-  flex: 1 1 auto;
-  justify-content: flex-end;
-  overflow: hidden;
-}
 .tox .tox-statusbar__path {
   display: flex;
   flex: 1 1 auto;
-  margin-right: auto;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.tox .tox-statusbar__right-container {
+  display: flex;
+  justify-content: flex-end;
+  white-space: nowrap;
+}
+.tox .tox-statusbar__help-text {
+  text-align: center;
+}
+.tox .tox-statusbar__text-container {
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: space-between;
+  overflow: hidden;
+}
+@media only screen and (min-width: 768px ) {
+  .tox .tox-statusbar__text-container.tox-statusbar__text-container-3-cols > .tox-statusbar__help-text,
+  .tox .tox-statusbar__text-container.tox-statusbar__text-container-3-cols > .tox-statusbar__right-container,
+  .tox .tox-statusbar__text-container.tox-statusbar__text-container-3-cols > .tox-statusbar__path {
+    flex: 0 0 calc(100% / 3);
+  }
+}
+.tox .tox-statusbar__text-container.tox-statusbar__text-container--flex-end {
+  justify-content: flex-end;
+}
+.tox .tox-statusbar__text-container.tox-statusbar__text-container--flex-start {
+  justify-content: flex-start;
+}
+.tox .tox-statusbar__text-container.tox-statusbar__text-container--space-around {
+  justify-content: space-around;
 }
 .tox .tox-statusbar__path > * {
   display: inline;
@@ -2843,6 +2906,14 @@ body.tox-dialog__disable-scroll {
 .tox .tox-statusbar__wordcount {
   flex: 0 0 auto;
   margin-left: 1ch;
+}
+@media only screen and (max-width: 767px ) {
+  .tox .tox-statusbar__text-container .tox-statusbar__help-text {
+    display: none;
+  }
+  .tox .tox-statusbar__text-container .tox-statusbar__help-text:only-child {
+    display: block;
+  }
 }
 .tox .tox-statusbar a,
 .tox .tox-statusbar__path-item,
