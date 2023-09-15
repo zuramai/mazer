@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }} - {{ web_title }}</title>
     {% block stylesfirst %}{% endblock %}
-    <link rel="stylesheet" href="assets/css/app.rtl.css">
-    <link rel="stylesheet" href="assets/scss/themes/dark/app-dark.scss">
+    <link rel="stylesheet" href="assets/compiled/css/app.rtl.css">
+    <link rel="stylesheet" href="assets/compiled/css/app-dark.rtl.css">
     <link rel="shortcut icon" href="assets/static/images/logo/favicon.svg" type="image/x-icon">
     <link rel="shortcut icon" href="assets/static/images/logo/favicon.png" type="image/png">
     {% block styles %}{% endblock %}
 </head>
 
 <body>
+    <script src="assets/static/js/initTheme.js"></script>
     <div id="app">
-        <div id="sidebar" class="active">
+        <div id="sidebar">
             {% include "src/layouts/sidebar.html" %}
         </div>
         <div id="main">
@@ -25,25 +26,18 @@
                 </a>
             </header>
             {% block content %}{% endblock %}
-            <footer>
-                <div class="footer clearfix mb-0 text-muted">
-                    <div class="float-start">
-                        <p>2021 &copy; Mazer</p>
-                    </div>
-                    <div class="float-end">
-                        <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                            href="https://saugi.me">Saugi</a></p>
-                    </div>
-                </div>
-            </footer>
+            {% include '../partials/footer.html' %}
         </div>
     </div>
-    <script src="assets/js/bootstrap.js"></script>
+    <script src="assets/static/js/components/dark.js"></script>
+    <script src="assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    
     {% if isDev %}
     <script src="assets/js/app.js" type="module"></script>
     {% else %}
     <script src="assets/compiled/js/app.js"></script>
     {% endif %}
+
     {% block js %}{% endblock %}
 </body>
 
