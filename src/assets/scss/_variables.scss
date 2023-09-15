@@ -7,6 +7,8 @@
 
 @use 'sass:math';
 
+@import "~bootstrap/scss/functions";
+
 $dark-mode: false !default;
 
 
@@ -1624,4 +1626,4 @@ $choices-border-color:  $form-select-border-color;
 $choices-input-color:   $body-color;
 $choices-dropdown-bg:   $form-select-bg;
 $choices-dropdown-color:    $choices-input-color;
-$choices-highlight-bg:      lighten($card-bg, 5%);
+$choices-highlight-bg:      $card-bg;
