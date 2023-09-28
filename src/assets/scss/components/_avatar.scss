@@ -75,4 +75,18 @@
             font-size: 1.4rem;
         }
     }
+    &.avatar-2xl {
+        .avatar-content, img {
+            width: 78px;
+            height: 78px;
+            font-size: 1.6rem;
+        }
+    }
+    &.avatar-3xl {
+        .avatar-content, img {
+            width: 100px;
+            height: 100px;
+            font-size: 1.8rem;
+        }
+    }
 }
