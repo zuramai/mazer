@@ -374,6 +374,17 @@
     "url": "application-checkout.html"
   },
   {
+    "name": "Account",
+    "key": "account",
+    "icon": "person-circle",
+    "submenu": [
+      {
+        "name": "Profile",
+        "url": "account-profile.html"
+      }
+    ]
+  },
+  {
     "name": "Authentication",
     "key": "auth",
     "icon": "person-badge-fill",
