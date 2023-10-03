@@ -16,16 +16,15 @@
             margin-left: .4rem;
         }
     }
-    .alert-dark{
-        filter: var(--bs-btn-close-white-filter);
+}
+.alert-dark button.close{
+    filter: $btn-close-white-filter;
+}
+.alert-secondary button.close,
+.alert-light button.close{
+    @if($dark-mode == true) {
+        filter: unset;
     }
-    .alert-secondary,
-    .alert-light{
-        @if($dark-mode == true) {
-            filter: unset;
-        }
-    }
-    
 }
 @each $key, $value in $alert-colors {
     .alert-#{$key} {
