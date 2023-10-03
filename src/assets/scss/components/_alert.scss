@@ -16,6 +16,16 @@
             margin-left: .4rem;
         }
     }
+    .alert-dark{
+        filter: var(--bs-btn-close-white-filter);
+    }
+    .alert-secondary,
+    .alert-light{
+        @if($dark-mode == true) {
+            filter: unset;
+        }
+    }
+    
 }
 @each $key, $value in $alert-colors {
     .alert-#{$key} {
