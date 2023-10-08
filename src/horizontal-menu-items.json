@@ -79,6 +79,10 @@
             "url": "extra-component-avatar.html"
           },
           {
+            "name": "Comment",
+            "url": "extra-component-comment.html"
+          },
+          {
             "name": "Sweet Alert",
             "url": "extra-component-sweetalert.html"
           },
