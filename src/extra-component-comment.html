@@ -1,12 +1,7 @@
-{% set title = 'Date Picker' %}
-{% set filename = 'extra-component-date-picker.html' %}
+{% set title = 'Comment' %}
+{% set filename = 'extra-component-comment.html' %}
 
 {% extends 'src/layouts/master.html' %}
-
-{% block styles %}
-    <link rel="stylesheet" href="/assets/scss/components/_comment.scss">
-{% endblock %}
-
 
 {% block content %}
 <div class="page-heading">
@@ -41,23 +36,19 @@
                         </div>
                         <div class="comment-body">
                             <div class="comment-profileName">Muhammad Alfian </div>
-                            <div class="comment-time">1 second ago</div>
+                            <div class="comment-time">8 seconds ago</div>
                             <div class="comment-message">
-                                <p class="list-group-item-text truncate mb-20">Your complaint will be processed. Stay Tuned!</p>
+                                <p class="list-group-item-text truncate mb-20">Your <a href="https://github.com/alfianchii/confess" target="_blank">confession</a> will be processed. Stay tuned!</p>
                             </div>
                             <div class="comment-actions">
-                                <button class="btn btn-view"><i class="bi bi-eye-fill"></i></button>
-                                <button class="btn btn-edit"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn btn-delete"><i class="bi bi-x-circle"></i></button>
+                                <button class="btn icon icon-left btn-primary me-2 text-nowrap"><i class="bi bi-eye-fill"></i> Show</button>
+                                <button class="btn icon icon-left btn-warning me-2 text-nowrap"><i class="bi bi-pencil-square"></i> Edit</button>
+                                <button class="btn icon icon-left btn-danger me-2 text-nowrap"><i class="bi bi-x-circle"></i> Remove</button>
                             </div>
                         </div>
-
-
+					</div>
                 </div>
-                
             </div>
-            
-
         </div>
         <div class="card">
             <div class="card-body">
@@ -72,24 +63,22 @@
                             <div class="comment-profileName"> Sana Fatima </div>
                             <div class="comment-time">4 minutes ago</div>
                             <div class="comment-message">
-                                <p class="list-group-item-text truncate mb-20">I have looked into your matter and will respond soon</p>
+                                <p class="list-group-item-text truncate mb-20">I have looked into your matter and will respond soon.</p>
                             </div>
                             <div class="comment-actions">
-                                <button class="btn btn-view"><i class="bi bi-eye-fill"></i></button>
-                                <button class="btn btn-edit"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn btn-delete"><i class="bi bi-x-circle"></i></button>
+                                <button class="btn icon icon-left btn-primary me-2 text-nowrap"><i class="bi bi-eye-fill"></i> Show</button>
+                                <button class="btn icon icon-left btn-warning me-2 text-nowrap"><i class="bi bi-pencil-square"></i> Edit</button>
+                                <button class="btn icon icon-left btn-danger me-2 text-nowrap"><i class="bi bi-x-circle"></i> Remove</button>
                             </div>
                         </div>
-
-
-                </div>
-                
+                	</div>
+            	</div>
             </div>
-            
-
-        </div>
-       
         </div>
     </section>
 </div>
+{% endblock %} 
+
+{% block styles %}
+<link rel="stylesheet" href="/assets/scss/components/_comment.scss" />
 {% endblock %}

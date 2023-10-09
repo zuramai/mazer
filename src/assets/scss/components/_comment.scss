@@ -1,8 +1,8 @@
+// Light theme
 .comment {
-    border: 1px solid #ccc;
+    border: 1px solid #C2C2D9;
     padding: 40px;
-    margin-top: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 
@@ -10,6 +10,11 @@
         display: flex;
         align-items: center;
         margin-bottom: 1px;
+
+        @media screen and (max-width: 767px) {
+            flex-direction: column;
+            justify-content: center;
+        }
 
         .avatar-content {
             width: 10px;
@@ -24,40 +29,29 @@
     }
 
     &-body {
+        @media screen and (max-width: 767px) {
+            margin-top: 20px;
+        }
         margin-left: 30px;
     }
 
     &-time {
-        color:#6a9cd2;
+        color: #435EBE;
         margin-bottom: 10px;
     }
 
-
     &-actions {
-
-        .btn {
-            padding: 5px 10px;  
-            border: none;
-            cursor: pointer;
-            border-radius: 3px;
-        }
-
-        .btn-view {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        .btn-edit {
-            background-color: #ffc107;
-            color: #000;
-        }
-
-        .btn-delete {
-            background-color: #dc3545;
-            color: #fff;
-        }
-        
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 10px;
     }
-    
+}
 
+// Dark theme
+html[data-bs-theme="dark"] .comment {
+    border: 1px solid #404053;
+
+    &-time {
+        color:#6a9cd2;
+    }
 }
