@@ -1,0 +1,57 @@
+// Light theme
+.comment {
+    border: 1px solid #C2C2D9;
+    padding: 40px;
+    margin-bottom: 30px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+
+    &-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1px;
+
+        @media screen and (max-width: 767px) {
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .avatar-content {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .comment-meta {
+            flex-grow: 1;
+        }
+    }
+
+    &-body {
+        @media screen and (max-width: 767px) {
+            margin-top: 20px;
+        }
+        margin-left: 30px;
+    }
+
+    &-time {
+        color: #435EBE;
+        margin-bottom: 10px;
+    }
+
+    &-actions {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+}
+
+// Dark theme
+html[data-bs-theme="dark"] .comment {
+    border: 1px solid #404053;
+
+    &-time {
+        color:#6a9cd2;
+    }
+}
