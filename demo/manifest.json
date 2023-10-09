@@ -215,6 +215,10 @@
     "file": "assets/compiled/css/error.css",
     "src": "error.css"
   },
+  "extra-component-comment.css": {
+    "file": "assets/compiled/css/extra-component-comment.css",
+    "src": "extra-component-comment.css"
+  },
   "form-editor-summernote.css": {
     "file": "assets/compiled/css/form-editor-summernote.css",
     "src": "form-editor-summernote.css"
