@@ -17,11 +17,11 @@
         }
     }
 }
-.alert-dark button.close{
+.alert-dark .btn-close{
     filter: $btn-close-white-filter;
 }
-.alert-secondary button.close,
-.alert-light button.close{
+.alert-secondary .btn-close,
+.alert-light .btn-close{
     @if($dark-mode == true) {
         filter: unset;
     }
