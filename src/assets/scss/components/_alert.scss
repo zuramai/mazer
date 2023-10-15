@@ -17,6 +17,15 @@
         }
     }
 }
+.alert-dark .btn-close{
+    filter: $btn-close-white-filter;
+}
+.alert-secondary .btn-close,
+.alert-light .btn-close{
+    @if($dark-mode == true) {
+        filter: unset;
+    }
+}
 @each $key, $value in $alert-colors {
     .alert-#{$key} {
         background-color: map-get($value, 'background-color');
