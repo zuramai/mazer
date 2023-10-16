@@ -385,6 +385,10 @@
       {
         "name": "Profile",
         "url": "account-profile.html"
+      },
+      {
+        "name": "Security",
+        "url": "account-security.html"
       }
     ]
   },
