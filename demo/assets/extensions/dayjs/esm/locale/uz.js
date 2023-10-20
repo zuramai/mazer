@@ -21,7 +21,7 @@ var locale = {
   },
   relativeTime: {
     future: 'Якин %s ичида',
-    past: 'Бир неча %s олдин',
+    past: '%s олдин',
     s: 'фурсат',
     m: 'бир дакика',
     mm: '%d дакика',

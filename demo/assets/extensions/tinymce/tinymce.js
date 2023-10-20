@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.7.0 (2023-08-30)
+ * TinyMCE version 6.7.1 (2023-10-19)
  */
 
 (function () {
@@ -735,7 +735,7 @@
       return checkRange(str, suffix, str.length - suffix.length);
     };
     const blank = r => s => s.replace(r, '');
-    const trim$3 = blank(/^\s+|\s+$/g);
+    const trim$4 = blank(/^\s+|\s+$/g);
     const lTrim = blank(/^\s+/g);
     const rTrim = blank(/\s+$/g);
     const isNotEmpty = s => s.length > 0;
@@ -1005,7 +1005,7 @@
     };
 
     const whiteSpaceRegExp$1 = /^\s*|\s*$/g;
-    const trim$2 = str => {
+    const trim$3 = str => {
       return isNullable(str) ? '' : ('' + str).replace(whiteSpaceRegExp$1, '');
     };
     const is$3 = (obj, type) => {
@@ -1072,7 +1072,7 @@
       } else if (s === '') {
         return [];
       } else {
-        return map$1(s.split(d || ','), trim$2);
+        return map$1(s.split(d || ','), trim$3);
       }
     };
     const _addCacheSuffix = url => {
@@ -1083,7 +1083,7 @@
       return url;
     };
     const Tools = {
-      trim: trim$2,
+      trim: trim$3,
       isArray: isArray,
       is: is$3,
       toArray: toArray$1,
@@ -1564,7 +1564,7 @@
     const remove$6 = (element, property) => {
       const dom = element.dom;
       internalRemove(dom, property);
-      if (is$2(getOpt(element, 'style').map(trim$3), '')) {
+      if (is$2(getOpt(element, 'style').map(trim$4), '')) {
         remove$a(element, 'style');
       }
     };
@@ -2170,7 +2170,7 @@
 
     const ZWSP$1 = zeroWidth;
     const isZwsp$1 = isZwsp$2;
-    const trim$1 = removeZwsp;
+    const trim$2 = removeZwsp;
 
     const isElement$5 = isElement$6;
     const isText$9 = isText$a;
@@ -6309,7 +6309,7 @@
     };
     const getBookmark$2 = (selection, type, normalized = false) => {
       if (type === 2) {
-        return getOffsetBookmark(trim$1, normalized, selection);
+        return getOffsetBookmark(trim$2, normalized, selection);
       } else if (type === 3) {
         return getCaretBookmark(selection);
       } else if (type) {
@@ -6603,7 +6603,7 @@
         const arr = item.split('=');
         const key = arr[0];
         const val = arr.length > 1 ? arr[1] : key;
-        output[trim$3(key)] = trim$3(val);
+        output[trim$4(key)] = trim$4(val);
         return output;
       }, {});
     };
@@ -6838,7 +6838,7 @@
           if (valid) {
             if (isString(value)) {
               return {
-                value: map$3(value.split(','), trim$3),
+                value: map$3(value.split(','), trim$4),
                 valid
               };
             } else if (isArray$1(value)) {
@@ -6875,7 +6875,7 @@
         processor: value => {
           const valid = isString(value) || isArrayOf(value, isString);
           if (valid) {
-            const newValue = isArray$1(value) ? value : map$3(value.split(','), trim$3);
+            const newValue = isArray$1(value) ? value : map$3(value.split(','), trim$4);
             return {
               value: newValue,
               valid
@@ -7455,7 +7455,7 @@
       }
     };
     const trimCount = text => {
-      const trimmedText = trim$1(text);
+      const trimmedText = trim$2(text);
       return {
         count: text.length - trimmedText.length,
         text: trimmedText
@@ -11165,85 +11165,51 @@
       }
     }
 
-    const isConditionalComment = (html, startIndex) => /^\s*\[if [\w\W]+\]>.*<!\[endif\](--!?)?>/.test(html.substr(startIndex));
-    const findCommentEndIndex = (html, isBogus, startIndex = 0) => {
-      const lcHtml = html.toLowerCase();
-      if (lcHtml.indexOf('[if ', startIndex) !== -1 && isConditionalComment(lcHtml, startIndex)) {
-        const endIfIndex = lcHtml.indexOf('[endif]', startIndex);
-        return lcHtml.indexOf('>', endIfIndex);
-      } else {
-        if (isBogus) {
-          const endIndex = lcHtml.indexOf('>', startIndex);
-          return endIndex !== -1 ? endIndex : lcHtml.length;
+    const getTemporaryNodeSelector = tempAttrs => `${ tempAttrs.length === 0 ? '' : `${ map$3(tempAttrs, attr => `[${ attr }]`).join(',') },` }[data-mce-bogus="all"]`;
+    const getTemporaryNodes = (body, tempAttrs) => body.querySelectorAll(getTemporaryNodeSelector(tempAttrs));
+    const createCommentWalker = body => document.createTreeWalker(body, NodeFilter.SHOW_COMMENT, null);
+    const hasComments = body => createCommentWalker(body).nextNode() !== null;
+    const hasTemporaryNodes = (body, tempAttrs) => body.querySelector(getTemporaryNodeSelector(tempAttrs)) !== null;
+    const trimTemporaryNodes = (body, tempAttrs) => {
+      each$e(getTemporaryNodes(body, tempAttrs), elm => {
+        const element = SugarElement.fromDom(elm);
+        if (get$9(element, 'data-mce-bogus') === 'all') {
+          remove$5(element);
         } else {
-          const endCommentRegexp = /--!?>/g;
-          endCommentRegexp.lastIndex = startIndex;
-          const match = endCommentRegexp.exec(html);
-          return match ? match.index + match[0].length : lcHtml.length;
+          each$e(tempAttrs, attr => {
+            if (has$1(element, attr)) {
+              remove$a(element, attr);
+            }
+          });
+        }
+      });
+    };
+    const removeCommentsContainingZwsp = body => {
+      const walker = createCommentWalker(body);
+      let nextNode = walker.nextNode();
+      while (nextNode !== null) {
+        const comment = walker.currentNode;
+        nextNode = walker.nextNode();
+        if (isString(comment.nodeValue) && comment.nodeValue.includes(ZWSP$1)) {
+          remove$5(SugarElement.fromDom(comment));
         }
       }
     };
-    const findMatchingEndTagIndex = (schema, html, startIndex) => {
-      const startTagRegExp = /<([!?\/])?([A-Za-z0-9\-_:.]+)/g;
-      const endTagRegExp = /(?:\s(?:[^'">]+(?:"[^"]*"|'[^']*'))*[^"'>]*(?:"[^">]*|'[^'>]*)?|\s*|\/)>/g;
-      const voidElements = schema.getVoidElements();
-      let count = 1, index = startIndex;
-      while (count !== 0) {
-        startTagRegExp.lastIndex = index;
-        while (true) {
-          const startMatch = startTagRegExp.exec(html);
-          if (startMatch === null) {
-            return index;
-          } else if (startMatch[1] === '!') {
-            if (startsWith(startMatch[2], '--')) {
-              index = findCommentEndIndex(html, false, startMatch.index + '!--'.length);
-            } else {
-              index = findCommentEndIndex(html, true, startMatch.index + 1);
-            }
-            break;
-          } else {
-            endTagRegExp.lastIndex = startTagRegExp.lastIndex;
-            const endMatch = endTagRegExp.exec(html);
-            if (isNull(endMatch) || endMatch.index !== startTagRegExp.lastIndex) {
-              continue;
-            }
-            if (startMatch[1] === '/') {
-              count -= 1;
-            } else if (!has$2(voidElements, startMatch[2])) {
-              count += 1;
-            }
-            index = startTagRegExp.lastIndex + endMatch[0].length;
-            break;
-          }
+    const deepClone = body => body.cloneNode(true);
+    const trim$1 = (body, tempAttrs) => {
+      let trimmed = body;
+      if (hasComments(body)) {
+        trimmed = deepClone(body);
+        removeCommentsContainingZwsp(trimmed);
+        if (hasTemporaryNodes(trimmed, tempAttrs)) {
+          trimTemporaryNodes(trimmed, tempAttrs);
         }
+      } else if (hasTemporaryNodes(body, tempAttrs)) {
+        trimmed = deepClone(body);
+        trimTemporaryNodes(trimmed, tempAttrs);
       }
-      return index;
+      return trimmed;
     };
-    const trimHtml$1 = (tempAttrs, html) => {
-      const trimContentRegExp = new RegExp(['\\s?(' + tempAttrs.join('|') + ')="[^"]+"'].join('|'), 'gi');
-      return html.replace(trimContentRegExp, '');
-    };
-    const trimInternal = (serializer, html) => {
-      const bogusAllRegExp = /<(\w+) [^>]*data-mce-bogus="all"[^>]*>/g;
-      const schema = serializer.schema;
-      let content = trimHtml$1(serializer.getTempAttrs(), html);
-      const voidElements = schema.getVoidElements();
-      let matches;
-      while (matches = bogusAllRegExp.exec(content)) {
-        const index = bogusAllRegExp.lastIndex;
-        const matchLength = matches[0].length;
-        let endTagIndex;
-        if (voidElements[matches[1]]) {
-          endTagIndex = index;
-        } else {
-          endTagIndex = findMatchingEndTagIndex(schema, content, index);
-        }
-        content = content.substring(0, index - matchLength) + content.substring(endTagIndex);
-        bogusAllRegExp.lastIndex = index - matchLength;
-      }
-      return trim$1(content);
-    };
-    const trimExternal = trimInternal;
 
     const cleanupBogusElements = parent => {
       const bogusElements = descendants(parent, '[data-mce-bogus]');
@@ -11286,14 +11252,14 @@
       cleanupInputNames(offscreenDiv);
       const root = getContentContainer(dos);
       append$1(root, offscreenDiv);
-      const content = trim$1(offscreenDiv.dom.innerText);
+      const content = trim$2(offscreenDiv.dom.innerText);
       remove$5(offscreenDiv);
       return content;
     };
     const getContentFromBody = (editor, args, body) => {
       let content;
       if (args.format === 'raw') {
-        content = Tools.trim(trimExternal(editor.serializer, body.innerHTML));
+        content = Tools.trim(trim$2(trim$1(body, editor.serializer.getTempAttrs()).innerHTML));
       } else if (args.format === 'text') {
         content = getPlainTextContent(editor, body);
       } else if (args.format === 'tree') {
@@ -17477,7 +17443,7 @@
 
     const isCollapsibleWhitespace = (text, index) => index >= 0 && index < text.length && isWhiteSpace(text.charAt(index));
     const getInnerText = bin => {
-      return trim$1(bin.innerText);
+      return trim$2(bin.innerText);
     };
     const getContextNodeName = parentBlockOpt => parentBlockOpt.map(block => block.nodeName).getOr('div').toLowerCase();
     const getTextContent = editor => Optional.from(editor.selection.getRng()).map(rng => {
@@ -17493,7 +17459,7 @@
         'style': 'overflow: hidden; opacity: 0;'
       }, rangeContentClone.dom);
       const text = getInnerText(bin);
-      const nonRenderedText = trim$1((_a = bin.textContent) !== null && _a !== void 0 ? _a : '');
+      const nonRenderedText = trim$2((_a = bin.textContent) !== null && _a !== void 0 ? _a : '');
       editor.dom.remove(bin);
       if (isCollapsibleWhitespace(nonRenderedText, 0) || isCollapsibleWhitespace(nonRenderedText, nonRenderedText.length - 1)) {
         const parentBlock = parentBlockOpt.getOr(body);
@@ -17715,11 +17681,9 @@
         }
       });
     };
-    const read$2 = elm => {
-      return filter$5(map$3(from(elm.childNodes), getOuterHtml), item => {
-        return item.length > 0;
-      });
-    };
+    const read$2 = (elm, trimZwsp) => filter$5(map$3(from(elm.childNodes), trimZwsp ? compose(trim$2, getOuterHtml) : getOuterHtml), item => {
+      return item.length > 0;
+    });
     const write = (fragments, elm) => {
       const currentFragments = map$3(from(elm.childNodes), getOuterHtml);
       applyDiff(diff(currentFragments, fragments), elm);
@@ -17727,9 +17691,7 @@
     };
 
     const lazyTempDocument = cached(() => document.implementation.createHTMLDocument('undo'));
-    const hasIframes = html => {
-      return html.indexOf('</iframe>') !== -1;
-    };
+    const hasIframes = body => body.querySelector('iframe') !== null;
     const createFragmentedLevel = fragments => {
       return {
         type: 'fragmented',
@@ -17749,13 +17711,9 @@
       };
     };
     const createFromEditor = editor => {
-      const fragments = read$2(editor.getBody());
-      const trimmedFragments = bind$3(fragments, html => {
-        const trimmed = trimInternal(editor.serializer, html);
-        return trimmed.length > 0 ? [trimmed] : [];
-      });
-      const content = trimmedFragments.join('');
-      return hasIframes(content) ? createFragmentedLevel(trimmedFragments) : createCompleteLevel(content);
+      const tempAttrs = editor.serializer.getTempAttrs();
+      const body = trim$1(editor.getBody(), tempAttrs);
+      return hasIframes(body) ? createFragmentedLevel(read$2(body, true)) : createCompleteLevel(trim$2(body.innerHTML));
     };
     const applyToEditor = (editor, level, before) => {
       const bookmark = before ? level.beforeBookmark : level.bookmark;
@@ -18812,7 +18770,7 @@
       }
     };
     const getHtmlFromNode = (dom, node, args) => {
-      const html = trim$1(args.getInner ? node.innerHTML : dom.getOuterHTML(node));
+      const html = trim$2(args.getInner ? node.innerHTML : dom.getOuterHTML(node));
       return args.selection || isWsPreserveElement(SugarElement.fromDom(node)) ? html : Tools.trim(html);
     };
     const parseHtml = (htmlParser, html, args) => {
@@ -23075,7 +23033,7 @@
     };
 
     const isValidTextRange = rng => rng.collapsed && isText$a(rng.startContainer);
-    const getText = rng => trim$1(rng.toString().replace(/\u00A0/g, ' '));
+    const getText = rng => trim$2(rng.toString().replace(/\u00A0/g, ' '));
     const isWhitespace = chr => chr !== '' && ' \xA0\f\n\r\t\x0B'.indexOf(chr) !== -1;
 
     const stripTrigger = (text, trigger) => text.substring(trigger.length);
@@ -24377,7 +24335,7 @@
     const trimZwsp = fragment => {
       each$e(descendants$1(SugarElement.fromDom(fragment), isText$b), text => {
         const rawNode = text.dom;
-        rawNode.nodeValue = trim$1(rawNode.data);
+        rawNode.nodeValue = trim$2(rawNode.data);
       });
     };
     const isWithinNonEditableList = (editor, node) => {
@@ -28933,7 +28891,7 @@
         return [];
       } else {
         const pluginNames = isArray$1(plugins) ? plugins : plugins.split(/[ ,]/);
-        const trimmedPlugins = map$3(pluginNames, trim$3);
+        const trimmedPlugins = map$3(pluginNames, trim$4);
         return filter$5(trimmedPlugins, isNotEmpty);
       }
     };
@@ -30914,8 +30872,8 @@
       documentBaseURL: null,
       suffix: null,
       majorVersion: '6',
-      minorVersion: '7.0',
-      releaseDate: '2023-08-30',
+      minorVersion: '7.1',
+      releaseDate: '2023-10-19',
       i18n: I18n,
       activeEditor: null,
       focusedEditor: null,

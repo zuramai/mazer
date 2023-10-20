@@ -33,6 +33,9 @@ var locale = {
   months: months,
   monthsShort: months,
   weekStart: 6,
+  meridiem: function meridiem(hour) {
+    return hour > 12 ? 'م' : 'ص';
+  },
   relativeTime: {
     future: 'بعد %s',
     past: 'منذ %s',

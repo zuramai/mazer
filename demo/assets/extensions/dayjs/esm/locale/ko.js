@@ -8,7 +8,7 @@ var locale = {
   months: '1월_2월_3월_4월_5월_6월_7월_8월_9월_10월_11월_12월'.split('_'),
   monthsShort: '1월_2월_3월_4월_5월_6월_7월_8월_9월_10월_11월_12월'.split('_'),
   ordinal: function ordinal(n) {
-    return n;
+    return n + "\uC77C";
   },
   formats: {
     LT: 'A h:mm',

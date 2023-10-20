@@ -6,11 +6,11 @@ var L = 'en'; // global locale
 var Ls = {}; // global loaded locale
 
 Ls[L] = en;
+var IS_DAYJS = '$isDayjsObject'; // eslint-disable-next-line no-use-before-define
 
 var isDayjs = function isDayjs(d) {
-  return d instanceof Dayjs;
-}; // eslint-disable-line no-use-before-define
-
+  return d instanceof Dayjs || !!(d && d[IS_DAYJS]);
+};
 
 var parseLocale = function parseLocale(preset, object, isLocal) {
   var l;
@@ -103,13 +103,15 @@ var Dayjs = /*#__PURE__*/function () {
   function Dayjs(cfg) {
     this.$L = parseLocale(cfg.locale, null, true);
     this.parse(cfg); // for plugin
+
+    this.$x = this.$x || cfg.x || {};
+    this[IS_DAYJS] = true;
   }
 
   var _proto = Dayjs.prototype;
 
   _proto.parse = function parse(cfg) {
     this.$d = parseDate(cfg);
-    this.$x = cfg.x || {};
     this.init();
   };
 
