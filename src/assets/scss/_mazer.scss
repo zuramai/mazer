@@ -28,6 +28,8 @@
     2.15 Pagination
     2.16 Table
     2.17 Progress
+    2.18 Icons
+    2.19 Placeholder
 4. Pages
     4.0 Layout
     4.1 Auth
@@ -95,6 +97,9 @@
 
 // - 2.18. icons
 @import "./components/icons";
+
+// - 2.19 Placeholder
+@import "./components/placeholders";
 
 // - 4.0 Layout
 @import "./layouts/main.scss";
