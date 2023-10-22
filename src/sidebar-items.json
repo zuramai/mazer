@@ -66,6 +66,10 @@
         "url": "component-pagination.html"
       },
       {
+        "name": "Placeholder",
+        "url": "component-placeholder.html"
+      },
+      {
         "name": "Progress",
         "url": "component-progress.html"
       },
