@@ -215,10 +215,6 @@
     "file": "assets/compiled/css/error.css",
     "src": "error.css"
   },
-  "extra-component-comment.css": {
-    "file": "assets/compiled/css/extra-component-comment.css",
-    "src": "extra-component-comment.css"
-  },
   "extra-component-sweetalert.css": {
     "file": "assets/compiled/css/extra-component-sweetalert.css",
     "src": "extra-component-sweetalert.css"
