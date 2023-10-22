@@ -29,6 +29,7 @@
     2.16 Table
     2.17 Progress
     2.18 Icons
+    2.19 Comment
     2.19 Placeholder
 4. Pages
     4.0 Layout
@@ -97,6 +98,9 @@
 
 // - 2.18. icons
 @import "./components/icons";
+
+// - 2.19 Comment
+@import "./components/comment";
 
 // - 2.19 Placeholder
 @import "./components/placeholders";
