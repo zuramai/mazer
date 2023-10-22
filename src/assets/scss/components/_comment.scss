@@ -49,9 +49,9 @@
 
 // Dark theme
 html[data-bs-theme="dark"] .comment {
-    border: 1px solid #404053;
+    border: 1px solid #404053 !important;
 
     &-time {
-        color:#6a9cd2;
+        color:#6a9cd2 !important;
     }
 }
