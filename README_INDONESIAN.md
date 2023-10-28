@@ -43,7 +43,7 @@ Unduh rilis terbaru dari [halaman rilis](https://github.com/zuramai/mazer/releas
 ## Proyek sumber-terbuka yang memngunakan **Mazer**
 
 - [CodeIgniter 4](https://github.com/irsyadulibad/mazer-codeigniter) oleh [@irsyadulibad](https://github.com/irsyadulibad)
-- [Laravel + Livewire](https://github.com/zuramai/laravel-mazer) (Sedang tidak/belum dikembangkan, mencari *Maintainer*)
+- [Laravel Mazer Starter](https://github.com/billalxcode/laravel-mazer-starter) by [@billalxcode](https://github.com/billalxcode)
 - [Nuxt](https://github.com/fzn0x/mazer-nuxt) oleh [@fzn0x](https://github.com/fzn0x)
 - [React JS Component Library](https://github.com/fachryansyah/react-mazer-ui) oleh [@fachryansyah](https://github.com/fachryansyah/)
 - [Adonisjs 5](https://github.com/afman42/mazer-adonisjs) oleh [@afman42](https://github.com/afman42/)
