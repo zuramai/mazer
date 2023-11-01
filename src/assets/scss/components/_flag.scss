@@ -50,7 +50,7 @@ $sizes: (
 
 @each $country in $countries {
     .flag-country-#{$country} {
-        background-image: url("/assets/static/images/flags/#{$country}.svg");
+        background-image: url("assets/static/images/flags/#{$country}.svg");
     }
 }
 
