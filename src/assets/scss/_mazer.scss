@@ -31,6 +31,7 @@
     2.18 Icons
     2.19 Comment
     2.20 Placeholder
+    2.21 Flag
 4. Pages
     4.0 Layout
     4.1 Auth
@@ -104,6 +105,9 @@
 
 // - 2.20 Placeholder
 @import "./components/placeholders";
+
+// - 2.21 Flag
+@import "./components/flag";
 
 // - 4.0 Layout
 @import "./layouts/main.scss";

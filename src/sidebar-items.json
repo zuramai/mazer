@@ -109,6 +109,10 @@
         "url": "extra-component-date-picker.html"
       },
       {
+        "name": "Flag",
+        "url": "extra-component-flag.html"
+      },
+      {
         "name": "Sweet Alert",
         "url": "extra-component-sweetalert.html"
       },

@@ -60,6 +60,8 @@ $alert-colors: (
     ),
 ) !default;
 
+$assets-path: '/assets' !default;
+
 // $btn-colors uses $theme-colors background color by default
 $btn-colors: (
   primary: (
