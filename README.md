@@ -92,12 +92,12 @@ Simple example using CDN from [jsdelivr.net](https://www.jsdelivr.com/).
 
 #### CDN Prefix
 
-You can use a URL with a prefix.
+You can use the url with a prefix like this:
 ```
 https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo
 ```
 
-A simple example is like this:
+A simple example:
 ```
 https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/app.css
 ```
