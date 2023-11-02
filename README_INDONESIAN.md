@@ -26,11 +26,25 @@ Unduh rilis terbaru dari [halaman rilis](https://github.com/zuramai/mazer/releas
 
 ### Kembangkan sendiri
 
-- Kloning repositori `git clone https://github.com/zuramai/mazer`
-- Instal dependensi menggunakan manajer paket node pilihan Anda. Misalnya jalankan `npm install`
-- File dibundel oleh Laravel Mix ke folder dist.
-    - Jalankan `npm run hot` dan buka `http://localhost:8080` untuk melihat salinan **hot-reload** dari file yang di-*Generate*.
-    - Atau jalankan `npm run watch` (*rebuild* pada file yang dirubah) atau `npm run production` dan buka `index.html` dari folder `./dist`.
+
+1. Kloning repositori
+```sh
+git clone https://github.com/zuramai/mazer
+```
+
+2. Instal dependensi
+```sh
+yarn install
+# ATAU
+npm install
+```
+
+3. Jalankan secara _local_
+```sh
+npm run dev
+```
+
+4. Buka `http://localhost:5173` di browser Anda
 
 ### Kembangkan dengan Docker
 
