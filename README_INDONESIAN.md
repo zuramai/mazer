@@ -20,11 +20,11 @@
 
 ## Pemasangan
 
-#### Paket Installasi siap-pakai (disarankan)
+### Paket Installasi siap-pakai (disarankan)
 
 Unduh rilis terbaru dari [halaman rilis](https://github.com/zuramai/mazer/releases "halaman rilis") lalu ekstrak pada *folder* yang diinginkan.
 
-#### kembangkan sendiri. (Untuk pengembangan lanjut)
+### Kembangkan sendiri
 
 - Kloning repositori `git clone https://github.com/zuramai/mazer`
 - Instal dependensi menggunakan manajer paket node pilihan Anda. Misalnya jalankan `npm install`
