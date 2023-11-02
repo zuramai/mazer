@@ -39,7 +39,7 @@ yarn install
 npm install
 ```
 
-3. Jalankan secara _local_
+3. Jalankan secara *local*
 ```sh
 npm run dev
 ```
@@ -91,9 +91,9 @@ Contoh sederhana menggunakan CDN dari [jsdelivr.net](https://www.jsdelivr.com/).
 </html>
 ```
 
-#### _Prefix_ CDN
+#### *Prefix* CDN
 
-Anda dapat menggunakan _url_ dengan sebuah _prefix_ seperti ini:
+Anda dapat menggunakan *url* dengan sebuah *prefix* seperti ini:
 ```
 https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo
 ```
@@ -103,7 +103,7 @@ Contoh penggunaan sederhananya:
 https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/app.css
 ```
 
-## Proyek sumber-terbuka yang memngunakan **Mazer**
+## Proyek sumber-terbuka yang menggunakan **Mazer**
 
 - [CodeIgniter 4](https://github.com/irsyadulibad/mazer-codeigniter) oleh [@irsyadulibad](https://github.com/irsyadulibad)
 - [Laravel Mazer Starter](https://github.com/billalxcode/laravel-mazer-starter) by [@billalxcode](https://github.com/billalxcode)
@@ -117,11 +117,11 @@ https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/app.css
 - [Ruby on Rails](https://github.com/noesya/mazer-rails) oleh [@noesya](https://github.com/noesya)
 - [Yii2](https://github.com/anovsiradj/yii2-theme-mazer) oleh [@anovsiradj](https://github.com/anovsiradj)
 - [Next JS](https://github.com/dipras/next-mazer) oleh [@dipras](https://github.com/dipras)
-- Apakah anda membuat proyek menggunakan *Dashboard* Kami? Anda dapat meletakannya disini dengan melakukan `Pull Request`.
+- Apakah Anda membuat proyek menggunakan *Dashboard* kami? Anda dapat menaruh proyeknya di sini dengan melakukan `Pull Request`.
 
 ## Kontribusi
 
-Harap ikuti [Panduan Berkontribusi](./CONTRIBUTING_ID.md) sebelum anda memulai kontribusi pada proyek kami.
+Harap ikuti [Panduan Berkontribusi](./CONTRIBUTING_ID.md) sebelum Anda memulai kontribusi pada proyek kami.
 
 ## License
 
@@ -131,8 +131,6 @@ Mazer berada di bawah [Lisensi MIT](./LICENSE).
 
 Dibuat oleh <a href="https://saugi.me">Saugi</a>.
 
-## Donation
+## Sponsor
 
-Anda dapat mendukung saya di [Github Sponsors](https://github.com/zuramai), [Ko-fi](https://ko-fi.com/saugi) atau [Trakteer](https://trakteer.id/saugi)
-
-<a href="https://buymeacoffee.com/saugi" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+![zuramai's sponsors](https://raw.githubusercontent.com/zuramai/static/main/sponsors.svg)
