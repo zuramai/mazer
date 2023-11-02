@@ -40,8 +40,8 @@ Unduh rilis terbaru dari [halaman rilis](https://github.com/zuramai/mazer/releas
     - `docker run -it -d -p 8080:80 --name mazer mazer-frontend`
     - Buka `http://localhost:8080`
 
-## Menggunakan CDN
-Contoh sederhana menggunakan CDN dari jsdelivr.net
+### Menggunakan CDN
+Contoh sederhana menggunakan CDN dari [jsdelivr.net](https://www.jsdelivr.com/).
 
 ```html
 <!DOCTYPE html>
@@ -72,19 +72,19 @@ Contoh sederhana menggunakan CDN dari jsdelivr.net
     <!-- Need: Apexcharts -->
     <script src="https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/extensions/apexcharts/apexcharts.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/static/js/pages/dashboard.js"></script>
-
 </body>
 
 </html>
 ```
 
-Anda dapat menggunakan url dengan awalan
-You can use a url with a prefix
+#### _Prefix_ CDN
+
+Anda dapat menggunakan _url_ dengan sebuah _prefix_ seperti ini:
 ```
 https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo
 ```
 
-Contoh sederhana seperti ini
+Contoh penggunaan sederhananya:
 ```
 https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/app.css
 ```
