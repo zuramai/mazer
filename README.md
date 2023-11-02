@@ -53,8 +53,8 @@ npm run dev
     - `docker build -t mazer-frontend .`
     - `docker run -it -d -p 5173:80 --name mazer mazer-frontend`
     - Open `http://localhost:5173`
-## Using CDN 
-Simple example using CDN from jsdelivr.net
+### Using CDN 
+Simple example using CDN from [jsdelivr.net](https://www.jsdelivr.com/).
 
 ```html
 <!DOCTYPE html>
@@ -85,18 +85,19 @@ Simple example using CDN from jsdelivr.net
     <!-- Need: Apexcharts -->
     <script src="https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/extensions/apexcharts/apexcharts.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/static/js/pages/dashboard.js"></script>
-
 </body>
 
 </html>
 ```
 
-You can use a url with a prefix
+#### CDN Prefix
+
+You can use a URL with a prefix.
 ```
 https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo
 ```
 
-A simple example is like this
+A simple example is like this:
 ```
 https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/app.css
 ```
