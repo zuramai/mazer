@@ -20,7 +20,7 @@
 
 ## Pemasangan
 
-### Paket Installasi siap-pakai (disarankan)
+### Paket Instalasi siap-pakai (disarankan)
 
 Unduh rilis terbaru dari [halaman rilis](https://github.com/zuramai/mazer/releases "halaman rilis") lalu ekstrak pada *folder* yang diinginkan.
 
