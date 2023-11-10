@@ -1,5 +1,5 @@
 /*!
-* sweetalert2 v11.7.32
+* sweetalert2 v11.9.0
 * Released under the MIT License.
 */
 (function (global, factory) {
@@ -636,6 +636,23 @@
   };
 
   /**
+   * @param {HTMLElement | null} elem
+   * @param {string} display
+   */
+  const showWhenInnerHtmlPresent = function (elem) {
+    let display = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'block';
+    if (!elem) {
+      return;
+    }
+    new MutationObserver(() => {
+      toggle(elem, elem.innerHTML, display);
+    }).observe(elem, {
+      childList: true,
+      subtree: true
+    });
+  };
+
+  /**
    * @param {HTMLElement} parent
    * @param {string} selector
    * @param {string} property
@@ -1142,7 +1159,7 @@
       return;
     }
     if (!renderInputType[params.input]) {
-      error("Unexpected type of input! Expected \"text\", \"email\", \"password\", \"number\", \"tel\", \"select\", \"radio\", \"checkbox\", \"textarea\", \"file\" or \"url\", got \"".concat(params.input, "\""));
+      error("Unexpected type of input! Expected ".concat(Object.keys(renderInputType).join(' | '), ", got \"").concat(params.input, "\""));
       return;
     }
     const inputContainer = getInputContainer(params.input);
@@ -1251,7 +1268,7 @@
    * @param {SweetAlertOptions} params
    * @returns {HTMLInputElement}
    */
-  renderInputType.text = renderInputType.email = renderInputType.password = renderInputType.number = renderInputType.tel = renderInputType.url = (input, params) => {
+  renderInputType.text = renderInputType.email = renderInputType.password = renderInputType.number = renderInputType.tel = renderInputType.url = renderInputType.search = renderInputType.date = renderInputType['datetime-local'] = renderInputType.time = renderInputType.week = renderInputType.month = (input, params) => {
     checkAndSetInputValue(input, params.inputValue);
     setInputLabel(input, input, params);
     setInputPlaceholder(input, params);
@@ -1378,6 +1395,7 @@
     if (!htmlContainer) {
       return;
     }
+    showWhenInnerHtmlPresent(htmlContainer);
     applyCustomClass(htmlContainer, params, 'htmlContainer');
 
     // Content as HTML
@@ -1408,6 +1426,7 @@
     if (!footer) {
       return;
     }
+    showWhenInnerHtmlPresent(footer);
     toggle(footer, params.footer, 'block');
     if (params.footer) {
       parseHtmlToContainer(params.footer, footer);
@@ -1707,6 +1726,7 @@
     if (!title) {
       return;
     }
+    showWhenInnerHtmlPresent(title);
     toggle(title, params.title || params.titleText, 'block');
     if (params.title) {
       parseHtmlToContainer(params.title, title);
@@ -4270,7 +4290,7 @@
     };
   });
   SweetAlert.DismissReason = DismissReason;
-  SweetAlert.version = '11.7.32';
+  SweetAlert.version = '11.9.0';
 
   const Swal = SweetAlert;
   // @ts-ignore

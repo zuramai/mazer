@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.7.1 (2023-10-19)
+ * TinyMCE version 6.7.2 (2023-10-25)
  */
 
 (function () {
@@ -3819,6 +3819,9 @@
       }
       if (isNonNullable(originalEvent.composedPath)) {
         event.composedPath = () => originalEvent.composedPath();
+      }
+      if (isNonNullable(originalEvent.getModifierState)) {
+        event.getModifierState = keyArg => originalEvent.getModifierState(keyArg);
       }
       return event;
     };
@@ -30872,8 +30875,8 @@
       documentBaseURL: null,
       suffix: null,
       majorVersion: '6',
-      minorVersion: '7.1',
-      releaseDate: '2023-10-19',
+      minorVersion: '7.2',
+      releaseDate: '2023-10-25',
       i18n: I18n,
       activeEditor: null,
       focusedEditor: null,

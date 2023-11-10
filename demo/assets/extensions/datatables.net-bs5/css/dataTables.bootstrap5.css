@@ -19,7 +19,7 @@ table.dataTable td.dt-control {
 table.dataTable td.dt-control:before {
   display: inline-block;
   color: rgba(0, 0, 0, 0.5);
-  content: "►";
+  content: "▶";
 }
 table.dataTable tr.dt-hasChild td.dt-control:before {
   content: "▼";
@@ -110,6 +110,7 @@ div.dataTables_processing {
   margin-top: -26px;
   text-align: center;
   padding: 2px;
+  z-index: 10;
 }
 div.dataTables_processing > div:last-child {
   position: relative;
@@ -291,10 +292,10 @@ table.dataTable > tbody > tr.selected a {
   color: #090a0b;
   color: rgb(var(--dt-row-selected-link));
 }
-table.dataTable.table-striped > tbody > tr.odd > * {
+table.dataTable.table-striped > tbody > tr:nth-of-type(2n+1) > * {
   box-shadow: inset 0 0 0 9999px rgba(var(--dt-row-stripe), 0.05);
 }
-table.dataTable.table-striped > tbody > tr.odd.selected > * {
+table.dataTable.table-striped > tbody > tr:nth-of-type(2n+1).selected > * {
   box-shadow: inset 0 0 0 9999px rgba(13, 110, 253, 0.95);
   box-shadow: inset 0 0 0 9999px rgba(var(--dt-row-selected), 0.95);
 }
@@ -388,6 +389,9 @@ div.dataTables_wrapper div.dataTables_paginate {
 }
 table.dataTable.table-sm > thead > tr > th:not(.sorting_disabled) {
   padding-right: 20px;
+}
+table.dataTable.table-sm > thead > tr > th:not(.sorting_disabled):before, table.dataTable.table-sm > thead > tr > th:not(.sorting_disabled):after {
+  right: 5px;
 }
 
 table.table-bordered.dataTable {

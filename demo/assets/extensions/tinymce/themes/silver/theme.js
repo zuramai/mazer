@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.7.1 (2023-10-19)
+ * TinyMCE version 6.7.2 (2023-10-25)
  */
 
 (function () {
@@ -24495,11 +24495,14 @@
       }
       attachSystem(uiRoot, uiRefs.dialogUi.mothership);
     };
-    const render$1 = async (editor, uiRefs, rawUiConfig, backstage, args) => {
+    const render$1 = (editor, uiRefs, rawUiConfig, backstage, args) => {
       const {mainUi, uiMotherships} = uiRefs;
       const lastToolbarWidth = Cell(0);
       const outerContainer = mainUi.outerContainer;
-      await iframe(editor);
+      editor.on('SkinLoaded', () => {
+        setToolbar(editor, uiRefs, rawUiConfig, backstage);
+      });
+      iframe(editor);
       const eTargetNode = SugarElement.fromDom(args.targetNode);
       const uiRoot = getContentContainer(getRootNode(eTargetNode));
       attachSystemAfter(eTargetNode, mainUi.mothership);
@@ -24873,13 +24876,13 @@
         elementLoad.clear();
       });
     };
-    const render = async (editor, uiRefs, rawUiConfig, backstage, args) => {
+    const render = (editor, uiRefs, rawUiConfig, backstage, args) => {
       const {mainUi} = uiRefs;
       const floatContainer = value$2();
       const targetElm = SugarElement.fromDom(args.targetNode);
       const ui = InlineHeader(editor, targetElm, uiRefs, backstage, floatContainer);
       const toolbarPersist = isToolbarPersist(editor);
-      await inline(editor);
+      inline(editor);
       const render = () => {
         if (floatContainer.isSet()) {
           ui.show();
@@ -30502,8 +30505,8 @@
           popups,
           renderUI: renderModeUI
         } = setup$3(editor, { getPopupSinkBounds: () => popupSinkBounds() });
-        const renderUI = async () => {
-          const renderResult = await renderModeUI();
+        const renderUI = () => {
+          const renderResult = renderModeUI();
           const optScrollingContext = detectWhenSplitUiMode(editor, popups.getMothership().element);
           optScrollingContext.each(sc => {
             popupSinkBounds = () => {
