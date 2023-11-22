@@ -195,13 +195,11 @@ div:where(.swal2-container).swal2-top-start > .swal2-popup {
 }
 div:where(.swal2-container).swal2-top > .swal2-popup {
   grid-column: 2;
-  align-self: start;
-  justify-self: center;
+  place-self: start center;
 }
 div:where(.swal2-container).swal2-top-end > .swal2-popup, div:where(.swal2-container).swal2-top-right > .swal2-popup {
   grid-column: 3;
-  align-self: start;
-  justify-self: end;
+  place-self: start end;
 }
 div:where(.swal2-container).swal2-center-start > .swal2-popup, div:where(.swal2-container).swal2-center-left > .swal2-popup {
   grid-row: 2;
@@ -210,14 +208,12 @@ div:where(.swal2-container).swal2-center-start > .swal2-popup, div:where(.swal2-
 div:where(.swal2-container).swal2-center > .swal2-popup {
   grid-column: 2;
   grid-row: 2;
-  align-self: center;
-  justify-self: center;
+  place-self: center center;
 }
 div:where(.swal2-container).swal2-center-end > .swal2-popup, div:where(.swal2-container).swal2-center-right > .swal2-popup {
   grid-column: 3;
   grid-row: 2;
-  align-self: center;
-  justify-self: end;
+  place-self: center end;
 }
 div:where(.swal2-container).swal2-bottom-start > .swal2-popup, div:where(.swal2-container).swal2-bottom-left > .swal2-popup {
   grid-column: 1;
@@ -227,14 +223,12 @@ div:where(.swal2-container).swal2-bottom-start > .swal2-popup, div:where(.swal2-
 div:where(.swal2-container).swal2-bottom > .swal2-popup {
   grid-column: 2;
   grid-row: 3;
-  justify-self: center;
-  align-self: end;
+  place-self: end center;
 }
 div:where(.swal2-container).swal2-bottom-end > .swal2-popup, div:where(.swal2-container).swal2-bottom-right > .swal2-popup {
   grid-column: 3;
   grid-row: 3;
-  align-self: end;
-  justify-self: end;
+  place-self: end end;
 }
 div:where(.swal2-container).swal2-grow-row > .swal2-popup, div:where(.swal2-container).swal2-grow-fullscreen > .swal2-popup {
   grid-column: 1/4;

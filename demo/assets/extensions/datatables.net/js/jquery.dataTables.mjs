@@ -8526,7 +8526,13 @@ var __details_events = function ( settings )
 				row = data[i];
 
 				if ( row._details ) {
-					row._details.children('td[colspan]').attr('colspan', visible );
+					row._details.each(function () {
+						var el = $(this).children('td');
+
+						if (el.length == 1) {
+							el.attr('colspan', visible);
+						}
+					});
 				}
 			}
 		} );

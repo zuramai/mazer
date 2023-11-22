@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.7.2 (2023-10-25)
+ * TinyMCE version 6.8.0 (2023-11-22)
  */
 
 (function () {
@@ -903,7 +903,8 @@
           name: 'url',
           type: 'urlinput',
           filetype: 'file',
-          label: 'URL'
+          label: 'URL',
+          picker_text: 'Browse links'
         }];
       const displayText = settings.anchor.text.map(() => ({
         name: 'text',

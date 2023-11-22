@@ -1,0 +1,498 @@
+{
+  "../node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2": {
+    "file": "assets/compiled/fonts/bootstrap-icons.woff2",
+    "src": "../node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
+  },
+  "_app-dark.js": {
+    "file": "assets/compiled/css/app-dark.css",
+    "src": "_app-dark.js"
+  },
+  "_app.js": {
+    "file": "assets/compiled/css/app.css",
+    "src": "_app.js"
+  },
+  "_auth.js": {
+    "file": "assets/compiled/css/auth.css",
+    "src": "_auth.js"
+  },
+  "_error.js": {
+    "file": "assets/compiled/css/error.css",
+    "src": "_error.js"
+  },
+  "_iconly.js": {
+    "file": "assets/compiled/css/iconly.css",
+    "src": "_iconly.js"
+  },
+  "application-email.html": {
+    "file": "assets/compiled/css/application-email.css",
+    "src": "application-email.html"
+  },
+  "assets/static/fonts/Iconly---Bold.eot": {
+    "file": "assets/compiled/eot/Iconly---Bold.eot",
+    "src": "assets/static/fonts/Iconly---Bold.eot"
+  },
+  "assets/static/fonts/Iconly---Bold.svg": {
+    "file": "assets/compiled/svg/Iconly---Bold.svg",
+    "src": "assets/static/fonts/Iconly---Bold.svg"
+  },
+  "assets/static/fonts/Iconly---Bold.ttf": {
+    "file": "assets/compiled/fonts/Iconly---Bold.ttf",
+    "src": "assets/static/fonts/Iconly---Bold.ttf"
+  },
+  "assets/static/fonts/Iconly---Bold.woff": {
+    "file": "assets/compiled/fonts/Iconly---Bold.woff",
+    "src": "assets/static/fonts/Iconly---Bold.woff"
+  },
+  "assets/static/fonts/nunito-latin-300-normal.woff": {
+    "file": "assets/compiled/fonts/nunito-latin-300-normal.woff",
+    "src": "assets/static/fonts/nunito-latin-300-normal.woff"
+  },
+  "assets/static/fonts/nunito-latin-300-normal.woff2": {
+    "file": "assets/compiled/fonts/nunito-latin-300-normal.woff2",
+    "src": "assets/static/fonts/nunito-latin-300-normal.woff2"
+  },
+  "assets/static/fonts/nunito-latin-400-normal.woff": {
+    "file": "assets/compiled/fonts/nunito-latin-400-normal.woff",
+    "src": "assets/static/fonts/nunito-latin-400-normal.woff"
+  },
+  "assets/static/fonts/nunito-latin-400-normal.woff2": {
+    "file": "assets/compiled/fonts/nunito-latin-400-normal.woff2",
+    "src": "assets/static/fonts/nunito-latin-400-normal.woff2"
+  },
+  "assets/static/fonts/nunito-latin-600-normal.woff": {
+    "file": "assets/compiled/fonts/nunito-latin-600-normal.woff",
+    "src": "assets/static/fonts/nunito-latin-600-normal.woff"
+  },
+  "assets/static/fonts/nunito-latin-600-normal.woff2": {
+    "file": "assets/compiled/fonts/nunito-latin-600-normal.woff2",
+    "src": "assets/static/fonts/nunito-latin-600-normal.woff2"
+  },
+  "assets/static/fonts/nunito-latin-700-normal.woff": {
+    "file": "assets/compiled/fonts/nunito-latin-700-normal.woff",
+    "src": "assets/static/fonts/nunito-latin-700-normal.woff"
+  },
+  "assets/static/fonts/nunito-latin-700-normal.woff2": {
+    "file": "assets/compiled/fonts/nunito-latin-700-normal.woff2",
+    "src": "assets/static/fonts/nunito-latin-700-normal.woff2"
+  },
+  "assets/static/fonts/nunito-latin-800-normal.woff": {
+    "file": "assets/compiled/fonts/nunito-latin-800-normal.woff",
+    "src": "assets/static/fonts/nunito-latin-800-normal.woff"
+  },
+  "assets/static/fonts/nunito-latin-800-normal.woff2": {
+    "file": "assets/compiled/fonts/nunito-latin-800-normal.woff2",
+    "src": "assets/static/fonts/nunito-latin-800-normal.woff2"
+  },
+  "assets/static/images/bg/4853433.png": {
+    "file": "assets/compiled/png/4853433.png",
+    "src": "assets/static/images/bg/4853433.png"
+  },
+  "assets/static/images/faces/1.jpg": {
+    "file": "assets/compiled/jpg/1.jpg",
+    "src": "assets/static/images/faces/1.jpg"
+  },
+  "assets/static/images/faces/2.jpg": {
+    "file": "assets/compiled/jpg/2.jpg",
+    "src": "assets/static/images/faces/2.jpg"
+  },
+  "assets/static/images/faces/3.jpg": {
+    "file": "assets/compiled/jpg/3.jpg",
+    "src": "assets/static/images/faces/3.jpg"
+  },
+  "assets/static/images/faces/4.jpg": {
+    "file": "assets/compiled/jpg/4.jpg",
+    "src": "assets/static/images/faces/4.jpg"
+  },
+  "assets/static/images/faces/5.jpg": {
+    "file": "assets/compiled/jpg/5.jpg",
+    "src": "assets/static/images/faces/5.jpg"
+  },
+  "assets/static/images/faces/6.jpg": {
+    "file": "assets/compiled/jpg/6.jpg",
+    "src": "assets/static/images/faces/6.jpg"
+  },
+  "assets/static/images/faces/7.jpg": {
+    "file": "assets/compiled/jpg/7.jpg",
+    "src": "assets/static/images/faces/7.jpg"
+  },
+  "assets/static/images/faces/8.jpg": {
+    "file": "assets/compiled/jpg/8.jpg",
+    "src": "assets/static/images/faces/8.jpg"
+  },
+  "assets/static/images/flags/ad.svg": {
+    "file": "assets/compiled/svg/ad.svg",
+    "src": "assets/static/images/flags/ad.svg"
+  },
+  "assets/static/images/flags/af.svg": {
+    "file": "assets/compiled/svg/af.svg",
+    "src": "assets/static/images/flags/af.svg"
+  },
+  "assets/static/images/flags/al.svg": {
+    "file": "assets/compiled/svg/al.svg",
+    "src": "assets/static/images/flags/al.svg"
+  },
+  "assets/static/images/flags/aq.svg": {
+    "file": "assets/compiled/svg/aq.svg",
+    "src": "assets/static/images/flags/aq.svg"
+  },
+  "assets/static/images/flags/as.svg": {
+    "file": "assets/compiled/svg/as.svg",
+    "src": "assets/static/images/flags/as.svg"
+  },
+  "assets/static/images/flags/bm.svg": {
+    "file": "assets/compiled/svg/bm.svg",
+    "src": "assets/static/images/flags/bm.svg"
+  },
+  "assets/static/images/flags/bn.svg": {
+    "file": "assets/compiled/svg/bn.svg",
+    "src": "assets/static/images/flags/bn.svg"
+  },
+  "assets/static/images/flags/bo.svg": {
+    "file": "assets/compiled/svg/bo.svg",
+    "src": "assets/static/images/flags/bo.svg"
+  },
+  "assets/static/images/flags/br.svg": {
+    "file": "assets/compiled/svg/br.svg",
+    "src": "assets/static/images/flags/br.svg"
+  },
+  "assets/static/images/flags/bt.svg": {
+    "file": "assets/compiled/svg/bt.svg",
+    "src": "assets/static/images/flags/bt.svg"
+  },
+  "assets/static/images/flags/bz.svg": {
+    "file": "assets/compiled/svg/bz.svg",
+    "src": "assets/static/images/flags/bz.svg"
+  },
+  "assets/static/images/flags/cc.svg": {
+    "file": "assets/compiled/svg/cc.svg",
+    "src": "assets/static/images/flags/cc.svg"
+  },
+  "assets/static/images/flags/cr.svg": {
+    "file": "assets/compiled/svg/cr.svg",
+    "src": "assets/static/images/flags/cr.svg"
+  },
+  "assets/static/images/flags/cy.svg": {
+    "file": "assets/compiled/svg/cy.svg",
+    "src": "assets/static/images/flags/cy.svg"
+  },
+  "assets/static/images/flags/dm.svg": {
+    "file": "assets/compiled/svg/dm.svg",
+    "src": "assets/static/images/flags/dm.svg"
+  },
+  "assets/static/images/flags/do.svg": {
+    "file": "assets/compiled/svg/do.svg",
+    "src": "assets/static/images/flags/do.svg"
+  },
+  "assets/static/images/flags/ec.svg": {
+    "file": "assets/compiled/svg/ec.svg",
+    "src": "assets/static/images/flags/ec.svg"
+  },
+  "assets/static/images/flags/eg.svg": {
+    "file": "assets/compiled/svg/eg.svg",
+    "src": "assets/static/images/flags/eg.svg"
+  },
+  "assets/static/images/flags/er.svg": {
+    "file": "assets/compiled/svg/er.svg",
+    "src": "assets/static/images/flags/er.svg"
+  },
+  "assets/static/images/flags/es.svg": {
+    "file": "assets/compiled/svg/es.svg",
+    "src": "assets/static/images/flags/es.svg"
+  },
+  "assets/static/images/flags/fj.svg": {
+    "file": "assets/compiled/svg/fj.svg",
+    "src": "assets/static/images/flags/fj.svg"
+  },
+  "assets/static/images/flags/fk.svg": {
+    "file": "assets/compiled/svg/fk.svg",
+    "src": "assets/static/images/flags/fk.svg"
+  },
+  "assets/static/images/flags/gb-wls.svg": {
+    "file": "assets/compiled/svg/gb-wls.svg",
+    "src": "assets/static/images/flags/gb-wls.svg"
+  },
+  "assets/static/images/flags/gi.svg": {
+    "file": "assets/compiled/svg/gi.svg",
+    "src": "assets/static/images/flags/gi.svg"
+  },
+  "assets/static/images/flags/gq.svg": {
+    "file": "assets/compiled/svg/gq.svg",
+    "src": "assets/static/images/flags/gq.svg"
+  },
+  "assets/static/images/flags/gs.svg": {
+    "file": "assets/compiled/svg/gs.svg",
+    "src": "assets/static/images/flags/gs.svg"
+  },
+  "assets/static/images/flags/gt.svg": {
+    "file": "assets/compiled/svg/gt.svg",
+    "src": "assets/static/images/flags/gt.svg"
+  },
+  "assets/static/images/flags/gu.svg": {
+    "file": "assets/compiled/svg/gu.svg",
+    "src": "assets/static/images/flags/gu.svg"
+  },
+  "assets/static/images/flags/hr.svg": {
+    "file": "assets/compiled/svg/hr.svg",
+    "src": "assets/static/images/flags/hr.svg"
+  },
+  "assets/static/images/flags/ht.svg": {
+    "file": "assets/compiled/svg/ht.svg",
+    "src": "assets/static/images/flags/ht.svg"
+  },
+  "assets/static/images/flags/im.svg": {
+    "file": "assets/compiled/svg/im.svg",
+    "src": "assets/static/images/flags/im.svg"
+  },
+  "assets/static/images/flags/io.svg": {
+    "file": "assets/compiled/svg/io.svg",
+    "src": "assets/static/images/flags/io.svg"
+  },
+  "assets/static/images/flags/je.svg": {
+    "file": "assets/compiled/svg/je.svg",
+    "src": "assets/static/images/flags/je.svg"
+  },
+  "assets/static/images/flags/kg.svg": {
+    "file": "assets/compiled/svg/kg.svg",
+    "src": "assets/static/images/flags/kg.svg"
+  },
+  "assets/static/images/flags/kh.svg": {
+    "file": "assets/compiled/svg/kh.svg",
+    "src": "assets/static/images/flags/kh.svg"
+  },
+  "assets/static/images/flags/ky.svg": {
+    "file": "assets/compiled/svg/ky.svg",
+    "src": "assets/static/images/flags/ky.svg"
+  },
+  "assets/static/images/flags/kz.svg": {
+    "file": "assets/compiled/svg/kz.svg",
+    "src": "assets/static/images/flags/kz.svg"
+  },
+  "assets/static/images/flags/lb.svg": {
+    "file": "assets/compiled/svg/lb.svg",
+    "src": "assets/static/images/flags/lb.svg"
+  },
+  "assets/static/images/flags/li.svg": {
+    "file": "assets/compiled/svg/li.svg",
+    "src": "assets/static/images/flags/li.svg"
+  },
+  "assets/static/images/flags/lk.svg": {
+    "file": "assets/compiled/svg/lk.svg",
+    "src": "assets/static/images/flags/lk.svg"
+  },
+  "assets/static/images/flags/md.svg": {
+    "file": "assets/compiled/svg/md.svg",
+    "src": "assets/static/images/flags/md.svg"
+  },
+  "assets/static/images/flags/me.svg": {
+    "file": "assets/compiled/svg/me.svg",
+    "src": "assets/static/images/flags/me.svg"
+  },
+  "assets/static/images/flags/mp.svg": {
+    "file": "assets/compiled/svg/mp.svg",
+    "src": "assets/static/images/flags/mp.svg"
+  },
+  "assets/static/images/flags/ms.svg": {
+    "file": "assets/compiled/svg/ms.svg",
+    "src": "assets/static/images/flags/ms.svg"
+  },
+  "assets/static/images/flags/mt.svg": {
+    "file": "assets/compiled/svg/mt.svg",
+    "src": "assets/static/images/flags/mt.svg"
+  },
+  "assets/static/images/flags/mx.svg": {
+    "file": "assets/compiled/svg/mx.svg",
+    "src": "assets/static/images/flags/mx.svg"
+  },
+  "assets/static/images/flags/mz.svg": {
+    "file": "assets/compiled/svg/mz.svg",
+    "src": "assets/static/images/flags/mz.svg"
+  },
+  "assets/static/images/flags/nf.svg": {
+    "file": "assets/compiled/svg/nf.svg",
+    "src": "assets/static/images/flags/nf.svg"
+  },
+  "assets/static/images/flags/ni.svg": {
+    "file": "assets/compiled/svg/ni.svg",
+    "src": "assets/static/images/flags/ni.svg"
+  },
+  "assets/static/images/flags/om.svg": {
+    "file": "assets/compiled/svg/om.svg",
+    "src": "assets/static/images/flags/om.svg"
+  },
+  "assets/static/images/flags/pe.svg": {
+    "file": "assets/compiled/svg/pe.svg",
+    "src": "assets/static/images/flags/pe.svg"
+  },
+  "assets/static/images/flags/pf.svg": {
+    "file": "assets/compiled/svg/pf.svg",
+    "src": "assets/static/images/flags/pf.svg"
+  },
+  "assets/static/images/flags/pg.svg": {
+    "file": "assets/compiled/svg/pg.svg",
+    "src": "assets/static/images/flags/pg.svg"
+  },
+  "assets/static/images/flags/pn.svg": {
+    "file": "assets/compiled/svg/pn.svg",
+    "src": "assets/static/images/flags/pn.svg"
+  },
+  "assets/static/images/flags/pt.svg": {
+    "file": "assets/compiled/svg/pt.svg",
+    "src": "assets/static/images/flags/pt.svg"
+  },
+  "assets/static/images/flags/py.svg": {
+    "file": "assets/compiled/svg/py.svg",
+    "src": "assets/static/images/flags/py.svg"
+  },
+  "assets/static/images/flags/rs.svg": {
+    "file": "assets/compiled/svg/rs.svg",
+    "src": "assets/static/images/flags/rs.svg"
+  },
+  "assets/static/images/flags/sa.svg": {
+    "file": "assets/compiled/svg/sa.svg",
+    "src": "assets/static/images/flags/sa.svg"
+  },
+  "assets/static/images/flags/sm.svg": {
+    "file": "assets/compiled/svg/sm.svg",
+    "src": "assets/static/images/flags/sm.svg"
+  },
+  "assets/static/images/flags/sv.svg": {
+    "file": "assets/compiled/svg/sv.svg",
+    "src": "assets/static/images/flags/sv.svg"
+  },
+  "assets/static/images/flags/sx.svg": {
+    "file": "assets/compiled/svg/sx.svg",
+    "src": "assets/static/images/flags/sx.svg"
+  },
+  "assets/static/images/flags/sz.svg": {
+    "file": "assets/compiled/svg/sz.svg",
+    "src": "assets/static/images/flags/sz.svg"
+  },
+  "assets/static/images/flags/tc.svg": {
+    "file": "assets/compiled/svg/tc.svg",
+    "src": "assets/static/images/flags/tc.svg"
+  },
+  "assets/static/images/flags/tm.svg": {
+    "file": "assets/compiled/svg/tm.svg",
+    "src": "assets/static/images/flags/tm.svg"
+  },
+  "assets/static/images/flags/uy.svg": {
+    "file": "assets/compiled/svg/uy.svg",
+    "src": "assets/static/images/flags/uy.svg"
+  },
+  "assets/static/images/flags/va.svg": {
+    "file": "assets/compiled/svg/va.svg",
+    "src": "assets/static/images/flags/va.svg"
+  },
+  "assets/static/images/flags/vg.svg": {
+    "file": "assets/compiled/svg/vg.svg",
+    "src": "assets/static/images/flags/vg.svg"
+  },
+  "assets/static/images/flags/vi.svg": {
+    "file": "assets/compiled/svg/vi.svg",
+    "src": "assets/static/images/flags/vi.svg"
+  },
+  "assets/static/images/flags/xk.svg": {
+    "file": "assets/compiled/svg/xk.svg",
+    "src": "assets/static/images/flags/xk.svg"
+  },
+  "assets/static/images/flags/zm.svg": {
+    "file": "assets/compiled/svg/zm.svg",
+    "src": "assets/static/images/flags/zm.svg"
+  },
+  "assets/static/images/flags/zw.svg": {
+    "file": "assets/compiled/svg/zw.svg",
+    "src": "assets/static/images/flags/zw.svg"
+  },
+  "assets/static/images/samples/1.png": {
+    "file": "assets/compiled/png/1.png",
+    "src": "assets/static/images/samples/1.png"
+  },
+  "assets/static/images/samples/2.png": {
+    "file": "assets/compiled/png/2.png",
+    "src": "assets/static/images/samples/2.png"
+  },
+  "assets/static/images/samples/3.png": {
+    "file": "assets/compiled/png/3.png",
+    "src": "assets/static/images/samples/3.png"
+  },
+  "assets/static/images/samples/4.png": {
+    "file": "assets/compiled/png/4.png",
+    "src": "assets/static/images/samples/4.png"
+  },
+  "assets/static/images/samples/architecture1.jpg": {
+    "file": "assets/compiled/jpg/architecture1.jpg",
+    "src": "assets/static/images/samples/architecture1.jpg"
+  },
+  "assets/static/images/samples/banana.jpg": {
+    "file": "assets/compiled/jpg/banana.jpg",
+    "src": "assets/static/images/samples/banana.jpg"
+  },
+  "assets/static/images/samples/bg-mountain.jpg": {
+    "file": "assets/compiled/jpg/bg-mountain.jpg",
+    "src": "assets/static/images/samples/bg-mountain.jpg"
+  },
+  "assets/static/images/samples/building.jpg": {
+    "file": "assets/compiled/jpg/building.jpg",
+    "src": "assets/static/images/samples/building.jpg"
+  },
+  "assets/static/images/samples/error-403.svg": {
+    "file": "assets/compiled/svg/error-403.svg",
+    "src": "assets/static/images/samples/error-403.svg"
+  },
+  "assets/static/images/samples/error-404.svg": {
+    "file": "assets/compiled/svg/error-404.svg",
+    "src": "assets/static/images/samples/error-404.svg"
+  },
+  "assets/static/images/samples/error-500.svg": {
+    "file": "assets/compiled/svg/error-500.svg",
+    "src": "assets/static/images/samples/error-500.svg"
+  },
+  "assets/static/images/samples/jump.jpg": {
+    "file": "assets/compiled/jpg/jump.jpg",
+    "src": "assets/static/images/samples/jump.jpg"
+  },
+  "assets/static/images/samples/motorcycle.jpg": {
+    "file": "assets/compiled/jpg/motorcycle.jpg",
+    "src": "assets/static/images/samples/motorcycle.jpg"
+  },
+  "assets/static/images/samples/origami.jpg": {
+    "file": "assets/compiled/jpg/origami.jpg",
+    "src": "assets/static/images/samples/origami.jpg"
+  },
+  "assets/static/images/samples/water.jpg": {
+    "file": "assets/compiled/jpg/water.jpg",
+    "src": "assets/static/images/samples/water.jpg"
+  },
+  "extra-component-flag.html": {
+    "file": "assets/compiled/css/extra-component-flag.css",
+    "src": "extra-component-flag.html"
+  },
+  "extra-component-sweetalert.html": {
+    "file": "assets/compiled/css/extra-component-sweetalert.css",
+    "src": "extra-component-sweetalert.html"
+  },
+  "form-editor-summernote.html": {
+    "file": "assets/compiled/css/form-editor-summernote.css",
+    "src": "form-editor-summernote.html"
+  },
+  "table-datatable-jquery.html": {
+    "file": "assets/compiled/css/table-datatable-jquery.css",
+    "src": "table-datatable-jquery.html"
+  },
+  "table-datatable.html": {
+    "file": "assets/compiled/css/table-datatable.css",
+    "src": "table-datatable.html"
+  },
+  "ui-icons-dripicons.html": {
+    "file": "assets/compiled/css/ui-icons-dripicons.css",
+    "src": "ui-icons-dripicons.html"
+  },
+  "ui-widgets-chatbox.html": {
+    "file": "assets/compiled/css/ui-widgets-chatbox.css",
+    "src": "ui-widgets-chatbox.html"
+  },
+  "ui-widgets-todolist.html": {
+    "file": "assets/compiled/css/ui-widgets-todolist.css",
+    "src": "ui-widgets-todolist.html"
+  }
+}
