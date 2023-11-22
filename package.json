@@ -79,8 +79,8 @@
     "resolve-url-loader": "^5.0.0",
     "sass": "^1.67.0",
     "sass-loader": "^13.2.0",
-    "vite": "4.4.9",
-    "vite-plugin-nunjucks": "^0.1.10",
+    "vite": "5.0.2",
+    "vite-plugin-nunjucks": "file:./vite-plugin-nunjucks",
     "vite-plugin-static-copy": "^0.13.1"
   },
   "release-it": {
