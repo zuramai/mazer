@@ -4838,8 +4838,10 @@ vary@^1:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-"vite-plugin-nunjucks@file:./vite-plugin-nunjucks":
+vite-plugin-nunjucks@^0.1.10:
   version "0.1.10"
+  resolved "https://registry.yarnpkg.com/vite-plugin-nunjucks/-/vite-plugin-nunjucks-0.1.10.tgz#8e9b90d91332ec5d3a9ec0e02f099464f2f67460"
+  integrity sha512-nL8UoJJPVWY0StRbmWxFHesoimadgjLM6DSs5gy0azvWc+lnJ+8vwEon8KXdtfC2ynvUzTzWdDZTP+gnsqGuAw==
   dependencies:
     nunjucks "^3.2.3"
     vite "^2.6.7"
