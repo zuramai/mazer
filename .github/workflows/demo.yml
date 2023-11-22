@@ -14,12 +14,13 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      
-      - name: Install and Build 🔧
-        run: |
-          npm install
-          npm run build
-          npm run rtl
+      - name: Run install and build
+        uses: borales/actions-yarn@v4
+        with:
+          run: |
+            yarn install
+            yarn build 
+            yarn rtl
           
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4.2.5
