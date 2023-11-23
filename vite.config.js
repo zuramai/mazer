@@ -122,7 +122,7 @@ export default defineConfig((env) => ({
                 reloadPageOnChange: true
             }
         }),
-        nunjucks.default({
+        nunjucks({
             templatesDir: root,
             variables: getVariables(env.mode),
             nunjucksEnvironment: {
