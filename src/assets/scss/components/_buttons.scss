@@ -40,7 +40,7 @@
     
     @each $key, $value in $btn-colors {
         &.btn-#{$key} {
-            color: map.get($btn-colors, "key", "text-color");
+            color: map.get($btn-colors, $key, "text-color");
         }
     }
 }
