@@ -1,6 +1,6 @@
 {
   "name": "bootstrap-icons",
-  "version": "1.11.2",
+  "version": "1.11.3",
   "description": "Official open source SVG icon library for Bootstrap",
   "author": "mdo",
   "license": "MIT",
@@ -67,25 +67,25 @@
     "test": "npm-run-all --parallel --aggregate-output --continue-on-error test:*"
   },
   "devDependencies": {
-    "@twbs/fantasticon": "^2.7.1",
+    "@twbs/fantasticon": "^2.7.2",
     "autoprefixer": "^10.4.16",
     "bootstrap": "^5.3.2",
-    "clean-css-cli": "^5.6.2",
+    "clean-css-cli": "^5.6.3",
     "clipboard": "^2.0.11",
     "cross-env": "^7.0.3",
-    "eslint": "^8.54.0",
+    "eslint": "^8.56.0",
     "find-unused-sass-variables": "^5.0.0",
     "fuse.js": "^7.0.0",
-    "hugo-bin": "^0.116.4",
+    "hugo-bin": "^0.118.0",
     "lockfile-lint": "^4.12.1",
     "npm-run-all2": "^6.1.1",
     "picocolors": "^1.0.0",
-    "postcss": "^8.4.31",
-    "postcss-cli": "^10.1.0",
-    "stylelint": "^15.11.0",
-    "stylelint-config-twbs-bootstrap": "^12.0.0",
+    "postcss": "^8.4.32",
+    "postcss-cli": "^11.0.0",
+    "stylelint": "^16.1.0",
+    "stylelint-config-twbs-bootstrap": "^13.0.0",
     "svg-sprite": "^3.0.0-beta3",
-    "svgo": "^3.0.4",
+    "svgo": "^3.2.0",
     "vnu-jar": "23.4.11"
   }
 }

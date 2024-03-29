@@ -1,5 +1,5 @@
-/*! DataTables 1.13.7
- * ©2008-2023 SpryMedia Ltd - datatables.net/license
+/*! DataTables 1.13.11
+ * ©2008-2024 SpryMedia Ltd - datatables.net/license
  */
 
 import jQuery from 'jquery';
@@ -9744,7 +9744,7 @@ _api_register( 'i18n()', function ( token, def, plural ) {
  *  @type string
  *  @default Version number
  */
-DataTable.version = "1.13.7";
+DataTable.version = "1.13.11";
 
 /**
  * Private data store, containing all of the settings objects that are

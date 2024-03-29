@@ -57,7 +57,7 @@ export declare function toFont(options: Partial<FontSpec>, fallback?: Partial<Fo
     lineHeight: number;
     size: number;
     style: "normal" | "inherit" | "italic" | "oblique" | "initial";
-    weight: string;
+    weight: number | "bold" | "normal" | "lighter" | "bolder";
     string: string;
 };
 /**

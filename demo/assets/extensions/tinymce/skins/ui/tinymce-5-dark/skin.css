@@ -938,6 +938,10 @@ button::-moz-focus-inner {
 .tox .tox-hue-slider-spectrum {
   width: 20px;
 }
+.tox .tox-hue-slider-spectrum:focus,
+.tox .tox-sv-palette-spectrum:focus {
+  outline: #08f solid;
+}
 .tox .tox-hue-slider-thumb {
   background: white;
   border: 1px solid black;

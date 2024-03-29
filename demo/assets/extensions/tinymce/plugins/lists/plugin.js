@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.8.0 (2023-11-22)
+ * TinyMCE version 6.8.3 (2024-02-08)
  */
 
 (function () {
@@ -889,12 +889,13 @@
     };
 
     const isList = el => is(el, 'OL,UL');
+    const isListItem = el => is(el, 'LI');
     const hasFirstChildList = el => firstChild(el).exists(isList);
     const hasLastChildList = el => lastChild(el).exists(isList);
 
     const isEntryList = entry => 'listAttributes' in entry;
-    const isEntryNoList = entry => 'isInPreviousLi' in entry;
     const isEntryComment = entry => 'isComment' in entry;
+    const isEntryFragment = entry => 'isFragment' in entry;
     const isIndented = entry => entry.depth > 0;
     const isSelected = entry => entry.isSelected;
     const cloneItemContent = li => {
@@ -935,7 +936,7 @@
     const createSegments = (scope, entry, size) => {
       const segments = [];
       for (let i = 0; i < size; i++) {
-        segments.push(createSegment(scope, entry.listType));
+        segments.push(createSegment(scope, isEntryList(entry) ? entry.listType : entry.parentListType));
       }
       return segments;
     };
@@ -944,8 +945,10 @@
         set(segments[i].item, 'list-style-type', 'none');
       }
       last(segments).each(segment => {
-        setAll(segment.list, entry.listAttributes);
-        setAll(segment.item, entry.itemAttributes);
+        if (isEntryList(entry)) {
+          setAll(segment.list, entry.listAttributes);
+          setAll(segment.item, entry.itemAttributes);
+        }
         append(segment.item, entry.content);
       });
     };
@@ -965,12 +968,6 @@
       append$1(segment.list, item);
       segment.item = item;
     };
-    const createInPreviousLiItem = (scope, attr, content, tag) => {
-      const item = SugarElement.fromTag(tag, scope);
-      setAll(item, attr);
-      append(item, content);
-      return item;
-    };
     const writeShallow = (scope, cast, entry) => {
       const newCast = cast.slice(0, entry.depth);
       last(newCast).each(segment => {
@@ -978,11 +975,8 @@
           const item = createItem(scope, entry.itemAttributes, entry.content);
           appendItem(segment, item);
           normalizeSegment(segment, entry);
-        } else if (isEntryNoList(entry)) {
-          if (entry.isInPreviousLi) {
-            const item = createInPreviousLiItem(scope, entry.attributes, entry.content, entry.type);
-            append$1(segment.item, item);
-          }
+        } else if (isEntryFragment(entry)) {
+          append(segment.item, entry.content);
         } else {
           const item = SugarElement.fromHtml(`<!--${ entry.content }-->`);
           append$1(segment.list, item);
@@ -1000,10 +994,10 @@
     const composeList = (scope, entries) => {
       let firstCommentEntryOpt = Optional.none();
       const cast = foldl(entries, (cast, entry, i) => {
-        if (isEntryList(entry)) {
+        if (!isEntryComment(entry)) {
           return entry.depth > cast.length ? writeDeep(scope, cast, entry) : writeShallow(scope, cast, entry);
         } else {
-          if (i === 0 && isEntryComment(entry)) {
+          if (i === 0) {
             firstCommentEntryOpt = Optional.some(entry);
             return cast;
           }
@@ -1073,21 +1067,6 @@
       };
     };
 
-    const entryToEntryNoList = (entry, type, isInPreviousLi) => {
-      if (isEntryList(entry)) {
-        return {
-          depth: entry.depth,
-          dirty: entry.dirty,
-          content: entry.content,
-          isSelected: entry.isSelected,
-          type,
-          attributes: entry.itemAttributes,
-          isInPreviousLi
-        };
-      } else {
-        return entry;
-      }
-    };
     const parseSingleItem = (depth, itemSelection, selectionState, item) => {
       var _a;
       if (isComment(item)) {
@@ -1114,12 +1093,23 @@
       return currentItemEntry.toArray().concat(childListEntries);
     };
     const parseItem = (depth, itemSelection, selectionState, item) => firstChild(item).filter(isList).fold(() => parseSingleItem(depth, itemSelection, selectionState, item), list => {
-      const parsedSiblings = foldl(children(item), (acc, s, i) => {
+      const parsedSiblings = foldl(children(item), (acc, liChild, i) => {
         if (i === 0) {
           return acc;
         } else {
-          const parsedSibling = parseSingleItem(depth, itemSelection, selectionState, s).map(e => entryToEntryNoList(e, s.dom.nodeName.toLowerCase(), true));
-          return acc.concat(parsedSibling);
+          if (isListItem(liChild)) {
+            return acc.concat(parseSingleItem(depth, itemSelection, selectionState, liChild));
+          } else {
+            const fragment = {
+              isFragment: true,
+              depth,
+              content: [liChild],
+              isSelected: false,
+              dirty: false,
+              parentListType: name(list)
+            };
+            return acc.concat(fragment);
+          }
         }
       }, []);
       return parseList(depth, itemSelection, selectionState, list).concat(parsedSiblings);

@@ -1,7 +1,7 @@
 /*!
- * Chart.js v4.4.0
+ * Chart.js v4.4.2
  * https://www.chartjs.org
- * (c) 2023 Chart.js Contributors
+ * (c) 2024 Chart.js Contributors
  * Released under the MIT License
  */
 import { Color } from '@kurkle/color';
@@ -2333,8 +2333,10 @@ function getMaximumSize(canvas, bbWidth, bbHeight, aspectRatio) {
                 return false;
             }
         };
-        window.addEventListener('test', null, options);
-        window.removeEventListener('test', null, options);
+        if (_isDomSupported()) {
+            window.addEventListener('test', null, options);
+            window.removeEventListener('test', null, options);
+        }
     } catch (e) {
     // continue regardless of error
     }

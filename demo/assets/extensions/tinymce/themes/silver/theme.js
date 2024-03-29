@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.8.0 (2023-11-22)
+ * TinyMCE version 6.8.3 (2024-02-08)
  */
 
 (function () {
@@ -6060,7 +6060,7 @@
       return contains$2(keys, raw.which);
     };
     const and = preds => event => forall(preds, pred => pred(event));
-    const isShift = event => {
+    const isShift$1 = event => {
       const raw = event.raw;
       return raw.shiftKey === true;
     };
@@ -6068,7 +6068,7 @@
       const raw = event.raw;
       return raw.ctrlKey === true;
     };
-    const isNotShift = not(isShift);
+    const isNotShift = not(isShift$1);
 
     const rule = (matches, action) => ({
       matches,
@@ -6228,7 +6228,7 @@
       const exit = (component, simulatedEvent, tabbingConfig) => tabbingConfig.onEscape.bind(f => f(component, simulatedEvent));
       const getKeydownRules = constant$1([
         rule(and([
-          isShift,
+          isShift$1,
           inSet(TAB)
         ]), goBackwards),
         rule(inSet(TAB), goForwards),
@@ -6409,7 +6409,7 @@
       rule(inSet(UP), north$1(moveNorth$1)),
       rule(inSet(DOWN), south$1(moveSouth$1)),
       rule(and([
-        isShift,
+        isShift$1,
         inSet(TAB)
       ]), handleTab),
       rule(and([
@@ -6583,7 +6583,7 @@
       rule(inSet(UP), move$1(moveUp)),
       rule(inSet(DOWN), move$1(moveDown)),
       rule(and([
-        isShift,
+        isShift$1,
         inSet(TAB)
       ]), fireShiftTab),
       rule(and([
@@ -6617,11 +6617,11 @@
         inSet(ENTER)
       ]), specialInfo.onEnter),
       rule(and([
-        isShift,
+        isShift$1,
         inSet(ENTER)
       ]), specialInfo.onShiftEnter),
       rule(and([
-        isShift,
+        isShift$1,
         inSet(TAB)
       ]), specialInfo.onShiftTab),
       rule(and([
@@ -10837,7 +10837,7 @@
     const name$1 = requiredString('name');
     const label = requiredString('label');
     const text = requiredString('text');
-    const title$5 = requiredString('title');
+    const title = requiredString('title');
     const icon = requiredString('icon');
     const value$1 = requiredString('value');
     const fetch$1 = requiredFunction('fetch');
@@ -12531,7 +12531,11 @@
 
     const cellOverEvent = generate$6('cell-over');
     const cellExecuteEvent = generate$6('cell-execute');
-    const makeAnnouncementText = backstage => (row, col) => backstage.shared.providers.translate(`${ col } columns, ${ row } rows`);
+    const makeAnnouncementText = backstage => (row, col) => backstage.shared.providers.translate([
+      '{0} columns, {1} rows',
+      col,
+      row
+    ]);
     const makeCell = (row, col, label) => {
       const emitCellOver = c => emitWith(c, cellOverEvent, {
         row,
@@ -14749,6 +14753,7 @@
         };
       }
     });
+    const isShift = event => isShift$1(event.event);
     const spectrumPart = required({
       schema: [customField('mouseIsDown', () => Cell(false))],
       name: 'spectrum',
@@ -14760,11 +14765,12 @@
           behaviours: derive$1([
             Keying.config({
               mode: 'special',
-              onLeft: spectrum => model.onLeft(spectrum, detail),
-              onRight: spectrum => model.onRight(spectrum, detail),
-              onUp: spectrum => model.onUp(spectrum, detail),
-              onDown: spectrum => model.onDown(spectrum, detail)
+              onLeft: (spectrum, event) => model.onLeft(spectrum, detail, isShift(event)),
+              onRight: (spectrum, event) => model.onRight(spectrum, detail, isShift(event)),
+              onUp: (spectrum, event) => model.onUp(spectrum, detail, isShift(event)),
+              onDown: (spectrum, event) => model.onDown(spectrum, detail, isShift(event))
             }),
+            Tabstopping.config({}),
             Focusing.config({})
           ]),
           events: derive$2([
@@ -14822,7 +14828,7 @@
     const yRange = detail => range(detail, maxY, minY);
     const halfX = detail => xRange(detail) / 2;
     const halfY = detail => yRange(detail) / 2;
-    const step = detail => detail.stepSize;
+    const step = (detail, useMultiplier) => useMultiplier ? detail.stepSize * detail.speedMultiplier : detail.stepSize;
     const snap = detail => detail.snapToGrid;
     const snapStart = detail => detail.snapStart;
     const rounded = detail => detail.rounded;
@@ -15025,13 +15031,13 @@
       const max = maxX(detail);
       fireSliderChange$2(spectrum, max);
     };
-    const moveBy$2 = (direction, spectrum, detail) => {
+    const moveBy$2 = (direction, spectrum, detail, useMultiplier) => {
       const f = direction > 0 ? increaseBy : reduceBy;
-      const xValue = f(currentValue(detail), minX(detail), maxX(detail), step(detail));
+      const xValue = f(currentValue(detail), minX(detail), maxX(detail), step(detail, useMultiplier));
       fireSliderChange$2(spectrum, xValue);
       return Optional.some(xValue);
     };
-    const handleMovement$2 = direction => (spectrum, detail) => moveBy$2(direction, spectrum, detail).map(always);
+    const handleMovement$2 = direction => (spectrum, detail, useMultiplier) => moveBy$2(direction, spectrum, detail, useMultiplier).map(always);
     const getValueFromEvent$2 = simulatedEvent => {
       const pos = getEventSource(simulatedEvent);
       return pos.map(p => p.left);
@@ -15133,13 +15139,13 @@
       const max = maxY(detail);
       fireSliderChange$1(spectrum, max);
     };
-    const moveBy$1 = (direction, spectrum, detail) => {
+    const moveBy$1 = (direction, spectrum, detail, useMultiplier) => {
       const f = direction > 0 ? increaseBy : reduceBy;
-      const yValue = f(currentValue(detail), minY(detail), maxY(detail), step(detail));
+      const yValue = f(currentValue(detail), minY(detail), maxY(detail), step(detail, useMultiplier));
       fireSliderChange$1(spectrum, yValue);
       return Optional.some(yValue);
     };
-    const handleMovement$1 = direction => (spectrum, detail) => moveBy$1(direction, spectrum, detail).map(always);
+    const handleMovement$1 = direction => (spectrum, detail, useMultiplier) => moveBy$1(direction, spectrum, detail, useMultiplier).map(always);
     const getValueFromEvent$1 = simulatedEvent => {
       const pos = getEventSource(simulatedEvent);
       return pos.map(p => {
@@ -15222,14 +15228,14 @@
       fireSliderChange(spectrum, val);
       return val;
     };
-    const moveBy = (direction, isVerticalMovement, spectrum, detail) => {
+    const moveBy = (direction, isVerticalMovement, spectrum, detail, useMultiplier) => {
       const f = direction > 0 ? increaseBy : reduceBy;
-      const xValue = isVerticalMovement ? currentValue(detail).x : f(currentValue(detail).x, minX(detail), maxX(detail), step(detail));
-      const yValue = !isVerticalMovement ? currentValue(detail).y : f(currentValue(detail).y, minY(detail), maxY(detail), step(detail));
+      const xValue = isVerticalMovement ? currentValue(detail).x : f(currentValue(detail).x, minX(detail), maxX(detail), step(detail, useMultiplier));
+      const yValue = !isVerticalMovement ? currentValue(detail).y : f(currentValue(detail).y, minY(detail), maxY(detail), step(detail, useMultiplier));
       fireSliderChange(spectrum, sliderValue(xValue, yValue));
       return Optional.some(xValue);
     };
-    const handleMovement = (direction, isVerticalMovement) => (spectrum, detail) => moveBy(direction, isVerticalMovement, spectrum, detail).map(always);
+    const handleMovement = (direction, isVerticalMovement) => (spectrum, detail, useMultiplier) => moveBy(direction, isVerticalMovement, spectrum, detail, useMultiplier).map(always);
     const setToMin = (spectrum, detail) => {
       const mX = minX(detail);
       const mY = minY(detail);
@@ -15281,6 +15287,7 @@
 
     const SliderSchema = [
       defaulted('stepSize', 1),
+      defaulted('speedMultiplier', 10),
       defaulted('onChange', noop),
       defaulted('onChoose', noop),
       defaulted('onInit', noop),
@@ -15382,6 +15389,9 @@
         detail.onDragEnd(slider, getThumb(slider));
         choose(slider);
       };
+      const focusWidget = component => {
+        getPart(component, detail, 'spectrum').map(Keying.focusIn);
+      };
       return {
         uid: detail.uid,
         dom: detail.dom,
@@ -15389,9 +15399,7 @@
         behaviours: augment(detail.sliderBehaviours, [
           Keying.config({
             mode: 'special',
-            focusIn: slider => {
-              return getPart(slider, detail, 'spectrum').map(Keying.focusIn).map(always);
-            }
+            focusIn: focusWidget
           }),
           Representing.config({
             store: {
@@ -15418,7 +15426,10 @@
           }),
           run$1(touchstart(), onDragStart),
           run$1(touchend(), onDragEnd),
-          run$1(mousedown(), onDragStart),
+          run$1(mousedown(), (component, event) => {
+            focusWidget(component);
+            onDragStart(component, event);
+          }),
           run$1(mouseup(), onDragEnd)
         ]),
         apis: {
@@ -15475,7 +15486,12 @@
         dom: {
           tag: 'div',
           classes: [getClass('hue-slider')],
-          attributes: { role: 'presentation' }
+          attributes: {
+            'role': 'slider',
+            'aria-valuemin': 0,
+            'aria-valuemax': 360,
+            'aria-valuenow': 120
+          }
         },
         rounded: false,
         model: {
@@ -15488,6 +15504,7 @@
         ],
         sliderBehaviours: derive$1([Focusing.config({})]),
         onChange: (slider, _thumb, value) => {
+          set$9(slider.element, 'aria-valuenow', Math.floor(360 - value * 3.6));
           emitWith(slider, sliderUpdate, { value });
         }
       });
@@ -15774,7 +15791,7 @@
       return rgbFormSketcher;
     };
 
-    const paletteFactory = (_translate, getClass) => {
+    const paletteFactory = (translate, getClass) => {
       const spectrumPart = Slider.parts.spectrum({
         dom: {
           tag: 'canvas',
@@ -15821,6 +15838,11 @@
           x: hsv.saturation,
           y: 100 - hsv.value
         });
+        set$9(slider.element, 'aria-valuetext', translate([
+          'Saturation {0}%, Brightness {1}%',
+          hsv.saturation,
+          hsv.value
+        ]));
       };
       const factory = _detail => {
         const getInitialValue = constant$1({
@@ -15828,6 +15850,13 @@
           y: 0
         });
         const onChange = (slider, _thumb, value) => {
+          if (!isNumber(value)) {
+            set$9(slider.element, 'aria-valuetext', translate([
+              'Saturation {0}%, Brightness {1}%',
+              Math.floor(value.x),
+              Math.floor(100 - value.y)
+            ]));
+          }
           emitWith(slider, paletteUpdate, { value });
         };
         const onInit = (_slider, _thumb, spectrum, _value) => {
@@ -15840,7 +15869,14 @@
         return Slider.sketch({
           dom: {
             tag: 'div',
-            attributes: { role: 'presentation' },
+            attributes: {
+              'role': 'slider',
+              'aria-valuetext': translate([
+                'Saturation {0}%, Brightness {1}%',
+                0,
+                0
+              ])
+            },
             classes: [getClass('sv-palette')]
           },
           model: {
@@ -16047,7 +16083,11 @@
       'aria.input.invalid': 'Invalid input'
     };
     const translate$1 = providerBackstage => key => {
-      return providerBackstage.translate(english[key]);
+      if (isString(key)) {
+        return providerBackstage.translate(english[key]);
+      } else {
+        return providerBackstage.translate(key);
+      }
     };
     const renderColorPicker = (_spec, providerBackstage, initialData) => {
       const getClass = key => 'tox-' + key;
@@ -21114,7 +21154,7 @@
     });
 
     const promotionMessage = '\u26A1\ufe0fUpgrade';
-    const promotionLink = 'https://www.tiny.cloud/tinymce-self-hosted-premium-features/?utm_source=TinyMCE&utm_medium=SPAP&utm_campaign=SPAP&utm_id=editorreferral';
+    const promotionLink = 'https://www.tiny.cloud/tinymce-self-hosted-premium-features/?utm_campaign=self_hosted_upgrade_promo&utm_source=tiny&utm_medium=referral';
     const renderPromotion = spec => {
       return {
         uid: spec.uid,
@@ -23098,8 +23138,8 @@
       return styleSheetLoader.loadRawCss(key, css);
     };
     const loadUiSkins = async (editor, skinUrl) => {
-      const skinUrl_ = getSkinUrlOption(editor).getOr('default');
-      const skinUiCss = 'ui/' + skinUrl_ + '/skin.css';
+      const skinResourceIdentifier = getSkinUrlOption(editor).getOr('default');
+      const skinUiCss = 'ui/' + skinResourceIdentifier + '/skin.css';
       const css = tinymce.Resource.get(skinUiCss);
       if (isString(css)) {
         return Promise.resolve(loadRawCss(editor, skinUiCss, css, editor.ui.styleSheetLoader));
@@ -23111,7 +23151,8 @@
     const loadShadowDomUiSkins = async (editor, skinUrl) => {
       const isInShadowRoot$1 = isInShadowRoot(SugarElement.fromDom(editor.getElement()));
       if (isInShadowRoot$1) {
-        const shadowDomSkinCss = skinUrl + '/skin.shadowdom.css';
+        const skinResourceIdentifier = getSkinUrlOption(editor).getOr('default');
+        const shadowDomSkinCss = 'ui/' + skinResourceIdentifier + '/skin.shadowdom.css';
         const css = tinymce.Resource.get(shadowDomSkinCss);
         if (isString(css)) {
           loadRawCss(editor, shadowDomSkinCss, css, global$7.DOM.styleSheetLoader);
@@ -23124,9 +23165,9 @@
     };
     const loadUrlSkin = async (isInline, editor) => {
       getSkinUrlOption(editor).fold(() => {
-        const skinUrl_ = getSkinUrl(editor);
-        if (skinUrl_) {
-          editor.contentCSS.push(skinUrl_ + (isInline ? '/content.inline' : '/content') + '.min.css');
+        const skinResourceIdentifier = getSkinUrl(editor);
+        if (skinResourceIdentifier) {
+          editor.contentCSS.push(skinResourceIdentifier + (isInline ? '/content.inline' : '/content') + '.min.css');
         }
       }, skinUrl => {
         const skinContentCss = 'ui/' + skinUrl + (isInline ? '/content.inline' : '/content') + '.css';
@@ -23134,9 +23175,9 @@
         if (isString(css)) {
           loadRawCss(editor, skinContentCss, css, editor.ui.styleSheetLoader);
         } else {
-          const skinUrl_ = getSkinUrl(editor);
-          if (skinUrl_) {
-            editor.contentCSS.push(skinUrl_ + (isInline ? '/content.inline' : '/content') + '.min.css');
+          const skinResourceIdentifier = getSkinUrl(editor);
+          if (skinResourceIdentifier) {
+            editor.contentCSS.push(skinResourceIdentifier + (isInline ? '/content.inline' : '/content') + '.min.css');
           }
         }
       });
@@ -23154,12 +23195,12 @@
     const iframe = curry(loadSkin, false);
     const inline = curry(loadSkin, true);
 
-    const getTooltipText = (editor, prefix, value) => editor.translate([
-      `${ prefix } {0}`,
+    const makeTooltipText = (editor, labelWithPlaceholder, value) => editor.translate([
+      labelWithPlaceholder,
       editor.translate(value)
     ]);
 
-    const generateSelectItems = (_editor, backstage, spec) => {
+    const generateSelectItems = (backstage, spec) => {
       const generateItem = (rawItem, response, invalid, value) => {
         const translatedText = backstage.shared.providers.translate(rawItem.title);
         if (rawItem.type === 'separator') {
@@ -23222,11 +23263,11 @@
       const dataset = spec.dataset;
       const getStyleItems = dataset.type === 'basic' ? () => map$2(dataset.data, d => processBasic(d, spec.isSelectedFor, spec.getPreviewFor)) : dataset.getData;
       return {
-        items: generateSelectItems(editor, backstage, spec),
+        items: generateSelectItems(backstage, spec),
         getStyleItems
       };
     };
-    const createSelectButton = (editor, backstage, spec, title, textUpdateEventName) => {
+    const createSelectButton = (editor, backstage, spec, tooltipWithPlaceholder, textUpdateEventName) => {
       const {items, getStyleItems} = createMenuItems(editor, backstage, spec);
       const getApi = comp => ({
         getComponent: constant$1(comp),
@@ -23239,7 +23280,7 @@
         }
       });
       const onSetup = api => {
-        const handler = e => api.setTooltip(getTooltipText(editor, title, e.value));
+        const handler = e => api.setTooltip(makeTooltipText(editor, tooltipWithPlaceholder, e.value));
         editor.on(textUpdateEventName, handler);
         return composeUnbinders(onSetupEvent(editor, 'NodeChange', api => {
           const comp = api.getComponent();
@@ -23299,7 +23340,8 @@
       };
     };
 
-    const title$4 = 'Align';
+    const menuTitle$4 = 'Align';
+    const btnTooltip$4 = 'Alignment {0}';
     const fallbackAlignment = 'left';
     const alignMenuItems = [
       {
@@ -23340,7 +23382,7 @@
       const dataset = buildBasicStaticDataset(alignMenuItems);
       const onAction = rawItem => () => find$5(alignMenuItems, item => item.format === rawItem.format).each(item => editor.execCommand(item.command));
       return {
-        tooltip: getTooltipText(editor, title$4, fallbackAlignment),
+        tooltip: makeTooltipText(editor, btnTooltip$4, fallbackAlignment),
         text: Optional.none(),
         icon: Optional.some('align-left'),
         isSelectedFor,
@@ -23353,11 +23395,11 @@
         isInvalid: item => !editor.formatter.canApply(item.format)
       };
     };
-    const createAlignButton = (editor, backstage) => createSelectButton(editor, backstage, getSpec$4(editor), title$4, 'AlignTextUpdate');
+    const createAlignButton = (editor, backstage) => createSelectButton(editor, backstage, getSpec$4(editor), btnTooltip$4, 'AlignTextUpdate');
     const createAlignMenu = (editor, backstage) => {
       const menuItems = createMenuItems(editor, backstage, getSpec$4(editor));
       editor.ui.registry.addNestedMenuItem('align', {
-        text: backstage.shared.providers.translate(title$4),
+        text: backstage.shared.providers.translate(menuTitle$4),
         onSetup: onSetupEditableToggle(editor),
         getSubmenuItems: () => menuItems.items.validateItems(menuItems.getStyleItems())
       });
@@ -23372,7 +23414,8 @@
       }));
     };
 
-    const title$3 = 'Blocks';
+    const menuTitle$3 = 'Blocks';
+    const btnTooltip$3 = 'Block {0}';
     const fallbackFormat = 'Paragraph';
     const getSpec$3 = editor => {
       const isSelectedFor = format => () => editor.formatter.match(format);
@@ -23395,7 +23438,7 @@
       };
       const dataset = buildBasicSettingsDataset(editor, 'block_formats', Delimiter.SemiColon);
       return {
-        tooltip: getTooltipText(editor, title$3, fallbackFormat),
+        tooltip: makeTooltipText(editor, btnTooltip$3, fallbackFormat),
         text: Optional.some(fallbackFormat),
         icon: Optional.none(),
         isSelectedFor,
@@ -23408,17 +23451,18 @@
         isInvalid: item => !editor.formatter.canApply(item.format)
       };
     };
-    const createBlocksButton = (editor, backstage) => createSelectButton(editor, backstage, getSpec$3(editor), title$3, 'BlocksTextUpdate');
+    const createBlocksButton = (editor, backstage) => createSelectButton(editor, backstage, getSpec$3(editor), btnTooltip$3, 'BlocksTextUpdate');
     const createBlocksMenu = (editor, backstage) => {
       const menuItems = createMenuItems(editor, backstage, getSpec$3(editor));
       editor.ui.registry.addNestedMenuItem('blocks', {
-        text: title$3,
+        text: menuTitle$3,
         onSetup: onSetupEditableToggle(editor),
         getSubmenuItems: () => menuItems.items.validateItems(menuItems.getStyleItems())
       });
     };
 
-    const title$2 = 'Fonts';
+    const menuTitle$2 = 'Fonts';
+    const btnTooltip$2 = 'Font {0}';
     const systemFont = 'System Font';
     const systemStackFonts = [
       '-apple-system',
@@ -23484,7 +23528,7 @@
       };
       const dataset = buildBasicSettingsDataset(editor, 'font_family_formats', Delimiter.SemiColon);
       return {
-        tooltip: getTooltipText(editor, title$2, systemFont),
+        tooltip: makeTooltipText(editor, btnTooltip$2, systemFont),
         text: Optional.some(systemFont),
         icon: Optional.none(),
         isSelectedFor,
@@ -23497,11 +23541,11 @@
         isInvalid: never
       };
     };
-    const createFontFamilyButton = (editor, backstage) => createSelectButton(editor, backstage, getSpec$2(editor), title$2, 'FontFamilyTextUpdate');
+    const createFontFamilyButton = (editor, backstage) => createSelectButton(editor, backstage, getSpec$2(editor), btnTooltip$2, 'FontFamilyTextUpdate');
     const createFontFamilyMenu = (editor, backstage) => {
       const menuItems = createMenuItems(editor, backstage, getSpec$2(editor));
       editor.ui.registry.addNestedMenuItem('fontfamily', {
-        text: backstage.shared.providers.translate(title$2),
+        text: backstage.shared.providers.translate(menuTitle$2),
         onSetup: onSetupEditableToggle(editor),
         getSubmenuItems: () => menuItems.items.validateItems(menuItems.getStyleItems())
       });
@@ -23791,7 +23835,8 @@
       };
     };
 
-    const title$1 = 'Font sizes';
+    const menuTitle$1 = 'Font sizes';
+    const btnTooltip$1 = 'Font size {0}';
     const fallbackFontSize = '12pt';
     const legacyFontSizes = {
       '8pt': '1',
@@ -23860,7 +23905,7 @@
       };
       const dataset = buildBasicSettingsDataset(editor, 'font_size_formats', Delimiter.Space);
       return {
-        tooltip: getTooltipText(editor, title$1, fallbackFontSize),
+        tooltip: makeTooltipText(editor, btnTooltip$1, fallbackFontSize),
         text: Optional.some(fallbackFontSize),
         icon: Optional.none(),
         isSelectedFor,
@@ -23873,7 +23918,7 @@
         isInvalid: never
       };
     };
-    const createFontSizeButton = (editor, backstage) => createSelectButton(editor, backstage, getSpec$1(editor), title$1, 'FontSizeTextUpdate');
+    const createFontSizeButton = (editor, backstage) => createSelectButton(editor, backstage, getSpec$1(editor), btnTooltip$1, 'FontSizeTextUpdate');
     const getConfigFromUnit = unit => {
       var _a;
       const baseConfig = { step: 1 };
@@ -23924,13 +23969,14 @@
     const createFontSizeMenu = (editor, backstage) => {
       const menuItems = createMenuItems(editor, backstage, getSpec$1(editor));
       editor.ui.registry.addNestedMenuItem('fontsize', {
-        text: title$1,
+        text: menuTitle$1,
         onSetup: onSetupEditableToggle(editor),
         getSubmenuItems: () => menuItems.items.validateItems(menuItems.getStyleItems())
       });
     };
 
-    const title = 'Formats';
+    const menuTitle = 'Formats';
+    const btnTooltip = 'Format {0}';
     const getSpec = (editor, dataset) => {
       const fallbackFormat = 'Paragraph';
       const isSelectedFor = format => () => editor.formatter.match(format);
@@ -23961,7 +24007,7 @@
         fireStylesTextUpdate(editor, { value: text });
       };
       return {
-        tooltip: getTooltipText(editor, title, fallbackFormat),
+        tooltip: makeTooltipText(editor, btnTooltip, fallbackFormat),
         text: Optional.some(fallbackFormat),
         icon: Optional.none(),
         isSelectedFor,
@@ -23979,7 +24025,7 @@
         type: 'advanced',
         ...backstage.styles
       };
-      return createSelectButton(editor, backstage, getSpec(editor, dataset), title, 'StylesTextUpdate');
+      return createSelectButton(editor, backstage, getSpec(editor, dataset), btnTooltip, 'StylesTextUpdate');
     };
     const createStylesMenu = (editor, backstage) => {
       const dataset = {
@@ -23988,7 +24034,7 @@
       };
       const menuItems = createMenuItems(editor, backstage, getSpec(editor, dataset));
       editor.ui.registry.addNestedMenuItem('styles', {
-        text: title,
+        text: menuTitle,
         onSetup: onSetupEditableToggle(editor),
         getSubmenuItems: () => menuItems.items.validateItems(menuItems.getStyleItems())
       });
@@ -27652,7 +27698,7 @@
               dom: {
                 tag: 'a',
                 attributes: {
-                  'href': 'https://www.tiny.cloud/powered-by-tiny?utm_campaign=editor_referral&utm_medium=poweredby&utm_source=tinymce&utm_content=v6',
+                  'href': 'https://www.tiny.cloud/powered-by-tiny?utm_campaign=poweredby&utm_source=tiny&utm_medium=referral&utm_content=v6',
                   'rel': 'noopener',
                   'target': '_blank',
                   'aria-label': global$8.translate([
@@ -28566,7 +28612,7 @@
         'directory',
         'leaf'
       ]),
-      title$5,
+      title,
       requiredString('id'),
       optionOf('menu', MenuButtonSchema)
     ];
@@ -28644,7 +28690,7 @@
 
     const tabFields = [
       generatedName('tab'),
-      title$5,
+      title,
       requiredArrayOf('items', itemSchema)
     ];
     const tabPanelFields = [

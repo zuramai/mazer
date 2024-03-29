@@ -1,5 +1,5 @@
 /*!
- * FilePondPluginImagePreview 4.6.11
+ * FilePondPluginImagePreview 4.6.12
  * Licensed under MIT, https://opensource.org/licenses/MIT/
  * Please visit https://pqina.nl/filepond/ for details.
  */
@@ -1386,7 +1386,7 @@ const createImageWrapperView = _ => {
     const userAgent = window.navigator.userAgent;
     const isFirefox = userAgent.match(/Firefox\/([0-9]+)\./);
     const firefoxVersion = isFirefox ? parseInt(isFirefox[1]) : null;
-    if (firefoxVersion <= 58) return false;
+    if (firefoxVersion !== null && firefoxVersion <= 58) return false;
 
     return 'createImageBitmap' in window && isBitmap(file);
   };

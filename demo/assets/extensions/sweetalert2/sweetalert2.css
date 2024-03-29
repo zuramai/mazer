@@ -109,7 +109,6 @@
   position: absolute;
   width: 1.6em;
   height: 3em;
-  transform: rotate(45deg);
   border-radius: 50%;
 }
 .swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=left] {
@@ -694,7 +693,6 @@ div:where(.swal2-icon).swal2-success [class^=swal2-success-circular-line] {
   position: absolute;
   width: 3.75em;
   height: 7.5em;
-  transform: rotate(45deg);
   border-radius: 50%;
 }
 div:where(.swal2-icon).swal2-success [class^=swal2-success-circular-line][class$=left] {
