@@ -10,10 +10,6 @@
 .dropdown-item {
     transition: all .5s;
 }
-.dropdown-menu-end.show {
-    top: 100%;
-    right: 0;
-}
 .dropdown {
     .avatar {
         margin-right: .6rem;
@@ -21,4 +17,10 @@
 }
 .user-dropdown-status, .user-dropdown-name {
     margin: 0;
+}
+@media screen and (max-width: 576px) {
+    .dropdown-center[data-bs-popper] {
+        left: 50%;
+        transform: translateX(-50%)
+    }
 }
