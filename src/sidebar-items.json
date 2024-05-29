@@ -322,7 +322,11 @@
       {
         "name": "JS Vector Map",
         "url": "ui-map-jsvectormap.html"
-      }
+      },
+			{
+				"name": "Leaflet Map",
+				"url": "ui-map-leaflet.html"
+			}
     ]
   },
   {
