@@ -326,6 +326,10 @@
 			{
 				"name": "Leaflet Map",
 				"url": "ui-map-leaflet.html"
+			},
+			{
+				"name": "OpenLayers Map",
+				"url": "ui-map-openlayers.html"
 			}
     ]
   },
