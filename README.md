@@ -10,7 +10,6 @@ This project customizes the [Mazer Bootstrap 5 Admin Template](https://github.co
 ### 1. **Data Integration**
 - **All user feedback is loaded from `data.json`** using JavaScript.
 - The dashboard is now data-driven and can be easily extended to use API endpoints.
-<img width="1060" height="384" alt="image" src="https://github.com/user-attachments/assets/97177c6e-2885-410f-bcb3-77c128669909" />
 
 ### 2. **User Feedback Component**
 - **Added a new "User Feedback" card** at the end of the dashboard.
