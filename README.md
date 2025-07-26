@@ -15,6 +15,8 @@ This project customizes the [Mazer Bootstrap 5 Admin Template](https://github.co
   - User name
   - Multiple feedback comments (from `feedback` and `feedback2` fields in JSON)
 - **Removed the card header** for visual consistency with other dashboard cards, keeping only the heading inside the card body.
+<img width="1900" height="913" alt="image" src="https://github.com/user-attachments/assets/4987cc73-c6e4-428c-afa6-a52ce9daedc5" />
+
 
 ### 2. **Chat Component (Recent Messages)**
 - **Enhanced the "Recent Messages" card** with a "Start Conversation" button.
@@ -23,10 +25,14 @@ This project customizes the [Mazer Bootstrap 5 Admin Template](https://github.co
   - Allows the user to type and "send" a reply (static, frontend-only).
   - Chat messages are styled to resemble a real conversation.
 - The chat trigger button at the page end was removed; only the button inside "Recent Messages" is active.
+<img width="1516" height="886" alt="image" src="https://github.com/user-attachments/assets/5ce7948f-8656-4bea-a7e1-6cbba96fa7b9" />
+
 
 ### 3. **Data Integration**
 - **All user feedback is loaded from `data.json`** using JavaScript.
 - The dashboard is now data-driven and can be easily extended to use API endpoints.
+<img width="1060" height="384" alt="image" src="https://github.com/user-attachments/assets/97177c6e-2885-410f-bcb3-77c128669909" />
+
 
 ### 4. **Chart Color Consistency**
 - **Updated chart bar colors** (e.g., Profile Visit) to use Mazer’s primary blue (`#435ebe`) for visual consistency.
