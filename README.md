@@ -3,8 +3,6 @@
 ## Overview
 This project customizes the [Mazer Bootstrap 5 Admin Template](https://github.com/zuramai/mazer) to demonstrate front-end integration, UI/UX adaptation, and data-driven components as per the assessment requirements.
 
----
-
 ## Key Customizations
 
 ### 1. **Data Integration**
