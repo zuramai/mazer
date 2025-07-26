@@ -19,7 +19,7 @@ var optionsProfileVisit = {
       data: [9, 20, 30, 20, 10, 20, 30, 20, 10, 20, 30, 20],
     },
   ],
-  colors: "#435ebe",
+  colors: ["#435ebe"], // Change from "#000" or black to Mazer blue
   xaxis: {
     categories: [
       "Jan",
@@ -165,3 +165,94 @@ chartIndia.render()
 chartEurope.render()
 chartProfileVisit.render()
 chartVisitorsProfile.render()
+
+fetch('assets/data/data.json')
+  .then(response => response.json())
+  .then(data => {
+    // Example: populate a table with users
+    const tbody = document.querySelector('#users-table-body');
+    if (tbody && data.users) {
+      tbody.innerHTML = data.users.map(user =>
+        `<tr>
+          <td>${user.id}</td>
+          <td>${user.name}</td>
+          <td>${user.role}</td>
+        </tr>`
+      ).join('');
+    }
+    // You can similarly use posts/settings data
+
+    // User Feedback Component
+    const feedbackList = document.getElementById('user-feedback-list');
+    if (feedbackList && data.users) {
+      feedbackList.innerHTML = data.users.map(user => `
+        <div class="col-12 col-md-4 mb-4">
+          <div class="card h-100 shadow-sm border-0">
+            <div class="card-body d-flex flex-column align-items-center">
+              <img src="${user.avatar}" alt="${user.name}" class="rounded-circle mb-3" width="80" height="80">
+              <h5 class="font-bold mb-1">${user.name}</h5>
+              <p class="text-muted text-center mb-2"><i class="bi bi-chat-left-quote"></i> ${user.feedback}</p>
+              
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+  });
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Bootstrap modal instance
+  let chatModal = null;
+  if (window.bootstrap) {
+    chatModal = new bootstrap.Modal(document.getElementById('chatModal'));
+  }
+
+  // Sample random messages
+  const randomMessages = [
+    "Hey, how are you?",
+    "Can you help me with the dashboard?",
+    "Did you check the latest update?",
+    "Let's catch up soon!",
+    "Any feedback on the new features?"
+  ];
+
+  // Use the button inside Recent Messages
+  const startBtn = document.getElementById('start-conversation-btn');
+  const chatMessages = document.getElementById('chat-messages');
+  const chatInput = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('chat-send-btn');
+
+  if (startBtn && chatModal && chatMessages) {
+    startBtn.addEventListener('click', function() {
+      // Pick a random message
+      const msg = randomMessages[Math.floor(Math.random() * randomMessages.length)];
+      chatMessages.innerHTML = `
+        <div class="d-flex mb-2">
+          <div class="bg-light p-2 rounded">
+            <span class="fw-bold">User:</span> ${msg}
+          </div>
+        </div>
+      `;
+      chatInput.value = '';
+      chatModal.show();
+    });
+  }
+
+  // Handle sending reply
+  if (sendBtn && chatMessages && chatInput) {
+    sendBtn.addEventListener('click', function() {
+      const reply = chatInput.value.trim();
+      if (reply !== '') {
+        chatMessages.innerHTML += `
+          <div class="d-flex justify-content-end mb-2">
+            <div class="bg-primary text-white p-2 rounded">
+              <span class="fw-bold">You:</span> ${reply}
+            </div>
+          </div>
+        `;
+        chatInput.value = '';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    });
+  }
+});

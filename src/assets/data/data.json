@@ -1,0 +1,15 @@
+{
+  "users": [
+    { "id": 1, "name": "Alice", "avatar": "assets/static/images/faces/1.jpg", "feedback": "Great dashboard, easy to use! The analytics section is very helpful." },
+    { "id": 2, "name": "Bob", "avatar": "assets/static/images/faces/2.jpg", "feedback": "Love the new features! Would like to see more export options." },
+    { "id": 3, "name": "Charlie", "avatar": "assets/static/images/faces/3.jpg", "feedback": "Very intuitive interface. Mobile view works perfectly." }
+  ],
+  "posts": [
+    { "id": 101, "title": "Welcome to Mazer", "authorId": 1 },
+    { "id": 102, "title": "Getting Started", "authorId": 2 }
+  ],
+  "settings": {
+    "theme": "light",
+    "language": "en"
+  }
+}

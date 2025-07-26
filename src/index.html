@@ -11,6 +11,19 @@
 <div class="page-heading">
     <h3>Profile Statistics</h3>
 </div> 
+<!-- Add this where you want the users table -->
+<!-- <table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Role</th>
+    </tr>
+  </thead>
+  <tbody id="users-table-body">
+    Populated by JS
+  </tbody>
+</table> -->
 <div class="page-content"> 
     <section class="row">
         <div class="col-12 col-lg-9">
@@ -300,8 +313,8 @@
                             <h6 class="text-muted mb-0">@dodoljohn</h6>
                         </div>
                     </div>
-                    <div class="px-4">
-                        <button class='btn btn-block btn-xl btn-outline-primary font-bold mt-3'>Start Conversation</button>
+                    <div class="px-4" id="conversation-area">
+                        <button id="start-conversation-btn" class='btn btn-block btn-xl btn-outline-primary font-bold mt-3'>Start Conversation</button>
                     </div>
                 </div>
             </div> 
@@ -315,7 +328,41 @@
             </div>
         </div>
     </section>
+    <!-- User Feedback Section -->
+    <div class="card mt-5">
+      <div class="card-body">
+        <h4 class="mb-4">User Feedback</h4>
+        <div class="row" id="user-feedback-list">
+          <!-- JS will populate user feedback cards here -->
+        </div>
+      </div>
+    </div>
 </div>
+
+<!-- Chat Popup Modal -->
+<div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="chatModalLabel">Chat</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="chat-messages" class="mb-3"></div>
+        <div class="input-group">
+          <input type="text" id="chat-input" class="form-control" placeholder="Type your reply...">
+          <button id="chat-send-btn" class="btn btn-primary">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Trigger Button -->
+<!-- <div class="d-flex justify-content-end mt-4">
+  <button id="open-chat-btn" class="btn btn-lg btn-outline-primary">
+    <i class="bi bi-chat-dots"></i> Start Conversation
+  </button>
+</div> -->
 {% endblock %}
 {% block js %}
 <!-- Need: Apexcharts -->
