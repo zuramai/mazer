@@ -1,6 +1,6 @@
 # Mazer Dashboard – Customization & Integration
 
-## 📝 Overview
+## Overview
 This project is a customized version of the **Mazer Bootstrap 5 Admin Template**, enhanced as part of a front-end skill assessment. The dashboard demonstrates UI/UX customization, data-driven components, and modern JavaScript integration.
 
 ---
@@ -19,7 +19,7 @@ This project is a customized version of the **Mazer Bootstrap 5 Admin Template**
 - Chart data updates in real time based on selected filters.
 - Chart color changes dynamically based on selected region.
 - Uses **mock data** for demo purposes.
-- <img width="512" height="326" alt="filter1" src="https://github.com/user-attachments/assets/d9c552c1-1051-453d-b081-2ab932cd4f72" />
+<img width="512" height="326" alt="filter1" src="https://github.com/user-attachments/assets/d9c552c1-1051-453d-b081-2ab932cd4f72" />
 <img width="515" height="289" alt="filter2" src="https://github.com/user-attachments/assets/97372efd-0bc9-4b3f-99fe-429af7940af4" />
 
 ### 4. User Profile Editing Modal
