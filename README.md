@@ -16,25 +16,25 @@ This project customizes the **Mazer Bootstrap 5 Admin Template** to demonstrate 
 - Chart data updates in real time based on the selected filters.
 - Chart color also updates to match the selected region.
 - Uses mock data for demonstration.
-- <img width="553" height="307" alt="output1" src="https://github.com/user-attachments/assets/5eb06cfc-d341-41ab-b751-a9fbe56bba26" />
+<img width="553" height="307" alt="output1" src="https://github.com/user-attachments/assets/5eb06cfc-d341-41ab-b751-a9fbe56bba26" />
 
 ### 3. User Profile Editing Modal
 - Users can edit their profile information (name, avatar, bio) via a Bootstrap modal.
 - Changes are saved in `localStorage` and reflected immediately in the UI.
 - Avatar preview is supported before saving.
-- <img width="707" height="325" alt="output2" src="https://github.com/user-attachments/assets/59cb7a7b-0910-4f5c-aa9a-5876d4869a9b" />
+<img width="707" height="325" alt="output2" src="https://github.com/user-attachments/assets/59cb7a7b-0910-4f5c-aa9a-5876d4869a9b" />
 
 
 ### 4. User Onboarding Tour
 - Integrated [Intro.js](https://introjs.com/) to provide a guided tour of the dashboard.
 - Key dashboard elements are highlighted with helpful tooltips.
 - Users can start the tour anytime using the "Start Tour" button.
-- <img width="530" height="302" alt="output3" src="https://github.com/user-attachments/assets/560c6278-1acb-4272-9a0d-bc2003ef2b3d" />
+<img width="530" height="302" alt="output3" src="https://github.com/user-attachments/assets/560c6278-1acb-4272-9a0d-bc2003ef2b3d" />
 
 
 ### 5. Chart Color Consistency
 - All charts (e.g., Profile Visit, Donut) use Mazer’s primary blue (`#435ebe`) and the official dashboard color palette for a unified visual experience.
-- <img width="733" height="341" alt="output4" src="https://github.com/user-attachments/assets/3843e07e-c888-4e06-bd83-c015dc11b02b" />
+<img width="733" height="341" alt="output4" src="https://github.com/user-attachments/assets/3843e07e-c888-4e06-bd83-c015dc11b02b" />
 
 
 ### 6. General UI/UX Improvements
