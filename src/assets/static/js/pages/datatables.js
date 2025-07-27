@@ -23,3 +23,4 @@ const setTableColor = () => {
 }
 setTableColor()
 jquery_datatable.on('draw', setTableColor)
+

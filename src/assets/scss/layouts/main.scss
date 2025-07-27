@@ -1,3 +1,20 @@
+/* Add to your main CSS file */
+:root {
+  --bs-body-bg: #fff;
+  --bs-body-color: #212529;
+}
+
+[data-theme="dark"] {
+  --bs-body-bg: #181a1b;
+  --bs-body-color: #f8f9fa;
+  /* Add more overrides as needed */
+}
+
+body {
+  background-color: var(--bs-body-bg) !important;
+  color: var(--bs-body-color) !important;
+}
+
 #main {
     margin-left: 300px;
     padding: 2rem;
