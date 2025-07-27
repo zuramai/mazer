@@ -11,7 +11,7 @@ This project is a customized version of the **Mazer Bootstrap 5 Admin Template**
 - Toggle button added in the navbar for theme switching.
 - Theme preference is saved in `localStorage` and automatically applied on page load.
 - Bootstrap Icons used for sun/moon indicators.
-- <img width="313" height="179" alt="lignd dark" src="https://github.com/user-attachments/assets/e2f3ddae-150f-4097-b169-bbbbe7a4363b" />
+<img width="313" height="179" alt="lignd dark" src="https://github.com/user-attachments/assets/e2f3ddae-150f-4097-b169-bbbbe7a4363b" />
 
 
 ### 2. Interactive Chart Filters
@@ -26,13 +26,13 @@ This project is a customized version of the **Mazer Bootstrap 5 Admin Template**
 - Users can update name, avatar, and bio through a Bootstrap modal.
 - Changes are saved in `localStorage` and reflected immediately in the UI.
 - Avatar preview is supported before saving.
-- <img width="632" height="317" alt="editprofile" src="https://github.com/user-attachments/assets/93d7cb19-c0d1-4eee-8924-cee628430675" />
+<img width="632" height="317" alt="editprofile" src="https://github.com/user-attachments/assets/93d7cb19-c0d1-4eee-8924-cee628430675" />
 
 ### 5. User Onboarding Tour
 - Integrated **Intro.js** for a guided onboarding tour.
 - Highlights key dashboard elements with helpful tooltips.
 - "Start Tour" button available to re-initiate the onboarding tour anytime.
-- <img width="688" height="349" alt="take a tour" src="https://github.com/user-attachments/assets/e8023220-fb91-482d-8315-490c03bd6a49" />
+<img width="688" height="349" alt="take a tour" src="https://github.com/user-attachments/assets/e8023220-fb91-482d-8315-490c03bd6a49" />
 
 ## Setup & Usage
 
