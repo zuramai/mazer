@@ -1,80 +1,99 @@
-# Mazer Dashboard – Customization & Integration
+# Mazer Dashboard – Front-End Integration & Customization
 
 ## Overview
-This project is a customized version of the **Mazer Bootstrap 5 Admin Template**, enhanced as part of a front-end skill assessment. The dashboard demonstrates UI/UX customization, data-driven components, and modern JavaScript integration.
+This project customizes the **Mazer Bootstrap 5 Admin Template** to demonstrate advanced front-end integration, UI/UX adaptation, and data-driven dashboard components as part of a technical assessment.
 
 ---
 
 ## Features & Customizations
 
-### 1. Theme Switcher (Light/Dark Mode)
-- Toggle button added in the navbar for theme switching.
-- Theme preference is saved in `localStorage` and automatically applied on page load.
-- Bootstrap Icons used for sun/moon indicators.
-<img width="313" height="179" alt="lignd dark" src="https://github.com/user-attachments/assets/e2f3ddae-150f-4097-b169-bbbbe7a4363b" />
-
+### 1. Data Integration
+- All user feedback and dashboard data are loaded from `data.json` using JavaScript.
+- The dashboard is fully data-driven and can be easily extended to use real API endpoints.
 
 ### 2. Interactive Chart Filters
-- Dropdowns implemented to filter charts by **year** and **region**.
-- Chart data updates in real time based on selected filters.
-- Chart color changes dynamically based on selected region.
-- Uses **mock data** for demo purposes.
-<img width="512" height="326" alt="filter1" src="https://github.com/user-attachments/assets/d9c552c1-1051-453d-b081-2ab932cd4f72" />
-<img width="515" height="289" alt="filter2" src="https://github.com/user-attachments/assets/97372efd-0bc9-4b3f-99fe-429af7940af4" />
+- Added dropdowns to filter the main chart by **year** and **region**.
+- Chart data updates in real time based on the selected filters.
+- Chart color also updates to match the selected region.
+- Uses mock data for demonstration.
+- <img width="553" height="307" alt="output1" src="https://github.com/user-attachments/assets/5eb06cfc-d341-41ab-b751-a9fbe56bba26" />
 
-### 4. User Profile Editing Modal
-- Users can update name, avatar, and bio through a Bootstrap modal.
+### 3. User Profile Editing Modal
+- Users can edit their profile information (name, avatar, bio) via a Bootstrap modal.
 - Changes are saved in `localStorage` and reflected immediately in the UI.
 - Avatar preview is supported before saving.
-<img width="632" height="317" alt="editprofile" src="https://github.com/user-attachments/assets/93d7cb19-c0d1-4eee-8924-cee628430675" />
+- <img width="707" height="325" alt="output2" src="https://github.com/user-attachments/assets/59cb7a7b-0910-4f5c-aa9a-5876d4869a9b" />
 
-### 5. User Onboarding Tour
-- Integrated **Intro.js** for a guided onboarding tour.
-- Highlights key dashboard elements with helpful tooltips.
-- "Start Tour" button available to re-initiate the onboarding tour anytime.
-<img width="688" height="349" alt="take a tour" src="https://github.com/user-attachments/assets/e8023220-fb91-482d-8315-490c03bd6a49" />
 
-## Setup & Usage
+### 4. User Onboarding Tour
+- Integrated [Intro.js](https://introjs.com/) to provide a guided tour of the dashboard.
+- Key dashboard elements are highlighted with helpful tooltips.
+- Users can start the tour anytime using the "Start Tour" button.
+- <img width="530" height="302" alt="output3" src="https://github.com/user-attachments/assets/560c6278-1acb-4272-9a0d-bc2003ef2b3d" />
 
-### Clone the Repository
+
+### 5. Chart Color Consistency
+- All charts (e.g., Profile Visit, Donut) use Mazer’s primary blue (`#435ebe`) and the official dashboard color palette for a unified visual experience.
+- <img width="733" height="341" alt="output4" src="https://github.com/user-attachments/assets/3843e07e-c888-4e06-bd83-c015dc11b02b" />
+
+
+### 6. General UI/UX Improvements
+- All components use Bootstrap 5 grid and utility classes for responsiveness.
+- Card layouts and headings are visually consistent with the original Mazer dashboard.
+
+---
+
+## How to Run
+
+### Install Dependencies
 ```bash
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
-```
-###  Run the Dashboard
-Open `index.html` in your browser via the local server.
-
----
-
-## Custom Data
-
-To use your own chart or comment data:
-- Update the relevant JSON files or mock API endpoints.
-- For comments: edit `src/assets/static/data/comments.json`
-- For chart: edit related data arrays or JSON files in `dashboard.js`
-
----
-
-## File Structure
-
-```
-├── index.html                      # Main dashboard template
-├── dashboard.js                   # All custom JavaScript logic
-└── src/
-    └── assets/
-        └── static/
-            └── data/
-                └── comments.json  # Optional mock data for comments
+npm install
 ```
 
+### Required Assets
+Ensure these JS files are present:
+- `src/assets/extensions/apexcharts.min.js`
+- `src/assets/extensions/perfect-scrollbar.min.js`
+- `src/assets/extensions/intro.min.js` (for onboarding tour)
+
+If missing, download or copy them manually into the `extensions/` folder.
+
+### Start the Development Server
+```bash
+npm run dev
+```
+Then open the dashboard in your browser.
+
 ---
 
-## Logic & Integration Notes
+## Files Modified
 
-- Theme and profile data are stored in `localStorage`.
-- Charts are built with **ApexCharts** and update based on user inputs.
-- Comments are fetched via AJAX and rendered using template literals.
-- Intro.js is loaded dynamically for onboarding.
+- `src/index.html` – Layout and new component additions.
+- `src/assets/data/data.json` – Extended with more feedback fields.
+- `src/assets/static/js/pages/dashboard.js` – JS logic for data integration, chart filters, profile modal, onboarding tour, and chart customization.
+- `src/assets/extensions/` – Contains required JavaScript dependencies.
 
 ---
 
+## Assessment Criteria Met
+
+- UI/UX adaptation and consistency with original dashboard.
+- Dynamic, data-driven rendering from JSON.
+- Interactive components (feedback, chart filters, profile modal, onboarding tour).
+- Chart styling and logic enhancements.
+- Front-end error handling and asset integration.
+- Usage of Bootstrap 5 and modern JavaScript (ES6+).
+
+---
+
+## Credits
+
+- [Mazer Bootstrap 5 Admin Template](https://github.com/zuramai/mazer)
+- [Bootstrap 5](https://getbootstrap.com/)
+- [ApexCharts](https://apexcharts.com/)
+- [Intro.js](https://introjs.com/)
+
+---
+
+## License
+This project is developed for assessment/demo purposes only.
