@@ -1,0 +1,22 @@
+[
+  {
+    "platform": "Instagram",
+    "visits": 120
+  },
+  {
+    "platform": "LinkedIn",
+    "visits": 90
+  },
+  {
+    "platform": "Twitter",
+    "visits": 65
+  },
+  {
+    "platform": "Facebook",
+    "visits": 40
+  },
+  {
+    "platform": "Others",
+    "visits": 15
+  }
+]
