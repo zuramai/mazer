@@ -403,6 +403,66 @@
     "file": "assets/compiled/svg/zw.svg",
     "src": "assets/static/images/flags/zw.svg"
   },
+  "assets/static/images/glightbox/small/gm1.jpg": {
+    "file": "assets/compiled/jpg/gm1.jpg",
+    "src": "assets/static/images/glightbox/small/gm1.jpg"
+  },
+  "assets/static/images/glightbox/small/gm10.jpg": {
+    "file": "assets/compiled/jpg/gm10.jpg",
+    "src": "assets/static/images/glightbox/small/gm10.jpg"
+  },
+  "assets/static/images/glightbox/small/gm11.jpg": {
+    "file": "assets/compiled/jpg/gm11.jpg",
+    "src": "assets/static/images/glightbox/small/gm11.jpg"
+  },
+  "assets/static/images/glightbox/small/gm12.jpg": {
+    "file": "assets/compiled/jpg/gm12.jpg",
+    "src": "assets/static/images/glightbox/small/gm12.jpg"
+  },
+  "assets/static/images/glightbox/small/gm14.jpg": {
+    "file": "assets/compiled/jpg/gm14.jpg",
+    "src": "assets/static/images/glightbox/small/gm14.jpg"
+  },
+  "assets/static/images/glightbox/small/gm15.jpg": {
+    "file": "assets/compiled/jpg/gm15.jpg",
+    "src": "assets/static/images/glightbox/small/gm15.jpg"
+  },
+  "assets/static/images/glightbox/small/gm16.jpg": {
+    "file": "assets/compiled/jpg/gm16.jpg",
+    "src": "assets/static/images/glightbox/small/gm16.jpg"
+  },
+  "assets/static/images/glightbox/small/gm2.jpg": {
+    "file": "assets/compiled/jpg/gm2.jpg",
+    "src": "assets/static/images/glightbox/small/gm2.jpg"
+  },
+  "assets/static/images/glightbox/small/gm3.jpg": {
+    "file": "assets/compiled/jpg/gm3.jpg",
+    "src": "assets/static/images/glightbox/small/gm3.jpg"
+  },
+  "assets/static/images/glightbox/small/gm4.jpg": {
+    "file": "assets/compiled/jpg/gm4.jpg",
+    "src": "assets/static/images/glightbox/small/gm4.jpg"
+  },
+  "assets/static/images/glightbox/small/gm5.jpg": {
+    "file": "assets/compiled/jpg/gm5.jpg",
+    "src": "assets/static/images/glightbox/small/gm5.jpg"
+  },
+  "assets/static/images/glightbox/small/gm6.jpg": {
+    "file": "assets/compiled/jpg/gm6.jpg",
+    "src": "assets/static/images/glightbox/small/gm6.jpg"
+  },
+  "assets/static/images/glightbox/small/gm7.jpg": {
+    "file": "assets/compiled/jpg/gm7.jpg",
+    "src": "assets/static/images/glightbox/small/gm7.jpg"
+  },
+  "assets/static/images/glightbox/small/gm8.jpg": {
+    "file": "assets/compiled/jpg/gm8.jpg",
+    "src": "assets/static/images/glightbox/small/gm8.jpg"
+  },
+  "assets/static/images/glightbox/small/gm9.jpg": {
+    "file": "assets/compiled/jpg/gm9.jpg",
+    "src": "assets/static/images/glightbox/small/gm9.jpg"
+  },
   "assets/static/images/samples/1.png": {
     "file": "assets/compiled/png/1.png",
     "src": "assets/static/images/samples/1.png"
@@ -466,6 +526,10 @@
   "extra-component-flag.html": {
     "file": "assets/compiled/css/extra-component-flag.css",
     "src": "extra-component-flag.html"
+  },
+  "extra-component-glightbox.html": {
+    "file": "assets/compiled/css/extra-component-glightbox.css",
+    "src": "extra-component-glightbox.html"
   },
   "extra-component-sweetalert.html": {
     "file": "assets/compiled/css/extra-component-sweetalert.css",
