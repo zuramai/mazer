@@ -123,6 +123,10 @@
       {
         "name": "Rating",
         "url": "extra-component-rating.html"
+      },
+      {
+        "name": "GLightbox",
+        "url": "extra-component-glightbox.html"
       }
     ]
   },
