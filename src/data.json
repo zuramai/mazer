@@ -1,0 +1,177 @@
+{
+  "dashboard": {
+    "stats": {
+      "totalUsers": 12458,
+      "activeUsers": 8923,
+      "newUsers": 234,
+      "revenue": 45678.90,
+      "growth": 12.5,
+      "conversionRate": 3.2
+    },
+    "recentActivity": [
+      {
+        "id": 1,
+        "user": "John Doe",
+        "action": "Completed purchase",
+        "amount": 299.99,
+        "time": "2 minutes ago",
+        "status": "success"
+      },
+      {
+        "id": 2,
+        "user": "Sarah Wilson",
+        "action": "Updated profile",
+        "amount": null,
+        "time": "5 minutes ago",
+        "status": "info"
+      },
+      {
+        "id": 3,
+        "user": "Mike Johnson",
+        "action": "Cancelled subscription",
+        "amount": 49.99,
+        "time": "10 minutes ago",
+        "status": "warning"
+      },
+      {
+        "id": 4,
+        "user": "Emily Brown",
+        "action": "New registration",
+        "amount": null,
+        "time": "15 minutes ago",
+        "status": "success"
+      }
+    ],
+    "topProducts": [
+      {
+        "id": 1,
+        "name": "Premium Widget Pro",
+        "sales": 234,
+        "revenue": 23400,
+        "growth": 15.2,
+        "image": "assets/static/images/samples/1.png"
+      },
+      {
+        "id": 2,
+        "name": "Smart Gadget X",
+        "sales": 189,
+        "revenue": 18900,
+        "growth": 8.7,
+        "image": "assets/static/images/samples/2.png"
+      },
+      {
+        "id": 3,
+        "name": "Ultra Device Y",
+        "sales": 156,
+        "revenue": 15600,
+        "growth": -2.1,
+        "image": "assets/static/images/samples/3.png"
+      }
+    ],
+    "salesData": {
+      "labels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+      "datasets": [
+        {
+          "label": "Sales",
+          "data": [12000, 19000, 15000, 25000, 22000, 30000],
+          "borderColor": "#435ebe",
+          "backgroundColor": "rgba(67, 94, 190, 0.1)"
+        },
+        {
+          "label": "Revenue",
+          "data": [8000, 12000, 10000, 18000, 16000, 22000],
+          "borderColor": "#10b981",
+          "backgroundColor": "rgba(16, 185, 129, 0.1)"
+        }
+      ]
+    }
+  },
+  "users": {
+    "total": 12458,
+    "active": 8923,
+    "newThisMonth": 1234,
+    "topUsers": [
+      {
+        "id": 1,
+        "name": "John Doe",
+        "email": "john@example.com",
+        "avatar": "assets/static/images/faces/1.jpg",
+        "status": "active",
+        "lastLogin": "2 hours ago",
+        "totalSpent": 2340.50
+      },
+      {
+        "id": 2,
+        "name": "Sarah Wilson",
+        "email": "sarah@example.com",
+        "avatar": "assets/static/images/faces/2.jpg",
+        "status": "active",
+        "lastLogin": "5 hours ago",
+        "totalSpent": 1890.25
+      },
+      {
+        "id": 3,
+        "name": "Mike Johnson",
+        "email": "mike@example.com",
+        "avatar": "assets/static/images/faces/3.jpg",
+        "status": "inactive",
+        "lastLogin": "2 days ago",
+        "totalSpent": 890.75
+      }
+    ]
+  },
+  "products": {
+    "total": 156,
+    "active": 142,
+    "lowStock": 8,
+    "topCategories": [
+      {
+        "name": "Electronics",
+        "count": 45,
+        "revenue": 23400
+      },
+      {
+        "name": "Clothing",
+        "count": 38,
+        "revenue": 18900
+      },
+      {
+        "name": "Home & Garden",
+        "count": 29,
+        "revenue": 15600
+      }
+    ]
+  },
+  "orders": {
+    "total": 8923,
+    "pending": 234,
+    "completed": 8456,
+    "cancelled": 233,
+    "recentOrders": [
+      {
+        "id": "#ORD-001",
+        "customer": "John Doe",
+        "product": "Premium Widget Pro",
+        "amount": 299.99,
+        "status": "completed",
+        "date": "2024-01-15"
+      },
+      {
+        "id": "#ORD-002",
+        "customer": "Sarah Wilson",
+        "product": "Smart Gadget X",
+        "amount": 199.99,
+        "status": "pending",
+        "date": "2024-01-15"
+      },
+      {
+        "id": "#ORD-003",
+        "customer": "Mike Johnson",
+        "product": "Ultra Device Y",
+        "amount": 399.99,
+        "status": "processing",
+        "date": "2024-01-14"
+      }
+    ]
+  }
+} 

@@ -1,0 +1,349 @@
+{% set title = 'Custom Dashboard' %}
+{% set filename = 'custom-dashboard.html' %}
+
+{% extends 'src/layouts/master.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="/assets/scss/iconly.scss">
+<style>
+.custom-stats-card {
+    background: linear-gradient(135deg, var(--primary) 0%, #667eea 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 10px 30px rgba(67, 94, 190, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.custom-stats-card:hover {
+    transform: translateY(-5px);
+}
+
+.activity-item {
+    padding: 1rem;
+    border-left: 4px solid var(--primary);
+    margin-bottom: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.activity-item.success { border-left-color: var(--success); }
+.activity-item.warning { border-left-color: var(--warning); }
+.activity-item.info { border-left-color: var(--info); }
+
+.product-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-3px);
+}
+
+.growth-positive { color: var(--success); }
+.growth-negative { color: var(--danger); }
+
+.chart-container {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-completed { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.status-pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.status-processing { background: rgba(59, 130, 246, 0.1); color: var(--info); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <h3>Custom Dashboard</h3>
+    <p class="text-muted">Real-time analytics and insights</p>
+</div>
+
+<div class="page-content">
+    <!-- Stats Cards -->
+    <section class="row" id="stats-section">
+        <div class="col-12 col-lg-3 col-md-6">
+            <div class="custom-stats-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50">Total Users</h6>
+                        <h4 class="mb-0" id="total-users">Loading...</h4>
+                        <small class="text-white-50">+12.5% from last month</small>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-3 col-md-6">
+            <div class="custom-stats-card" style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50">Revenue</h6>
+                        <h4 class="mb-0" id="total-revenue">Loading...</h4>
+                        <small class="text-white-50">+8.7% from last month</small>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="bi bi-currency-dollar"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-3 col-md-6">
+            <div class="custom-stats-card" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50">Active Users</h6>
+                        <h4 class="mb-0" id="active-users">Loading...</h4>
+                        <small class="text-white-50">+15.2% from last month</small>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="bi bi-person-check-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-3 col-md-6">
+            <div class="custom-stats-card" style="background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50">Conversion Rate</h6>
+                        <h4 class="mb-0" id="conversion-rate">Loading...</h4>
+                        <small class="text-white-50">+3.2% from last month</small>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="bi bi-graph-up"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Charts and Activity -->
+    <section class="row">
+        <div class="col-12 col-lg-8">
+            <div class="chart-container">
+                <h5>Sales Analytics</h5>
+                <canvas id="sales-chart" height="100"></canvas>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Recent Activity</h5>
+                </div>
+                <div class="card-body" id="activity-feed">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Products -->
+    <section class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Top Products</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row" id="top-products">
+                        <div class="text-center col-12">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Orders -->
+    <section class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Recent Orders</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Product</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-orders">
+                                <tr>
+                                    <td colspan="6" class="text-center">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Load and display dashboard data
+async function loadDashboardData() {
+    try {
+        const response = await fetch('data.json');
+        const data = await response.json();
+        
+        // Update stats
+        document.getElementById('total-users').textContent = data.dashboard.stats.totalUsers.toLocaleString();
+        document.getElementById('total-revenue').textContent = '$' + data.dashboard.stats.revenue.toLocaleString();
+        document.getElementById('active-users').textContent = data.dashboard.stats.activeUsers.toLocaleString();
+        document.getElementById('conversion-rate').textContent = data.dashboard.stats.conversionRate + '%';
+        
+        // Update activity feed
+        updateActivityFeed(data.dashboard.recentActivity);
+        
+        // Update top products
+        updateTopProducts(data.dashboard.topProducts);
+        
+        // Update recent orders
+        updateRecentOrders(data.orders.recentOrders);
+        
+        // Initialize chart
+        initSalesChart(data.dashboard.salesData);
+        
+    } catch (error) {
+        console.error('Error loading dashboard data:', error);
+    }
+}
+
+function updateActivityFeed(activities) {
+    const container = document.getElementById('activity-feed');
+    container.innerHTML = activities.map(activity => `
+        <div class="activity-item ${activity.status}">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h6 class="mb-1">${activity.user}</h6>
+                    <p class="mb-1 text-muted">${activity.action}</p>
+                    <small class="text-muted">${activity.time}</small>
+                </div>
+                ${activity.amount ? `<span class="badge bg-success">$${activity.amount}</span>` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+function updateTopProducts(products) {
+    const container = document.getElementById('top-products');
+    container.innerHTML = products.map(product => `
+        <div class="col-12 col-md-4 mb-3">
+            <div class="product-card">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <img src="${product.image}" alt="${product.name}" class="rounded" width="60" height="60">
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h6 class="mb-1">${product.name}</h6>
+                        <p class="mb-1 text-muted">${product.sales} sales</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">$${product.revenue.toLocaleString()}</span>
+                            <span class="badge ${product.growth >= 0 ? 'growth-positive' : 'growth-negative'}">
+                                ${product.growth >= 0 ? '+' : ''}${product.growth}%
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function updateRecentOrders(orders) {
+    const container = document.getElementById('recent-orders');
+    container.innerHTML = orders.map(order => `
+        <tr>
+            <td><strong>${order.id}</strong></td>
+            <td>${order.customer}</td>
+            <td>${order.product}</td>
+            <td>$${order.amount}</td>
+            <td><span class="status-badge status-${order.status}">${order.status}</span></td>
+            <td>${order.date}</td>
+        </tr>
+    `).join('');
+}
+
+function initSalesChart(salesData) {
+    const ctx = document.getElementById('sales-chart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: salesData.labels,
+            datasets: salesData.datasets.map(dataset => ({
+                label: dataset.label,
+                data: dataset.data,
+                borderColor: dataset.borderColor,
+                backgroundColor: dataset.backgroundColor,
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4
+            }))
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Load data when page loads
+document.addEventListener('DOMContentLoaded', loadDashboardData);
+</script>
+{% endblock %} 

@@ -1,0 +1,268 @@
+{% set title = 'Users Management' %}
+{% set filename = 'custom-users.html' %}
+
+{% extends 'src/layouts/master.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="/assets/scss/iconly.scss">
+<style>
+.user-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.user-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.user-card.active {
+    border-color: var(--success);
+}
+
+.user-card.inactive {
+    border-color: var(--secondary);
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.status-active {
+    background-color: var(--success);
+}
+
+.status-inactive {
+    background-color: var(--secondary);
+}
+
+.stats-summary {
+    background: linear-gradient(135deg, var(--primary) 0%, #667eea 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.search-box {
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.filter-buttons .btn {
+    border-radius: 25px;
+    padding: 0.5rem 1.5rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <h3>Users Management</h3>
+    <p class="text-muted">Manage and monitor user accounts</p>
+</div>
+
+<div class="page-content">
+    <!-- Stats Summary -->
+    <section class="row">
+        <div class="col-12">
+            <div class="stats-summary">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <h4 id="total-users-count">Loading...</h4>
+                        <p class="mb-0 text-white-50">Total Users</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h4 id="active-users-count">Loading...</h4>
+                        <p class="mb-0 text-white-50">Active Users</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h4 id="new-users-count">Loading...</h4>
+                        <p class="mb-0 text-white-50">New This Month</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h4 id="avg-spent">Loading...</h4>
+                        <p class="mb-0 text-white-50">Avg. Spent</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search and Filters -->
+    <section class="row">
+        <div class="col-12">
+            <div class="search-box">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" class="form-control" id="search-input" placeholder="Search users...">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="filter-buttons text-end">
+                            <button class="btn btn-outline-primary active" data-filter="all">All</button>
+                            <button class="btn btn-outline-success" data-filter="active">Active</button>
+                            <button class="btn btn-outline-secondary" data-filter="inactive">Inactive</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Users Grid -->
+    <section class="row" id="users-grid">
+        <div class="text-center col-12">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+let allUsers = [];
+let filteredUsers = [];
+
+async function loadUsersData() {
+    try {
+        const response = await fetch('data.json');
+        const data = await response.json();
+        
+        // Update stats
+        document.getElementById('total-users-count').textContent = data.users.total.toLocaleString();
+        document.getElementById('active-users-count').textContent = data.users.active.toLocaleString();
+        document.getElementById('new-users-count').textContent = data.users.newThisMonth.toLocaleString();
+        
+        // Calculate average spent
+        const totalSpent = data.users.topUsers.reduce((sum, user) => sum + user.totalSpent, 0);
+        const avgSpent = (totalSpent / data.users.topUsers.length).toFixed(2);
+        document.getElementById('avg-spent').textContent = '$' + avgSpent;
+        
+        // Load users
+        allUsers = data.users.topUsers;
+        filteredUsers = [...allUsers];
+        displayUsers(filteredUsers);
+        
+    } catch (error) {
+        console.error('Error loading users data:', error);
+    }
+}
+
+function displayUsers(users) {
+    const container = document.getElementById('users-grid');
+    
+    if (users.length === 0) {
+        container.innerHTML = `
+            <div class="col-12 text-center">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    No users found matching your criteria.
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = users.map(user => `
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <div class="user-card ${user.status}">
+                <div class="d-flex align-items-center mb-3">
+                    <img src="${user.avatar}" alt="${user.name}" class="user-avatar me-3">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">${user.name}</h6>
+                        <p class="mb-1 text-muted small">${user.email}</p>
+                        <div class="d-flex align-items-center">
+                            <span class="status-indicator status-${user.status}"></span>
+                            <small class="text-muted">${user.status}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col-6">
+                        <small class="text-muted d-block">Last Login</small>
+                        <strong>${user.lastLogin}</strong>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block">Total Spent</small>
+                        <strong class="text-success">$${user.totalSpent.toLocaleString()}</strong>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-sm btn-outline-primary me-2">
+                        <i class="bi bi-eye"></i> View
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-pencil"></i> Edit
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function filterUsers(filter) {
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    
+    filteredUsers = allUsers.filter(user => {
+        const matchesSearch = user.name.toLowerCase().includes(searchTerm) || 
+                            user.email.toLowerCase().includes(searchTerm);
+        const matchesFilter = filter === 'all' || user.status === filter;
+        
+        return matchesSearch && matchesFilter;
+    });
+    
+    displayUsers(filteredUsers);
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    loadUsersData();
+    
+    // Search functionality
+    document.getElementById('search-input').addEventListener('input', function() {
+        const activeFilter = document.querySelector('.filter-buttons .btn.active').dataset.filter;
+        filterUsers(activeFilter);
+    });
+    
+    // Filter buttons
+    document.querySelectorAll('.filter-buttons .btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from all buttons
+            document.querySelectorAll('.filter-buttons .btn').forEach(b => b.classList.remove('active'));
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            const filter = this.dataset.filter;
+            filterUsers(filter);
+        });
+    });
+});
+</script>
+{% endblock %} 
