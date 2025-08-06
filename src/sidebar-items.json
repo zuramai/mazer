@@ -9,6 +9,16 @@
     "icon": "grid-fill"
   },
   {
+    "name": "Custom Dashboard",
+    "url": "custom-dashboard.html",
+    "icon": "graph-up"
+  },
+  {
+    "name": "Users Management",
+    "url": "custom-users.html",
+    "icon": "people-fill"
+  },
+  {
     "name": "Components",
     "key": "component",
     "icon": "stack",
