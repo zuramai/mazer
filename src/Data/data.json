@@ -1,0 +1,10 @@
+{
+  "breakpointBooking": {
+    "artists": 126,
+    "events": 56
+  },
+  "dogteurAssur": {
+    "startingPlanPrice": 35,
+    "numberOfReasons": 5
+  }
+}

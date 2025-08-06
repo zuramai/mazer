@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 {% set title = 'Card' %}
 {% set filename = 'component-card.html' %}
 
@@ -21,7 +22,41 @@
             </div>
         </div>
     </div>
-    <!-- Basic card section start -->
+    <section class="row mb-4">
+        <div class="col-6 col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6>Artists</h6>
+                    <h3 id="breakpoint-artists">Loading...</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6>Events</h6>
+                    <h3 id="breakpoint-events">Loading...</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6>Starting Plan Price</h6>
+                    <h3 id="dogteur-price">Loading...</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h6>Reasons to Choose Us</h6>
+                    <h3 id="dogteur-reasons">Loading...</h3>
+                </div>
+            </div>
+        </div>
+    </section>
     <section id="content-types">
         <div class="row">
             <div class="col-xl-4 col-md-6 col-sm-12">
@@ -31,7 +66,7 @@
                             <h4 class="card-title">Card With Header And Footer</h4>
                             <p class="card-text">
                                 Introducing our beautifully designed cards, thoughtfully crafted to enhance your
-                                browsing experience. These versatile elements are the perfect way to present
+                                Browse experience. These versatile elements are the perfect way to present
                                 information, products, or services on our website.
                             </p>
                         </div>
@@ -303,7 +338,8 @@
                                 chocolate tart dragée.
                             </p>
                             <p class="card-text">
-                                Cupcake fruitcake macaroon donut pastry gummies tiramisu chocolate bar muffin.
+                                Cupcake fruitcake macaroon donut pastry gummies tiramisu chocolate bar
+                                muffin.
                             </p>
                             <button class="btn btn-primary block">Update now</button>
                         </div>
@@ -334,10 +370,6 @@
             </div>
         </div>
     </section>
-    <!-- Basic Card types section end -->
-
-
-    <!-- Groups section start -->
     <section id="groups">
         <div class="row match-height">
             <div class="col-12 mt-3 mb-1">
@@ -349,12 +381,12 @@
                 <div class="card-group">
                     <div class="card">
                         <div class="card-content">
-                            <img class="card-img-top img-fluid" src="assets/static/images/samples/1.png"
+                            <img class="card-img-top img-fluid" src="/Users/soumithreddy/mazer/src/assets/static/images/27.jpeg"
                                 alt="Card image cap">
                             <div class="card-body">
-                                <h4 class="card-title">Card title</h4>
+                                <h4 class="card-title">Event Organisation platform</h4>
                                 <p class="card-text">
-                                    This card has supporting text below as a natural lead-in to additional
+                                    This card has all the events orgainsed in the following days
                                     content.</p>
                                 <small class="text-muted">Last updated 3 mins ago.</small>
                             </div>
@@ -362,7 +394,7 @@
                     </div>
                     <div class="card">
                         <div class="card-content">
-                            <img class="card-img-top img-fluid" src="assets/static/images/samples/2.png"
+                            <img class="card-img-top img-fluid" src="/Users/soumithreddy/mazer/src/assets/static/images/25.webp"
                                 alt="Card image cap" />
                             <div class="card-body">
                                 <h4 class="card-title">Card title</h4>
@@ -376,10 +408,10 @@
                     </div>
                     <div class="card">
                         <div class="card-content">
-                            <img class="card-img-top img-fluid" src="assets/static/images/samples/3.png"
+                            <img class="card-img-top img-fluid" src="src/assets/static/images/24.jpeg"
                                 alt="Card image cap">
                             <div class="card-body">
-                                <h4 class="card-title">Card title</h4>
+                                <h4 class="card-title">Design website</h4>
                                 <p class="card-text">
                                     This card has supporting text below as a natural lead-in to additional
                                     content.
@@ -390,7 +422,7 @@
                     </div>
                     <div class="card">
                         <div class="card-content">
-                            <img class="card-img-top img-fluid" src="assets/static/images/samples/4.png"
+                            <img class="card-img-top img-fluid" src="/Users/soumithreddy/mazer/src/assets/static/images/23.jpeg"
                                 alt="Card image cap">
                             <div class="card-body">
                                 <h4 class="card-title">Card title</h4>
@@ -408,3 +440,17 @@
     </section>
 </div>
 {% endblock %}
+<script>
+    fetch('data/data.json')
+        .then(res => res.json())
+        .then(data => {
+            // Data for Breakpoint Booking
+            document.getElementById('breakpoint-artists').innerText = data.breakpointBooking.artists;
+            document.getElementById('breakpoint-events').innerText = data.breakpointBooking.events;
+
+            // Data for Dogteur Assur
+            document.getElementById('dogteur-price').innerText = `$${data.dogteurAssur.startingPlanPrice}/mo`;
+            document.getElementById('dogteur-reasons').innerText = data.dogteurAssur.numberOfReasons;
+        })
+        .catch(error => console.error('Failed to load data:', error));
+</script>
