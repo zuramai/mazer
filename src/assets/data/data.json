@@ -1,0 +1,28 @@
+{
+    "kpis": {
+      "activeUsers": 1284,
+      "newSignups": 73,
+      "revenue": 18640.75,
+      "openTickets": 12
+    },
+    "chart": {
+      "labels": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      "data": [120, 150, 180, 200, 170, 220, 190]
+    },
+    "recent": [
+      { "time": "2025-10-08 14:12", "user": "Ananya", "action": "Uploaded report", "status": "success" },
+      { "time": "2025-10-08 12:03", "user": "Rohan", "action": "Created booking", "status": "pending" },
+      { "time": "2025-10-07 18:41", "user": "Priya", "action": "Commented", "status": "success" },
+      { "time": "2025-10-07 09:22", "user": "Arjun", "action": "Updated item", "status": "failed" }
+    ],
+    "settings": {
+      "theme": "ocean",
+      "themes": {
+        "ocean": { "primaryColor": "#2563eb", "background": "linear-gradient(135deg, #3b82f6, #06b6d4)" },
+        "sunset": { "primaryColor": "#f59e0b", "background": "linear-gradient(135deg, #fbbf24, #f97316)" },
+        "forest": { "primaryColor": "#16a34a", "background": "linear-gradient(135deg, #4ade80, #15803d)" },
+        "midnight": { "primaryColor": "#6b7280", "background": "linear-gradient(135deg, #374151, #1f2937)" }
+      }
+    }
+  }
+  

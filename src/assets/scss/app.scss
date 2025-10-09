@@ -19,3 +19,68 @@ body .bi::before, [class^=bi-]::before, [class*=" bi-"]::before {
 
 // Mazer CSS
 @import "./mazer";
+/* Status Colors */
+.status-success {
+    color: #16a34a;   /* Green */
+    font-weight: 600;
+}
+.status-pending {
+    color: #ca8a04;   /* Amber */
+    font-weight: 600;
+}
+.status-failed {
+    color: #dc2626;   /* Red */
+    font-weight: 600;
+}
+
+/* Fade-in animation for table rows */
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+#recentTable tbody tr {
+    animation: fadeIn 0.5s ease forwards;
+}
+:root {
+    --primary-color: #2563eb;
+    --secondary-color: #1e40af;
+    --background-color: #e0f2fe;
+}
+
+[data-theme="ocean"] {
+    --primary-color: #2563eb;
+    --secondary-color: #1e40af;
+    --background-color: #e0f2fe;
+}
+
+[data-theme="sunset"] {
+    --primary-color: #f97316;
+    --secondary-color: #b45309;
+    --background-color: #fff7ed;
+}
+
+[data-theme="forest"] {
+    --primary-color: #16a34a;
+    --secondary-color: #166534;
+    --background-color: #f0fdf4;
+}
+
+[data-theme="midnight"] {
+    --primary-color: #6366f1;
+    --secondary-color: #1e3a8a;
+    --background-color: #1e293b;
+}
+
+/* Use variables in cards & background */
+body {
+    background-color: var(--background-color);
+}
+
+.card {
+    border-color: var(--secondary-color);
+}
+
+.card h6.font-extrabold {
+    color: var(--primary-color);
+}
