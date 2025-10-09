@@ -43,9 +43,4 @@ This repository is a fork of [Mazer Admin Dashboard](https://github.com/zuramai/
 
 ---
 
-## 🔹 Setup Instructions
 
-1. **Clone the repository**
-```bash
-git clone https://github.com/Srivani-mula/mazer.git
-cd mazer
