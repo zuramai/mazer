@@ -237,6 +237,11 @@
     "icon": "grid-1x2-fill"
   },
   {
+    "name": "Products",
+    "url": "products.html",
+    "icon": "bag-fill"
+  },
+  {
     "name": "Datatables",
     "key": "table-datatable",
     "icon": "file-earmark-spreadsheet-fill",
