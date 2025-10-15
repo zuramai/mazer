@@ -1,3 +1,5 @@
+import { loadDashboardData } from "../../../js/services/dataService.js";
+
 var optionsProfileVisit = {
   annotations: {
     position: "back",
@@ -164,4 +166,31 @@ chartAmerica.render()
 chartIndia.render()
 chartEurope.render()
 chartProfileVisit.render()
-chartVisitorsProfile.render()
+chartVisitorsProfile.render();
+
+// Bind KPIs and chart data from data.json
+(async function bindDashboardFromData() {
+  try {
+    const data = await loadDashboardData()
+
+    // KPI elements (ensure hooks exist in HTML)
+    const elUsers = document.querySelector('[data-kpi="totalUsers"]')
+    const elSessions = document.querySelector('[data-kpi="activeSessions"]')
+    const elRevenue = document.querySelector('[data-kpi="revenueToday"]')
+    const elConv = document.querySelector('[data-kpi="conversionRate"]')
+
+    if (elUsers) elUsers.textContent = Number(data.kpis.totalUsers).toLocaleString()
+    if (elSessions) elSessions.textContent = Number(data.kpis.activeSessions).toLocaleString()
+    if (elRevenue) elRevenue.textContent = `$${Number(data.kpis.revenueToday).toLocaleString()}`
+    if (elConv) elConv.textContent = `${Number(data.kpis.conversionRate)}%`
+
+    // Update main sales/profile visit chart series
+    if (typeof chartProfileVisit !== "undefined" && data.salesSeries && data.salesSeries[0]) {
+      chartProfileVisit.updateSeries([
+        { name: data.salesSeries[0].name || "sales", data: data.salesSeries[0].data || [] },
+      ])
+    }
+  } catch (err) {
+    console.error("Failed to bind dashboard from data.json", err)
+  }
+})()

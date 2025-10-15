@@ -1,0 +1,56 @@
+{% set title = 'Products' %}
+{% set filename = 'products.html' %}
+
+{% extends 'src/layouts/master.html' %}
+{% block content %}
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>Products</h3>
+                <p class="text-subtitle text-muted">Data-driven table with search and pagination</p>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Products</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <section class="section">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">Top Products</h4>
+                <input id="productsSearch" class="form-control w-auto" placeholder="Search products..." />
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="productsTable">
+                        <thead>
+                            <tr>
+                                <th>SKU</th>
+                                <th>Name</th>
+                                <th class="text-end">Price</th>
+                                <th class="text-end">Sold</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <nav class="mt-3">
+                    <ul class="pagination justify-content-end" id="productsPagination"></ul>
+                </nav>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+{% block js %}
+<script type="module" src="assets/static/js/pages/products.js"></script>
+{% endblock %}
+
+

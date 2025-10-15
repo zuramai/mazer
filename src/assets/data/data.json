@@ -1,0 +1,17 @@
+{
+    "kpis": {
+      "totalUsers": 12450,
+      "activeSessions": 342,
+      "revenueToday": 18750,
+      "conversionRate": 3.9
+    },
+    "salesSeries": [
+      { "name": "2025", "data": [31, 40, 28, 51, 42, 109, 100, 95, 88, 120, 140, 155] }
+    ],
+    "topProducts": [
+      { "sku": "A-100", "name": "Alpha Chair", "price": 129.99, "sold": 523 },
+      { "sku": "B-220", "name": "Bravo Desk", "price": 299.0, "sold": 341 },
+      { "sku": "C-330", "name": "Charlie Lamp", "price": 49.5, "sold": 812 },
+      { "sku": "D-990", "name": "Delta Shelf", "price": 89.0, "sold": 211 }
+    ]
+  }
