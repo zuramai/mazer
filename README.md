@@ -134,3 +134,53 @@ Mazer is created by <a href="https://saugi.me">Saugi</a>.
 ## Sponsors
 
 ![zuramai's sponsors](https://raw.githubusercontent.com/zuramai/static/main/sponsors.svg)
+
+---
+
+## Assessment Customization (Task 3)
+
+This fork customizes Mazer to demonstrate real‑world adaptation: data binding, new page, and theme tweaks.
+
+### Setup
+- Node 18+ recommended
+- Install and run
+  - `npm install`
+  - `npm run dev`
+  - Open `http://localhost:5173`
+
+### Data binding
+- Source: `src/assets/data/data.json`
+- Loader: `src/assets/js/services/dataService.js`
+- Dashboard bindings:
+  - File: `src/assets/static/js/pages/dashboard.js` (loaded as `type="module"`)
+  - Updates KPI elements in `src/index.html` via `data-kpi` attributes: `totalUsers`, `activeSessions`, `revenueToday`, `conversionRate`
+  - Updates ApexCharts series for the main chart from `salesSeries`
+
+### New page: Products (data‑driven table)
+- Page: `src/products.html`
+- Script: `src/assets/static/js/pages/products.js`
+- Features: client‑side search and pagination powered by `topProducts` in `data.json`
+- Navigation: added "Products" under Table in `src/horizontal-menu-items.json`
+
+### Theme customization
+- Overrides in `src/assets/scss/_custom.scss` (primary color, rounded cards, active sidebar)
+- Included from `src/assets/scss/app.scss`
+
+### Vendor/CDN notes
+- To avoid missing local vendor files during dev, we load CDNs:
+  - Perfect Scrollbar in `src/layouts/master.html`
+  - ApexCharts in `src/index.html`
+
+### Branch & commits
+- Recommended branch: `feat/custom-assessment`
+- Example commit message: `feat: data-bound dashboard, products page, theme tweaks, CDN fixes`
+
+### Files changed/added (key)
+- `src/index.html` (KPI hooks, script type=module, ApexCharts CDN)
+- `src/assets/static/js/pages/dashboard.js` (data binding)
+- `src/assets/js/services/dataService.js` (data loader)
+- `src/assets/data/data.json` (sample data)
+- `src/products.html`, `src/assets/static/js/pages/products.js`
+- `src/assets/scss/_custom.scss`, `src/assets/scss/app.scss`
+- `src/layouts/master.html` (Perfect Scrollbar CDN)
+- `src/horizontal-menu-items.json` (Products menu)

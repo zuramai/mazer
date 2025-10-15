@@ -1,0 +1,18 @@
+:root {
+    --bs-primary: #6b5bff;
+    --bs-primary-rgb: 107, 91, 255;
+}
+
+.card {
+    border-radius: .75rem;
+}
+
+.sidebar .sidebar-item.active .sidebar-link {
+    background: rgba(var(--bs-primary-rgb), .12);
+}
+
+.btn-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
