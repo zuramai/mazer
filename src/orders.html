@@ -1,0 +1,135 @@
+{% set title = 'Orders Management' %}
+{% set filename = 'orders.html' %}
+
+{% extends 'src/layouts/master.html' %}
+
+{% block styles %}
+<link rel="stylesheet" href="/assets/scss/custom-theme.scss">
+{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h3>Orders Management</h3>
+            <p class="text-subtitle text-muted">Track and manage customer orders</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary" id="exportOrders">
+                <i class="bi bi-download"></i> Export
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="page-content">
+    <!-- Summary Cards -->
+    <section class="row mb-4" id="order-summary">
+        <!-- Summary will be populated dynamically -->
+    </section>
+
+    <!-- Orders Table -->
+    <section class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text bg-white">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                                <input type="text" class="form-control" id="searchOrders" placeholder="Search orders...">
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="d-flex gap-2 justify-content-end">
+                                <select class="form-select form-select-sm w-auto" id="statusFilter">
+                                    <option value="">All Status</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Processing">Processing</option>
+                                    <option value="Shipped">Shipped</option>
+                                    <option value="Delivered">Delivered</option>
+                                </select>
+                                <input type="date" class="form-control form-control-sm w-auto" id="dateFilter">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Product</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-tbody">
+                                <!-- Orders will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Order Details Modal -->
+<div class="modal fade" id="orderDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Order Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="orderDetailsContent">
+                <!-- Order details will be populated dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="updateOrderStatus">Update Status</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Status Modal -->
+<div class="modal fade" id="updateStatusModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Order Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="updateOrderId">
+                <div class="mb-3">
+                    <label class="form-label">New Status</label>
+                    <select class="form-select" id="newStatus">
+                        <option value="Pending">Pending</option>
+                        <option value="Processing">Processing</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmStatusUpdate">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script src="assets/static/js/pages/orders.js" type="module"></script>
+{% endblock %}

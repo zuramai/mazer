@@ -44,6 +44,7 @@
     "datatables.net-bs5": "^1.13.1",
     "dayjs": "^1.11.10",
     "dragula": "^3.7.3",
+    "esbuild": "^0.27.2",
     "feather-icons": "^4.29.0",
     "filepond": "^4.30.4",
     "filepond-plugin-file-validate-size": "^2.2.8",
