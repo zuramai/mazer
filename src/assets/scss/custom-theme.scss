@@ -1,0 +1,409 @@
+/**
+ * Custom Theme Styles for E-Commerce Dashboard
+ * Extends and customizes the default Mazer theme
+ */
+
+// Custom color variables
+$custom-primary: #435ebe;
+$custom-secondary: #55c6e8;
+$custom-success: #5ddab4;
+$custom-danger: #ff6b6b;
+$custom-warning: #ffc107;
+$custom-info: #17a2b8;
+
+// Enhanced stat cards
+.stat-card {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 25px 0 rgba(0, 0, 0, 0.1);
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px 0 rgba(67, 94, 190, 0.15);
+    }
+
+    .stats-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+
+        &.primary {
+            background: linear-gradient(135deg, $custom-primary 0%, lighten($custom-primary, 10%) 100%);
+        }
+
+        &.success {
+            background: linear-gradient(135deg, $custom-success 0%, lighten($custom-success, 10%) 100%);
+        }
+
+        &.info {
+            background: linear-gradient(135deg, $custom-info 0%, lighten($custom-info, 10%) 100%);
+        }
+
+        &.warning {
+            background: linear-gradient(135deg, $custom-warning 0%, lighten($custom-warning, 10%) 100%);
+        }
+
+        &.danger {
+            background: linear-gradient(135deg, $custom-danger 0%, lighten($custom-danger, 10%) 100%);
+        }
+    }
+}
+
+// Page heading styles
+.page-heading {
+    margin-bottom: 2rem;
+
+    h3 {
+        font-weight: 700;
+        color: #25396f;
+    }
+
+    .text-subtitle {
+        font-size: 0.95rem;
+    }
+}
+
+// Card enhancements
+.card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 25px 0 rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s ease;
+
+    &:hover {
+        box-shadow: 0 8px 30px 0 rgba(0, 0, 0, 0.12);
+    }
+
+    .card-header {
+        background: transparent;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 1.25rem 1.5rem;
+
+        h4 {
+            font-weight: 700;
+            color: #25396f;
+            font-size: 1.1rem;
+        }
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+}
+
+// Legend dot for charts
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+// Table enhancements
+.table {
+    thead th {
+        font-weight: 600;
+        color: #6c757d;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    tbody tr {
+        transition: background-color 0.2s ease;
+
+        &:hover {
+            background-color: rgba(67, 94, 190, 0.05);
+        }
+    }
+}
+
+// Order item styles
+.order-item {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+        background-color: rgba(67, 94, 190, 0.05);
+    }
+
+    &:last-child {
+        border-bottom: none !important;
+    }
+}
+
+// Team member styles
+.team-member {
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &:hover {
+        background-color: rgba(67, 94, 190, 0.05);
+    }
+
+    .status-indicator {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid white;
+    }
+}
+
+// Task item styles
+.task-item {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+        background-color: rgba(67, 94, 190, 0.05);
+    }
+
+    &.completed {
+        opacity: 0.7;
+    }
+
+    &:last-child {
+        border-bottom: none !important;
+    }
+}
+
+// Notification styles
+.notification-item {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+        background-color: rgba(67, 94, 190, 0.05);
+    }
+
+    &.unread {
+        background-color: rgba(67, 94, 190, 0.08);
+        border-left: 3px solid $custom-primary;
+    }
+
+    &:last-child {
+        border-bottom: none !important;
+    }
+
+    .notification-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(67, 94, 190, 0.1);
+        border-radius: 10px;
+    }
+}
+
+// Badge enhancements
+.badge {
+    font-weight: 600;
+    padding: 0.4em 0.8em;
+    border-radius: 6px;
+}
+
+.bg-light-primary {
+    background-color: rgba(67, 94, 190, 0.15) !important;
+    color: $custom-primary !important;
+}
+
+.bg-light-secondary {
+    background-color: rgba(108, 117, 125, 0.15) !important;
+    color: #6c757d !important;
+}
+
+.bg-light-success {
+    background-color: rgba(93, 218, 180, 0.15) !important;
+    color: darken($custom-success, 20%) !important;
+}
+
+.bg-light-danger {
+    background-color: rgba(255, 107, 107, 0.15) !important;
+    color: $custom-danger !important;
+}
+
+.bg-light-warning {
+    background-color: rgba(255, 193, 7, 0.15) !important;
+    color: darken($custom-warning, 20%) !important;
+}
+
+.bg-light-info {
+    background-color: rgba(23, 162, 184, 0.15) !important;
+    color: $custom-info !important;
+}
+
+// Button enhancements
+.btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+    }
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, $custom-primary 0%, lighten($custom-primary, 10%) 100%);
+    border: none;
+
+    &:hover {
+        background: linear-gradient(135deg, darken($custom-primary, 5%) 0%, $custom-primary 100%);
+        box-shadow: 0 4px 15px rgba(67, 94, 190, 0.4);
+    }
+}
+
+.btn-outline-primary {
+    border: 2px solid $custom-primary;
+
+    &:hover {
+        background: $custom-primary;
+        border-color: $custom-primary;
+    }
+}
+
+// Avatar enhancements
+.avatar {
+    position: relative;
+
+    img {
+        border-radius: 50%;
+        object-fit: cover;
+    }
+}
+
+.avatar-md {
+    width: 45px;
+    height: 45px;
+
+    img {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.avatar-lg {
+    width: 55px;
+    height: 55px;
+
+    img {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+// Loading spinner
+#loading-spinner {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .page-heading {
+        .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 1rem;
+        }
+    }
+
+    .stat-card {
+        margin-bottom: 1rem;
+    }
+
+    .card {
+        margin-bottom: 1rem;
+    }
+}
+
+// Orders list scrollable
+.orders-list {
+    max-height: 400px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 5px;
+    }
+}
+
+// Hover shadow utility
+.hover-shadow {
+    transition: box-shadow 0.3s ease;
+
+    &:hover {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+}
+
+// Animation for new items
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.3s ease forwards;
+}
+
+// Toast customization
+#toast-container {
+    .toast {
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+}
+
+// Dark mode adjustments
+[data-bs-theme="dark"] {
+    .stat-card,
+    .card {
+        background-color: #1e1e2d;
+    }
+
+    .page-heading h3,
+    .card-header h4 {
+        color: #fff;
+    }
+
+    .table tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .order-item:hover,
+    .team-member:hover,
+    .task-item:hover,
+    .notification-item:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .notification-item.unread {
+        background-color: rgba(67, 94, 190, 0.2);
+    }
+}

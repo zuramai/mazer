@@ -5,8 +5,28 @@
   },
   {
     "name": "Dashboard",
-    "url": "index.html",
-    "icon": "grid-fill"
+    "icon": "grid-fill",
+    "key": "dashboard",
+    "submenu": [
+      {
+        "name": "Default",
+        "url": "index.html"
+      },
+      {
+        "name": "E-Commerce",
+        "url": "dashboard-custom.html"
+      }
+    ]
+  },
+  {
+    "name": "Products",
+    "url": "products.html",
+    "icon": "box-seam"
+  },
+  {
+    "name": "Orders",
+    "url": "orders.html",
+    "icon": "bag-check"
   },
   {
     "name": "Components",

@@ -1,0 +1,289 @@
+{
+  "dashboard": {
+    "statistics": {
+      "totalSales": {
+        "value": 458750,
+        "currency": "$",
+        "change": 12.5,
+        "trend": "up",
+        "icon": "cart",
+        "color": "primary"
+      },
+      "totalOrders": {
+        "value": 2847,
+        "change": 8.2,
+        "trend": "up",
+        "icon": "bag",
+        "color": "success"
+      },
+      "newCustomers": {
+        "value": 1253,
+        "change": -2.4,
+        "trend": "down",
+        "icon": "person-plus",
+        "color": "info"
+      },
+      "pendingTasks": {
+        "value": 47,
+        "change": 5.1,
+        "trend": "up",
+        "icon": "clipboard-check",
+        "color": "warning"
+      }
+    },
+    "salesChart": {
+      "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      "series": [
+        {
+          "name": "Sales 2024",
+          "data": [35000, 41000, 57000, 45000, 61000, 58000, 63000, 60000, 68000, 72000, 78000, 85000]
+        },
+        {
+          "name": "Sales 2023",
+          "data": [28000, 32000, 45000, 38000, 52000, 48000, 55000, 51000, 58000, 62000, 65000, 71000]
+        }
+      ]
+    },
+    "revenueByCategory": [
+      { "category": "Electronics", "value": 45, "color": "#435ebe" },
+      { "category": "Clothing", "value": 25, "color": "#55c6e8" },
+      { "category": "Home & Garden", "value": 15, "color": "#5ddab4" },
+      { "category": "Sports", "value": 10, "color": "#ff6b6b" },
+      { "category": "Other", "value": 5, "color": "#ffc107" }
+    ]
+  },
+  "products": [
+    {
+      "id": 1,
+      "name": "MacBook Pro 16\"",
+      "category": "Electronics",
+      "price": 2499.99,
+      "stock": 45,
+      "status": "In Stock",
+      "image": "https://via.placeholder.com/60x60/435ebe/fff?text=MB",
+      "rating": 4.8
+    },
+    {
+      "id": 2,
+      "name": "iPhone 15 Pro Max",
+      "category": "Electronics",
+      "price": 1199.99,
+      "stock": 128,
+      "status": "In Stock",
+      "image": "https://via.placeholder.com/60x60/55c6e8/fff?text=IP",
+      "rating": 4.9
+    },
+    {
+      "id": 3,
+      "name": "Samsung Galaxy Watch 6",
+      "category": "Electronics",
+      "price": 349.99,
+      "stock": 0,
+      "status": "Out of Stock",
+      "image": "https://via.placeholder.com/60x60/5ddab4/fff?text=SW",
+      "rating": 4.5
+    },
+    {
+      "id": 4,
+      "name": "Nike Air Max 2024",
+      "category": "Sports",
+      "price": 189.99,
+      "stock": 67,
+      "status": "In Stock",
+      "image": "https://via.placeholder.com/60x60/ff6b6b/fff?text=NA",
+      "rating": 4.6
+    },
+    {
+      "id": 5,
+      "name": "Ergonomic Office Chair",
+      "category": "Home & Garden",
+      "price": 299.99,
+      "stock": 12,
+      "status": "Low Stock",
+      "image": "https://via.placeholder.com/60x60/ffc107/000?text=OC",
+      "rating": 4.3
+    },
+    {
+      "id": 6,
+      "name": "Sony WH-1000XM5",
+      "category": "Electronics",
+      "price": 399.99,
+      "stock": 89,
+      "status": "In Stock",
+      "image": "https://via.placeholder.com/60x60/435ebe/fff?text=SH",
+      "rating": 4.7
+    }
+  ],
+  "recentOrders": [
+    {
+      "id": "ORD-2024-001",
+      "customer": {
+        "name": "Sarah Johnson",
+        "email": "sarah.j@email.com",
+        "avatar": "1"
+      },
+      "product": "MacBook Pro 16\"",
+      "amount": 2499.99,
+      "status": "Delivered",
+      "date": "2024-12-28"
+    },
+    {
+      "id": "ORD-2024-002",
+      "customer": {
+        "name": "Michael Chen",
+        "email": "m.chen@email.com",
+        "avatar": "2"
+      },
+      "product": "iPhone 15 Pro Max",
+      "amount": 1199.99,
+      "status": "Processing",
+      "date": "2024-12-29"
+    },
+    {
+      "id": "ORD-2024-003",
+      "customer": {
+        "name": "Emma Williams",
+        "email": "emma.w@email.com",
+        "avatar": "3"
+      },
+      "product": "Nike Air Max 2024",
+      "amount": 189.99,
+      "status": "Shipped",
+      "date": "2024-12-29"
+    },
+    {
+      "id": "ORD-2024-004",
+      "customer": {
+        "name": "James Anderson",
+        "email": "j.anderson@email.com",
+        "avatar": "4"
+      },
+      "product": "Sony WH-1000XM5",
+      "amount": 399.99,
+      "status": "Pending",
+      "date": "2024-12-30"
+    },
+    {
+      "id": "ORD-2024-005",
+      "customer": {
+        "name": "Olivia Martinez",
+        "email": "olivia.m@email.com",
+        "avatar": "5"
+      },
+      "product": "Ergonomic Office Chair",
+      "amount": 299.99,
+      "status": "Delivered",
+      "date": "2024-12-30"
+    }
+  ],
+  "teamMembers": [
+    {
+      "id": 1,
+      "name": "Alex Thompson",
+      "role": "Project Manager",
+      "email": "alex.t@company.com",
+      "avatar": "1",
+      "status": "online",
+      "tasksCompleted": 145
+    },
+    {
+      "id": 2,
+      "name": "Jennifer Lee",
+      "role": "UI/UX Designer",
+      "email": "jennifer.l@company.com",
+      "avatar": "5",
+      "status": "online",
+      "tasksCompleted": 128
+    },
+    {
+      "id": 3,
+      "name": "David Kumar",
+      "role": "Full Stack Developer",
+      "email": "david.k@company.com",
+      "avatar": "2",
+      "status": "away",
+      "tasksCompleted": 167
+    },
+    {
+      "id": 4,
+      "name": "Rachel Green",
+      "role": "Marketing Lead",
+      "email": "rachel.g@company.com",
+      "avatar": "3",
+      "status": "offline",
+      "tasksCompleted": 92
+    }
+  ],
+  "notifications": [
+    {
+      "id": 1,
+      "type": "order",
+      "message": "New order received from Sarah Johnson",
+      "time": "2 minutes ago",
+      "read": false
+    },
+    {
+      "id": 2,
+      "type": "user",
+      "message": "New user registration: Michael Chen",
+      "time": "15 minutes ago",
+      "read": false
+    },
+    {
+      "id": 3,
+      "type": "alert",
+      "message": "Low stock alert: Samsung Galaxy Watch 6",
+      "time": "1 hour ago",
+      "read": true
+    },
+    {
+      "id": 4,
+      "type": "success",
+      "message": "Monthly report generated successfully",
+      "time": "3 hours ago",
+      "read": true
+    }
+  ],
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Review new product designs",
+      "priority": "high",
+      "dueDate": "2024-12-31",
+      "assignee": "Jennifer Lee",
+      "status": "in-progress"
+    },
+    {
+      "id": 2,
+      "title": "Update customer database",
+      "priority": "medium",
+      "dueDate": "2025-01-02",
+      "assignee": "David Kumar",
+      "status": "pending"
+    },
+    {
+      "id": 3,
+      "title": "Prepare Q4 sales report",
+      "priority": "high",
+      "dueDate": "2025-01-03",
+      "assignee": "Alex Thompson",
+      "status": "pending"
+    },
+    {
+      "id": 4,
+      "title": "Launch marketing campaign",
+      "priority": "medium",
+      "dueDate": "2025-01-05",
+      "assignee": "Rachel Green",
+      "status": "pending"
+    },
+    {
+      "id": 5,
+      "title": "Server maintenance",
+      "priority": "low",
+      "dueDate": "2025-01-07",
+      "assignee": "David Kumar",
+      "status": "completed"
+    }
+  ]
+}
