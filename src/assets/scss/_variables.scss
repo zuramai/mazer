@@ -16,19 +16,19 @@ $dark-mode: false !default;
 @import "~bootstrap/scss/functions";
 
 $theme-colors-light: (
-  'primary': #ebf3ff,
-  'secondary': #E6EAEE,
-  'success': #D2FFE8 ,
-  'danger': #FFDEDE,
-  'warning': #fffdd8,
-  'info': #e6fdff,
-  'dark': #e3e3e3
+  'primary': #4a90e2,
+  'secondary': #07407a,
+  'success': #0c9d52 ,
+  'danger': #950606,
+  'warning': #9b951a,
+  'info': #077f8a,
+  'dark': #6d0404
 ) !default;
 
 $alert-colors: (
     primary: (
-        text-color: #fff,
-        background-color: #435ebe
+        text-color: #870808,
+        background-color: #0b30b3
     ),
     secondary: (
         text-color: #383d41,

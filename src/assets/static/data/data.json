@@ -1,0 +1,28 @@
+{
+  "stats": [
+    { "label": "Interns", "value": 25, "trend": "+12%" },
+    { "label": "Projects", "value": 7, "trend": "+2%" },
+    { "label": "Errors Fixed", "value": 42, "trend": "-5%" },
+    { "label": "deployments", "value": 17, "trend": "+5%" }
+    
+    
+  ],
+  "comments": [
+    { "name": "Keshav", "avatar": "assets/static/images/faces/2.jpg", "text": "Great job on Task 3!" },
+    { "name": "Jyothsna", "avatar": "assets/static/images/faces/5.jpg", "text": "Finally got the dashboard working!" },
+    { "name": "sujatha", "avatar": "assets/static/images/faces/5.jpg", "text": "Finally working!" }
+  ],
+  "messages": [
+    { "name": "Mentor", "avatar": "assets/static/images/faces/4.jpg", "handle": "@mentor" },
+    { "name": "Teammate", "avatar": "assets/static/images/faces/1.jpg", "handle": "@team" },
+    { "name": "lead", "avatar": "assets/static/images/faces/1.jpg", "handle": "@teamlead" }
+  ],
+  "profileVisit": [75, 15, 25, 10, 20, 30, 40, 20, 10, 15, 25, 35],
+  "visitorsProfile": [60, 40],
+  "regions": {
+    "europe": [770, 200, 150, 250, 300, 200, 400, 350, 250, 300, 200, 400],
+    "america": [200, 300, 250, 350, 400, 300, 450, 500, 350, 400, 300, 450],
+    "india": [150, 250, 200, 300, 350, 250, 400, 450, 300, 350, 250, 400],
+    "indonesia": [80, 120, 100, 150, 200, 120, 250, 300, 150, 200, 120, 250]
+  }
+}

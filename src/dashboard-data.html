@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!--#include file="/assets/layout/partials/head.html" -->
+  <body>
+    <div id="app">
+      <!--#include file="/assets/layout/sidebar.html" -->
+
+      <div class="main-content container">
+        <h3>Data-driven Dashboard</h3>
+
+        <!-- Stats cards -->
+        <div class="row" id="stats-cards"></div>
+
+        <!-- Latest Comments & Messages -->
+        <div class="row mt-4">
+          <div class="col-12 col-xl-8">
+            <div class="card">
+              <div class="card-header"><h4>Latest Comments</h4></div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover table-lg">
+                    <thead><tr><th>Name</th><th>Comment</th></tr></thead>
+                    <tbody id="comments-body"></tbody> <!-- ✅ placeholder -->
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-4">
+            <div class="card">
+              <div class="card-header"><h4>Recent Messages</h4></div>
+              <div class="card-content pb-4" id="messages-container"></div> <!-- ✅ placeholder -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <section class="row mt-4">
+          <div class="col-12 col-xl-8">
+            <div class="card">
+              <div class="card-header"><h4>Profile Visit</h4></div>
+              <div class="card-body"><div id="chart-profile-visit"></div></div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-4">
+            <div class="card">
+              <div class="card-header"><h4>Visitors Profile</h4></div>
+              <div class="card-body"><div id="chart-visitors-profile"></div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="row mt-4">
+          <div class="col-md-3"><div id="chart-europe"></div></div>
+          <div class="col-md-3"><div id="chart-america"></div></div>
+          <div class="col-md-3"><div id="chart-india"></div></div>
+          <div class="col-md-3"><div id="chart-indonesia"></div></div>
+        </section>
+      </div>
+
+      <!--#include file="/assets/layout/partials/footer.html" -->
+    </div>
+
+    <script src="assets/extensions/apexcharts/apexcharts.min.js"></script>
+    <script type="module" src="/assets/static/js/pages/dashboard-data.js"></script>
+  
+
+  </body>
+</html>
