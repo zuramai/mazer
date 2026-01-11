@@ -117,6 +117,7 @@ https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/app.css
 - [Ruby on Rails](https://github.com/noesya/mazer-rails) oleh [@noesya](https://github.com/noesya)
 - [Yii2](https://github.com/anovsiradj/yii2-theme-mazer) oleh [@anovsiradj](https://github.com/anovsiradj)
 - [Next JS](https://github.com/dipras/next-mazer) oleh [@dipras](https://github.com/dipras)
+- [Go](https://github.com/ansufw/go-mazer) oleh [@ansufw](https://github.com/ansufw)
 - Apakah Anda membuat proyek menggunakan *Dashboard* kami? Anda dapat menaruh proyeknya di sini dengan melakukan `Pull Request`.
 
 ## Kontribusi
