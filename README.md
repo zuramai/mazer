@@ -117,6 +117,7 @@ https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/app.css
 - [Ruby on Rails](https://github.com/noesya/mazer-rails) by [@noesya](https://github.com/noesya)
 - [Yii2](https://github.com/anovsiradj/yii2-theme-mazer) by [@anovsiradj](https://github.com/anovsiradj)
 - [Next JS](https://github.com/dipras/next-mazer) by [@dipras](https://github.com/dipras)
+- [CakePHP](https://github.com/arodu/cakephp-mazer) by [@arodu](https://github.com/arodu)
 - Did you make in another framework or tools? Open up Pull Requests and put yours here! 😃
 
 ## Contributing
