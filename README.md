@@ -103,6 +103,12 @@ A simple example:
 https://cdn.jsdelivr.net/gh/zuramai/mazer@docs/demo/assets/compiled/css/app.css
 ```
 
+## Deploy
+
+To host your own copy on Wasmer Edge, fork this repository and import your fork; the button below opens the Wasmer import page for this repository and does not copy it into your GitHub account. Wasmer installs the dependencies, runs `yarn build` and serves the generated `dist` folder.
+
+[![Deploy to Wasmer](https://img.shields.io/badge/Deploy%20to-Wasmer-171717?logo=wasmer&logoColor=white)](https://wasmer.io/apps/create?github=zuramai%2Fmazer)
+
 ## Community Mazer-based open sources
 
 - [CodeIgniter 4](https://github.com/irsyadulibad/mazer-codeigniter) by [@irsyadulibad](https://github.com/irsyadulibad)
